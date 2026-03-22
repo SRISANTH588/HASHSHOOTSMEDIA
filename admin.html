@@ -604,6 +604,14 @@
     <div class="tab-panel" id="tab-assign">
 
       <!-- ASSIGN FORM -->
+      <!-- Payment summary stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;">
+        <div class="stat-card"><div class="num" id="as_statTotal" style="color:#e53935;">0</div><div class="lbl">Total Assigned</div></div>
+        <div class="stat-card"><div class="num" id="as_statPending" style="color:#ff9800;">0</div><div class="lbl">Pending Payment</div></div>
+        <div class="stat-card"><div class="num" id="as_statDone" style="color:#4caf50;">0</div><div class="lbl">Completed</div></div>
+        <div class="stat-card"><div class="num" id="as_statPaid" style="color:#2196f3;">0</div><div class="lbl">Paid Out</div></div>
+      </div>
+
       <div class="about-form" style="margin-bottom:1.25rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-plus-circle" style="color:#e53935;margin-right:0.5rem;"></i> Assign Shoot to Creator</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
@@ -1129,13 +1137,12 @@
       });
       saveAssignedShoots(assigned);
 
-      // Credit staff wallet
+      // Credit staff wallet — goes to PENDING until admin releases
       var walletKey = 'hs_wallet_' + staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
-      wallet.balance += credit;
-      wallet.totalEarned += credit;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+      wallet.pending = (wallet.pending || 0) + credit;
       wallet.transactions.push({
-        type: 'credit', amount: credit,
+        type: 'pending', amount: credit,
         label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
         note: (booking ? booking.name + ' — ' + booking.city : ''),
         date: new Date().toLocaleString()
@@ -1162,14 +1169,27 @@
     function renderAssignedList(){
       var list = getAssignedShoots().slice().reverse();
       document.getElementById('assignedCount').textContent = list.length + ' assignment(s)';
+      // update stats
+      document.getElementById('as_statTotal').textContent = list.length;
+      document.getElementById('as_statPending').textContent = list.filter(function(a){ return a.status==='assigned'; }).length;
+      document.getElementById('as_statDone').textContent = list.filter(function(a){ return a.status==='completed'; }).length;
+      document.getElementById('as_statPaid').textContent = list.filter(function(a){ return a.status==='paid'; }).length;
       var el = document.getElementById('assignedList');
       if(!list.length){
         el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
         return;
       }
-      var statusColors = { assigned:'#ff9800', completed:'#4caf50', cancelled:'#f44336' };
+      var statusColors = { assigned:'#ff9800', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
       el.innerHTML = list.map(function(a){
         var color = statusColors[a.status] || '#ff9800';
+        var actionBtns = '';
+        if(a.status === 'assigned'){
+          actionBtns = '<button onclick="markShootComplete(' + a.id + ')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+        } else if(a.status === 'completed'){
+          actionBtns = '<button onclick="releasePayment(' + a.id + ')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
+        } else if(a.status === 'paid'){
+          actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
+        }
         return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
@@ -1177,14 +1197,53 @@
           + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#e53935;"></i> ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + a.city + '</div>'
           + (a.notes ? '<div style="font-size:0.72rem;color:#666;margin-top:0.2rem;">' + a.notes + '</div>' : '')
           + '</div>'
-          + '<div style="display:flex;align-items:center;gap:0.6rem;">'
+          + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
           + '<span style="font-size:0.95rem;font-weight:900;color:#4caf50;">₹' + a.credit.toLocaleString('en-IN') + '</span>'
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
+          + actionBtns
           + '<button onclick="deleteAssignment('+a.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
-          + '<div style="font-size:0.65rem;color:#555;">Assigned on ' + a.assignedAt + '</div>'
+          + '<div style="font-size:0.65rem;color:#555;">Assigned on ' + a.assignedAt + (a.completedAt ? ' &nbsp;·&nbsp; Done: ' + a.completedAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
           + '</div>';
       }).join('');
+    }
+
+    function markShootComplete(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return x.id===id; });
+      if(!a) return;
+      a.status = 'completed';
+      a.completedAt = new Date().toLocaleString();
+      saveAssignedShoots(list);
+      renderAssignedList();
+      showAssignToast('Shoot marked as completed. You can now release payment.', true);
+    }
+
+    function releasePayment(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return x.id===id; });
+      if(!a) return;
+      if(!confirm('Release ₹' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
+
+      // Move from pending to balance in staff wallet
+      var walletKey = 'hs_wallet_' + a.staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+      wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
+      wallet.balance += a.credit;
+      wallet.totalEarned += a.credit;
+      wallet.transactions.push({
+        type: 'credit', amount: a.credit,
+        label: 'Payment Released: ' + a.service,
+        note: a.clientName + ' — ' + a.city,
+        date: new Date().toLocaleString()
+      });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+
+      a.status = 'paid';
+      a.paidAt = new Date().toLocaleString();
+      saveAssignedShoots(list);
+      renderAssignedList();
+      showAssignToast('Payment of ₹' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
     function deleteAssignment(id){

@@ -371,14 +371,16 @@
       <!-- Balance card -->
       <div style="background:linear-gradient(135deg,rgba(229,57,53,0.18),rgba(100,0,0,0.3));border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
-          <div style="font-size:0.75rem;color:#a08080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">TOTAL EARNINGS</div>
+          <div style="font-size:0.75rem;color:#a08080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">AVAILABLE BALANCE</div>
           <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;">₹<span id="walletBalance">0</span></div>
-          <div style="font-size:0.78rem;color:#a08080;margin-top:0.4rem;">Available for withdrawal</div>
+          <div style="font-size:0.78rem;color:#a08080;margin-top:0.4rem;">Ready for withdrawal</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:0.72rem;color:#a08080;margin-bottom:0.3rem;">Credits per Shoot</div>
-          <div style="font-size:1.4rem;font-weight:900;color:#e53935;">₹<span id="walletPerShoot">0</span></div>
-          <div style="font-size:0.68rem;color:#666;margin-top:0.2rem;">Assigned by Admin</div>
+          <div style="font-size:0.72rem;color:#ff9800;font-weight:700;margin-bottom:0.2rem;">PENDING PAYMENT</div>
+          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;">₹<span id="walletPendingTop">0</span></div>
+          <div style="font-size:0.68rem;color:#666;margin-top:0.15rem;">Awaiting admin release</div>
+          <div style="margin-top:0.5rem;font-size:0.72rem;color:#a08080;">Credits per Shoot</div>
+          <div style="font-size:1.1rem;font-weight:900;color:#e53935;">₹<span id="walletPerShoot">0</span></div>
         </div>
       </div>
 
@@ -929,31 +931,39 @@
     function renderWallet(){
       var w = getWallet();
       var staffId = localStorage.getItem('hs_staff_id');
-      // get per-shoot credit from staff record
       var staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
       var me = staffList.find(function(s){ return s.id == staffId; });
       var perShoot = me && me.shootCredit ? me.shootCredit : 0;
 
-      document.getElementById('walletBalance').textContent = w.balance.toLocaleString('en-IN');
+      document.getElementById('walletBalance').textContent = (w.balance||0).toLocaleString('en-IN');
       document.getElementById('walletPerShoot').textContent = perShoot.toLocaleString('en-IN');
-      document.getElementById('walletTotalEarned').textContent = '\u20b9' + w.totalEarned.toLocaleString('en-IN');
-      document.getElementById('walletWithdrawn').textContent = '\u20b9' + w.withdrawn.toLocaleString('en-IN');
-      document.getElementById('walletPending').textContent = '\u20b9' + (w.balance).toLocaleString('en-IN');
+      document.getElementById('walletTotalEarned').textContent = '\u20b9' + (w.totalEarned||0).toLocaleString('en-IN');
+      document.getElementById('walletWithdrawn').textContent = '\u20b9' + (w.withdrawn||0).toLocaleString('en-IN');
+      document.getElementById('walletPending').textContent = '\u20b9' + (w.pending||0).toLocaleString('en-IN');
+      var topPend = document.getElementById('walletPendingTop');
+      if(topPend) topPend.textContent = (w.pending||0).toLocaleString('en-IN');
 
       var el = document.getElementById('walletTxnList');
-      if(!w.transactions.length){
+      if(!w.transactions || !w.transactions.length){
         el.innerHTML = '<div style="text-align:center;padding:2rem;background:#160303;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div>';
         return;
       }
       el.innerHTML = w.transactions.slice().reverse().map(function(t){
-        var isCredit = t.type === 'credit';
-        var color = isCredit ? '#4caf50' : '#f44336';
-        return '<div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+        var isPending = t.type === 'pending';
+        var isCredit  = t.type === 'credit';
+        var color = isPending ? '#ff9800' : isCredit ? '#4caf50' : '#f44336';
+        var prefix = isPending ? '\u23f3 ' : isCredit ? '+' : '-';
+        var badge = isPending
+          ? '<span style="background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);font-size:0.6rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;margin-left:0.5rem;">Pending</span>'
+          : isCredit
+          ? '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.6rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;margin-left:0.5rem;">Credited</span>'
+          : '';
+        return '<div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
           + '<div>'
-          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.15rem;">' + t.label + '</div>'
+          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.15rem;">' + t.label + badge + '</div>'
           + '<div style="font-size:0.7rem;color:#a08080;">' + t.date + (t.note ? ' &nbsp;·&nbsp; ' + t.note : '') + '</div>'
           + '</div>'
-          + '<div style="font-size:1.1rem;font-weight:900;color:' + color + ';">' + (isCredit ? '+' : '-') + '\u20b9' + t.amount.toLocaleString('en-IN') + '</div>'
+          + '<div style="font-size:1.1rem;font-weight:900;color:' + color + ';">' + prefix + '\u20b9' + t.amount.toLocaleString('en-IN') + '</div>'
           + '</div>';
       }).join('');
     }
