@@ -333,7 +333,16 @@
 
     <!-- FEEDBACK -->
     <div class="section" id="sec-feedback">
-      <div class="sec-title"><i class="fas fa-star"></i> Customer Feedback</div>
+      <div class="sec-title"><i class="fas fa-star"></i> Feedback</div>
+
+      <!-- CREATOR SUBMITS FEEDBACK ABOUT THEIR SHOOTS -->
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-paper-plane" style="color:#e53935;margin-right:0.5rem;"></i>Rate Your Completed Shoots</div>
+        <div id="creatorShootFeedbackList"></div>
+      </div>
+
+      <!-- CUSTOMER FEEDBACK RECEIVED -->
+      <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-comments" style="color:#f5a623;margin-right:0.5rem;"></i>Customer Feedback Received</div>
       <div id="creatorFeedbackList"></div>
     </div>
 
@@ -890,8 +899,78 @@
 
     // CREATOR FEEDBACK SECTION
     function initCreatorFeedback(){
+      renderCreatorShootFeedback();
       renderCreatorFeedback();
-      setInterval(renderCreatorFeedback, 5000);
+      setInterval(function(){ renderCreatorShootFeedback(); renderCreatorFeedback(); }, 5000);
+    }
+
+    var creatorSelectedStars = {};
+
+    function setCreatorStars(id, val){
+      creatorSelectedStars[id] = val;
+      document.querySelectorAll('.cstar[data-id="' + id + '"]').forEach(function(s){
+        s.classList.toggle('active', Number(s.dataset.val) <= val);
+      });
+    }
+
+    function renderCreatorShootFeedback(){
+      var staffId = Number(localStorage.getItem('hs_staff_id'));
+      var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]')
+        .filter(function(a){ return a.staffId === staffId && (a.status === 'completed' || a.status === 'paid'); });
+      var el = document.getElementById('creatorShootFeedbackList');
+      if(!assigned.length){
+        el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#160303;border-radius:14px;color:#5a3535;font-size:0.82rem;"><i class="fas fa-camera" style="display:block;font-size:1.5rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+        return;
+      }
+      var existing = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
+      el.innerHTML = assigned.map(function(a){
+        var done = existing.find(function(f){ return f.assignId === a.id; });
+        if(done){
+          var stars = '\u2605'.repeat(done.rating) + '\u2606'.repeat(5 - done.rating);
+          return '<div style="background:#160303;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+            + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">'
+            + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
+            + '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:50px;"><i class="fas fa-check"></i> Feedback Given</span>'
+            + '</div>'
+            + '<div style="color:#f5a623;font-size:1rem;letter-spacing:2px;margin-bottom:0.25rem;">' + stars + '</div>'
+            + (done.comment ? '<div style="font-size:0.78rem;color:#a08080;font-style:italic;">&ldquo;' + done.comment + '&rdquo;</div>' : '')
+            + '</div>';
+        }
+        return '<div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">' + a.service + ' — ' + a.clientName + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#e53935;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
+          + '<div style="display:flex;gap:0.3rem;margin-bottom:0.65rem;">' + [1,2,3,4,5].map(function(v){
+              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#9733;</span>';
+            }).join('') + '</div>'
+          + '<textarea id="cfb_' + a.id + '" style="width:100%;background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:65px;" placeholder="How was the shoot? Any notes..."></textarea>'
+          + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#e53935;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
+          + '</div>';
+      }).join('');
+    }
+
+    function submitCreatorFeedback(assignId){
+      var rating = creatorSelectedStars[assignId] || 0;
+      if(!rating){ alert('Please select a star rating.'); return; }
+      var el = document.getElementById('cfb_' + assignId);
+      var comment = el ? el.value.trim() : '';
+      var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+      var a = assigned.find(function(x){ return x.id === assignId; });
+      var list = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
+      list.push({
+        id: Date.now(),
+        assignId: assignId,
+        staffId: Number(localStorage.getItem('hs_staff_id')),
+        staffName: localStorage.getItem('hs_staff_name') || '',
+        service: a ? a.service : '',
+        clientName: a ? a.clientName : '',
+        city: a ? a.city : '',
+        date: a ? a.date : '',
+        rating: rating,
+        comment: comment,
+        submittedAt: new Date().toLocaleString()
+      });
+      localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
+      renderCreatorShootFeedback();
     }
 
     function renderCreatorFeedback(){

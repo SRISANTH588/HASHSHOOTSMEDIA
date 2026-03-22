@@ -601,7 +601,13 @@
         <div id="feedbackAdminList"></div>
       </div>
 
-    </div><!-- end tab-feedback -->
+      <!-- CREATOR FEEDBACK SECTION -->
+      <div style="margin-top:1.5rem;">
+        <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-user-circle" style="color:#e53935;margin-right:0.5rem;"></i>Creator Shoot Feedback</div>
+        <div class="table-wrap" style="padding:1.5rem;">
+          <div id="creatorFeedbackAdminList"></div>
+        </div>
+      </div>
 
     <!-- STAFF VIDEOS TAB -->
     <div class="tab-panel" id="tab-videos">
@@ -1484,6 +1490,76 @@
     }
 
     function renderFeedbackAdmin(){
+      var all = getFeedbacks().slice().reverse();
+      // stats
+      var shoots = all.filter(function(f){ return f.type === 'shoot'; });
+      var demos = all.filter(function(f){ return f.type === 'demo'; });
+      var avg = all.length ? (all.reduce(function(s,f){ return s + f.rating; }, 0) / all.length).toFixed(1) : '0.0';
+      document.getElementById('fb_totalCount').textContent = all.length;
+      document.getElementById('fb_avgRating').textContent = avg;
+      document.getElementById('fb_shootCount').textContent = shoots.length;
+      document.getElementById('fb_demoCount').textContent = demos.length;
+
+      // filter
+      var filtered = all;
+      if(currentFbFilter === 'shoot') filtered = shoots;
+      else if(currentFbFilter === 'demo') filtered = demos;
+      else if(currentFbFilter === '5') filtered = all.filter(function(f){ return f.rating === 5; });
+      else if(currentFbFilter === 'low') filtered = all.filter(function(f){ return f.rating <= 2; });
+
+      var el = document.getElementById('feedbackAdminList');
+      if(!filtered.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No feedback yet.</div>';
+      } else {
+      var starColors = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
+      el.innerHTML = filtered.map(function(f){
+        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
+        var color = starColors[f.rating] || '#f5a623';
+        var typeBadge = f.type === 'shoot'
+          ? '<span style="background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-camera"></i> Shoot</span>'
+          : '<span style="background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-chalkboard-teacher"></i> Demo</span>';
+        var title = f.type === 'shoot' ? (f.service + ' — ' + f.city) : f.title;
+        var sub = f.type === 'shoot'
+          ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
+          : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
+        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
+          + '<div style="display:flex;align-items:center;gap:0.75rem;">'
+          + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
+          + '<div><div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">' + title + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;">' + sub + '</div></div></div>'
+          + '<div style="display:flex;align-items:center;gap:0.6rem;">' + typeBadge
+          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span></div></div>'
+          + (f.comment ? '<div style="background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + (f.description ? '<div style="margin-top:0.5rem;background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
+          + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
+          + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          + '</div></div>';
+      }).join('');}
+
+      // Render creator feedbacks
+      var cFeedbacks = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]').slice().reverse();
+      var cEl = document.getElementById('creatorFeedbackAdminList');
+      if(!cFeedbacks.length){
+        cEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#a08080;"><i class="fas fa-user-circle" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No creator feedback yet.</div>';
+        return;
+      }
+      var starColors2 = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
+      cEl.innerHTML = cFeedbacks.map(function(f){
+        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
+        var color = starColors2[f.rating] || '#f5a623';
+        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ' + color + ';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.4rem;">'
+          + '<div style="font-size:0.9rem;font-weight:800;color:#fff;">' + f.service + ' — ' + f.clientName + '</div>'
+          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
+          + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.4rem;"><i class="fas fa-user-circle" style="color:#e53935;"></i> Creator: ' + f.staffName + ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + f.city + ' &nbsp;·&nbsp; ' + f.date + '</div>'
+          + (f.comment ? '<div style="font-size:0.8rem;color:#c8a0a0;font-style:italic;border-left:2px solid rgba(229,57,53,0.3);padding-left:0.65rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + '<div style="font-size:0.62rem;color:#555;margin-top:0.5rem;">' + f.submittedAt + '</div>'
+          + '</div>';
+      }).join('');
+    }
       var all = getFeedbacks().slice().reverse();
       // stats
       var shoots = all.filter(function(f){ return f.type === 'shoot'; });
