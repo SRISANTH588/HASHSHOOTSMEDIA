@@ -216,6 +216,8 @@
     <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> My Videos</button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
     <button class="tab-btn" onclick="switchTab('feedback',this)"><i class="fas fa-star"></i> Feedback</button>
+    <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
+    <button class="tab-btn" onclick="switchTab('bank',this)"><i class="fas fa-university"></i> Bank</button>
     <button class="tab-btn" onclick="switchTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
   </div>
 
@@ -231,7 +233,7 @@
         <div class="welcome-icon"><i class="fas fa-camera"></i></div>
       </div>
       <div class="stats-row">
-        <div class="stat-box"><div class="num" id="statShoots">0</div><div class="lbl">Shoots Done</div></div>
+        <div class="stat-box"><div class="num" id="statShoots">0</div><div class="lbl">Assigned Shoots</div></div>
         <div class="stat-box"><div class="num" id="statVideos">0</div><div class="lbl">Videos Uploaded</div></div>
         <div class="stat-box"><div class="num" id="statDemos">0</div><div class="lbl">Demo Sessions</div></div>
       </div>
@@ -252,6 +254,11 @@
         <div onclick="switchTab('classes',document.querySelector('[onclick*=classes]'))" style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(229,57,53,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
           <i class="fas fa-robot" style="font-size:1.6rem;color:#e53935;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">AI Classes</div>
+        </div>
+        <div onclick="switchTab('wallet',document.querySelector('[onclick*=wallet]'))" style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(229,57,53,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+          <i class="fas fa-wallet" style="font-size:1.6rem;color:#4caf50;margin-bottom:0.6rem;display:block;"></i>
+          <div style="font-size:0.82rem;font-weight:700;">Wallet</div>
+          <div style="font-size:0.72rem;color:#a08080;margin-top:0.2rem;">₹<span id="dashWalletBal">0</span></div>
         </div>
         <div onclick="switchTab('feedback',document.querySelector('[onclick*=feedback]'))" style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(229,57,53,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
           <i class="fas fa-star" style="font-size:1.6rem;color:#f5a623;margin-bottom:0.6rem;display:block;"></i>
@@ -357,6 +364,95 @@
       </div>
     </div>
 
+    <!-- WALLET -->
+    <div class="section" id="sec-wallet">
+      <div class="sec-title"><i class="fas fa-wallet"></i> My Wallet</div>
+
+      <!-- Balance card -->
+      <div style="background:linear-gradient(135deg,rgba(229,57,53,0.18),rgba(100,0,0,0.3));border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:0.75rem;color:#a08080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">TOTAL EARNINGS</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;">₹<span id="walletBalance">0</span></div>
+          <div style="font-size:0.78rem;color:#a08080;margin-top:0.4rem;">Available for withdrawal</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.72rem;color:#a08080;margin-bottom:0.3rem;">Credits per Shoot</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#e53935;">₹<span id="walletPerShoot">0</span></div>
+          <div style="font-size:0.68rem;color:#666;margin-top:0.2rem;">Assigned by Admin</div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="walletTotalEarned">₹0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Total Earned</div>
+        </div>
+        <div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#2196f3;" id="walletWithdrawn">₹0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Withdrawn</div>
+        </div>
+        <div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="walletPending">₹0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Pending</div>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <div class="sec-title" style="font-size:0.95rem;"><i class="fas fa-list"></i> Transaction History</div>
+      <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#160303;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
+    </div>
+
+    <!-- BANK -->
+    <div class="section" id="sec-bank">
+      <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
+      <div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">Account Holder Name *</label>
+            <input class="upload-input" type="text" id="bankName" placeholder="Full name as per bank"/>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">Bank Name *</label>
+            <input class="upload-input" type="text" id="bankBankName" placeholder="e.g. State Bank of India"/>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">Account Number *</label>
+            <input class="upload-input" type="text" id="bankAccNo" placeholder="Enter account number"/>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">IFSC Code *</label>
+            <input class="upload-input" type="text" id="bankIFSC" placeholder="e.g. SBIN0001234"/>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">UPI ID</label>
+            <input class="upload-input" type="text" id="bankUPI" placeholder="e.g. name@upi"/>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#a08080;display:block;margin-bottom:0.4rem;">Account Type</label>
+            <select class="upload-input" id="bankType">
+              <option value="savings">Savings</option>
+              <option value="current">Current</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="saveBankDetails()" style="background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.background='#b71c1c'" onmouseout="this.style.background='#e53935'"><i class="fas fa-save"></i> Save Bank Details</button>
+        <div id="bankToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Bank details saved successfully!</div>
+      </div>
+
+      <!-- Saved details display -->
+      <div id="bankSavedDisplay" style="display:none;">
+        <div class="sec-title" style="font-size:0.95rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Saved Account</div>
+        <div style="background:#160303;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;" id="bankSavedGrid"></div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- end page-wrap -->
   </div>
 
@@ -372,6 +468,8 @@
       btn.classList.add('active');
       if(name === 'videos') renderMyVideos();
       if(name === 'feedback') renderCreatorFeedback();
+      if(name === 'wallet') renderWallet();
+      if(name === 'bank') loadBankDetails();
     }
 
     // Load staff info
@@ -393,9 +491,13 @@
 
     // Stats
     const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-    document.getElementById('statShoots').textContent = bookings.length;
+    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(id); }).length;
     document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.staffId == id; }).length;
     document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(id); }).length;
+    // update dashboard wallet balance
+    var w = JSON.parse(localStorage.getItem('hs_wallet_' + id) || '{"balance":0}');
+    var dashBal = document.getElementById('dashWalletBal');
+    if(dashBal) dashBal.textContent = w.balance.toLocaleString('en-IN');
 
     // ── IndexedDB for staff videos ──────────────────────────────
     var staffDB = null;
@@ -816,6 +918,97 @@
     }
 
     initCreatorFeedback();
+
+    // WALLET
+    function getWallet(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var key = 'hs_wallet_' + staffId;
+      return JSON.parse(localStorage.getItem(key) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
+    }
+
+    function renderWallet(){
+      var w = getWallet();
+      var staffId = localStorage.getItem('hs_staff_id');
+      // get per-shoot credit from staff record
+      var staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
+      var me = staffList.find(function(s){ return s.id == staffId; });
+      var perShoot = me && me.shootCredit ? me.shootCredit : 0;
+
+      document.getElementById('walletBalance').textContent = w.balance.toLocaleString('en-IN');
+      document.getElementById('walletPerShoot').textContent = perShoot.toLocaleString('en-IN');
+      document.getElementById('walletTotalEarned').textContent = '\u20b9' + w.totalEarned.toLocaleString('en-IN');
+      document.getElementById('walletWithdrawn').textContent = '\u20b9' + w.withdrawn.toLocaleString('en-IN');
+      document.getElementById('walletPending').textContent = '\u20b9' + (w.balance).toLocaleString('en-IN');
+
+      var el = document.getElementById('walletTxnList');
+      if(!w.transactions.length){
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#160303;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div>';
+        return;
+      }
+      el.innerHTML = w.transactions.slice().reverse().map(function(t){
+        var isCredit = t.type === 'credit';
+        var color = isCredit ? '#4caf50' : '#f44336';
+        return '<div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+          + '<div>'
+          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.15rem;">' + t.label + '</div>'
+          + '<div style="font-size:0.7rem;color:#a08080;">' + t.date + (t.note ? ' &nbsp;·&nbsp; ' + t.note : '') + '</div>'
+          + '</div>'
+          + '<div style="font-size:1.1rem;font-weight:900;color:' + color + ';">' + (isCredit ? '+' : '-') + '\u20b9' + t.amount.toLocaleString('en-IN') + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    // BANK
+    function saveBankDetails(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var data = {
+        name: document.getElementById('bankName').value.trim(),
+        bankName: document.getElementById('bankBankName').value.trim(),
+        accNo: document.getElementById('bankAccNo').value.trim(),
+        ifsc: document.getElementById('bankIFSC').value.trim(),
+        upi: document.getElementById('bankUPI').value.trim(),
+        type: document.getElementById('bankType').value
+      };
+      if(!data.name || !data.bankName || !data.accNo || !data.ifsc){ alert('Please fill all required fields.'); return; }
+      localStorage.setItem('hs_bank_' + staffId, JSON.stringify(data));
+      var toast = document.getElementById('bankToast');
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display = 'none'; }, 3000);
+      showBankSaved(data);
+    }
+
+    function loadBankDetails(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var data = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      if(!data) return;
+      document.getElementById('bankName').value = data.name || '';
+      document.getElementById('bankBankName').value = data.bankName || '';
+      document.getElementById('bankAccNo').value = data.accNo || '';
+      document.getElementById('bankIFSC').value = data.ifsc || '';
+      document.getElementById('bankUPI').value = data.upi || '';
+      document.getElementById('bankType').value = data.type || 'savings';
+      showBankSaved(data);
+    }
+
+    function showBankSaved(data){
+      var el = document.getElementById('bankSavedDisplay');
+      var grid = document.getElementById('bankSavedGrid');
+      el.style.display = 'block';
+      var fields = [
+        {l:'Account Holder', v: data.name},
+        {l:'Bank', v: data.bankName},
+        {l:'Account No.', v: data.accNo.replace(/.(?=.{4})/g,'*')},
+        {l:'IFSC', v: data.ifsc},
+        {l:'UPI ID', v: data.upi || '—'},
+        {l:'Type', v: data.type.charAt(0).toUpperCase()+data.type.slice(1)}
+      ];
+      grid.innerHTML = fields.map(function(f){
+        return '<div style="background:#0d0000;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem 1rem;">'
+          + '<div style="font-size:0.65rem;color:#a08080;font-weight:600;margin-bottom:0.2rem;">' + f.l + '</div>'
+          + '<div style="font-size:0.85rem;font-weight:700;color:#fff;">' + f.v + '</div>'
+          + '</div>';
+      }).join('');
+    }
 
     // Start class
     function startClass(name){

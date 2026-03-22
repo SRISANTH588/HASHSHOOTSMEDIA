@@ -109,6 +109,7 @@
       <button class="tab-btn" onclick="switchTab('demo',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span id="demoNotifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Feedback <span id="feedbackNotifBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
+      <button class="tab-btn" onclick="switchTab('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
     </div>
 
@@ -597,6 +598,57 @@
       </div>
     </div><!-- end tab-videos -->
 
+    </div><!-- end tab-videos -->
+
+    <!-- ASSIGN SHOOTS TAB -->
+    <div class="tab-panel" id="tab-assign">
+
+      <!-- ASSIGN FORM -->
+      <div class="about-form" style="margin-bottom:1.25rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-plus-circle" style="color:#e53935;margin-right:0.5rem;"></i> Assign Shoot to Creator</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Select Booking *</label>
+            <select id="as_booking" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
+          </div>
+          <div class="form-group">
+            <label>Assign To (Creator) *</label>
+            <select id="as_staff" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Shoot Date *</label>
+            <input type="date" id="as_date" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+          <div class="form-group">
+            <label>Shoot Time *</label>
+            <input type="time" id="as_time" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+          <div class="form-group">
+            <label>Credit Amount (₹) *</label>
+            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Instructions / Notes</label>
+          <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
+        </div>
+        <button class="btn-save-about" onclick="assignShoot()"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
+        <div class="save-toast" id="asToast"></div>
+      </div>
+
+      <!-- ASSIGNED LIST -->
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#e53935;margin-right:0.5rem;"></i> Assigned Shoots</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="assignedCount"></span>
+        </div>
+        <div id="assignedList"></div>
+      </div>
+
+    </div><!-- end tab-assign -->
+
     <!-- SETTINGS TAB -->
     <div class="tab-panel" id="tab-settings">
 
@@ -907,6 +959,7 @@
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
+      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
     }
 
     function deleteFeedback(id){
@@ -1009,6 +1062,135 @@
       ['hs_bookings','hs_staff','hs_demos','hs_feedbacks','hs_vibe','hs_about','hs_customer_page','hs_staff_videos'].forEach(k=>localStorage.removeItem(k));
       alert('All data has been reset.');
       loadAll();
+    }
+
+    // ASSIGN SHOOTS
+    function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
+    function saveAssignedShoots(list){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); }
+
+    function populateAssignSelects(){
+      // bookings dropdown — only pending/confirmed
+      var bSel = document.getElementById('as_booking');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
+      bSel.innerHTML = '<option value="" disabled selected>Select a booking</option>';
+      bookings.forEach(function(b){
+        var o = document.createElement('option');
+        o.value = b.id;
+        o.textContent = b.service + ' — ' + b.name + ' (' + b.city + ') · ' + b.date;
+        bSel.appendChild(o);
+      });
+      // staff dropdown — creators only
+      var sSel = document.getElementById('as_staff');
+      sSel.innerHTML = '<option value="" disabled selected>Select staff member</option>';
+      getStaff().forEach(function(s){
+        var o = document.createElement('option');
+        o.value = s.id;
+        o.textContent = s.name + ' (' + s.role + ')';
+        sSel.appendChild(o);
+      });
+    }
+
+    function showAssignToast(msg, ok){
+      var t = document.getElementById('asToast');
+      t.textContent = (ok?'\u2705 ':'\u274c ') + msg;
+      t.style.display='block';
+      t.style.background = ok?'rgba(76,175,80,0.15)':'rgba(244,67,54,0.15)';
+      t.style.borderColor = ok?'rgba(76,175,80,0.3)':'rgba(244,67,54,0.3)';
+      t.style.color = ok?'#4caf50':'#f44336';
+      setTimeout(function(){ t.style.display='none'; }, 3000);
+    }
+
+    function assignShoot(){
+      var bookingId = Number(document.getElementById('as_booking').value);
+      var staffId   = document.getElementById('as_staff').value;
+      var date      = document.getElementById('as_date').value;
+      var time      = document.getElementById('as_time').value;
+      var credit    = Number(document.getElementById('as_credit').value);
+      var notes     = document.getElementById('as_notes').value.trim();
+      if(!bookingId||!staffId||!date||!time||!credit){ showAssignToast('Please fill all required fields.', false); return; }
+
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var booking  = bookings.find(function(b){ return b.id===bookingId; });
+      var staffMember = getStaff().find(function(s){ return s.id==staffId; });
+
+      // Save assignment
+      var assigned = getAssignedShoots();
+      assigned.push({
+        id: Date.now(),
+        bookingId: bookingId,
+        staffId: Number(staffId),
+        staffName: staffMember ? staffMember.name : 'Unknown',
+        service: booking ? booking.service : '',
+        clientName: booking ? booking.name : '',
+        city: booking ? booking.city : '',
+        date: date, time: time, credit: credit, notes: notes,
+        status: 'assigned',
+        assignedAt: new Date().toLocaleString()
+      });
+      saveAssignedShoots(assigned);
+
+      // Credit staff wallet
+      var walletKey = 'hs_wallet_' + staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
+      wallet.balance += credit;
+      wallet.totalEarned += credit;
+      wallet.transactions.push({
+        type: 'credit', amount: credit,
+        label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
+        note: (booking ? booking.name + ' — ' + booking.city : ''),
+        date: new Date().toLocaleString()
+      });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+
+      // Update staff shootCredit
+      var staffList = getStaff();
+      var sm = staffList.find(function(s){ return s.id==staffId; });
+      if(sm){ sm.shootCredit = credit; saveStaff(staffList); }
+
+      // Reset form
+      document.getElementById('as_booking').value='';
+      document.getElementById('as_staff').value='';
+      document.getElementById('as_date').value='';
+      document.getElementById('as_time').value='';
+      document.getElementById('as_credit').value='';
+      document.getElementById('as_notes').value='';
+
+      showAssignToast('Shoot assigned to ' + (staffMember?staffMember.name:'staff') + ' with \u20b9' + credit + ' credit!', true);
+      renderAssignedList();
+    }
+
+    function renderAssignedList(){
+      var list = getAssignedShoots().slice().reverse();
+      document.getElementById('assignedCount').textContent = list.length + ' assignment(s)';
+      var el = document.getElementById('assignedList');
+      if(!list.length){
+        el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
+        return;
+      }
+      var statusColors = { assigned:'#ff9800', completed:'#4caf50', cancelled:'#f44336' };
+      el.innerHTML = list.map(function(a){
+        var color = statusColors[a.status] || '#ff9800';
+        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          + '<div>'
+          + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#e53935;"></i> ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + a.city + '</div>'
+          + (a.notes ? '<div style="font-size:0.72rem;color:#666;margin-top:0.2rem;">' + a.notes + '</div>' : '')
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:0.6rem;">'
+          + '<span style="font-size:0.95rem;font-weight:900;color:#4caf50;">₹' + a.credit.toLocaleString('en-IN') + '</span>'
+          + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
+          + '<button onclick="deleteAssignment('+a.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
+          + '</div></div>'
+          + '<div style="font-size:0.65rem;color:#555;">Assigned on ' + a.assignedAt + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    function deleteAssignment(id){
+      if(!confirm('Remove this assignment?')) return;
+      saveAssignedShoots(getAssignedShoots().filter(function(a){ return a.id!==id; }));
+      renderAssignedList();
     }
 
     // STAFF MANAGEMENT
