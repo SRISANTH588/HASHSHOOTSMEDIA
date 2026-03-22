@@ -3,18 +3,18 @@
 
   var links = [
     { href:'index.html',    icon:'fa-house',       label:'Home' },
-    { href:'vibe.html',     icon:'fa-compass',     label:'Discover the Vibe' },
+    { href:'vibe.html',     icon:'fa-compass',     label:'Discover' },
     { href:'booking.html',  icon:'fa-camera',      label:'Book Now' },
     { href:'about.html',    icon:'fa-circle-info', label:'About Us' },
-    { href:'partner.html',  icon:'fa-handshake',   label:'Become a Partner' },
+    { href:'partner.html',  icon:'fa-handshake',   label:'Partner' },
     { href:'career.html',   icon:'fa-briefcase',   label:'Careers' },
-    { href:'#contact',      icon:'fa-envelope',    label:'Contact Us' },
+    { href:'#contact',      icon:'fa-envelope',    label:'Contact' },
   ];
 
   var navHTML = `
   <style>
-    .hs-nav{background:rgba(10,0,0,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(229,57,53,0.15);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
-    .hs-nav-logo{font-size:1.35rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;}
+    .hs-nav{background:rgba(10,0,0,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(229,57,53,0.15);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+    .hs-nav-logo{font-size:1.35rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;flex-shrink:0;}
     .hs-nav-logo span{color:#e53935;}
     .hs-nav-links{display:flex;align-items:center;gap:0.25rem;}
     .hs-nav-link{display:flex;align-items:center;gap:0.45rem;padding:0.45rem 0.9rem;border-radius:8px;color:#a08080;font-size:0.82rem;font-weight:600;text-decoration:none;transition:all 0.2s;white-space:nowrap;border:1px solid transparent;}
