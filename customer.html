@@ -38,7 +38,7 @@
     .success-msg p{color:#a08080;font-size:0.875rem;}
     .my-bookings{margin-top:3rem;}
     .my-bookings h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
-    .booking-item{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
+    .booking-item{background:var(--card,#1c0000);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
     .booking-info h4{font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;}
     .booking-info p{font-size:0.8rem;color:#a08080;}
     .status{padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
@@ -50,7 +50,7 @@
     @media(max-width:540px){.form-grid{grid-template-columns:1fr;}.form-group.full{grid-column:1;}}
     .feedback-wrap{margin-top:3rem;}
     .feedback-wrap h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
-    .fb-card{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
+    .fb-card{background:var(--card,#1c0000);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
     .fb-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;}
     .fb-card-title{font-size:0.95rem;font-weight:700;}
     .fb-card-meta{font-size:0.75rem;color:#a08080;margin-top:0.15rem;}
@@ -132,6 +132,7 @@
     const bg = c.bgColor || '#0d0000';
     const card = c.cardColor || '#1c0000';
     document.documentElement.style.setProperty('--accent', accent);
+    document.documentElement.style.setProperty('--card', card);
     document.body.style.background = bg;
     document.getElementById('bookingCard').style.background = card;
 
@@ -251,9 +252,7 @@
         </div>`).join('');
     }
     loadBookings();
-
-    // FEEDBACK
-    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
+    setInterval(loadBookings, 3000);
     function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); }
     var selectedStars = {};
 
@@ -384,7 +383,7 @@
 
     renderShootFeedback();
     renderDemoFeedback();
-    setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 5000);
+    setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 3000);
   </script>
 </body>
 </html>
