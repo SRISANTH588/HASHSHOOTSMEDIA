@@ -295,6 +295,8 @@
             <option>Demo Reel</option><option>Shoot Delivery</option><option>Event Coverage</option>
             <option>Portrait Session</option><option>Wedding</option><option>Product Shoot</option><option>Other</option>
           </select>
+          <input class="upload-input" type="date" id="uploadDate" title="Shoot Date"/>
+          <input class="upload-input" type="time" id="uploadTime" title="Shoot Time"/>
         </div>
         <div class="upload-progress-wrap" id="uploadProgressWrap">
           <div class="upload-progress-label"><span id="uploadProgressLabel">Processing...</span><span id="uploadProgressPct">0%</span></div>
@@ -587,6 +589,8 @@
     function uploadStaffVideo(){
       var title = document.getElementById('uploadTitle').value.trim();
       var category = document.getElementById('uploadCategory').value;
+      var shootDate = document.getElementById('uploadDate').value;
+      var shootTime = document.getElementById('uploadTime').value;
       if(!selectedVideoFile){ alert('Please select a video file.'); return; }
       if(!title){ alert('Please enter a video title.'); return; }
       if(!category){ alert('Please select a category.'); return; }
@@ -605,6 +609,7 @@
         var videos = getStaffVideos();
         videos.push({
           id: id, title: title, category: category,
+          shootDate: shootDate, shootTime: shootTime,
           staffId: staffId, staffName: staffName,
           fileName: selectedVideoFile.name,
           sizeMB: (selectedVideoFile.size/1024/1024).toFixed(1),
@@ -616,6 +621,8 @@
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
         document.getElementById('uploadTitle').value = '';
         document.getElementById('uploadCategory').value = '';
+        document.getElementById('uploadDate').value = '';
+        document.getElementById('uploadTime').value = '';
         document.getElementById('selectedFileInfo').style.display = 'none';
         selectedVideoFile = null;
         var toast = document.getElementById('uploadToast');
@@ -640,6 +647,7 @@
           + '<div class="video-thumb-info">'
           + '<div class="video-thumb-title">' + v.title + '</div>'
           + '<div class="video-thumb-meta">' + v.category + ' &nbsp;·&nbsp; ' + v.sizeMB + ' MB</div>'
+          + (v.shootDate ? '<div class="video-thumb-meta"><i class="fas fa-calendar" style="color:#e53935;"></i> ' + v.shootDate + (v.shootTime ? ' &nbsp;<i class="fas fa-clock" style="color:#e53935;"></i> ' + v.shootTime : '') + '</div>' : '')
           + '<div class="video-thumb-meta">' + v.uploadedAt + '</div>'
           + '</div>'
           + '<button class="video-thumb-del" onclick="deleteStaffVideo(' + v.id + ')" title="Delete"><i class="fas fa-times"></i></button>';
