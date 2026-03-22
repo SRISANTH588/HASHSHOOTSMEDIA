@@ -11,8 +11,6 @@
     body{font-family:'Inter',sans-serif;background:#0d0000;min-height:100vh;color:#fff;}
 
     /* NAVBAR */
-    .navbar{position:fixed;top:0;width:100%;z-index:1000;background:rgba(13,0,0,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(229,57,53,0.15);padding:0.75rem 0;}
-    .nav-container{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:2rem;}
     .logo{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-0.5px;text-decoration:none;}
     .logo-flash{color:#e53935;}
     .nav-actions{display:flex;gap:0.75rem;align-items:center;margin-left:auto;}
@@ -65,18 +63,10 @@
 
     @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}.checks{gap:1rem;}}
   </style>
+
+  <script src="nav.js"></script>
 </head>
 <body>
-
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="logo">HA<span class="logo-flash">⚡</span>H SHOOTS</a>
-      <div class="nav-actions">
-        <a href="login.html" class="btn btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
-        <a href="login.html" class="btn btn-red">Login</a>
-      </div>
-    </div>
-  </nav>
 
   <!-- HERO -->
   <div class="hero">

@@ -26,17 +26,6 @@
     }
 
     /* NAVBAR */
-    .navbar {
-      position: fixed; top: 0; width: 100%; z-index: 1000;
-      padding: 1.1rem 0;
-      background: rgba(20,2,2,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(229,57,53,0.1);
-    }
-    .nav-container {
-      max-width: 1200px; margin: 0 auto; padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-    }
     .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; text-transform: uppercase; }
     .logo-flash { color: #e53935; margin: 0 1px; font-size: 1.2rem; }
     .logo-shoots { color: #fff; }
@@ -182,28 +171,11 @@
     }
     @media(max-width: 768px) { .perks-grid { grid-template-columns: 1fr 1fr; } }
   </style>
+
+  <script src="nav.js"></script>
 </head>
 <body>
   <div class="page-bg">
-
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="logo" style="text-decoration:none;">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></a>
-      <div class="nav-icons">
-        <a href="index.html" title="Home" class="nav-icon-btn"><i class="fas fa-house"></i></a>
-        <span class="nav-icon-sep"></span>
-        <a href="vibe.html" title="Discover with Vibe" class="nav-icon-btn"><i class="fas fa-compass"></i></a>
-        <span class="nav-icon-sep"></span>
-        <a href="partner.html" title="Become a Partner" class="nav-icon-btn"><i class="fas fa-handshake"></i></a>
-        <span class="nav-icon-sep"></span>
-        <a href="about.html" title="About Us" class="nav-icon-btn"><i class="fas fa-circle-info"></i></a>
-      </div>
-      <div class="nav-actions">
-        <a href="login.html" class="btn btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
-        <a href="login.html" class="btn btn-contact">Login</a>
-      </div>
-    </div>
-  </nav>
 
   <!-- HERO -->
   <div class="hero-section">
