@@ -197,15 +197,9 @@
     // Scroll effect
     window.addEventListener('scroll', function(){
       var nav = document.getElementById('hsNav');
-      if(window.scrollY > 20){
-        nav.style.background = 'rgba(10,0,0,0.95)';
-        nav.style.backdropFilter = 'blur(20px)';
-        nav.style.borderBottomColor = 'rgba(229,57,53,0.15)';
-      } else {
-        nav.style.background = 'transparent';
-        nav.style.backdropFilter = 'none';
-        nav.style.borderBottomColor = 'transparent';
-      }
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.borderBottomColor = 'transparent';
     });
   }
 
