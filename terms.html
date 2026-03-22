@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms of Use – Hash Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #1a0000; color: #fff; overflow-x: hidden; }
+    .page-bg {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 10%, rgba(180,20,20,0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120,10,10,0.3) 0%, transparent 70%),
+        linear-gradient(180deg, #2a0505 0%, #150202 40%, #0a0000 100%);
+    }
+    .navbar {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: 1.1rem 0; background: rgba(20,2,2,0.85);
+      backdrop-filter: blur(20px); border-bottom: 1px solid rgba(229,57,53,0.1);
+    }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
+    .logo-flash { color: #e53935; }
+    .nav-right { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-app { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
+    .btn-app:hover { border-color: #fff; }
+    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #e53935; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
+    .btn-contact:hover { background: #b71c1c; }
+    .hero-section { padding: 9rem 1.5rem 4rem; text-align: center; max-width: 800px; margin: 0 auto; }
+    .pill { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(180,30,30,0.35); border: 1px solid rgba(229,57,53,0.25); color: #e07070; font-size: 0.8rem; font-weight: 600; padding: 0.45rem 1.1rem; border-radius: 50px; margin-bottom: 1.25rem; }
+    .hero-section h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; color: #fff; margin-bottom: 0.75rem; }
+    .hero-section h1 span { color: #e53935; }
+    .last-updated { color: #a07070; font-size: 0.85rem; margin-top: 0.5rem; }
+    .content-wrap { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+    .highlight-box { background: rgba(229,57,53,0.08); border: 1px solid rgba(229,57,53,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+    .highlight-box p { color: #d09090; font-size: 0.88rem; line-height: 1.7; }
+    .highlight-box strong { color: #e53935; }
+    .policy-section { margin-bottom: 3rem; scroll-margin-top: 100px; }
+    .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(180,30,30,0.25); }
+    .section-num { width: 32px; height: 32px; border-radius: 8px; background: rgba(180,30,30,0.5); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: #e53935; flex-shrink: 0; }
+    .section-header h2 { font-size: 1.15rem; font-weight: 800; color: #fff; }
+    .policy-text { color: #c09090; font-size: 0.9rem; line-height: 1.85; margin-bottom: 1rem; }
+    .policy-text strong { color: #fff; }
+    .policy-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+    .policy-list li { display: flex; align-items: flex-start; gap: 0.75rem; color: #c09090; font-size: 0.9rem; line-height: 1.7; }
+    .policy-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #e53935; flex-shrink: 0; margin-top: 0.55rem; }
+    .info-card { background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .info-card h4 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+    .info-card p { font-size: 0.85rem; color: #a07070; line-height: 1.7; }
+    .contact-card { background: rgba(80,10,10,0.45); border: 1px solid rgba(229,57,53,0.25); border-radius: 16px; padding: 2rem; text-align: center; margin-top: 2rem; }
+    .contact-card h3 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .contact-card p { color: #a07070; font-size: 0.88rem; margin-bottom: 1.25rem; }
+    .contact-card a { display: inline-flex; align-items: center; gap: 0.5rem; background: #e53935; color: #fff; text-decoration: none; padding: 0.75rem 1.75rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; transition: background 0.2s; }
+    .contact-card a:hover { background: #b71c1c; }
+    .divider { height: 1px; background: rgba(180,30,30,0.2); margin: 2.5rem 0; }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">HA<span class="logo-flash">⚡</span>H SHOOTS</a>
+      <div class="nav-right">
+        <a href="login.html" class="btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
+        <a href="index.html#contact" class="btn-contact">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-section">
+    <div class="pill"><i class="fas fa-file-alt"></i> Legal</div>
+    <h1>Terms of <span>Use</span></h1>
+    <p class="last-updated">Last updated: March 2025 &nbsp;·&nbsp; Effective immediately</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="highlight-box">
+      <p>By accessing or using Hash Shoots (operated by <strong>HashShoots Media</strong>), you agree to be bound by these Terms of Use. Please read them carefully before using our platform or services.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">1</div><h2>Acceptance of Terms</h2></div>
+      <p class="policy-text">By accessing or using the Hash Shoots website, app, or any of our services, you confirm that you have read, understood, and agree to be bound by these Terms of Use and our Privacy Policy. If you do not agree, please do not use our services.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">2</div><h2>Use of Services</h2></div>
+      <p class="policy-text">You agree to use Hash Shoots services only for lawful purposes and in accordance with these Terms. You must not:</p>
+      <ul class="policy-list">
+        <li>Use the platform in any way that violates applicable local, national, or international laws or regulations</li>
+        <li>Transmit any unsolicited or unauthorised advertising or promotional material</li>
+        <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity</li>
+        <li>Engage in any conduct that restricts or inhibits anyone's use or enjoyment of the platform</li>
+        <li>Attempt to gain unauthorised access to any part of the platform or its related systems</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">3</div><h2>Accounts & Registration</h2></div>
+      <p class="policy-text">To access certain features, you may be required to create an account. You are responsible for:</p>
+      <ul class="policy-list">
+        <li>Maintaining the confidentiality of your account credentials</li>
+        <li>All activities that occur under your account</li>
+        <li>Notifying us immediately of any unauthorised use of your account</li>
+        <li>Ensuring all information you provide is accurate and up to date</li>
+      </ul>
+      <p class="policy-text">HashShoots Media reserves the right to suspend or terminate accounts that violate these Terms.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">4</div><h2>Bookings & Payments</h2></div>
+      <div class="info-card">
+        <h4>Booking Confirmation</h4>
+        <p>All bookings are subject to availability and confirmation. A booking is only confirmed once you receive a confirmation notification from Hash Shoots.</p>
+      </div>
+      <div class="info-card">
+        <h4>Payments</h4>
+        <p>All payments must be made through our approved payment methods. Prices are listed in Indian Rupees (INR) and are inclusive of applicable taxes unless stated otherwise.</p>
+      </div>
+      <div class="info-card">
+        <h4>Cancellations & Refunds</h4>
+        <p>Cancellations made before fulfilment begins are eligible for a full refund. Partial refunds may be issued based on the portion of service completed. For refund queries, contact us at hashshootsindia@gmail.com.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">5</div><h2>Partner Terms</h2></div>
+      <p class="policy-text">If you register as a Hash Shoots Partner (Reel-Maker), you additionally agree to:</p>
+      <ul class="policy-list">
+        <li>Complete all required onboarding, training, and certification steps</li>
+        <li>Maintain professional conduct with all clients at all times</li>
+        <li>Deliver content within the agreed timeframes</li>
+        <li>Sign and comply with the Hash Shoots Non-Disclosure Agreement (NDA)</li>
+        <li>Not solicit clients directly outside of the Hash Shoots platform</li>
+        <li>Comply with all applicable laws while performing shoots</li>
+      </ul>
+      <p class="policy-text">HashShoots Media reserves the right to remove any partner from the platform for violation of these terms or conduct unbecoming of a Hash Shoots representative.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">6</div><h2>Intellectual Property</h2></div>
+      <p class="policy-text">All content on the Hash Shoots platform — including logos, text, graphics, images, and software — is the property of HashShoots Media and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written permission.</p>
+      <p class="policy-text">Content created during a shoot session is owned by the client who booked the session, subject to Hash Shoots branding requirements as outlined in the booking agreement.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">7</div><h2>Limitation of Liability</h2></div>
+      <p class="policy-text">To the fullest extent permitted by law, HashShoots Media shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our services. Our total liability to you for any claim shall not exceed the amount paid by you for the specific service giving rise to the claim.</p>
+    </div>
+
+
+      <p class="policy-text">HashShoots Media reserves the right to modify these Terms at any time. Changes will be effective immediately upon posting to the website. Your continued use of the platform after any changes constitutes your acceptance of the new Terms.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="policy-section">
+      <div class="section-header"><div class="section-num">10</div><h2>Contact Us</h2></div>
+      <p class="policy-text">For any questions regarding these Terms of Use, please contact us:</p>
+      <div class="contact-card">
+        <h3>Hash Shoots – Legal Team</h3>
+        <p>For terms-related queries, reach out to us directly.</p>
+        <a href="mailto:hashshootsindia@gmail.com"><i class="fas fa-envelope"></i> hashshootsindia@gmail.com</a>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.querySelector('.navbar').style.background =
+        window.scrollY > 50 ? 'rgba(15,2,2,0.97)' : 'rgba(20,2,2,0.85)';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us – Hash Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #080000; color: #fff; overflow-x: hidden; }
+
+    /* NAVBAR */
+    .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.1rem 0; background: rgba(8,0,0,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(229,57,53,0.1); transition: background 0.3s; }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; text-transform: uppercase; }
+    .logo-flash { color: #e53935; margin: 0 1px; }
+    .logo-shoots { color: #fff; }
+    .nav-icons { display: flex; align-items: center; gap: 0; margin: 0 auto; background: rgba(80,10,10,0.55); border: 1px solid rgba(180,60,60,0.25); border-radius: 14px; padding: 0.25rem 0.35rem; backdrop-filter: blur(10px); }
+    .nav-icon-btn { color: rgba(255,255,255,0.6); font-size: 1.05rem; text-decoration: none; transition: all 0.2s; width: 42px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; position: relative; }
+    .nav-icon-btn::after { content: attr(title); position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: rgba(10,0,0,0.92); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(229,57,53,0.25); z-index: 9999; }
+    .nav-icon-btn:hover::after { opacity: 1; }
+    .nav-icon-btn:hover { color: #fff; background: rgba(229,57,53,0.2); }
+    .nav-icon-btn.active-icon { color: #e53935; background: rgba(229,57,53,0.18); }
+    .nav-icon-sep { width: 1px; height: 22px; background: rgba(180,60,60,0.35); margin: 0 0.1rem; flex-shrink: 0; }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.875rem; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .btn-app { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-app:hover { border-color: #fff; }
+    .btn-contact { background: #e53935; color: #fff; }
+    .btn-contact:hover { background: #b71c1c; }
+
+    /* HERO */
+    .hero {
+      min-height: unset;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(180,0,0,0.3) 0%, transparent 65%), #080000;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e53935' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(229,57,53,0.12); border: 1px solid rgba(229,57,53,0.3); color: #e53935; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 1rem; border-radius: 50px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -2px; }
+    .hero h1 span { color: #e53935; }
+    .hero-desc { color: #a08080; font-size: 1.05rem; line-height: 1.8; max-width: 580px; margin: 0 auto 3rem; }
+    .hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .hero-stat-num { font-size: 2.5rem; font-weight: 900; color: #e53935; display: block; line-height: 1; }
+    .hero-stat-lbl { font-size: 0.8rem; color: #7a5a5a; margin-top: 0.3rem; }
+    .hero-stat-sep { width: 1px; background: rgba(229,57,53,0.2); }
+
+    /* TEAM SECTION */
+    .team-section { padding: 6rem 1.5rem; background: #080000; }
+    .section-label { text-align: center; font-size: 0.75rem; font-weight: 700; color: #e53935; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section-title { text-align: center; font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 0.75rem; }
+    .section-title span { color: #e53935; }
+    .section-sub { text-align: center; color: #7a5a5a; font-size: 0.95rem; margin-bottom: 4rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 860px; margin: 0 auto; }
+    .team-card { position: relative; border-radius: 24px; overflow: hidden; aspect-ratio: 3/4; transition: transform 0.4s, box-shadow 0.4s; }
+    .team-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(229,57,53,0.2); }
+    .team-photo { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.5s; }
+    .team-card:hover .team-photo { transform: scale(1.04); }
+    .team-photo-bg { width: 100%; height: 100%; background: linear-gradient(135deg, #1a0000, #0d0000); display: flex; align-items: center; justify-content: center; font-size: 4rem; font-weight: 900; color: rgba(229,57,53,0.3); }
+    .team-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, transparent 70%); }
+    .team-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem 1.75rem; }
+    .team-name { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.6rem; }
+    .team-role-pill { display: inline-flex; align-items: center; background: rgba(15,0,0,0.8); border: 1px solid rgba(255,255,255,0.12); color: #ccc; font-size: 0.78rem; font-weight: 500; padding: 0.35rem 1rem; border-radius: 50px; backdrop-filter: blur(8px); }
+
+    /* STORY + MISSION */
+    .story-section { padding: 6rem 1.5rem; background: #0a0000; }
+    .story-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .story-text-wrap {}
+    .story-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(229,57,53,0.1); border: 1px solid rgba(229,57,53,0.25); color: #e53935; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.9rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.25rem; }
+    .story-title { font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 1.25rem; }
+    .story-title span { color: #e53935; }
+    .story-body { color: #a08080; font-size: 0.95rem; line-height: 1.9; }
+    .story-visual { position: relative; }
+    .story-card { background: linear-gradient(135deg, #1a0000, #0d0000); border: 1px solid rgba(229,57,53,0.15); border-radius: 24px; padding: 2.5rem; }
+    .story-card-icon { width: 56px; height: 56px; background: rgba(229,57,53,0.15); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #e53935; margin-bottom: 1.5rem; }
+    .story-card h3 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; }
+    .story-card p { color: #a08080; font-size: 0.88rem; line-height: 1.8; }
+    .story-card + .story-card { margin-top: 1rem; }
+
+    /* VALUES */
+    .values-section { padding: 6rem 1.5rem; background: #080000; }
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1100px; margin: 0 auto; }
+    .value-card { background: linear-gradient(135deg, #120000, #0a0000); border: 1px solid rgba(229,57,53,0.1); border-radius: 20px; padding: 2rem 1.5rem; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+    .value-card:hover { border-color: rgba(229,57,53,0.35); transform: translateY(-4px); }
+    .value-icon { width: 56px; height: 56px; background: rgba(229,57,53,0.12); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #e53935; margin: 0 auto 1.25rem; }
+    .value-card h4 { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .value-card p { font-size: 0.8rem; color: #7a5a5a; line-height: 1.7; }
+
+    /* CTA */
+    .cta-section { padding: 6rem 1.5rem; text-align: center; background: linear-gradient(135deg, #0f0000, #1a0000, #0f0000); position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(229,57,53,0.1) 0%, transparent 70%); pointer-events: none; }
+    .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 1rem; }
+    .cta-section h2 span { color: #e53935; }
+    .cta-section p { color: #a08080; font-size: 0.95rem; margin-bottom: 2.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-btn-primary { background: #e53935; color: #fff; padding: 1rem 2.5rem; border-radius: 12px; font-size: 1rem; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+    .cta-btn-primary:hover { background: #b71c1c; transform: translateY(-2px); }
+    .cta-btn-secondary { background: transparent; color: #fff; padding: 1rem 2.5rem; border-radius: 12px; font-size: 1rem; font-weight: 700; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s; }
+    .cta-btn-secondary:hover { border-color: rgba(229,57,53,0.5); color: #e53935; }
+
+    @media(max-width: 768px) {
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .story-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 1.5rem; }
+    }
+    @media(max-width: 480px) {
+      .team-grid { grid-template-columns: 1fr; max-width: 360px; }
+      .values-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo" style="text-decoration:none;">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></a>
+      <div class="nav-icons">
+        <a href="index.html" title="Home" class="nav-icon-btn"><i class="fas fa-house"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="vibe.html" title="Discover with Vibe" class="nav-icon-btn"><i class="fas fa-compass"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="partner.html" title="Become a Partner" class="nav-icon-btn"><i class="fas fa-handshake"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="about.html" title="About Us" class="nav-icon-btn active-icon"><i class="fas fa-circle-info"></i></a>
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
+        <a href="login.html" class="btn btn-contact">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div style="position:relative;z-index:1;">
+      <div class="hero-tag"><i class="fas fa-info-circle"></i> About Us</div>
+      <h1>We Are <span id="heroTitle">Hash Shoots</span></h1>
+      <p class="hero-desc" id="heroDesc">India's first on-demand reel creation service. We shoot, edit, and deliver professional reels in just 10 minutes — right at your doorstep.</p>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team-section">
+    <p class="section-label"><i class="fas fa-users"></i> &nbsp;Meet Our Team</p>
+    <h2 class="section-title">The Minds Behind <span>Hash Shoots</span></h2>
+    <p class="section-sub">Meet the passionate individuals who are revolutionizing content creation</p>
+    <div class="team-grid" id="teamGrid">
+      <div class="team-card">
+        <img src="srisanth.jpeg" alt="Boddu Srisanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">BS</div>
+        <div class="team-overlay"></div>
+        <div class="team-info">
+          <div class="team-name">Boddu Srisanth</div>
+          <span class="team-role-pill">Founder &amp; CEO</span>
+        </div>
+      </div>
+      <div class="team-card">
+        <img src="sumanth.jpeg" alt="Gulimi Sumanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">GS</div>
+        <div class="team-overlay"></div>
+        <div class="team-info">
+          <div class="team-name">Gulimi Sumanth</div>
+          <span class="team-role-pill">Managing Director</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY + MISSION -->
+  <section class="story-section">
+    <div class="story-inner">
+      <div class="story-text-wrap">
+        <span class="story-tag"><i class="fas fa-book-open"></i> Our Story</span>
+        <h2 class="story-title">Born from a <span>Simple Idea</span></h2>
+        <p class="story-body" id="storyText">Hash Shoots was born from a simple idea — what if getting a professional reel was as easy as ordering food? We saw creators struggling to find affordable, fast, and reliable content creators. So we built a platform that connects you with trained, certified reel-makers who arrive at your location and deliver edited content on the spot.</p>
+      </div>
+      <div>
+        <div class="story-card">
+          <div class="story-card-icon"><i class="fas fa-bullseye"></i></div>
+          <h3>Our Mission</h3>
+          <p id="missionText">To democratize content creation by making professional reel-making accessible, affordable, and instant for everyone — from solo creators to large brands.</p>
+        </div>
+        <div class="story-card" style="margin-top:1rem;">
+          <div class="story-card-icon"><i class="fas fa-eye"></i></div>
+          <h3>Our Vision</h3>
+          <p>To become India's most trusted on-demand content creation platform — where every creator, brand, and business can get world-class reels in minutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values-section">
+    <p class="section-label">What We Stand For</p>
+    <h2 class="section-title" style="margin-bottom:0.75rem;">Our <span>Core Values</span></h2>
+    <p class="section-sub">The principles that guide everything we do</p>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-bolt"></i></div>
+        <h4>Speed</h4>
+        <p>Delivered in 10 minutes. No waiting, no delays.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-certificate"></i></div>
+        <h4>Quality</h4>
+        <p>Every partner is trained and certified by us.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-shield-alt"></i></div>
+        <h4>Trust</h4>
+        <p>Safe, secure, and transparent at every step.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-heart"></i></div>
+        <h4>Inclusivity</h4>
+        <p>Female reel-makers available for every client.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Ready to Create <span>Something Amazing?</span></h2>
+    <p>Book a certified reel-maker near you and get stunning content delivered in minutes.</p>
+    <div class="cta-btns">
+      <a href="booking.html" class="cta-btn-primary">Book a Shoot &nbsp;→</a>
+      <a href="partner.html" class="cta-btn-secondary">Become a Partner</a>
+    </div>
+  </section>
+
+  <script>
+    const about = JSON.parse(localStorage.getItem('hs_about') || '{}');
+    if (about.heroTitle) document.getElementById('heroTitle').textContent = about.heroTitle;
+    if (about.heroDesc) document.getElementById('heroDesc').textContent = about.heroDesc;
+    if (about.storyText) document.getElementById('storyText').textContent = about.storyText;
+    if (about.missionText) document.getElementById('missionText').textContent = about.missionText;
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.background =
+        window.scrollY > 50 ? 'rgba(5,0,0,0.97)' : 'rgba(8,0,0,0.85)';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Become a Partner – Hash Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a0000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Background layers matching screenshots */
+    .page-bg {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 10%, rgba(180,20,20,0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120,10,10,0.3) 0%, transparent 70%),
+        linear-gradient(180deg, #2a0505 0%, #150202 40%, #0a0000 100%);
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: 1.1rem 0;
+      background: rgba(20,2,2,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(229,57,53,0.1);
+    }
+    .nav-container {
+      max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; text-transform: uppercase; }
+    .logo-flash { color: #e53935; margin: 0 1px; font-size: 1.2rem; }
+    .logo-shoots { color: #fff; }
+    .nav-icons { display: flex; align-items: center; gap: 0; margin: 0 auto; background: rgba(80,10,10,0.55); border: 1px solid rgba(180,60,60,0.25); border-radius: 14px; padding: 0.25rem 0.35rem; backdrop-filter: blur(10px); }
+    .nav-icon-btn { color: rgba(255,255,255,0.6); font-size: 1.05rem; text-decoration: none; transition: all 0.2s; width: 42px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; position: relative; } .nav-icon-btn::after { content: attr(title); position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: rgba(10,0,0,0.92); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(229,57,53,0.25); z-index: 9999; } .nav-icon-btn:hover::after { opacity: 1; }
+    .nav-icon-btn:hover { color: #fff; background: rgba(229,57,53,0.2); }
+    .nav-icon-btn.active-icon { color: #e53935; background: rgba(229,57,53,0.18); }
+    .nav-icon-sep { width: 1px; height: 22px; background: rgba(180,60,60,0.35); margin: 0 0.1rem; flex-shrink: 0; }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.875rem; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .btn-app { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-app:hover { border-color: #fff; }
+    .btn-contact { background: #e53935; color: #fff; }
+    .btn-contact:hover { background: #b71c1c; }
+
+    /* SECTION PILL */
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(180,30,30,0.35); border: 1px solid rgba(229,57,53,0.25);
+      color: #e07070; font-size: 0.8rem; font-weight: 600;
+      padding: 0.45rem 1.1rem; border-radius: 50px;
+      margin-bottom: 1.25rem;
+    }
+
+    /* SECTIONS */
+    .section { padding: 5rem 1.5rem; }
+    .section-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .section h2 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 0.6rem; }
+    .section-sub { color: #a07070; font-size: 0.95rem; margin-bottom: 3rem; }
+
+    /* HERO */
+    .hero-section {
+      padding: 9rem 1.5rem 5rem;
+      text-align: center;
+    }
+    .hero-section h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 1.5rem; }
+    .hero-section h1 span { color: #e53935; }
+    .hero-desc { max-width: 680px; margin: 0 auto 2.5rem; color: #c09090; font-size: 1rem; line-height: 1.8; }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: #e53935; color: #fff; border: none; border-radius: 12px;
+      padding: 1rem 2.2rem; font-size: 1rem; font-weight: 700;
+      text-decoration: none; cursor: pointer; font-family: inherit;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .hero-cta:hover { background: #b71c1c; transform: translateY(-2px); }
+
+    /* CARDS GRID */
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
+    .card {
+      background: rgba(80,10,10,0.45);
+      border: 1px solid rgba(180,60,60,0.2);
+      border-radius: 16px; padding: 1.75rem;
+      text-align: left; transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: rgba(229,57,53,0.4); transform: translateY(-3px); }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(180,30,30,0.5); display: flex; align-items: center;
+      justify-content: center; font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .card h3 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+    .card p { font-size: 0.85rem; color: #a07070; line-height: 1.6; }
+    .card.featured { border-color: rgba(229,57,53,0.35); grid-column: 1 / -1; }
+    .card.featured h3 { color: #e53935; }
+
+    /* REQUIREMENTS - horizontal cards */
+    .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
+    .req-card {
+      background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2);
+      border-radius: 14px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .req-icon { color: #e53935; font-size: 1.1rem; flex-shrink: 0; width: 20px; text-align: center; }
+    .req-card h4 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; }
+    .req-card p { font-size: 0.78rem; color: #a07070; }
+
+    /* NOTE PILL */
+    .note-pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(180,30,30,0.2); border: 1px solid rgba(229,57,53,0.2);
+      color: #e07070; font-size: 0.8rem; padding: 0.5rem 1.2rem;
+      border-radius: 50px; margin: 2rem 0;
+    }
+
+    /* JOURNEY STEPS */
+    .steps-wrap { max-width: 900px; margin: 0 auto; position: relative; }
+    .steps-line {
+      position: absolute; left: 28px; top: 20px; bottom: 20px;
+      width: 2px; background: rgba(229,57,53,0.2);
+    }
+    .step-row {
+      display: flex; align-items: flex-start; gap: 1.5rem;
+      margin-bottom: 1rem; position: relative;
+    }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(180,30,30,0.6); border: 1px solid rgba(229,57,53,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 900; color: #e53935;
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .step-card {
+      flex: 1; background: rgba(80,10,10,0.45);
+      border: 1px solid rgba(180,60,60,0.2); border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+    }
+    .step-card h4 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .step-card p { font-size: 0.82rem; color: #a07070; }
+
+    /* OPPORTUNITIES */
+    .opp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
+    .opp-card {
+      background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2);
+      border-radius: 14px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .opp-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .opp-card h4 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; }
+    .opp-card p { font-size: 0.78rem; color: #a07070; }
+    .opp-card.featured-opp { grid-column: 1 / -1; border-color: rgba(229,57,53,0.3); }
+    .opp-card.featured-opp h4 { color: #e53935; }
+
+    /* TESTIMONIALS */
+    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
+    .testi-card {
+      background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2);
+      border-radius: 16px; padding: 1.75rem;
+    }
+    .testi-quote-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(180,30,30,0.5); display: flex; align-items: center;
+      justify-content: center; color: #e53935; font-size: 0.9rem; margin-bottom: 1rem;
+    }
+    .testi-text { font-size: 0.9rem; color: #d0a0a0; line-height: 1.7; margin-bottom: 1.25rem; }
+    .testi-author { display: flex; align-items: center; gap: 0.75rem; }
+    .testi-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(180,30,30,0.5); display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem;
+    }
+    .testi-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .testi-city { font-size: 0.75rem; color: #a07070; }
+
+    /* CTA BOTTOM */
+    .cta-section { padding: 5rem 1.5rem; text-align: center; }
+    .cta-section h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; color: #fff; margin-bottom: 0.6rem; }
+    .cta-section p { color: #a07070; font-size: 0.95rem; margin-bottom: 2rem; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: rgba(180,30,30,0.2); max-width: 900px; margin: 0 auto; }
+
+    @media(max-width: 640px) {
+      .cards-grid, .req-grid, .opp-grid, .testi-grid { grid-template-columns: 1fr; }
+      .card.featured, .opp-card.featured-opp { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo" style="text-decoration:none;">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></a>
+      <div class="nav-icons">
+        <a href="index.html" title="Home" class="nav-icon-btn"><i class="fas fa-house"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="vibe.html" title="Discover with Vibe" class="nav-icon-btn"><i class="fas fa-compass"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="partner.html" title="Become a Partner" class="nav-icon-btn active-icon"><i class="fas fa-handshake"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="about.html" title="About Us" class="nav-icon-btn"><i class="fas fa-circle-info"></i></a>
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
+        <a href="login.html" class="btn btn-contact">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero-section">
+    <div class="pill"><i class="fas fa-magic"></i> Join as a Partner</div>
+    <h1>Turn Your Skills Into<br/><span>an Income Machine</span></h1>
+    <p class="hero-desc">Hash Shoots partners are trained creators who shoot, edit, and deliver professional reels in just 10 minutes. Whether you're a student, hustler, or creative explorer — Hash Shoots helps you earn through content creation. Join our expanding network of creators across India.</p>
+    <div class="pill" style="margin-bottom:0;"><i class="fas fa-camera"></i> Who Are Our Partners?</div>
+  </div>
+
+  <!-- WHY JOIN -->
+  <div class="section">
+    <div class="section-inner">
+      <h2>Why Join Hash Shoots?</h2>
+      <p class="section-sub">Turn your creativity into a business</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3>Powered by Your iPhone</h3>
+          <p>No DSLR. No fancy gear. Just your iPhone 13 Pro or newer.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌸</div>
+          <h3>Earn Per Shoot</h3>
+          <p>Get paid instantly for every shoot you complete.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🕐</div>
+          <h3>Super Flexible</h3>
+          <p>Choose your own schedule. Work on weekends, evenings, or go full-time.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌍</div>
+          <h3>Global Exposure</h3>
+          <p>Work with influencers, startups, cafes, events, and brands — locally and internationally.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏅</div>
+          <h3>Partner Kit</h3>
+          <p>Get your official T-shirt, partner badge, and exclusive access to the Hash Shoots App.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Creative Community</h3>
+          <p>Join a high-performance creator network. Share ideas. Get inspired. Grow together.</p>
+        </div>
+        <div class="card featured">
+          <div class="card-icon">📋</div>
+          <h3>Growth Path & Campaigns</h3>
+          <p>Top performers get featured in paid brand shoots, international collabs, and more.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WHO CAN APPLY -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="pill"><i class="fas fa-magic"></i> Who Can Apply?</div>
+      <h2>Join Our Creator Network</h2>
+      <p class="section-sub">If you're creative and hungry to grow — you're in.</p>
+      <div class="req-grid">
+        <div class="req-card">
+          <div class="req-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <h4>iPhone 13 Pro or newer</h4>
+            <p>No DSLR. No fancy gear. Just your iPhone</p>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon"><i class="fas fa-camera"></i></div>
+          <div>
+            <h4>Strong Reel Knowledge</h4>
+            <p>Understanding of reels, editing, and trends</p>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h4>Local Availability</h4>
+            <p>Ready to take up local shoots</p>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4>Work Ethic</h4>
+            <p>Clean and punctual work ethic</p>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon"><i class="fab fa-instagram"></i></div>
+          <div>
+            <h4>Instagram Profile</h4>
+            <p>Public profile or reel samples</p>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-icon"><i class="fas fa-magic"></i></div>
+          <div>
+            <h4>Creativity</h4>
+            <p>Creative mindset and hunger to grow</p>
+          </div>
+        </div>
+      </div>
+      <div class="note-pill"><i class="fas fa-magic"></i> No degree or prior work experience needed</div>
+      <br/>
+      <a href="#apply" class="hero-cta">Download Hash Shoots Partner App &nbsp;→</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="pill"><i class="fas fa-arrow-right"></i> How It Works</div>
+      <h2>Your Journey to Becoming a Partner</h2>
+      <p class="section-sub">Simple steps to start your creative journey</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="steps-line"></div>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-card">
+          <h4>Download & Apply</h4>
+          <p>Download the Hash Shoots Partner App and complete your onboarding</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-card">
+          <h4>Partner LMS & Learning Management System</h4>
+          <p>Complete comprehensive learning modules to master reel creation and Hash Shoots standards</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-card">
+          <h4>Demo Shoots</h4>
+          <p>Complete 2 sample shoots with instant editing</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-card">
+          <h4>Sign NDA (Non-Disclosure Agreement)</h4>
+          <p>Sign the partner non-disclosure agreement to protect client confidentiality and business standards</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div class="step-card">
+          <h4>Onboarded</h4>
+          <p>Get app access, partner kit, and start earning</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- DIVERSE OPPORTUNITIES -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="pill"><i class="fas fa-user"></i> Who You'll Work With</div>
+      <h2>Diverse Opportunities</h2>
+      <p class="section-sub">Connect with amazing clients and grow your portfolio</p>
+      <div class="opp-grid">
+        <div class="opp-card">
+          <div class="opp-icon">🎬</div>
+          <div>
+            <h4>Influencers & Solo Creators</h4>
+            <p>Work with content creators and build your network</p>
+          </div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-icon">🛍️</div>
+          <div>
+            <h4>Small Businesses & Startups</h4>
+            <p>Help growing businesses showcase their products</p>
+          </div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-icon">🍽️</div>
+          <div>
+            <h4>Restaurants, Cafes, Salons</h4>
+            <p>Capture the essence of local businesses</p>
+          </div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-icon">🎓</div>
+          <div>
+            <h4>Colleges, Events, Communities</h4>
+            <p>Document special moments and gatherings</p>
+          </div>
+        </div>
+        <div class="opp-card featured-opp">
+          <div class="opp-icon">🌐</div>
+          <div>
+            <h4>Global Brand Campaigns</h4>
+            <p>Work with international brands and expand your reach</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SUCCESS STORIES -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="pill"><i class="fas fa-magic"></i> Partner Success Stories</div>
+      <h2>Real Stories, Real Success</h2>
+      <p class="section-sub">See how Hash Shoots partners are turning their skills into income</p>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
+          <p class="testi-text">"Started as a student, now making ₹25K+ every month part-time."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">😎</div>
+            <div>
+              <div class="testi-name">Aarav</div>
+              <div class="testi-city">Hyderabad</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
+          <p class="testi-text">"Hash Shoots gave me freedom and high-paying gigs. All I needed was my iPhone."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">👩</div>
+            <div>
+              <div class="testi-name">Riya</div>
+              <div class="testi-city">India</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <div class="cta-section" id="apply">
+    <div class="pill" style="justify-content:center;"><i class="fas fa-mobile-alt"></i> Get Started</div>
+    <h2>Ready to Start?</h2>
+    <p>Download the Hash Shoots Partner App and complete your onboarding. All onboarding is done through the app.</p>
+    <a href="#" class="hero-cta">Download Partner App &nbsp;→</a>
+  </div>
+
+  </div><!-- end page-bg -->
+
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      document.querySelector('.navbar').style.background =
+        window.scrollY > 50 ? 'rgba(15,2,2,0.97)' : 'rgba(20,2,2,0.85)';
+    });
+  </script>
+</body>
+</html>

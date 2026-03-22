@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discover with Vibe – Hash Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body { background: #060000; }
+    .vibe-page { padding: 7rem 1.5rem 4rem; max-width: 1300px; margin: 0 auto; }
+    .vibe-header { text-align: center; margin-bottom: 2rem; }
+    .vibe-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 0.4rem; }
+    .vibe-title span { color: #e53935; }
+    .vibe-subtitle { color: #7a5a5a; font-size: 0.95rem; }
+    .vibe-cats { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; padding: 0 1.5rem; margin-bottom: 2.5rem; }
+    .vibe-cat { padding: 0.45rem 1.1rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #a08080; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; white-space: nowrap; }
+    .vibe-cat.active, .vibe-cat:hover { background: #e53935; color: #fff; border-color: transparent; }
+    .vibe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .vibe-card { background: #120000; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+    .vibe-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(229,57,53,0.2); }
+    .vibe-thumb { width: 100%; aspect-ratio: 9/16; object-fit: cover; display: block; }
+    .vibe-thumb-placeholder { width: 100%; aspect-ratio: 9/16; background: linear-gradient(135deg,#1a0000,#0d0000); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: #3a1a1a; }
+    .vibe-thumb-placeholder i { font-size: 2.5rem; }
+    .vibe-thumb-placeholder span { font-size: 0.75rem; }
+    .vibe-info { padding: 0.85rem 1rem; }
+    .vibe-info-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vibe-info-cat { font-size: 0.72rem; color: #e53935; font-weight: 600; }
+    .vibe-empty { text-align: center; padding: 5rem 1.5rem; color: #5a3535; grid-column: 1/-1; }
+    .vibe-empty i { font-size: 3rem; display: block; margin-bottom: 1rem; opacity: 0.3; }
+    .vibe-empty p { font-size: 0.95rem; }
+    /* Lightbox */
+    .vibe-lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; }
+    .vibe-lightbox.open { display: flex; }
+    .vibe-lb-inner { position: relative; max-width: 400px; width: 90%; }
+    .vibe-lb-video { width: 100%; border-radius: 16px; max-height: 80vh; }
+    .vibe-lb-img { width: 100%; border-radius: 16px; max-height: 80vh; object-fit: contain; }
+    .vibe-lb-close { position: absolute; top: -14px; right: -14px; width: 32px; height: 32px; background: #e53935; border: none; border-radius: 50%; color: #fff; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo" style="text-decoration:none;">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></a>
+      <div class="nav-icons">
+        <a href="index.html" title="Home" class="nav-icon-btn"><i class="fas fa-house"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="vibe.html" title="Discover with Vibe" class="nav-icon-btn active-icon"><i class="fas fa-compass"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="partner.html" title="Become a Partner" class="nav-icon-btn"><i class="fas fa-handshake"></i></a>
+        <span class="nav-icon-sep"></span>
+        <a href="about.html" title="About Us" class="nav-icon-btn"><i class="fas fa-circle-info"></i></a>
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-app"><i class="fas fa-mobile-alt"></i> Get the App</a>
+        <a href="login.html" class="btn btn-contact">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="vibe-page">
+    <div class="vibe-header">
+      <h1 class="vibe-title">Discover with <span>Vibe</span></h1>
+      <p class="vibe-subtitle">Explore trending reels from our creators</p>
+    </div>
+
+    <div class="vibe-cats">
+      <button class="vibe-cat active" data-cat="all">All</button>
+      <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
+      <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
+      <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
+      <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
+      <button class="vibe-cat" data-cat="Concerts">Concerts</button>
+      <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
+      <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
+      <button class="vibe-cat" data-cat="Caterers">Caterers</button>
+    </div>
+
+    <div class="vibe-grid" id="vibeGrid"></div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="vibe-lightbox" id="vibeLightbox">
+    <div class="vibe-lb-inner">
+      <button class="vibe-lb-close" id="vibeLbClose"><i class="fas fa-times"></i></button>
+      <div id="vibeLbContent"></div>
+    </div>
+  </div>
+
+  <script>
+    var currentCat = 'all';
+    var vibeDB = null;
+
+    function openVibeDB(cb){
+      if(vibeDB){ cb(vibeDB); return; }
+      var req = indexedDB.open('hs_vibe_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+      req.onsuccess = function(e){ vibeDB = e.target.result; cb(vibeDB); };
+      req.onerror = function(){ cb(null); };
+    }
+
+    function getVideoDB(id, cb){
+      openVibeDB(function(db){
+        if(!db){ cb(null); return; }
+        var req = db.transaction('videos','readonly').objectStore('videos').get(id);
+        req.onsuccess = function(){ cb(req.result ? req.result.blob : null); };
+        req.onerror = function(){ cb(null); };
+      });
+    }
+
+    function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
+
+    function renderVibe(){
+      var items = getVibeItems();
+      var filtered = currentCat === 'all' ? items : items.filter(function(i){ return i.category === currentCat; });
+      var grid = document.getElementById('vibeGrid');
+      if(!filtered.length){
+        grid.innerHTML = '<div class="vibe-empty"><i class="fas fa-photo-video"></i><p>No content yet. Check back soon!</p></div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(item, idx){
+        var thumb = item.thumbnail
+          ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
+          : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
+        return '<div class="vibe-card" onclick="openLb('+idx+')">'+thumb+'<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div><div class="vibe-info-cat"><i class="fas fa-play-circle" style="margin-right:4px;"></i>'+item.category+'</div></div></div>';
+      }).join('');
+    }
+
+    document.querySelectorAll('.vibe-cat').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentCat = btn.dataset.cat;
+        renderVibe();
+      });
+    });
+
+    function openLb(idx){
+      var items = getVibeItems();
+      var filtered = currentCat === 'all' ? items : items.filter(function(i){ return i.category === currentCat; });
+      var item = filtered[idx];
+      var lb = document.getElementById('vibeLightbox');
+      var content = document.getElementById('vibeLbContent');
+      content.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#e53935;"></i><p style="margin-top:0.75rem;font-size:0.85rem;color:#a08080;">Loading video...</p></div>';
+      lb.classList.add('open');
+      getVideoDB(item.id, function(blob){
+        if(blob){
+          var url = URL.createObjectURL(blob);
+          content.innerHTML = '<video class="vibe-lb-video" src="'+url+'" controls autoplay playsinline></video>';
+        } else {
+          content.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-exclamation-circle" style="font-size:2.5rem;color:#e53935;"></i><p style="margin-top:1rem;">Video not found.</p></div>';
+        }
+      });
+    }
+
+    function closeLb(){
+      var v = document.querySelector('#vibeLbContent video');
+      if(v){ URL.revokeObjectURL(v.src); v.pause(); }
+      document.getElementById('vibeLightbox').classList.remove('open');
+      document.getElementById('vibeLbContent').innerHTML = '';
+    }
+
+    document.getElementById('vibeLbClose').addEventListener('click', closeLb);
+    document.getElementById('vibeLightbox').addEventListener('click', function(e){ if(e.target===this) closeLb(); });
+
+    renderVibe();
+    window.addEventListener('storage', function(e){ if(e.key==='hs_vibe') renderVibe(); });
+  </script>
+</body>
+</html>

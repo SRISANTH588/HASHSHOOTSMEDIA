@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Shoot - Hash Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0d0000;color:#fff;min-height:100vh;}
+    nav{background:rgba(13,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#e53935;}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .nav-right span{color:#a08080;font-size:0.875rem;}
+    .btn-logout{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
+    .btn-logout:hover{border-color:#e53935;color:#e53935;}
+    .container{max-width:700px;margin:3rem auto;padding:0 1.5rem;}
+    .page-title{font-size:2rem;font-weight:900;margin-bottom:0.5rem;}
+    .page-title span{color:var(--accent,#e53935);}
+    .subtitle{color:#a08080;margin-bottom:2.5rem;}
+    .banner-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-bottom:1.5rem;font-size:0.88rem;font-weight:600;text-align:center;}
+    .booking-card{border-radius:20px;padding:2.5rem;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .form-group{display:flex;flex-direction:column;gap:0.4rem;}
+    .form-group.full{grid-column:span 2;}
+    label{font-size:0.8rem;font-weight:600;color:#ccc;}
+    input,select,textarea{background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent,#e53935);}
+    select option{background:#1c0000;}
+    textarea{resize:vertical;min-height:80px;}
+    .note-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-top:1rem;color:#a08080;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);}
+    .btn-submit{width:100%;color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:1.5rem;transition:filter 0.2s,transform 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+    .btn-submit:hover{filter:brightness(0.85);transform:translateY(-1px);}
+    .success-msg{display:none;border-radius:12px;padding:1.5rem;text-align:center;margin-top:1.5rem;background:rgba(46,125,50,0.15);border:1px solid rgba(76,175,80,0.3);}
+    .success-msg i{color:#4caf50;font-size:2rem;margin-bottom:0.75rem;display:block;}
+    .success-msg h3{color:#4caf50;margin-bottom:0.4rem;}
+    .success-msg p{color:#a08080;font-size:0.875rem;}
+    .my-bookings{margin-top:3rem;}
+    .my-bookings h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
+    .booking-item{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
+    .booking-info h4{font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;}
+    .booking-info p{font-size:0.8rem;color:#a08080;}
+    .status{padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
+    .status.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
+    .status.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
+    .status.completed{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
+    .status.cancelled{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
+    .empty{color:#a08080;font-size:0.875rem;text-align:center;padding:2rem;}
+    @media(max-width:540px){.form-grid{grid-template-columns:1fr;}.form-group.full{grid-column:1;}}
+    .feedback-wrap{margin-top:3rem;}
+    .feedback-wrap h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
+    .fb-card{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
+    .fb-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;}
+    .fb-card-title{font-size:0.95rem;font-weight:700;}
+    .fb-card-meta{font-size:0.75rem;color:#a08080;margin-top:0.15rem;}
+    .fb-done-badge{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;white-space:nowrap;}
+    .fb-pending-badge{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;white-space:nowrap;}
+    .stars{display:flex;gap:0.35rem;margin-bottom:0.75rem;}
+    .star{font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;line-height:1;}
+    .star.active{color:#f5a623;}
+    .fb-textarea{width:100%;background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
+    .fb-textarea:focus{border-color:#e53935;}
+    .btn-fb-submit{margin-top:0.65rem;background:#e53935;color:#fff;border:none;border-radius:9px;padding:0.55rem 1.4rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+    .btn-fb-submit:hover{background:#b71c1c;transform:translateY(-1px);}
+    .fb-stars-display{color:#f5a623;font-size:1.1rem;letter-spacing:2px;margin-bottom:0.3rem;}
+    .fb-comment-display{color:#a08080;font-size:0.82rem;margin-top:0.25rem;font-style:italic;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">HA<span>⚡</span>H SHOOTS</div>
+    <div class="nav-right">
+      <span id="welcomeMsg">Welcome, Customer</span>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="banner-bar" id="bannerBar"></div>
+    <h1 class="page-title" id="pageTitle">Book Your <span>Shoot</span></h1>
+    <p class="subtitle" id="pageSubtitle">Fill in the details and we'll assign a shooter for you.</p>
+
+    <div class="booking-card" id="bookingCard" style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);">
+      <div class="form-grid" id="formGrid">
+        <div class="form-group"><label id="lbl_name">Full Name</label><input type="text" id="name" placeholder="Your name"/></div>
+        <div class="form-group"><label id="lbl_phone">Phone Number</label><input type="tel" id="phone" placeholder="+91 XXXXX XXXXX"/></div>
+        <div class="form-group">
+          <label>Service</label>
+          <select id="service"><option value="">Select Service</option></select>
+        </div>
+        <div class="form-group"><label id="lbl_city">City</label><input type="text" id="city" placeholder="Your city"/></div>
+        <div class="form-group" id="dateGroup"><label>Date</label><input type="date" id="date"/></div>
+        <div class="form-group" id="timeGroup"><label>Time</label><input type="time" id="time"/></div>
+        <div class="form-group full" id="notesGroup"><label id="lbl_notes">Additional Notes</label><textarea id="notes" placeholder="Any special requirements..."></textarea></div>
+      </div>
+      <div class="note-bar" id="noteBar"></div>
+      <button class="btn-submit" id="submitBtn" onclick="submitBooking()">
+        <i class="fas fa-camera" id="btnIcon"></i>
+        <span id="btnText">Confirm Booking</span>
+      </button>
+      <div class="success-msg" id="successMsg">
+        <i class="fas fa-check-circle"></i>
+        <h3 id="successTitle">Booking Confirmed!</h3>
+        <p id="successText">Your booking has been sent to our team. We'll contact you shortly.</p>
+      </div>
+    </div>
+
+    <div class="my-bookings" id="myBookingsSection">
+      <h2 id="bookingsTitle">My Bookings</h2>
+      <div id="bookingsList"></div>
+    </div>
+
+    <div class="feedback-wrap" id="shootFeedbackSection" style="display:none;">
+      <h2>⭐ Rate Your Shoots</h2>
+      <div id="shootFeedbackList"></div>
+    </div>
+
+    <div class="feedback-wrap" id="demoFeedbackSection" style="display:none;">
+      <h2>🎬 Demo Session Feedback</h2>
+      <div id="demoFeedbackList"></div>
+    </div>
+  </div>
+
+  <script>
+    if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
+
+    const c = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
+
+    // Apply CSS variables
+    const accent = c.accentColor || '#e53935';
+    const bg = c.bgColor || '#0d0000';
+    const card = c.cardColor || '#1c0000';
+    document.documentElement.style.setProperty('--accent', accent);
+    document.body.style.background = bg;
+    document.getElementById('bookingCard').style.background = card;
+
+    // Title
+    const titleEl = document.getElementById('pageTitle');
+    const titleText = c.title || 'Book Your Shoot';
+    titleEl.innerHTML = titleText + ' ';
+    // wrap last word in span
+    const words = titleText.trim().split(' ');
+    const last = words.pop();
+    titleEl.innerHTML = (words.join(' ') + ' <span>' + last + '</span>');
+    titleEl.querySelector('span').style.color = accent;
+
+    // Subtitle
+    document.getElementById('pageSubtitle').textContent = c.subtitle || "Fill in the details and we'll assign a shooter for you.";
+
+    // Banner
+    if(c.banner) {
+      const b = document.getElementById('bannerBar');
+      b.textContent = c.banner;
+      b.style.display = 'block';
+      b.style.background = (c.bannerColor || '#e53935') + '22';
+      b.style.border = '1px solid ' + (c.bannerColor || '#e53935') + '55';
+      b.style.color = c.bannerTextColor || '#fff';
+    }
+
+    // Field labels
+    document.getElementById('lbl_name').textContent = c.labelName || 'Full Name';
+    document.getElementById('lbl_phone').textContent = c.labelPhone || 'Phone Number';
+    document.getElementById('lbl_city').textContent = c.labelCity || 'City';
+    document.getElementById('lbl_notes').textContent = c.labelNotes || 'Additional Notes';
+
+    // Services
+    const sel = document.getElementById('service');
+    const services = c.services && c.services.length ? c.services : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
+    services.forEach(s => { const o = document.createElement('option'); o.textContent = s; sel.appendChild(o); });
+
+    // Show/hide fields
+    if(c.showDate === 'no') document.getElementById('dateGroup').style.display = 'none';
+    if(c.showTime === 'no') document.getElementById('timeGroup').style.display = 'none';
+    if(c.showNotes === 'no') document.getElementById('notesGroup').style.display = 'none';
+
+    // Button
+    const btnColor = c.btnColor || '#e53935';
+    const btnTextColor = c.btnTextColor || '#ffffff';
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.style.background = btnColor;
+    submitBtn.style.color = btnTextColor;
+    document.getElementById('btnText').textContent = c.btnText || 'Confirm Booking';
+    if(c.btnIcon) {
+      const iconEl = document.getElementById('btnIcon');
+      iconEl.className = 'fas ' + c.btnIcon;
+    }
+
+    // Note bar
+    if(c.note) {
+      const n = document.getElementById('noteBar');
+      n.innerHTML = '<i class="fas fa-info-circle" style="color:' + accent + ';margin-right:0.5rem;"></i>' + c.note;
+      n.style.display = 'block';
+    }
+
+    // Success messages
+    document.getElementById('successTitle').textContent = c.successTitle || 'Booking Confirmed!';
+    document.getElementById('successText').textContent = c.successMsg || "Your booking has been sent to our team. We'll contact you shortly.";
+
+    // My Bookings section
+    if(c.showBookings === 'no') document.getElementById('myBookingsSection').style.display = 'none';
+    if(c.bookingsTitle) document.getElementById('bookingsTitle').textContent = c.bookingsTitle;
+
+    // Welcome message
+    const user = localStorage.getItem('hs_user') || 'Customer';
+    document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
+
+    function logout() { localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
+
+    function submitBooking() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const service = document.getElementById('service').value;
+      const city = document.getElementById('city').value.trim();
+      const date = c.showDate !== 'no' ? document.getElementById('date').value : 'N/A';
+      const time = c.showTime !== 'no' ? document.getElementById('time').value : 'N/A';
+      const notes = c.showNotes !== 'no' ? document.getElementById('notes').value.trim() : '';
+
+      if(!name || !phone || !service || !city) { alert('Please fill all required fields.'); return; }
+      if(c.showDate !== 'no' && !date) { alert('Please select a date.'); return; }
+      if(c.showTime !== 'no' && !time) { alert('Please select a time.'); return; }
+      if(c.requireNotes === 'yes' && !notes) { alert('Please fill in the notes field.'); return; }
+
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      bookings.push({ id: Date.now(), name, phone, service, city, date, time, notes, status: 'pending', createdAt: new Date().toLocaleString() });
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+
+      document.getElementById('successMsg').style.display = 'block';
+      ['name','phone','city','notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+      document.getElementById('service').value = '';
+      if(c.showDate !== 'no') document.getElementById('date').value = '';
+      if(c.showTime !== 'no') document.getElementById('time').value = '';
+      loadBookings();
+      setTimeout(() => document.getElementById('successMsg').style.display = 'none', 4000);
+    }
+
+    function loadBookings() {
+      if(c.showBookings === 'no') return;
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      const list = document.getElementById('bookingsList');
+      if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
+      list.innerHTML = bookings.slice().reverse().map(b => `
+        <div class="booking-item">
+          <div class="booking-info">
+            <h4>${b.service} — ${b.city}</h4>
+            <p>${b.date !== 'N/A' ? b.date + ' at ' + b.time : ''} &nbsp;|&nbsp; ${b.name} &nbsp;|&nbsp; ${b.phone}</p>
+            ${b.notes ? `<p style="margin-top:4px;font-style:italic">${b.notes}</p>` : ''}
+            <p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Booked on ${b.createdAt}</p>
+          </div>
+          <span class="status ${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span>
+        </div>`).join('');
+    }
+    loadBookings();
+
+    // FEEDBACK
+    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
+    function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); }
+    var selectedStars = {};
+
+    function setStars(id, val){
+      selectedStars[id] = val;
+      document.querySelectorAll('.star[data-id="' + id + '"]').forEach(function(s){
+        s.classList.toggle('active', Number(s.dataset.val) <= val);
+      });
+    }
+
+    function renderShootFeedback(){
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var completed = bookings.filter(function(b){ return b.status === 'completed'; });
+      var section = document.getElementById('shootFeedbackSection');
+      var list = document.getElementById('shootFeedbackList');
+      if(!completed.length){ section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      var feedbacks = getFeedbacks();
+      list.innerHTML = completed.map(function(b){
+        var existing = feedbacks.find(function(f){ return f.type === 'shoot' && f.refId === b.id; });
+        if(existing){
+          var stars = '\u2605'.repeat(existing.rating) + '\u2606'.repeat(5 - existing.rating);
+          return '<div class="fb-card">'
+            + '<div class="fb-card-header">'
+            + '<div><div class="fb-card-title">' + b.service + ' — ' + b.city + '</div>'
+            + '<div class="fb-card-meta">' + (b.date !== 'N/A' ? b.date : '') + '</div></div>'
+            + '<span class="fb-done-badge"><i class="fas fa-check"></i> Feedback Given</span>'
+            + '</div>'
+            + '<div class="fb-stars-display">' + stars + '</div>'
+            + (existing.comment ? '<div class="fb-comment-display">&ldquo;' + existing.comment + '&rdquo;</div>' : '')
+            + '</div>';
+        }
+        return '<div class="fb-card">'
+          + '<div class="fb-card-header">'
+          + '<div><div class="fb-card-title">' + b.service + ' — ' + b.city + '</div>'
+          + '<div class="fb-card-meta">' + (b.date !== 'N/A' ? b.date : '') + ' &nbsp;·&nbsp; Completed</div></div>'
+          + '<span class="fb-pending-badge">Awaiting Feedback</span>'
+          + '</div>'
+          + '<div class="stars">' + [1,2,3,4,5].map(function(v){
+              return '<span class="star" data-id="' + b.id + '" data-val="' + v + '" onclick="setStars(' + b.id + ',' + v + ')">★</span>';
+            }).join('') + '</div>'
+          + '<textarea class="fb-textarea" id="fbtext_' + b.id + '" placeholder="Tell us about your experience..."></textarea>'
+          + '<button class="btn-fb-submit" onclick="submitShootFeedback(' + b.id + ')"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
+          + '</div>';
+      }).join('');
+    }
+
+    function submitShootFeedback(bookingId){
+      var rating = selectedStars[bookingId] || 0;
+      if(!rating){ alert('Please select a star rating.'); return; }
+      var el = document.getElementById('fbtext_' + bookingId);
+      var comment = el ? el.value.trim() : '';
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var b = bookings.find(function(x){ return x.id === bookingId; });
+      var feedbacks = getFeedbacks();
+      feedbacks.push({
+        id: Date.now(), type: 'shoot', refId: bookingId,
+        service: b ? b.service : '', city: b ? b.city : '',
+        customerName: b ? b.name : '',
+        date: b ? b.date : '', rating: rating, comment: comment,
+        submittedAt: new Date().toLocaleString()
+      });
+      saveFeedbacks(feedbacks);
+      renderShootFeedback();
+    }
+
+    function renderDemoFeedback(){
+      var demos = JSON.parse(localStorage.getItem('hs_demos') || '[]').filter(function(d){ return d.status === 'reviewed'; });
+      var section = document.getElementById('demoFeedbackSection');
+      var list = document.getElementById('demoFeedbackList');
+      if(!demos.length){ section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      var feedbacks = getFeedbacks();
+      list.innerHTML = demos.map(function(d){
+        var existing = feedbacks.find(function(f){ return f.type === 'demo' && f.refId === d.id; });
+        if(existing){
+          var stars = '\u2605'.repeat(existing.rating) + '\u2606'.repeat(5 - existing.rating);
+          return '<div class="fb-card">'
+            + '<div class="fb-card-header">'
+            + '<div><div class="fb-card-title">' + d.title + '</div>'
+            + '<div class="fb-card-meta">' + d.date + ' &nbsp;·&nbsp; ' + d.staffName + '</div></div>'
+            + '<span class="fb-done-badge"><i class="fas fa-check"></i> Feedback Given</span>'
+            + '</div>'
+            + '<div class="fb-stars-display">' + stars + '</div>'
+            + (existing.comment ? '<div class="fb-comment-display">&ldquo;' + existing.comment + '&rdquo;</div>' : '')
+            + '</div>';
+        }
+        return '<div class="fb-card">'
+          + '<div class="fb-card-header">'
+          + '<div><div class="fb-card-title">' + d.title + '</div>'
+          + '<div class="fb-card-meta">' + d.date + ' &nbsp;·&nbsp; Staff: ' + d.staffName + '</div></div>'
+          + '<span class="fb-pending-badge">Rate this Demo</span>'
+          + '</div>'
+          + '<div class="stars">' + [1,2,3,4,5].map(function(v){
+              return '<span class="star" data-id="demo_' + d.id + '" data-val="' + v + '" onclick="setStars(\u0027demo_' + d.id + '\u0027,' + v + ')">★</span>';
+            }).join('') + '</div>'
+          + '<textarea class="fb-textarea" id="fbtext_demo_' + d.id + '" placeholder="How was the demo session?"></textarea>'
+          + '<button class="btn-fb-submit" onclick="submitDemoFeedback(' + d.id + ')"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
+          + '</div>';
+      }).join('');
+    }
+
+    function submitDemoFeedback(demoId){
+      var rating = selectedStars['demo_' + demoId] || 0;
+      if(!rating){ alert('Please select a star rating.'); return; }
+      var el = document.getElementById('fbtext_demo_' + demoId);
+      var comment = el ? el.value.trim() : '';
+      var demos = JSON.parse(localStorage.getItem('hs_demos') || '[]');
+      var d = demos.find(function(x){ return x.id === demoId; });
+      var feedbacks = getFeedbacks();
+      feedbacks.push({
+        id: Date.now(), type: 'demo', refId: demoId,
+        title: d ? d.title : '', staffName: d ? d.staffName : '',
+        date: d ? d.date : '', rating: rating, comment: comment,
+        submittedAt: new Date().toLocaleString()
+      });
+      saveFeedbacks(feedbacks);
+      renderDemoFeedback();
+    }
+
+    renderShootFeedback();
+    renderDemoFeedback();
+    setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 5000);
+  </script>
+</body>
+</html>

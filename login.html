@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Hash Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0d0000;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .bg-particles{position:fixed;inset:0;z-index:0;overflow:hidden;}
+    .particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0;}
+    @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.3;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
+    .bg-glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 50% at 20% 50%,rgba(229,57,53,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 30%,rgba(180,0,0,0.08) 0%,transparent 60%);}
+    .wrapper{position:relative;z-index:1;width:100%;max-width:460px;padding:1.5rem;}
+    .logo{text-align:center;font-size:2rem;font-weight:900;margin-bottom:0.3rem;letter-spacing:-1px;}
+    .logo span{color:#e53935;}
+    .logo-sub{text-align:center;color:#a08080;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem;}
+    .tab-wrap{display:flex;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:5px;margin-bottom:1.75rem;gap:5px;}
+    .tab{flex:1;padding:0.65rem;border-radius:10px;border:none;background:none;color:#888;font-weight:700;font-size:0.875rem;cursor:pointer;font-family:inherit;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+    .tab.active{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;box-shadow:0 4px 20px rgba(229,57,53,0.35);}
+    .card{background:rgba(28,0,0,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,0.6);animation:cardIn 0.4s ease;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .card-header{margin-bottom:2rem;}
+    .card-header h2{font-size:1.6rem;font-weight:900;margin-bottom:0.3rem;}
+    .card-header h2 span{color:#e53935;}
+    .card-header p{color:#a08080;font-size:0.875rem;}
+    .admin-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:1.25rem;border:3px solid rgba(229,57,53,0.3);box-shadow:0 0 30px rgba(229,57,53,0.3);animation:avatarPulse 2s ease-in-out infinite;}
+    @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(229,57,53,0.3);}50%{box-shadow:0 0 40px rgba(229,57,53,0.6);}}
+    .form-group{margin-bottom:1.25rem;}
+    .form-group label{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:700;color:#888;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;}
+    .input-wrap{position:relative;}
+    .input-wrap i.icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#555;font-size:0.9rem;pointer-events:none;}
+    .input-wrap input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:all 0.3s;}
+    .input-wrap input:focus{border-color:#e53935;background:rgba(229,57,53,0.05);box-shadow:0 0 0 3px rgba(229,57,53,0.1);}
+    .toggle-pass{position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:#555;cursor:pointer;font-size:0.9rem;transition:color 0.2s;}
+    .toggle-pass:hover{color:#e53935;}
+    .strength-bar{height:3px;border-radius:2px;margin-top:0.5rem;background:rgba(255,255,255,0.06);overflow:hidden;display:none;}
+    .strength-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s;width:0%;}
+    .remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+    .remember{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.82rem;color:#888;}
+    .remember input{accent-color:#e53935;width:15px;height:15px;}
+    .forgot{color:#e53935;font-size:0.82rem;text-decoration:none;font-weight:600;}
+    .forgot:hover{text-decoration:underline;}
+    .btn-login{width:100%;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);}
+    .btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(229,57,53,0.5);}
+    .btn-login:active{transform:translateY(0);}
+    .btn-login.loading{pointer-events:none;opacity:0.8;}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:#555;font-size:0.78rem;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06);}
+    .demo-creds{background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.85rem 1rem;font-size:0.78rem;color:#a08080;line-height:1.9;}
+    .demo-creds strong{color:#e53935;}
+    .error-msg{background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#ff6b6b;margin-bottom:1rem;display:none;align-items:center;gap:0.5rem;}
+    .back{text-align:center;margin-top:1.5rem;color:#555;font-size:0.82rem;}
+    .back a{color:#e53935;text-decoration:none;font-weight:600;}
+    @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
+    .shake{animation:shake 0.4s ease;}
+  </style>
+</head>
+<body>
+  <div class="bg-particles" id="particles"></div>
+  <div class="bg-glow"></div>
+  <div class="wrapper">
+    <div class="logo">HA<span>⚡</span>H SHOOTS</div>
+    <div class="logo-sub">Professional Shoot Platform</div>
+    <div class="tab-wrap">
+      <button class="tab active" id="tabCustomer" onclick="switchTab('customer')"><i class="fas fa-user"></i> Customer</button>
+      <button class="tab" id="tabAdmin" onclick="switchTab('admin')"><i class="fas fa-shield-alt"></i> Admin</button>
+      <button class="tab" id="tabStaff" onclick="switchTab('staff')"><i class="fas fa-users"></i> Staff</button>
+    </div>
+
+    <!-- CUSTOMER -->
+    <div class="card" id="customerCard">
+      <div class="card-header">
+        <h2>Welcome <span>Back</span></h2>
+        <p>Login to book your next shoot session</p>
+      </div>
+      <div class="error-msg" id="custError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid email or password.</div>
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Address</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-envelope"></i>
+          <input type="email" id="custEmail" placeholder="you@email.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-lock"></i>
+          <input type="password" id="custPass" placeholder="••••••••"/>
+          <i class="toggle-pass fas fa-eye" onclick="togglePass('custPass',this)"></i>
+        </div>
+      </div>
+      <div class="remember-row">
+        <label class="remember"><input type="checkbox"/> Remember me</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <button class="btn-login" id="custBtn" onclick="customerLogin()">
+        <span>Login</span>
+        <div class="spinner" id="custSpinner"></div>
+        <i class="fas fa-arrow-right" id="custArrow"></i>
+      </button>
+      <div class="divider">Demo Credentials</div>
+      <div class="demo-creds">📧 Email: <strong>customer@hash.com</strong><br/>🔑 Password: <strong>1234</strong></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="card" id="adminCard" style="display:none">
+      <div class="card-header">
+        <div class="admin-avatar">S</div>
+        <h2>Admin <span>Portal</span></h2>
+        <p>Restricted access — authorized personnel only</p>
+      </div>
+      <div class="error-msg" id="adminError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid admin credentials.</div>
+      <div class="form-group">
+        <label><i class="fas fa-user-shield"></i> Username</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-user-shield"></i>
+          <input type="text" id="adminUser" placeholder="Enter username"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-key"></i> Password</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-key"></i>
+          <input type="password" id="adminPass" placeholder="••••••••"/>
+          <i class="toggle-pass fas fa-eye" onclick="togglePass('adminPass',this)"></i>
+        </div>
+        <div class="strength-bar" id="strengthBar"><div class="strength-fill" id="strengthFill"></div></div>
+      </div>
+      <div class="remember-row">
+        <label class="remember"><input type="checkbox"/> Keep me signed in</label>
+      </div>
+      <button class="btn-login" id="adminBtn" onclick="adminLogin()">
+        <i class="fas fa-shield-alt"></i>
+        <span>Access Dashboard</span>
+        <div class="spinner" id="adminSpinner"></div>
+      </button>
+      <div class="divider">Admin Credentials</div>
+      <div class="demo-creds">👤 Username: <strong>SRISANTH</strong><br/>🔑 Password: <strong>SASI@2007</strong></div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="card" id="staffCard" style="display:none">
+      <div class="card-header">
+        <div class="admin-avatar" style="background:linear-gradient(135deg,#1565c0,#0d47a1)"><i class="fas fa-users" style="font-size:1.2rem"></i></div>
+        <h2>Staff <span>Login</span></h2>
+        <p>Login with your assigned staff credentials</p>
+      </div>
+      <div class="error-msg" id="staffError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid staff credentials.</div>
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Username</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-user"></i>
+          <input type="text" id="staffUser" placeholder="Enter your username"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div class="input-wrap">
+          <i class="icon fas fa-lock"></i>
+          <input type="password" id="staffPass" placeholder="••••••••"/>
+          <i class="toggle-pass fas fa-eye" onclick="togglePass('staffPass',this)"></i>
+        </div>
+      </div>
+      <button class="btn-login" id="staffBtn" onclick="staffLogin()">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Login to Dashboard</span>
+        <div class="spinner" id="staffSpinner"></div>
+      </button>
+      <div class="divider">Note</div>
+      <div class="demo-creds">👤 Username: <strong>SASI</strong><br/>🔑 Password: <strong>SASI2468</strong></div>
+    </div>
+
+    <div class="back"><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a></div>
+  </div>
+
+  <script>
+    // Floating particles
+    const container = document.getElementById('particles');
+    for(let i=0;i<25;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      const size=Math.random()*4+2;
+      p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:rgba(229,57,53,${Math.random()*0.4+0.1});animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*8}s;`;
+      container.appendChild(p);
+    }
+
+    function switchTab(type){
+      document.getElementById('tabCustomer').classList.toggle('active',type==='customer');
+      document.getElementById('tabAdmin').classList.toggle('active',type==='admin');
+      document.getElementById('tabStaff').classList.toggle('active',type==='staff');
+      document.getElementById('customerCard').style.display = type==='customer'?'block':'none';
+      document.getElementById('adminCard').style.display = type==='admin'?'block':'none';
+      document.getElementById('staffCard').style.display = type==='staff'?'block':'none';
+    }
+
+    function togglePass(id,icon){
+      const input=document.getElementById(id);
+      const isPass=input.type==='password';
+      input.type=isPass?'text':'password';
+      icon.classList.toggle('fa-eye',!isPass);
+      icon.classList.toggle('fa-eye-slash',isPass);
+    }
+
+    document.getElementById('adminPass').addEventListener('input',function(){
+      const bar=document.getElementById('strengthBar');
+      const fill=document.getElementById('strengthFill');
+      bar.style.display='block';
+      let s=0;
+      if(this.value.length>=6)s+=25;
+      if(this.value.length>=10)s+=25;
+      if(/[A-Z]/.test(this.value))s+=25;
+      if(/[@#$%^&*!]/.test(this.value))s+=25;
+      fill.style.width=s+'%';
+      fill.style.background=s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
+    });
+
+    function customerLogin(){
+      const e=document.getElementById('custEmail').value.trim();
+      const p=document.getElementById('custPass').value;
+      document.getElementById('custError').style.display='none';
+      document.getElementById('custBtn').classList.add('loading');
+      document.getElementById('custSpinner').style.display='block';
+      document.getElementById('custArrow').style.display='none';
+      setTimeout(()=>{
+        if(e==='customer@hash.com'&&p==='1234'){
+          localStorage.setItem('hs_role','customer');
+          window.location.href='customer.html';
+        } else {
+          document.getElementById('custBtn').classList.remove('loading');
+          document.getElementById('custSpinner').style.display='none';
+          document.getElementById('custArrow').style.display='inline';
+          document.getElementById('custError').style.display='flex';
+          const card=document.getElementById('customerCard');
+          card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+        }
+      },1200);
+    }
+
+    function adminLogin(){
+      const u=document.getElementById('adminUser').value.trim();
+      const p=document.getElementById('adminPass').value;
+      document.getElementById('adminError').style.display='none';
+      document.getElementById('adminBtn').classList.add('loading');
+      document.getElementById('adminSpinner').style.display='block';
+      setTimeout(()=>{
+        if(u==='SRISANTH'&&p==='SASI@2007'){
+          localStorage.setItem('hs_role','admin');
+          localStorage.setItem('hs_admin_name','SRISANTH');
+          window.location.href='admin.html';
+        } else {
+          document.getElementById('adminBtn').classList.remove('loading');
+          document.getElementById('adminSpinner').style.display='none';
+          document.getElementById('adminError').style.display='flex';
+          const card=document.getElementById('adminCard');
+          card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+        }
+      },1200);
+    }
+
+    function staffLogin(){
+      const u = document.getElementById('staffUser').value.trim();
+      const p = document.getElementById('staffPass').value;
+      document.getElementById('staffError').style.display='none';
+
+      // Hardcoded staff credential
+      const isHardcoded = u.toUpperCase() === 'SASI' && p === 'SASI2468';
+
+      // Also check admin-created staff list
+      const staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
+      const found = staffList.find(s => s.username.toLowerCase() === u.toLowerCase() && s.password === p);
+
+      if(!isHardcoded && !found){
+        document.getElementById('staffError').style.display='flex';
+        const card=document.getElementById('staffCard');
+        card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+        return;
+      }
+
+      document.getElementById('staffBtn').classList.add('loading');
+      document.getElementById('staffSpinner').style.display='block';
+      setTimeout(()=>{
+        localStorage.setItem('hs_role','staff');
+        if(isHardcoded){
+          localStorage.setItem('hs_staff_id', 'SASI');
+          localStorage.setItem('hs_staff_name', 'SASI');
+          localStorage.setItem('hs_staff_role', 'Staff');
+          localStorage.setItem('hs_staff_access', JSON.stringify(['Shoots','Orders','Classes']));
+        } else {
+          localStorage.setItem('hs_staff_id', found.id);
+          localStorage.setItem('hs_staff_name', found.name);
+          localStorage.setItem('hs_staff_role', found.role);
+          localStorage.setItem('hs_staff_access', JSON.stringify(found.access || []));
+        }
+        window.location.href = 'staff.html';
+      }, 1000);
+    }
+
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){
+        if(document.getElementById('customerCard').style.display!=='none') customerLogin();
+        else if(document.getElementById('adminCard').style.display!=='none') adminLogin();
+        else staffLogin();
+      }
+    });
+  </script>
+</body>
+</html>

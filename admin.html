@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Hash Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0d0000;color:#fff;min-height:100vh;}
+    nav{background:rgba(13,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#e53935;}
+    .admin-badge{background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .btn-logout{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
+    .btn-logout:hover{border-color:#e53935;color:#e53935;}
+    .container{max-width:1100px;margin:2.5rem auto;padding:0 1.5rem;}
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+    h1{font-size:1.8rem;font-weight:900;}h1 span{color:#e53935;}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
+    .stat-card{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;}
+    .stat-card .num{font-size:2rem;font-weight:900;color:#e53935;}
+    .stat-card .lbl{font-size:0.8rem;color:#a08080;margin-top:0.2rem;}
+    .filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .filter-btn{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#a08080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .filter-btn.active,.filter-btn:hover{background:#e53935;color:#fff;border-color:transparent;}
+    .search-bar{flex:1;max-width:280px;background:#1c0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.5rem 1rem;color:#fff;font-size:0.875rem;font-family:inherit;outline:none;}
+    .search-bar:focus{border-color:#e53935;}
+    .table-wrap{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;}
+    table{width:100%;border-collapse:collapse;}
+    thead{background:rgba(229,57,53,0.08);}
+    th{padding:1rem 1.25rem;text-align:left;font-size:0.78rem;font-weight:700;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;}
+    td{padding:1rem 1.25rem;font-size:0.875rem;border-top:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+    tr:hover td{background:rgba(229,57,53,0.04);}
+    .status-badge{padding:0.28rem 0.8rem;border-radius:50px;font-size:0.72rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;}
+    .status-badge.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
+    .status-badge.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
+    .status-badge.completed{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
+    .status-badge.cancelled{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
+    .action-btns{display:flex;gap:0.5rem;}
+    .btn-action{padding:0.3rem 0.75rem;border-radius:7px;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .btn-confirm{background:rgba(76,175,80,0.15);color:#4caf50;}
+    .btn-confirm:hover{background:#4caf50;color:#fff;}
+    .btn-complete{background:rgba(33,150,243,0.15);color:#2196f3;}
+    .btn-complete:hover{background:#2196f3;color:#fff;}
+    .btn-cancel{background:rgba(244,67,54,0.15);color:#f44336;}
+    .btn-cancel:hover{background:#f44336;color:#fff;}
+    .btn-delete{background:rgba(255,255,255,0.05);color:#888;}
+    .btn-delete:hover{background:#333;color:#fff;}
+    .empty{text-align:center;padding:3rem;color:#a08080;}
+    .empty i{font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.3;}
+    .refresh-btn{background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;}
+    .refresh-btn:hover{background:#e53935;color:#fff;}
+    .tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
+    .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#a08080;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .tab-btn.active,.tab-btn:hover{background:#e53935;color:#fff;border-color:transparent;}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+    .about-form{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:2rem;}
+    .about-form h2{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+    .form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
+    .form-group label{font-size:0.78rem;font-weight:600;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;}
+    .form-group input,.form-group textarea{background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+    .form-group input:focus,.form-group textarea:focus{border-color:#e53935;}
+    .form-group textarea{resize:vertical;min-height:90px;}
+    .team-row{display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
+    .btn-add-team{background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;margin-bottom:1rem;transition:all 0.2s;}
+    .btn-add-team:hover{background:#e53935;color:#fff;}
+    .btn-remove{background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;}
+    .btn-remove:hover{background:#f44336;color:#fff;}
+    .btn-save-about{background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.8rem 2rem;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-top:0.5rem;}
+    .btn-save-about:hover{background:#b71c1c;}
+    .save-toast{display:none;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin-top:1rem;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="logo">HA<span>⚡</span>H SHOOTS</div>
+      <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+    </div>
+    <div class="nav-right">
+      <span style="color:#a08080;font-size:0.85rem;" id="adminNameDisplay"></span>
+      <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Admin <span>Dashboard</span></h1>
+      <span style="color:#a08080;font-size:0.85rem;" id="lastUpdated"></span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('bookings',this)"><i class="fas fa-calendar-alt"></i> Bookings</button>
+      <button class="tab-btn" onclick="switchTab('about',this)"><i class="fas fa-info-circle"></i> About Us</button>
+      <button class="tab-btn" onclick="switchTab('vibe',this)"><i class="fas fa-fire"></i> Discover with Vibe</button>
+      <button class="tab-btn" onclick="switchTab('customer',this)"><i class="fas fa-user"></i> Customer Page</button>
+      <button class="tab-btn" onclick="switchTab('staff',this)"><i class="fas fa-users-cog"></i> Staff & Access</button>
+      <button class="tab-btn" onclick="switchTab('demo',this)"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions</button>
+      <button class="tab-btn" onclick="switchTab('feedback',this)"><i class="fas fa-star"></i> Feedback</button>
+    </div>
+
+    <!-- BOOKINGS TAB -->
+    <div class="tab-panel active" id="tab-bookings">
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="num" id="totalCount">0</div><div class="lbl">Total Bookings</div></div>
+      <div class="stat-card"><div class="num" style="color:#ff9800" id="pendingCount">0</div><div class="lbl">Pending</div></div>
+      <div class="stat-card"><div class="num" style="color:#4caf50" id="confirmedCount">0</div><div class="lbl">Confirmed</div></div>
+      <div class="stat-card"><div class="num" style="color:#2196f3" id="completedCount">0</div><div class="lbl">Completed</div></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterBookings('all',this)">All</button>
+      <button class="filter-btn" onclick="filterBookings('pending',this)">Pending</button>
+      <button class="filter-btn" onclick="filterBookings('confirmed',this)">Confirmed</button>
+      <button class="filter-btn" onclick="filterBookings('completed',this)">Completed</button>
+      <button class="filter-btn" onclick="filterBookings('cancelled',this)">Cancelled</button>
+      <input class="search-bar" type="text" placeholder="🔍 Search by name, service, city..." oninput="searchBookings(this.value)"/>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>City</th>
+            <th>Date & Time</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTable"></tbody>
+      </table>
+    </div>
+    </div><!-- end tab-bookings -->
+
+    <!-- ABOUT US TAB -->
+    <div class="tab-panel" id="tab-about">
+      <div class="about-form">
+        <h2><i class="fas fa-info-circle" style="color:#e53935;margin-right:0.5rem;"></i> Edit About Us Page</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page Title</label>
+            <input type="text" id="ab_heroTitle" placeholder="e.g. Hash Shoots"/>
+          </div>
+          <div class="form-group">
+            <label>Hero Description</label>
+            <input type="text" id="ab_heroDesc" placeholder="Short tagline under the title"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Our Story</label>
+          <textarea id="ab_storyText" placeholder="Tell your brand story..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Our Mission</label>
+          <textarea id="ab_missionText" placeholder="Your mission statement..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reels Delivered Stat</label>
+            <input type="text" id="ab_statReels" placeholder="e.g. 50,000+"/>
+          </div>
+          <div class="form-group">
+            <label>Certified Partners Stat</label>
+            <input type="text" id="ab_statMakers" placeholder="e.g. 500+"/>
+          </div>
+        </div>
+        <div class="form-group" style="max-width:200px;">
+          <label>Cities Stat</label>
+          <input type="text" id="ab_statCities" placeholder="e.g. 10+"/>
+        </div>
+        <div class="form-group">
+          <label>Team Members</label>
+          <div id="teamRows"></div>
+          <button class="btn-add-team" onclick="addTeamRow()"><i class="fas fa-plus"></i> Add Team Member</button>
+        </div>
+        <button class="btn-save-about" onclick="saveAbout()"><i class="fas fa-save"></i> Save Changes</button>
+        <div class="save-toast" id="saveToast"><i class="fas fa-check-circle"></i> Saved successfully!</div>
+      </div>
+    </div><!-- end tab-about -->
+
+    <!-- VIBE TAB -->
+    <div class="tab-panel" id="tab-vibe">
+      <div class="about-form">
+        <h2><i class="fas fa-fire" style="color:#e53935;margin-right:0.5rem;"></i> Discover with Vibe — Upload Content</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Title *</label>
+            <input type="text" id="vibe_title" placeholder="e.g. Rooftop Reel at Sunset"/>
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="vibe_cat" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="" disabled selected>Select category</option>
+              <option>Events &amp; Weddings</option>
+              <option>Car Delivery</option>
+              <option>Celebrities</option>
+              <option>Outfit Shoots</option>
+              <option>Concerts</option>
+              <option>Collaborations</option>
+              <option>Decor &amp; Interiors</option>
+              <option>Caterers</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Thumbnail Image (required)</label>
+          <input type="file" id="vibe_thumb" accept="image/*" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+        </div>
+        <div class="form-group">
+          <label>Video File *</label>
+          <input type="file" id="vibe_video" accept="video/*" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <span style="font-size:0.75rem;color:#a08080;margin-top:0.3rem;">Supports MP4, MOV, WebM. Large files supported.</span>
+        </div>
+        <div id="vibe_progress_wrap" style="display:none;margin-bottom:1rem;">
+          <div style="font-size:0.8rem;color:#a08080;margin-bottom:0.4rem;" id="vibe_progress_label">Processing...</div>
+          <div style="background:#110000;border-radius:6px;height:8px;overflow:hidden;">
+            <div id="vibe_progress_bar" style="height:100%;background:#e53935;width:0%;transition:width 0.3s;"></div>
+          </div>
+        </div>
+        <button class="btn-save-about" id="vibe_upload_btn" onclick="uploadVibeItem()"><i class="fas fa-upload"></i> Upload to Vibe</button>
+        <div class="save-toast" id="vibeToast"><i class="fas fa-check-circle"></i> Uploaded successfully!</div>
+      </div>
+
+      <!-- Uploaded items list -->
+      <div style="margin-top:2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h3 style="font-size:1rem;font-weight:800;color:#fff;">Uploaded Content</h3>
+          <span style="font-size:0.8rem;color:#a08080;" id="vibeCount"></span>
+        </div>
+        <div id="vibeAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
+      </div>
+    </div><!-- end tab-vibe -->
+
+    <!-- CUSTOMER PAGE TAB -->
+    <div class="tab-panel" id="tab-customer">
+
+      <!-- LIVE PREVIEW TOGGLE -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <h2 style="font-size:1.1rem;font-weight:800;color:#fff;"><i class="fas fa-user" style="color:#e53935;margin-right:0.5rem;"></i> Customer Page Editor</h2>
+        <a href="customer.html" target="_blank" style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.45rem 1rem;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Preview Page</a>
+      </div>
+
+      <!-- SECTION 1: HEADER -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:0.95rem;color:#e53935;margin-bottom:1.25rem;"><i class="fas fa-heading"></i> &nbsp;Page Header</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page Title</label>
+            <input type="text" id="cp_title" placeholder="e.g. Book Your Shoot"/>
+          </div>
+          <div class="form-group">
+            <label>Page Subtitle</label>
+            <input type="text" id="cp_subtitle" placeholder="e.g. Fill in the details and we'll assign a shooter."/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Announcement Banner (leave blank to hide)</label>
+          <input type="text" id="cp_banner" placeholder="e.g. 🎉 Special offer: 20% off this weekend!"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Banner Background Color</label>
+            <input type="color" id="cp_bannerColor" value="#e53935" style="height:42px;padding:0.3rem;"/>
+          </div>
+          <div class="form-group">
+            <label>Banner Text Color</label>
+            <input type="color" id="cp_bannerTextColor" value="#ffffff" style="height:42px;padding:0.3rem;"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: FORM FIELDS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:0.95rem;color:#e53935;margin-bottom:1.25rem;"><i class="fas fa-wpforms"></i> &nbsp;Form Fields</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name Field Label</label>
+            <input type="text" id="cp_labelName" placeholder="Full Name"/>
+          </div>
+          <div class="form-group">
+            <label>Phone Field Label</label>
+            <input type="text" id="cp_labelPhone" placeholder="Phone Number"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City Field Label</label>
+            <input type="text" id="cp_labelCity" placeholder="City"/>
+          </div>
+          <div class="form-group">
+            <label>Notes Field Label</label>
+            <input type="text" id="cp_labelNotes" placeholder="Additional Notes"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service Dropdown Options (one per line)</label>
+          <textarea id="cp_services" style="min-height:130px;" placeholder="Reel Shoot&#10;Portrait Session&#10;Event Coverage&#10;Product Shoot&#10;Wedding Photography&#10;Food Photography"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Show Date Field</label>
+            <select id="cp_showDate"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group">
+            <label>Show Time Field</label>
+            <select id="cp_showTime"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Show Notes Field</label>
+            <select id="cp_showNotes"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group">
+            <label>Require Notes</label>
+            <select id="cp_requireNotes"><option value="no">No</option><option value="yes">Yes</option></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: SUBMIT BUTTON -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:0.95rem;color:#e53935;margin-bottom:1.25rem;"><i class="fas fa-mouse-pointer"></i> &nbsp;Submit Button</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Button Text</label>
+            <input type="text" id="cp_btnText" placeholder="Confirm Booking"/>
+          </div>
+          <div class="form-group">
+            <label>Button Icon (Font Awesome class)</label>
+            <input type="text" id="cp_btnIcon" placeholder="fa-camera"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Button Color</label>
+            <input type="color" id="cp_btnColor" value="#e53935" style="height:42px;padding:0.3rem;"/>
+          </div>
+          <div class="form-group">
+            <label>Button Text Color</label>
+            <input type="color" id="cp_btnTextColor" value="#ffffff" style="height:42px;padding:0.3rem;"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: MESSAGES -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:0.95rem;color:#e53935;margin-bottom:1.25rem;"><i class="fas fa-comment-alt"></i> &nbsp;Messages</h2>
+        <div class="form-group">
+          <label>Success Title</label>
+          <input type="text" id="cp_successTitle" placeholder="Booking Confirmed!"/>
+        </div>
+        <div class="form-group">
+          <label>Success Message</label>
+          <textarea id="cp_successMsg" placeholder="Your booking has been sent to our team. We'll contact you shortly."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Info Note (shown above submit button, leave blank to hide)</label>
+          <textarea id="cp_note" placeholder="e.g. Our team will contact you within 30 minutes of booking."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 5: PAGE STYLE -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:0.95rem;color:#e53935;margin-bottom:1.25rem;"><i class="fas fa-palette"></i> &nbsp;Page Style</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page Background Color</label>
+            <input type="color" id="cp_bgColor" value="#0d0000" style="height:42px;padding:0.3rem;"/>
+          </div>
+          <div class="form-group">
+            <label>Card Background Color</label>
+            <input type="color" id="cp_cardColor" value="#1c0000" style="height:42px;padding:0.3rem;"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Accent Color</label>
+            <input type="color" id="cp_accentColor" value="#e53935" style="height:42px;padding:0.3rem;"/>
+          </div>
+          <div class="form-group">
+            <label>Show "My Bookings" Section</label>
+            <select id="cp_showBookings"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>My Bookings Section Title</label>
+          <input type="text" id="cp_bookingsTitle" placeholder="My Bookings"/>
+        </div>
+      </div>
+
+      <button class="btn-save-about" onclick="saveCustomerPage()"><i class="fas fa-save"></i> Save All Changes</button>
+      <div class="save-toast" id="cpToast"><i class="fas fa-check-circle"></i> Saved! Changes are live on the customer page.</div>
+    </div><!-- end tab-customer -->
+
+    <!-- STAFF & ACCESS TAB -->
+    <div class="tab-panel" id="tab-staff">
+
+      <!-- CREATE STAFF -->
+      <div class="about-form" style="margin-bottom:1.25rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-user-plus" style="color:#e53935;margin-right:0.5rem;"></i> Create Staff Account</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="sf_name" placeholder="e.g. Kiran Madireddy"/>
+          </div>
+          <div class="form-group">
+            <label>Username *</label>
+            <input type="text" id="sf_username" placeholder="e.g. kiran123"/>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="password" id="sf_password" placeholder="Set a strong password"/>
+          </div>
+          <div class="form-group">
+            <label>Role *</label>
+            <select id="sf_role" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="" disabled selected>Select Role</option>
+              <option value="creator">🎬 Creator</option>
+              <option value="editor">✂️ Editor</option>
+              <option value="pr">📣 PR</option>
+              <option value="manager">🧑‍💼 Manager</option>
+              <option value="support">🎧 Support</option>
+              <option value="custom">⚙️ Custom</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="sf_custom_role_wrap" style="display:none;">
+          <label>Custom Role Name</label>
+          <input type="text" id="sf_custom_role" placeholder="e.g. Videographer"/>
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:0.78rem;font-weight:600;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:0.75rem;">Page Access</label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;" id="sf_access_grid">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="bookings" style="accent-color:#e53935;"/> Bookings
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="about" style="accent-color:#e53935;"/> About Us
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="vibe" style="accent-color:#e53935;"/> Vibe
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="customer" style="accent-color:#e53935;"/> Customer Page
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="staff" style="accent-color:#e53935;"/> Staff
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+              <input type="checkbox" value="all" style="accent-color:#e53935;" id="sf_access_all" onchange="toggleAllAccess(this)"/> Full Access
+            </label>
+          </div>
+        </div>
+        <button class="btn-save-about" onclick="createStaff()"><i class="fas fa-user-plus"></i> Create Account</button>
+        <div class="save-toast" id="sfToast"></div>
+      </div>
+
+      <!-- STAFF LIST -->
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-users" style="color:#e53935;margin-right:0.5rem;"></i> Staff Accounts</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="staffCount"></span>
+        </div>
+        <div id="staffList"></div>
+      </div>
+
+    </div><!-- end tab-staff -->
+
+    <!-- DEMO SESSIONS TAB -->
+    <div class="tab-panel" id="tab-demo">
+
+      <!-- CREATE DEMO -->
+      <div class="about-form" style="margin-bottom:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+          <div class="stat-card"><div class="num" id="dm_pendingCount" style="color:#ff9800;">0</div><div class="lbl">Pending</div></div>
+          <div class="stat-card"><div class="num" id="dm_submittedCount" style="color:#4caf50;">0</div><div class="lbl">Submitted</div></div>
+          <div class="stat-card"><div class="num" id="dm_approvedCount" style="color:#2196f3;">0</div><div class="lbl">Approved</div></div>
+          <div class="stat-card"><div class="num" id="dm_rejectedCount" style="color:#f44336;">0</div><div class="lbl">Rejected</div></div>
+        </div>
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-plus-circle" style="color:#e53935;margin-right:0.5rem;"></i> Create Demo Session</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Session Title *</label>
+            <input type="text" id="dm_title" placeholder="e.g. Reel Shoot Demo – Batch 1"/>
+          </div>
+          <div class="form-group">
+            <label>Assign Staff *</label>
+            <select id="dm_staff" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Demo Date *</label>
+            <input type="date" id="dm_date" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+          <div class="form-group">
+            <label>Demo Time *</label>
+            <input type="time" id="dm_time" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description / Instructions</label>
+          <textarea id="dm_desc" placeholder="What should the staff prepare, shoot style, location, etc."></textarea>
+        </div>
+        <button class="btn-save-about" onclick="createDemo()"><i class="fas fa-plus"></i> Create Demo Session</button>
+        <div class="save-toast" id="dmToast"></div>
+      </div>
+
+      <!-- DEMO LIST -->
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#e53935;margin-right:0.5rem;"></i> All Demo Sessions</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="demoCount"></span>
+        </div>
+        <div id="demoAdminList"></div>
+      </div>
+
+    </div><!-- end tab-demo -->
+
+    <!-- FEEDBACK TAB -->
+    <div class="tab-panel" id="tab-feedback">
+
+      <!-- STATS ROW -->
+      <div class="stats-row" style="margin-bottom:2rem;">
+        <div class="stat-card"><div class="num" id="fb_totalCount">0</div><div class="lbl">Total Feedback</div></div>
+        <div class="stat-card"><div class="num" style="color:#f5a623" id="fb_avgRating">0.0</div><div class="lbl">Avg Rating</div></div>
+        <div class="stat-card"><div class="num" style="color:#2196f3" id="fb_shootCount">0</div><div class="lbl">Shoot Feedback</div></div>
+        <div class="stat-card"><div class="num" style="color:#9c27b0" id="fb_demoCount">0</div><div class="lbl">Demo Feedback</div></div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="filters" style="margin-bottom:1.5rem;">
+        <button class="filter-btn active" onclick="filterFeedback('all',this)">All</button>
+        <button class="filter-btn" onclick="filterFeedback('shoot',this)">Shoot Feedback</button>
+        <button class="filter-btn" onclick="filterFeedback('demo',this)">Demo Feedback</button>
+        <button class="filter-btn" onclick="filterFeedback('5',this)">★★★★★ 5 Stars</button>
+        <button class="filter-btn" onclick="filterFeedback('low',this)">Low Ratings (&le;2)</button>
+      </div>
+
+      <div class="table-wrap" style="padding:1.5rem;">
+        <div id="feedbackAdminList"></div>
+      </div>
+
+    </div><!-- end tab-feedback -->
+
+  </div><!-- end container -->
+
+  <script>
+    if(localStorage.getItem('hs_role') !== 'admin' && localStorage.getItem('hs_role') !== 'staff') window.location.href='login.html';
+
+    const isAdmin = localStorage.getItem('hs_role') === 'admin';
+    const staffAccess = JSON.parse(localStorage.getItem('hs_staff_access') || '["all"]');
+    const hasAccess = (tab) => isAdmin || staffAccess.includes('all') || staffAccess.includes(tab);
+
+    // Show admin/staff name
+    const adminName = isAdmin
+      ? (localStorage.getItem('hs_admin_name') || 'Admin')
+      : (localStorage.getItem('hs_staff_name') || 'Staff');
+    const adminRole = isAdmin ? 'Admin' : (localStorage.getItem('hs_staff_role') || 'Staff');
+    document.getElementById('adminNameDisplay').textContent = '👋 ' + adminName + ' (' + adminRole + ')';
+
+    // Hide tabs staff can't access
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const tab = btn.getAttribute('onclick').match(/'(\w+)'/)[1];
+      if(!hasAccess(tab)) btn.style.display = 'none';
+    });
+
+    // Activate first visible tab
+    const firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.style.display !== 'none');
+    if(firstVisible) firstVisible.click();
+
+    function logout() {
+      ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
+      window.location.href = 'login.html';
+    }
+
+    let allBookings = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    function loadAll() {
+      allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      updateStats();
+      renderTable();
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }
+
+    function updateStats() {
+      document.getElementById('totalCount').textContent = allBookings.length;
+      document.getElementById('pendingCount').textContent = allBookings.filter(b=>b.status==='pending').length;
+      document.getElementById('confirmedCount').textContent = allBookings.filter(b=>b.status==='confirmed').length;
+      document.getElementById('completedCount').textContent = allBookings.filter(b=>b.status==='completed').length;
+    }
+
+    function renderTable() {
+      let filtered = allBookings.slice().reverse();
+      if(currentFilter !== 'all') filtered = filtered.filter(b=>b.status===currentFilter);
+      if(currentSearch) {
+        const s = currentSearch.toLowerCase();
+        filtered = filtered.filter(b=>b.name.toLowerCase().includes(s)||b.service.toLowerCase().includes(s)||b.city.toLowerCase().includes(s)||b.phone.includes(s));
+      }
+      const tbody = document.getElementById('bookingsTable');
+      if(!filtered.length) {
+        tbody.innerHTML=`<tr><td colspan="8"><div class="empty"><i class="fas fa-inbox"></i>No bookings found.</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map((b,i)=>`
+        <tr>
+          <td style="color:#a08080;font-size:0.75rem">${i+1}</td>
+          <td>
+            <div style="font-weight:700">${b.name}</div>
+            <div style="color:#a08080;font-size:0.78rem">${b.phone}</div>
+            <div style="color:#555;font-size:0.7rem">${b.createdAt}</div>
+          </td>
+          <td><span style="color:#e53935;font-weight:600">${b.service}</span></td>
+          <td>${b.city}</td>
+          <td>
+            <div style="font-weight:600">${b.date}</div>
+            <div style="color:#a08080;font-size:0.8rem">${b.time}</div>
+          </td>
+          <td style="color:#a08080;font-size:0.8rem;max-width:150px">${b.notes||'—'}</td>
+          <td><span class="status-badge ${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span></td>
+          <td>
+            <div class="action-btns">
+              ${b.status==='pending'?`<button class="btn-action btn-confirm" onclick="updateStatus(${b.id},'confirmed')">Confirm</button>`:''}
+              ${b.status==='confirmed'?`<button class="btn-action btn-complete" onclick="updateStatus(${b.id},'completed')">Complete</button>`:''}
+              ${b.status!=='cancelled'&&b.status!=='completed'?`<button class="btn-action btn-cancel" onclick="updateStatus(${b.id},'cancelled')">Cancel</button>`:''}
+              <button class="btn-action btn-delete" onclick="deleteBooking(${b.id})"><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function updateStatus(id, status) {
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      const idx = bookings.findIndex(b=>b.id===id);
+      if(idx>-1) { bookings[idx].status=status; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); }
+      // Update live stats
+      const completed = bookings.filter(b=>b.status==='completed').length;
+      const baseReels = 50000;
+      const baseMakers = 500;
+      localStorage.setItem('hs_reels_delivered', baseReels + completed);
+      localStorage.setItem('hs_reel_makers', baseMakers + Math.floor(completed / 2));
+      loadAll();
+    }
+
+    function deleteBooking(id) {
+      if(!confirm('Delete this booking?')) return;
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>b.id!==id);
+      localStorage.setItem('hs_bookings',JSON.stringify(bookings));
+      loadAll();
+    }
+
+    function filterBookings(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTable();
+    }
+
+    function searchBookings(val) { currentSearch=val; renderTable(); }
+
+    // Auto-refresh every 5 seconds
+    loadAll();
+    setInterval(loadAll, 5000);
+
+    // TAB SWITCHING
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'about') loadAboutForm();
+      if (tab === 'vibe') renderVibeAdmin();
+      if (tab === 'customer') loadCustomerForm();
+      if (tab === 'staff') renderStaffList();
+      if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
+      if (tab === 'feedback') renderFeedbackAdmin();
+    }
+
+    // STAFF MANAGEMENT
+    function getStaff(){ return JSON.parse(localStorage.getItem('hs_staff')||'[]'); }
+    function saveStaff(list){ localStorage.setItem('hs_staff', JSON.stringify(list)); }
+
+    document.getElementById('sf_role').addEventListener('change', function(){
+      document.getElementById('sf_custom_role_wrap').style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+
+    function toggleAllAccess(cb){
+      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(c => { if(c !== cb) c.checked = cb.checked; });
+    }
+
+    function getSelectedAccess(){
+      const all = document.getElementById('sf_access_all');
+      if(all.checked) return ['all'];
+      return Array.from(document.querySelectorAll('#sf_access_grid input[type=checkbox]:checked')).map(c=>c.value).filter(v=>v!=='all');
+    }
+
+    function showStaffToast(msg, ok){
+      const t = document.getElementById('sfToast');
+      t.textContent = (ok ? '✅ ' : '❌ ') + msg;
+      t.style.display = 'block';
+      t.style.background = ok ? 'rgba(76,175,80,0.15)' : 'rgba(244,67,54,0.15)';
+      t.style.borderColor = ok ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
+      t.style.color = ok ? '#4caf50' : '#f44336';
+      setTimeout(()=>t.style.display='none', 3000);
+    }
+
+    function createStaff(){
+      const name = document.getElementById('sf_name').value.trim();
+      const username = document.getElementById('sf_username').value.trim();
+      const password = document.getElementById('sf_password').value;
+      const roleVal = document.getElementById('sf_role').value;
+      const role = roleVal === 'custom' ? document.getElementById('sf_custom_role').value.trim() : roleVal;
+      const access = getSelectedAccess();
+
+      if(!name || !username || !password || !role){ showStaffToast('Please fill all required fields.', false); return; }
+      if(password.length < 4){ showStaffToast('Password must be at least 4 characters.', false); return; }
+
+      const list = getStaff();
+      if(list.find(s => s.username.toLowerCase() === username.toLowerCase())){
+        showStaffToast('Username already exists. Choose a different one.', false); return;
+      }
+
+      list.push({ id: Date.now(), name, username, password, role, access, createdAt: new Date().toLocaleDateString() });
+      saveStaff(list);
+
+      // Reset form
+      ['sf_name','sf_username','sf_password','sf_custom_role'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('sf_role').value = '';
+      document.getElementById('sf_custom_role_wrap').style.display = 'none';
+      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(c => c.checked = false);
+
+      showStaffToast('Staff account created for ' + name, true);
+      renderStaffList();
+    }
+
+    function renderStaffList(){
+      const list = getStaff();
+      document.getElementById('staffCount').textContent = list.length + ' account(s)';
+      const el = document.getElementById('staffList');
+      if(!list.length){
+        el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No staff accounts yet. Create one above.</p>';
+        return;
+      }
+      const roleColors = { creator:'#e53935', editor:'#2196f3', pr:'#ff9800', manager:'#9c27b0', support:'#4caf50' };
+      el.innerHTML = list.map(s => {
+        const color = roleColors[s.role] || '#e53935';
+        const accessBadges = (s.access||[]).map(a =>
+          `<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.68rem;color:#aaa;">${a}</span>`
+        ).join(' ');
+        return `<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <div style="width:42px;height:42px;border-radius:10px;background:${color}22;border:1px solid ${color}44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:${color};flex-shrink:0;">${s.name[0].toUpperCase()}</div>
+            <div>
+              <div style="font-size:0.92rem;font-weight:700;color:#fff;">${s.name}</div>
+              <div style="font-size:0.75rem;color:#a08080;margin-top:0.1rem;">@${s.username} &nbsp;·&nbsp; <span style="color:${color};">${s.role}</span> &nbsp;·&nbsp; Created ${s.createdAt}</div>
+              <div style="margin-top:0.35rem;display:flex;gap:0.3rem;flex-wrap:wrap;">${accessBadges}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button onclick="editStaff(${s.id})" style="background:rgba(33,150,243,0.12);border:none;color:#2196f3;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>
+            <button onclick="resetPassword(${s.id})" style="background:rgba(255,152,0,0.12);border:none;color:#ff9800;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-key"></i> Reset PW</button>
+            <button onclick="deleteStaff(${s.id})" style="background:rgba(244,67,54,0.12);border:none;color:#f44336;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function editStaff(id){
+      const list = getStaff();
+      const s = list.find(x => x.id === id);
+      if(!s) return;
+      const newName = prompt('Full Name:', s.name);
+      if(newName === null) return;
+      const newRole = prompt('Role (creator/editor/pr/manager/support or custom):', s.role);
+      if(newRole === null) return;
+      const newAccess = prompt('Access (comma separated: bookings,about,vibe,customer,staff or all):', (s.access||[]).join(','));
+      if(newAccess === null) return;
+      s.name = newName.trim() || s.name;
+      s.role = newRole.trim() || s.role;
+      s.access = newAccess.split(',').map(a=>a.trim()).filter(Boolean);
+      saveStaff(list);
+      renderStaffList();
+      showStaffToast('Account updated for ' + s.name, true);
+    }
+
+    function resetPassword(id){
+      const list = getStaff();
+      const s = list.find(x => x.id === id);
+      if(!s) return;
+      const newPass = prompt('Set new password for @' + s.username + ':');
+      if(!newPass || newPass.length < 4){ alert('Password must be at least 4 characters.'); return; }
+      s.password = newPass;
+      saveStaff(list);
+      showStaffToast('Password reset for @' + s.username, true);
+    }
+
+    // Open staff videos DB (same DB staff uses)
+    var adminVideoDB = null;
+    function openAdminVideoDB(cb){
+      if(adminVideoDB){ cb(adminVideoDB); return; }
+      var req = indexedDB.open('hs_staff_videos_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
+      req.onsuccess = function(e){ adminVideoDB = e.target.result; cb(adminVideoDB); };
+      req.onerror = function(){ cb(null); };
+    }
+
+    // FEEDBACK ADMIN
+    var currentFbFilter = 'all';
+    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
+
+    function filterFeedback(type, btn){
+      currentFbFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderFeedbackAdmin();
+    }
+
+    function renderFeedbackAdmin(){
+      var all = getFeedbacks().slice().reverse();
+      // stats
+      var shoots = all.filter(function(f){ return f.type === 'shoot'; });
+      var demos = all.filter(function(f){ return f.type === 'demo'; });
+      var avg = all.length ? (all.reduce(function(s,f){ return s + f.rating; }, 0) / all.length).toFixed(1) : '0.0';
+      document.getElementById('fb_totalCount').textContent = all.length;
+      document.getElementById('fb_avgRating').textContent = avg;
+      document.getElementById('fb_shootCount').textContent = shoots.length;
+      document.getElementById('fb_demoCount').textContent = demos.length;
+
+      // filter
+      var filtered = all;
+      if(currentFbFilter === 'shoot') filtered = shoots;
+      else if(currentFbFilter === 'demo') filtered = demos;
+      else if(currentFbFilter === '5') filtered = all.filter(function(f){ return f.rating === 5; });
+      else if(currentFbFilter === 'low') filtered = all.filter(function(f){ return f.rating <= 2; });
+
+      var el = document.getElementById('feedbackAdminList');
+      if(!filtered.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No feedback yet.</div>';
+        return;
+      }
+
+      var starColors = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
+      el.innerHTML = filtered.map(function(f){
+        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
+        var color = starColors[f.rating] || '#f5a623';
+        var typeBadge = f.type === 'shoot'
+          ? '<span style="background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-camera"></i> Shoot</span>'
+          : '<span style="background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-chalkboard-teacher"></i> Demo</span>';
+        var title = f.type === 'shoot'
+          ? (f.service + ' — ' + f.city)
+          : f.title;
+        var sub = f.type === 'shoot'
+          ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
+          : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
+        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
+          + '<div style="display:flex;align-items:center;gap:0.75rem;">'
+          + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
+          + '<div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">' + title + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;">' + sub + '</div>'
+          + '</div></div>'
+          + '<div style="display:flex;align-items:center;gap:0.6rem;">'
+          + typeBadge
+          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
+          + '</div></div>'
+          + (f.comment ? '<div style="background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + '<div style="font-size:0.68rem;color:#555;margin-top:0.6rem;">' + f.submittedAt + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    // DEMO SESSIONS
+    function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
+    function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
+
+    function populateDemoStaffSelect(){
+      const sel = document.getElementById('dm_staff');
+      const list = getStaff();
+      sel.innerHTML = '<option value="" disabled selected>Select staff member</option>';
+      list.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name + ' (' + s.role + ')';
+        sel.appendChild(opt);
+      });
+    }
+
+    function showDemoToast(msg, ok){
+      const t = document.getElementById('dmToast');
+      t.textContent = (ok ? '✅ ' : '❌ ') + msg;
+      t.style.display = 'block';
+      t.style.background = ok ? 'rgba(76,175,80,0.15)' : 'rgba(244,67,54,0.15)';
+      t.style.borderColor = ok ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
+      t.style.color = ok ? '#4caf50' : '#f44336';
+      setTimeout(()=>t.style.display='none', 3000);
+    }
+
+    function createDemo(){
+      const title = document.getElementById('dm_title').value.trim();
+      const staffId = document.getElementById('dm_staff').value;
+      const date = document.getElementById('dm_date').value;
+      const time = document.getElementById('dm_time').value;
+      const desc = document.getElementById('dm_desc').value.trim();
+      if(!title || !staffId || !date || !time){ showDemoToast('Please fill all required fields.', false); return; }
+      const staffMember = getStaff().find(s => s.id == staffId);
+      const demos = getDemos();
+      demos.push({
+        id: Date.now(),
+        title, date, time, desc,
+        staffId: Number(staffId),
+        staffName: staffMember ? staffMember.name : 'Unknown',
+        status: 'pending',
+        reelUrl: null,
+        createdAt: new Date().toLocaleDateString()
+      });
+      saveDemos(demos);
+      ['dm_title','dm_desc'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('dm_date').value = '';
+      document.getElementById('dm_time').value = '';
+      document.getElementById('dm_staff').value = '';
+      showDemoToast('Demo session created and assigned to ' + (staffMember ? staffMember.name : ''), true);
+      renderDemoAdminList();
+    }
+
+    function renderDemoAdminList(){
+      const demos = getDemos().slice().reverse();
+      document.getElementById('demoCount').textContent = demos.length + ' session(s)';
+      // stats
+      document.getElementById('dm_pendingCount').textContent = demos.filter(d=>d.status==='pending').length;
+      document.getElementById('dm_submittedCount').textContent = demos.filter(d=>d.status==='submitted').length;
+      document.getElementById('dm_approvedCount').textContent = demos.filter(d=>d.status==='approved').length;
+      document.getElementById('dm_rejectedCount').textContent = demos.filter(d=>d.status==='rejected').length;
+      const el = document.getElementById('demoAdminList');
+      if(!demos.length){
+        el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No demo sessions yet. Create one above.</p>';
+        return;
+      }
+      const statusColors = { pending:'#ff9800', submitted:'#4caf50', approved:'#2196f3', rejected:'#f44336' };
+      el.innerHTML = demos.map(d => {
+        const color = statusColors[d.status] || '#ff9800';
+        const reelSection = d.reelVideoId
+          ? `<div style="margin-top:0.75rem;padding:0.75rem;background:#0d0000;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">
+               <div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.4rem;"><i class="fas fa-check-circle"></i> Reel Submitted by Staff &nbsp;·&nbsp; <span style="color:#a08080;font-weight:400;">${d.submittedAt||''}</span></div>
+               <div id="adminReelPlayer_${d.id}" style="color:#a08080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>
+               ${d.status === 'submitted' ? `
+               <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                 <button onclick="markDemoReviewed(${d.id},'approve')" style="flex:1;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.45rem 0.75rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#2196f3';this.style.color='#fff'" onmouseout="this.style.background='rgba(33,150,243,0.15)';this.style.color='#2196f3'"><i class="fas fa-check"></i> Approve</button>
+                 <button onclick="markDemoReviewed(${d.id},'reject')" style="flex:1;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.45rem 0.75rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f44336';this.style.color='#fff'" onmouseout="this.style.background='rgba(244,67,54,0.15)';this.style.color='#f44336'"><i class="fas fa-times"></i> Reject</button>
+               </div>` : ''}
+               ${d.status === 'approved' ? `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:6px;font-size:0.75rem;color:#90caf9;"><i class="fas fa-check-double"></i> Approved ${d.reviewedAt||''} ${d.adminNote?'&mdash; &ldquo;'+d.adminNote+'&rdquo;':''}</div>` : ''}
+               ${d.status === 'rejected' ? `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:6px;font-size:0.75rem;color:#ef9a9a;"><i class="fas fa-times-circle"></i> Rejected ${d.reviewedAt||''} &mdash; &ldquo;${d.adminNote||''}&rdquo;</div>` : ''}
+             </div>`
+          : `<div style="margin-top:0.6rem;font-size:0.72rem;color:#666;"><i class="fas fa-clock"></i> Awaiting reel submission from staff</div>`;
+        return `<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ${color};border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+            <div>
+              <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">${d.title}</div>
+              <div style="font-size:0.75rem;color:#a08080;"><i class="fas fa-user" style="color:#e53935;"></i> ${d.staffName} &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ${d.date} &nbsp;·&nbsp; <i class="fas fa-clock"></i> ${d.time}</div>
+              ${d.desc ? `<div style="font-size:0.75rem;color:#666;margin-top:0.3rem;">${d.desc}</div>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span style="background:${color}22;border:1px solid ${color}44;color:${color};font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">${d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span>
+              <button onclick="deleteDemo(${d.id})" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          ${reelSection}
+        </div>`;
+      }).join('');
+      // Load videos from shared IndexedDB
+      demos.forEach(function(d){
+        if(!d.reelVideoId) return;
+        var playerEl = document.getElementById('adminReelPlayer_' + d.id);
+        if(!playerEl) return;
+        openAdminVideoDB(function(db){
+          if(!db){ playerEl.textContent = 'Video unavailable.'; return; }
+          var req = db.transaction('videos','readonly').objectStore('videos').get(d.reelVideoId);
+          req.onsuccess = function(){
+            if(req.result && req.result.blob){
+              var url = URL.createObjectURL(req.result.blob);
+              playerEl.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:200px;border-radius:6px;margin-top:0.3rem;"></video>';
+            } else {
+              playerEl.textContent = 'Video not found in storage.';
+            }
+          };
+          req.onerror = function(){ playerEl.textContent = 'Error loading video.'; };
+        });
+      });
+    }
+
+    function markDemoReviewed(id, action){
+      var note = prompt((action === 'approve' ? 'Approval note for staff (optional):' : 'Rejection reason for staff *:')) || '';
+      if(action === 'reject' && !note.trim()){ alert('Please provide a rejection reason.'); return; }
+      const demos = getDemos();
+      const d = demos.find(x => x.id === id);
+      if(d){
+        d.status = action === 'approve' ? 'approved' : 'rejected';
+        d.adminNote = note;
+        d.reviewedAt = new Date().toLocaleString();
+      }
+      saveDemos(demos);
+      renderDemoAdminList();
+    }
+
+    function deleteDemo(id){
+      if(!confirm('Delete this demo session?')) return;
+      saveDemos(getDemos().filter(d => d.id !== id));
+      renderDemoAdminList();
+    }
+
+    function deleteStaff(id){
+      if(!confirm('Delete this staff account?')) return;
+      saveStaff(getStaff().filter(s => s.id !== id));
+      renderStaffList();
+    }
+
+    // CUSTOMER PAGE
+    function loadCustomerForm() {
+      const c = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
+      document.getElementById('cp_title').value = c.title || 'Book Your Shoot';
+      document.getElementById('cp_subtitle').value = c.subtitle || "Fill in the details and we'll assign a shooter for you.";
+      document.getElementById('cp_banner').value = c.banner || '';
+      document.getElementById('cp_bannerColor').value = c.bannerColor || '#e53935';
+      document.getElementById('cp_bannerTextColor').value = c.bannerTextColor || '#ffffff';
+      document.getElementById('cp_labelName').value = c.labelName || 'Full Name';
+      document.getElementById('cp_labelPhone').value = c.labelPhone || 'Phone Number';
+      document.getElementById('cp_labelCity').value = c.labelCity || 'City';
+      document.getElementById('cp_labelNotes').value = c.labelNotes || 'Additional Notes';
+      document.getElementById('cp_services').value = (c.services || ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography']).join('\n');
+      document.getElementById('cp_showDate').value = c.showDate !== undefined ? c.showDate : 'yes';
+      document.getElementById('cp_showTime').value = c.showTime !== undefined ? c.showTime : 'yes';
+      document.getElementById('cp_showNotes').value = c.showNotes !== undefined ? c.showNotes : 'yes';
+      document.getElementById('cp_requireNotes').value = c.requireNotes || 'no';
+      document.getElementById('cp_btnText').value = c.btnText || 'Confirm Booking';
+      document.getElementById('cp_btnIcon').value = c.btnIcon || 'fa-camera';
+      document.getElementById('cp_btnColor').value = c.btnColor || '#e53935';
+      document.getElementById('cp_btnTextColor').value = c.btnTextColor || '#ffffff';
+      document.getElementById('cp_successTitle').value = c.successTitle || 'Booking Confirmed!';
+      document.getElementById('cp_successMsg').value = c.successMsg || "Your booking has been sent to our team. We'll contact you shortly.";
+      document.getElementById('cp_note').value = c.note || '';
+      document.getElementById('cp_bgColor').value = c.bgColor || '#0d0000';
+      document.getElementById('cp_cardColor').value = c.cardColor || '#1c0000';
+      document.getElementById('cp_accentColor').value = c.accentColor || '#e53935';
+      document.getElementById('cp_showBookings').value = c.showBookings !== undefined ? c.showBookings : 'yes';
+      document.getElementById('cp_bookingsTitle').value = c.bookingsTitle || 'My Bookings';
+    }
+
+    function saveCustomerPage() {
+      const services = document.getElementById('cp_services').value.split('\n').map(s=>s.trim()).filter(Boolean);
+      const data = {
+        title: document.getElementById('cp_title').value,
+        subtitle: document.getElementById('cp_subtitle').value,
+        banner: document.getElementById('cp_banner').value,
+        bannerColor: document.getElementById('cp_bannerColor').value,
+        bannerTextColor: document.getElementById('cp_bannerTextColor').value,
+        labelName: document.getElementById('cp_labelName').value,
+        labelPhone: document.getElementById('cp_labelPhone').value,
+        labelCity: document.getElementById('cp_labelCity').value,
+        labelNotes: document.getElementById('cp_labelNotes').value,
+        services,
+        showDate: document.getElementById('cp_showDate').value,
+        showTime: document.getElementById('cp_showTime').value,
+        showNotes: document.getElementById('cp_showNotes').value,
+        requireNotes: document.getElementById('cp_requireNotes').value,
+        btnText: document.getElementById('cp_btnText').value,
+        btnIcon: document.getElementById('cp_btnIcon').value,
+        btnColor: document.getElementById('cp_btnColor').value,
+        btnTextColor: document.getElementById('cp_btnTextColor').value,
+        successTitle: document.getElementById('cp_successTitle').value,
+        successMsg: document.getElementById('cp_successMsg').value,
+        note: document.getElementById('cp_note').value,
+        bgColor: document.getElementById('cp_bgColor').value,
+        cardColor: document.getElementById('cp_cardColor').value,
+        accentColor: document.getElementById('cp_accentColor').value,
+        showBookings: document.getElementById('cp_showBookings').value,
+        bookingsTitle: document.getElementById('cp_bookingsTitle').value
+      };
+      localStorage.setItem('hs_customer_page', JSON.stringify(data));
+      const toast = document.getElementById('cpToast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    // VIBE — IndexedDB for video blobs, localStorage for metadata
+    var vibeDB = null;
+    function openVibeDB(cb){
+      if(vibeDB){ cb(vibeDB); return; }
+      var req = indexedDB.open('hs_vibe_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
+      req.onsuccess = function(e){ vibeDB = e.target.result; cb(vibeDB); };
+      req.onerror = function(){ cb(null); };
+    }
+    function saveVideoDB(id, blob, cb){
+      openVibeDB(function(db){
+        if(!db){ cb(); return; }
+        var tx = db.transaction('videos','readwrite');
+        tx.objectStore('videos').put({id:id, blob:blob});
+        tx.oncomplete = cb;
+      });
+    }
+    function getVideoDB(id, cb){
+      openVibeDB(function(db){
+        if(!db){ cb(null); return; }
+        var req = db.transaction('videos','readonly').objectStore('videos').get(id);
+        req.onsuccess = function(){ cb(req.result ? req.result.blob : null); };
+        req.onerror = function(){ cb(null); };
+      });
+    }
+    function deleteVideoDB(id){
+      openVibeDB(function(db){
+        if(!db) return;
+        db.transaction('videos','readwrite').objectStore('videos').delete(id);
+      });
+    }
+
+    function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
+    function saveVibeItems(items){ localStorage.setItem('hs_vibe', JSON.stringify(items)); }
+
+    function setProgress(pct, label){
+      document.getElementById('vibe_progress_wrap').style.display = pct < 100 ? 'block' : 'none';
+      document.getElementById('vibe_progress_bar').style.width = pct + '%';
+      document.getElementById('vibe_progress_label').textContent = label;
+    }
+
+    function uploadVibeItem(){
+      var title = document.getElementById('vibe_title').value.trim();
+      var cat = document.getElementById('vibe_cat').value;
+      var thumbFile = document.getElementById('vibe_thumb').files[0];
+      var videoFile = document.getElementById('vibe_video').files[0];
+      if(!title || !cat){ alert('Please fill in title and category.'); return; }
+      if(!thumbFile){ alert('Please select a thumbnail image.'); return; }
+      if(!videoFile){ alert('Please select a video file.'); return; }
+
+      var btn = document.getElementById('vibe_upload_btn');
+      btn.disabled = true; btn.textContent = 'Uploading...';
+      setProgress(10, 'Reading thumbnail...');
+
+      var tr = new FileReader();
+      tr.onload = function(e){
+        var thumbData = e.target.result;
+        setProgress(40, 'Processing video...');
+        var id = Date.now();
+        saveVideoDB(id, videoFile, function(){
+          setProgress(90, 'Saving...');
+          var items = getVibeItems();
+          items.push({ id: id, title: title, category: cat, thumbnail: thumbData, type: 'video' });
+          saveVibeItems(items);
+          setProgress(100, 'Done');
+          btn.disabled = false; btn.innerHTML = '<i class="fas fa-upload"></i> Upload to Vibe';
+          document.getElementById('vibe_title').value='';
+          document.getElementById('vibe_cat').value='';
+          document.getElementById('vibe_thumb').value='';
+          document.getElementById('vibe_video').value='';
+          var toast = document.getElementById('vibeToast');
+          toast.style.display='block';
+          setTimeout(function(){ toast.style.display='none'; }, 2500);
+          renderVibeAdmin();
+        });
+      };
+      tr.readAsDataURL(thumbFile);
+    }
+
+    function renderVibeAdmin(){
+      var items = getVibeItems();
+      document.getElementById('vibeCount').textContent = items.length + ' item(s)';
+      var grid = document.getElementById('vibeAdminGrid');
+      if(!items.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;">No content uploaded yet.</p>'; return; }
+      grid.innerHTML = items.slice().reverse().map(function(item){
+        return '<div style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">'
+          +'<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;"/>'
+          +'<div style="padding:0.65rem 0.75rem;">'
+          +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
+          +'<div style="font-size:0.7rem;color:#e53935;margin-bottom:0.5rem;">'+item.category+' &nbsp;&#9654; Video</div>'
+          +'<button onclick="deleteVibeItem('+item.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Remove</button>'
+          +'</div></div>';
+      }).join('');
+    }
+
+    function deleteVibeItem(id){
+      if(!confirm('Remove this item?')) return;
+      deleteVideoDB(id);
+      saveVibeItems(getVibeItems().filter(function(i){ return i.id!==id; }));
+      renderVibeAdmin();
+    }
+
+    // ABOUT US
+    function loadAboutForm() {
+      const a = JSON.parse(localStorage.getItem('hs_about') || '{}');
+      document.getElementById('ab_heroTitle').value = a.heroTitle || '';
+      document.getElementById('ab_heroDesc').value = a.heroDesc || '';
+      document.getElementById('ab_storyText').value = a.storyText || '';
+      document.getElementById('ab_missionText').value = a.missionText || '';
+      document.getElementById('ab_statReels').value = a.statReels || '';
+      document.getElementById('ab_statMakers').value = a.statMakers || '';
+      document.getElementById('ab_statCities').value = a.statCities || '';
+      const team = a.team || [{name:'Srisanth S',role:'Founder & CEO'},{name:'Kiran M',role:'Head of Operations'},{name:'Priya R',role:'Lead Reel-Maker'}];
+      document.getElementById('teamRows').innerHTML = '';
+      team.forEach(m => addTeamRow(m.name, m.role));
+    }
+
+    function addTeamRow(name='', role='') {
+      const div = document.createElement('div');
+      div.className = 'team-row';
+      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+      document.getElementById('teamRows').appendChild(div);
+    }
+
+    function saveAbout() {
+      const team = Array.from(document.querySelectorAll('#teamRows .team-row')).map(row => ({
+        name: row.querySelectorAll('input')[0].value,
+        role: row.querySelectorAll('input')[1].value
+      })).filter(m => m.name);
+      const data = {
+        heroTitle: document.getElementById('ab_heroTitle').value,
+        heroDesc: document.getElementById('ab_heroDesc').value,
+        storyText: document.getElementById('ab_storyText').value,
+        missionText: document.getElementById('ab_missionText').value,
+        statReels: document.getElementById('ab_statReels').value,
+        statMakers: document.getElementById('ab_statMakers').value,
+        statCities: document.getElementById('ab_statCities').value,
+        team
+      };
+      localStorage.setItem('hs_about', JSON.stringify(data));
+      const toast = document.getElementById('saveToast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2500);
+    }
+  </script>
+</body>
+</html>
