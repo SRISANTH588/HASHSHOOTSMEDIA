@@ -3,12 +3,9 @@
 
   var links = [
     { href:'index.html',    icon:'fa-house',       label:'Home' },
-    { href:'vibe.html',     icon:'fa-compass',     label:'Discover' },
-    { href:'booking.html',  icon:'fa-camera',      label:'Book Now' },
+    { href:'vibe.html',     icon:'fa-compass',     label:'Discover the Vibe' },
+    { href:'partner.html',  icon:'fa-handshake',   label:'Become a Partner' },
     { href:'about.html',    icon:'fa-circle-info', label:'About Us' },
-    { href:'partner.html',  icon:'fa-handshake',   label:'Partner' },
-    { href:'career.html',   icon:'fa-briefcase',   label:'Careers' },
-    { href:'#contact',      icon:'fa-envelope',    label:'Contact' },
   ];
 
   var navHTML = `
@@ -45,6 +42,7 @@
     <a href="index.html" class="hs-nav-logo">HA<span>⚡</span>H SHOOTS</a>
     <div class="hs-nav-links" id="hsNavLinks"></div>
     <div class="hs-nav-actions">
+      <a href="#contact" class="hs-nav-btn hs-nav-btn-outline"><i class="fas fa-envelope"></i> Contact Us</a>
       <a href="login.html" class="hs-nav-btn hs-nav-btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
       <a href="booking.html" class="hs-nav-btn hs-nav-btn-primary"><i class="fas fa-camera"></i> Book Now</a>
     </div>
@@ -56,6 +54,7 @@
     <div id="hsMobileLinks"></div>
     <div class="hs-mobile-divider"></div>
     <div class="hs-mobile-actions">
+      <a href="#contact" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;">Contact Us</a>
       <a href="login.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;">Login</a>
       <a href="booking.html" style="background:#e53935;color:#fff;">Book Now</a>
     </div>
