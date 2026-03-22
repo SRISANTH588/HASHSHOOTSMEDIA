@@ -92,6 +92,10 @@
         <div class="form-group"><label id="lbl_city">City</label><input type="text" id="city" placeholder="Your city"/></div>
         <div class="form-group" id="dateGroup"><label>Date</label><input type="date" id="date"/></div>
         <div class="form-group" id="timeGroup"><label>Time</label><input type="time" id="time"/></div>
+        <div class="form-group full" id="creatorGroup">
+          <label>Preferred Creator <span style="color:#a08080;font-weight:400;">(optional)</span></label>
+          <select id="preferredCreator"><option value="">No preference — Admin will assign</option></select>
+        </div>
         <div class="form-group full" id="notesGroup"><label id="lbl_notes">Additional Notes</label><textarea id="notes" placeholder="Any special requirements..."></textarea></div>
       </div>
       <div class="note-bar" id="noteBar"></div>
@@ -170,6 +174,19 @@
     const services = c.services && c.services.length ? c.services : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
     services.forEach(s => { const o = document.createElement('option'); o.textContent = s; sel.appendChild(o); });
 
+    // Preferred Creator dropdown — load creators from hs_staff
+    (function loadCreators(){
+      var staff = JSON.parse(localStorage.getItem('hs_staff') || '[]');
+      var creators = staff.filter(function(s){ return s.role === 'creator'; });
+      var cSel = document.getElementById('preferredCreator');
+      creators.forEach(function(s){
+        var o = document.createElement('option');
+        o.value = s.id;
+        o.textContent = s.name + ' — ' + s.role;
+        cSel.appendChild(o);
+      });
+    })();
+
     // Show/hide fields
     if(c.showDate === 'no') document.getElementById('dateGroup').style.display = 'none';
     if(c.showTime === 'no') document.getElementById('timeGroup').style.display = 'none';
@@ -222,13 +239,20 @@
       if(c.showTime !== 'no' && !time) { alert('Please select a time.'); return; }
       if(c.requireNotes === 'yes' && !notes) { alert('Please fill in the notes field.'); return; }
 
+      const preferredCreatorEl = document.getElementById('preferredCreator');
+      const preferredCreatorId = preferredCreatorEl ? preferredCreatorEl.value : '';
+      const staff = JSON.parse(localStorage.getItem('hs_staff') || '[]');
+      const preferredCreatorObj = staff.find(function(s){ return s.id == preferredCreatorId; });
+      const preferredCreatorName = preferredCreatorObj ? preferredCreatorObj.name : '';
+
       const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id: Date.now(), name, phone, service, city, date, time, notes, status: 'pending', createdAt: new Date().toLocaleString() });
+      bookings.push({ id: Date.now(), name, phone, service, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       document.getElementById('successMsg').style.display = 'block';
       ['name','phone','city','notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
       document.getElementById('service').value = '';
+      if(preferredCreatorEl) preferredCreatorEl.value = '';
       if(c.showDate !== 'no') document.getElementById('date').value = '';
       if(c.showTime !== 'no') document.getElementById('time').value = '';
       loadBookings();
@@ -245,6 +269,7 @@
           <div class="booking-info">
             <h4>${b.service} — ${b.city}</h4>
             <p>${b.date !== 'N/A' ? b.date + ' at ' + b.time : ''} &nbsp;|&nbsp; ${b.name} &nbsp;|&nbsp; ${b.phone}</p>
+            ${b.preferredCreatorName ? `<p style="margin-top:4px;font-size:0.78rem;color:#e53935;"><i class="fas fa-user-circle"></i> Preferred: ${b.preferredCreatorName}</p>` : '<p style="margin-top:4px;font-size:0.78rem;color:#a08080;"><i class="fas fa-user-circle"></i> Creator: Admin will assign</p>'}
             ${b.notes ? `<p style="margin-top:4px;font-style:italic">${b.notes}</p>` : ''}
             <p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Booked on ${b.createdAt}</p>
           </div>
@@ -253,6 +278,7 @@
     }
     loadBookings();
     setInterval(loadBookings, 3000);
+    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
     function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); }
     var selectedStars = {};
 

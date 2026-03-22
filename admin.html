@@ -862,6 +862,7 @@
           <td>
             <div style="font-weight:700">${b.name}</div>
             <div style="color:#a08080;font-size:0.78rem">${b.phone}</div>
+            ${b.preferredCreatorName ? `<div style="color:#e53935;font-size:0.72rem;margin-top:2px;"><i class="fas fa-user-circle"></i> Prefers: ${b.preferredCreatorName}</div>` : ''}
             <div style="color:#555;font-size:0.7rem">${b.createdAt}</div>
           </td>
           <td><span style="color:#e53935;font-weight:600">${b.service}</span></td>
