@@ -7,15 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1c0000;border:1px solid rgba(229,57,53,0.4);border-left:4px solid #e53935;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
+    .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#2a0404;border:1px solid rgba(229,57,53,0.4);border-left:4px solid #e53935;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
     @keyframes slideIn{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
     .notif-toast-title{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
     .notif-toast-sub{font-size:0.75rem;color:#a08080;}
     .notif-toast-close{position:absolute;top:0.5rem;right:0.75rem;background:none;border:none;color:#555;cursor:pointer;font-size:0.85rem;}
     .notif-toast-action{margin-top:0.65rem;background:#e53935;color:#fff;border:none;border-radius:7px;padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .notif-toast-action:hover{background:#b71c1c;}
-    body{font-family:'Inter',sans-serif;background:#0d0000;color:#fff;min-height:100vh;}
-    nav{background:rgba(13,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;}
+    nav{background:rgba(26,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
     .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#e53935;}
     .admin-badge{background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
     .nav-right{display:flex;align-items:center;gap:1rem;}
@@ -25,15 +25,15 @@
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
     h1{font-size:1.8rem;font-weight:900;}h1 span{color:#e53935;}
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
-    .stat-card{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;}
+    .stat-card{background:#2a0404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;}
     .stat-card .num{font-size:2rem;font-weight:900;color:#e53935;}
     .stat-card .lbl{font-size:0.8rem;color:#a08080;margin-top:0.2rem;}
     .filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;}
     .filter-btn{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#a08080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .filter-btn.active,.filter-btn:hover{background:#e53935;color:#fff;border-color:transparent;}
-    .search-bar{flex:1;max-width:280px;background:#1c0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.5rem 1rem;color:#fff;font-size:0.875rem;font-family:inherit;outline:none;}
+    .search-bar{flex:1;max-width:280px;background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.5rem 1rem;color:#fff;font-size:0.875rem;font-family:inherit;outline:none;}
     .search-bar:focus{border-color:#e53935;}
-    .table-wrap{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;}
+    .table-wrap{background:#2a0404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;}
     table{width:100%;border-collapse:collapse;}
     thead{background:rgba(229,57,53,0.08);}
     th{padding:1rem 1.25rem;text-align:left;font-size:0.78rem;font-weight:700;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;}
@@ -63,12 +63,12 @@
     .tab-btn.active,.tab-btn:hover{background:#e53935;color:#fff;border-color:transparent;}
     .tab-panel{display:none;}
     .tab-panel.active{display:block;}
-    .about-form{background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:2rem;}
+    .about-form{background:#2a0404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:2rem;}
     .about-form h2{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
     .form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
     .form-group label{font-size:0.78rem;font-weight:600;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;}
-    .form-group input,.form-group textarea{background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+    .form-group input,.form-group textarea{background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
     .form-group input:focus,.form-group textarea:focus{border-color:#e53935;}
     .form-group textarea{resize:vertical;min-height:90px;}
     .team-row{display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
@@ -110,6 +110,7 @@
       <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Feedback <span id="feedbackNotifBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
       <button class="tab-btn" onclick="switchTab('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
+      <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
     </div>
 
@@ -227,7 +228,7 @@
           </div>
           <div class="form-group">
             <label>Category *</label>
-            <select id="vibe_cat" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+            <select id="vibe_cat" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="" disabled selected>Select category</option>
               <option>Events &amp; Weddings</option>
               <option>Car Delivery</option>
@@ -242,16 +243,16 @@
         </div>
         <div class="form-group">
           <label>Thumbnail Image (required)</label>
-          <input type="file" id="vibe_thumb" accept="image/*" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <input type="file" id="vibe_thumb" accept="image/*" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
         </div>
         <div class="form-group">
           <label>Video File *</label>
-          <input type="file" id="vibe_video" accept="video/*" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <input type="file" id="vibe_video" accept="video/*" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           <span style="font-size:0.75rem;color:#a08080;margin-top:0.3rem;">Supports MP4, MOV, WebM. Large files supported.</span>
         </div>
         <div id="vibe_progress_wrap" style="display:none;margin-bottom:1rem;">
           <div style="font-size:0.8rem;color:#a08080;margin-bottom:0.4rem;" id="vibe_progress_label">Processing...</div>
-          <div style="background:#110000;border-radius:6px;height:8px;overflow:hidden;">
+          <div style="background:#1f0000;border-radius:6px;height:8px;overflow:hidden;">
             <div id="vibe_progress_bar" style="height:100%;background:#e53935;width:0%;transition:width 0.3s;"></div>
           </div>
         </div>
@@ -454,7 +455,7 @@
           </div>
           <div class="form-group">
             <label>Role *</label>
-            <select id="sf_role" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+            <select id="sf_role" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="" disabled selected>Select Role</option>
               <option value="creator">🎬 Creator</option>
               <option value="editor">✂️ Editor</option>
@@ -472,22 +473,22 @@
         <div style="margin-bottom:1rem;">
           <label style="font-size:0.78rem;font-weight:600;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:0.75rem;">Page Access</label>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;" id="sf_access_grid">
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="bookings" style="accent-color:#e53935;"/> Bookings
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="about" style="accent-color:#e53935;"/> About Us
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="vibe" style="accent-color:#e53935;"/> Vibe
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="customer" style="accent-color:#e53935;"/> Customer Page
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="staff" style="accent-color:#e53935;"/> Staff
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="all" style="accent-color:#e53935;" id="sf_access_all" onchange="toggleAllAccess(this)"/> Full Access
             </label>
           </div>
@@ -526,17 +527,17 @@
           </div>
           <div class="form-group">
             <label>Assign Staff *</label>
-            <select id="dm_staff" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+            <select id="dm_staff" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Demo Date *</label>
-            <input type="date" id="dm_date" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="date" id="dm_date" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Demo Time *</label>
-            <input type="time" id="dm_time" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="time" id="dm_time" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
         </div>
         <div class="form-group">
@@ -615,7 +616,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-photo-video" style="color:#e53935;margin-right:0.5rem;"></i> Staff Uploaded Videos</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
-            <select id="videoFilterStaff" onchange="renderStaffVideosAdmin()" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
+            <select id="videoFilterStaff" onchange="renderStaffVideosAdmin()" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
             <span style="font-size:0.8rem;color:#a08080;" id="staffVideosCount"></span>
           </div>
         </div>
@@ -642,30 +643,30 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Select Booking *</label>
-            <select id="as_booking" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
+            <select id="as_booking" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
           </div>
           <div class="form-group">
             <label>Assign To (Creator) *</label>
-            <select id="as_staff" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+            <select id="as_staff" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Shoot Date *</label>
-            <input type="date" id="as_date" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="date" id="as_date" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Shoot Time *</label>
-            <input type="time" id="as_time" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="time" id="as_time" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Credit Amount (₹) *</label>
-            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
         </div>
         <div class="form-group">
           <label>Instructions / Notes</label>
-          <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
+          <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
         </div>
         <button class="btn-save-about" onclick="assignShoot()"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
         <div class="save-toast" id="asToast"></div>
@@ -681,6 +682,144 @@
       </div>
 
     </div><!-- end tab-assign -->
+
+    <!-- HOME PAGE TAB -->
+    <div class="tab-panel" id="tab-homepage">
+
+      <!-- HERO STATS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-chart-bar" style="color:#e53935;margin-right:0.5rem;"></i> Hero Stats</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reels Delivered</label>
+            <input type="text" id="hp_statReels" placeholder="e.g. 50,000+"/>
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <input type="text" id="hp_statRating" placeholder="e.g. 5.0/5"/>
+          </div>
+        </div>
+        <div class="form-group" style="max-width:280px;">
+          <label>Reel-Makers</label>
+          <input type="text" id="hp_statMakers" placeholder="e.g. 500+"/>
+        </div>
+      </div>
+
+      <!-- HERO TEXT -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-heading" style="color:#e53935;margin-right:0.5rem;"></i> Hero Section</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tag Line (top small text)</label>
+            <input type="text" id="hp_heroTag" placeholder="e.g. HASH SHOOTS — WHERE WE DELIVER QUICK CONTENT"/>
+          </div>
+          <div class="form-group">
+            <label>Sub Heading</label>
+            <input type="text" id="hp_heroSub" placeholder="e.g. We Shoot • Edit • Deliver Reels"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Big Heading</label>
+            <input type="text" id="hp_heroBig" placeholder="e.g. Fast & Furious"/>
+          </div>
+          <div class="form-group">
+            <label>Book Now Button Text</label>
+            <input type="text" id="hp_btnBook" placeholder="e.g. Book Now"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-concierge-bell" style="color:#e53935;margin-right:0.5rem;"></i> Services Section</h2>
+        <div class="form-group">
+          <label>Section Heading</label>
+          <input type="text" id="hp_servicesHeading" placeholder="e.g. Services Built for Every Shoot"/>
+        </div>
+        <div class="form-group">
+          <label>Section Subtext</label>
+          <input type="text" id="hp_servicesSub" placeholder="e.g. From quick reels to grand weddings — we've got you covered."/>
+        </div>
+        <div id="hp_servicesList"></div>
+        <button class="btn-add-team" onclick="addServiceRow()"><i class="fas fa-plus"></i> Add Service</button>
+      </div>
+
+      <!-- PRICING / BESTSELLERS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-tags" style="color:#e53935;margin-right:0.5rem;"></i> Bestsellers / Pricing</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;color:#e53935;margin-bottom:0.75rem;">Plan 1 — Hourly</div>
+            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_plan1Name" placeholder="Hourly Plan"/></div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_plan1Price" placeholder="₹1,699"/></div>
+            <div class="form-group"><label>Subtitle</label><input type="text" id="hp_plan1Sub" placeholder="Quickest Content"/></div>
+            <div class="form-group"><label>Description</label><textarea id="hp_plan1Desc" style="min-height:70px;"></textarea></div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;color:#f5a623;margin-bottom:0.75rem;">Plan 2 — Half-Day (Popular)</div>
+            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_plan2Name" placeholder="Half-Day Plan"/></div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_plan2Price" placeholder="₹3,999"/></div>
+            <div class="form-group"><label>Subtitle</label><input type="text" id="hp_plan2Sub" placeholder="Event Essential"/></div>
+            <div class="form-group"><label>Description</label><textarea id="hp_plan2Desc" style="min-height:70px;"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TESTIMONIALS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-quote-right" style="color:#e53935;margin-right:0.5rem;"></i> Testimonials</h2>
+        <div id="hp_testiList"></div>
+        <button class="btn-add-team" onclick="addTestiRow()"><i class="fas fa-plus"></i> Add Testimonial</button>
+      </div>
+
+      <!-- FOOTER / CONTACT -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-envelope" style="color:#e53935;margin-right:0.5rem;"></i> Footer & Contact Info</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" id="hp_email" placeholder="hashshootsmedia@gmail.com"/>
+          </div>
+          <div class="form-group">
+            <label>Instagram Handle</label>
+            <input type="text" id="hp_instagram" placeholder="@wearehashoot"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="hp_location" placeholder="Vijayawada, India"/>
+          </div>
+          <div class="form-group">
+            <label>Copyright Text</label>
+            <input type="text" id="hp_copyright" placeholder="© 2025 Hash Shoots. All rights reserved."/>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENT BAR -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-bullhorn" style="color:#e53935;margin-right:0.5rem;"></i> Site-Wide Announcement</h2>
+        <div class="form-group">
+          <label>Announcement Text (leave blank to hide)</label>
+          <input type="text" id="hp_announcement" placeholder="e.g. 🎉 New city launched! Now available in Bangalore."/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Background Color</label>
+            <input type="color" id="hp_announceBg" value="#e53935" style="height:42px;padding:0.3rem;"/>
+          </div>
+          <div class="form-group">
+            <label>Text Color</label>
+            <input type="color" id="hp_announceColor" value="#ffffff" style="height:42px;padding:0.3rem;"/>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-save-about" onclick="saveHomePage()"><i class="fas fa-save"></i> Save All Home Page Changes</button>
+      <div class="save-toast" id="hpToast"><i class="fas fa-check-circle"></i> Home page updated successfully!</div>
+    </div><!-- end tab-homepage -->
 
     <!-- SETTINGS TAB -->
     <div class="tab-panel" id="tab-settings">
@@ -1023,6 +1162,7 @@
       document.getElementById('tab-' + tab).classList.add('active');
       if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
+      if (tab === 'homepage') loadHomePage();
       if (tab === 'about') loadAboutForm();
       if (tab === 'vibe') renderVibeAdmin();
       if (tab === 'customer') loadCustomerForm();
@@ -1060,8 +1200,8 @@
       grid.innerHTML = '';
       videos.forEach(function(v){
         var card = document.createElement('div');
-        card.style.cssText = 'background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;position:relative;';
-        card.innerHTML = '<div id="svp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0d0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2rem;"><i class="fas fa-film"></i></div>'
+        card.style.cssText = 'background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;position:relative;';
+        card.innerHTML = '<div id="svp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2rem;"><i class="fas fa-film"></i></div>'
           +'<div style="padding:0.65rem 0.75rem;">'
           +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+v.title+'</div>'
           +'<div style="font-size:0.7rem;color:#e53935;margin-bottom:0.2rem;">'+v.category+'</div>'
@@ -1289,7 +1429,7 @@
         } else if(a.status === 'paid'){
           actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
         }
-        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
           + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
@@ -1422,7 +1562,7 @@
         const accessBadges = (s.access||[]).map(a =>
           `<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.68rem;color:#aaa;">${a}</span>`
         ).join(' ');
-        return `<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+        return `<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
           <div style="display:flex;align-items:center;gap:1rem;">
             <div style="width:42px;height:42px;border-radius:10px;background:${color}22;border:1px solid ${color}44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:${color};flex-shrink:0;">${s.name[0].toUpperCase()}</div>
             <div>
@@ -1523,7 +1663,7 @@
         var sub = f.type === 'shoot'
           ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
           : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
-        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;align-items:center;gap:0.75rem;">'
           + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
@@ -1531,8 +1671,8 @@
           + '<div style="font-size:0.72rem;color:#a08080;">' + sub + '</div></div></div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;">' + typeBadge
           + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span></div></div>'
-          + (f.comment ? '<div style="background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
-          + (f.description ? '<div style="margin-top:0.5rem;background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
+          + (f.comment ? '<div style="background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + (f.description ? '<div style="margin-top:0.5rem;background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
           + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
           + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
           + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
@@ -1550,7 +1690,7 @@
       cEl.innerHTML = cFeedbacks.map(function(f){
         var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
         var color = starColors2[f.rating] || '#f5a623';
-        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ' + color + ';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ' + color + ';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.4rem;">'
           + '<div style="font-size:0.9rem;font-weight:800;color:#fff;">' + f.service + ' — ' + f.clientName + '</div>'
           + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
@@ -1597,7 +1737,7 @@
         var sub = f.type === 'shoot'
           ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
           : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
-        return '<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;align-items:center;gap:0.75rem;">'
           + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
@@ -1609,8 +1749,8 @@
           + typeBadge
           + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
           + '</div></div>'
-          + (f.comment ? '<div style="background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
-          + (f.description ? '<div style="margin-top:0.5rem;background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
+          + (f.comment ? '<div style="background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + (f.description ? '<div style="margin-top:0.5rem;background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
           + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
           + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
           + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
@@ -1694,7 +1834,7 @@
       el.innerHTML = demos.map(d => {
         const color = statusColors[d.status] || '#ff9800';
         const reelSection = d.reelVideoId
-          ? `<div style="margin-top:0.75rem;padding:0.75rem;background:#0d0000;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">
+          ? `<div style="margin-top:0.75rem;padding:0.75rem;background:#1a0000;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">
                <div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.4rem;"><i class="fas fa-check-circle"></i> Reel Submitted by Staff &nbsp;·&nbsp; <span style="color:#a08080;font-weight:400;">${d.submittedAt||''}</span></div>
                ${d.shootDate||d.shootTime||d.shootPlace ? `<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.5rem;"><i class="fas fa-calendar" style="color:#e53935;"></i> ${d.shootDate||''} &nbsp;<i class="fas fa-clock" style="color:#e53935;"></i> ${d.shootTime||''}${d.shootPlace?' &nbsp;<i class="fas fa-map-marker-alt" style="color:#e53935;"></i> '+d.shootPlace:''}</div>` : ''}
                <div id="adminReelPlayer_${d.id}" style="color:#a08080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>
@@ -1707,7 +1847,7 @@
                ${d.status === 'rejected' ? `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:6px;font-size:0.75rem;color:#ef9a9a;"><i class="fas fa-times-circle"></i> Rejected ${d.reviewedAt||''} &mdash; &ldquo;${d.adminNote||''}&rdquo;</div>` : ''}
              </div>`
           : `<div style="margin-top:0.6rem;font-size:0.72rem;color:#666;"><i class="fas fa-clock"></i> Awaiting reel submission from staff</div>`;
-        return `<div style="background:#110000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ${color};border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">
+        return `<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ${color};border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
             <div>
               <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">${d.title}</div>
@@ -1922,7 +2062,7 @@
       var grid = document.getElementById('vibeAdminGrid');
       if(!items.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;">No content uploaded yet.</p>'; return; }
       grid.innerHTML = items.slice().reverse().map(function(item){
-        return '<div style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">'
+        return '<div style="background:#2a0404;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">'
           +'<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;"/>'
           +'<div style="padding:0.65rem 0.75rem;">'
           +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
@@ -1937,6 +2077,125 @@
       deleteVideoDB(id);
       saveVibeItems(getVibeItems().filter(function(i){ return i.id!==id; }));
       renderVibeAdmin();
+    }
+
+    // HOME PAGE EDITOR
+    function getHP(){ return JSON.parse(localStorage.getItem('hs_homepage')||'{}'); }
+    function saveHP(d){ localStorage.setItem('hs_homepage', JSON.stringify(d)); }
+
+    function loadHomePage(){
+      var h = getHP();
+      document.getElementById('hp_statReels').value    = h.statReels    || '50,000+';
+      document.getElementById('hp_statRating').value   = h.statRating   || '5.0/5';
+      document.getElementById('hp_statMakers').value   = h.statMakers   || '500+';
+      document.getElementById('hp_heroTag').value      = h.heroTag      || '';
+      document.getElementById('hp_heroSub').value      = h.heroSub      || '';
+      document.getElementById('hp_heroBig').value      = h.heroBig      || '';
+      document.getElementById('hp_btnBook').value      = h.btnBook      || 'Book Now';
+      document.getElementById('hp_servicesHeading').value = h.servicesHeading || '';
+      document.getElementById('hp_servicesSub').value     = h.servicesSub     || '';
+      document.getElementById('hp_plan1Name').value    = h.plan1Name    || 'Hourly Plan';
+      document.getElementById('hp_plan1Price').value   = h.plan1Price   || '₹1,699';
+      document.getElementById('hp_plan1Sub').value     = h.plan1Sub     || 'Quickest Content';
+      document.getElementById('hp_plan1Desc').value    = h.plan1Desc    || '';
+      document.getElementById('hp_plan2Name').value    = h.plan2Name    || 'Half-Day Plan';
+      document.getElementById('hp_plan2Price').value   = h.plan2Price   || '₹3,999';
+      document.getElementById('hp_plan2Sub').value     = h.plan2Sub     || 'Event Essential';
+      document.getElementById('hp_plan2Desc').value    = h.plan2Desc    || '';
+      document.getElementById('hp_email').value        = h.email        || 'hashshootsmedia@gmail.com';
+      document.getElementById('hp_instagram').value    = h.instagram    || '@wearehashoot';
+      document.getElementById('hp_location').value     = h.location     || 'Vijayawada, India';
+      document.getElementById('hp_copyright').value    = h.copyright    || '© 2025 Hash Shoots. All rights reserved.';
+      document.getElementById('hp_announcement').value = h.announcement || '';
+      document.getElementById('hp_announceBg').value   = h.announceBg   || '#e53935';
+      document.getElementById('hp_announceColor').value= h.announceColor|| '#ffffff';
+      var services = h.services || [
+        {name:'Reel Shoots',price:'Starting ₹999',desc:'Trendy, fast-paced reels for Instagram & YouTube. Delivered in 10 mins.',icon:'fa-film',featured:false},
+        {name:'Portrait Sessions',price:'Starting ₹1,499',desc:'Professional headshots, personal branding & lifestyle portraits.',icon:'fa-user-circle',featured:true},
+        {name:'Wedding Photography',price:'Starting ₹15,000',desc:'Capture every precious moment of your special day beautifully.',icon:'fa-heart',featured:false},
+        {name:'Product Shoots',price:'Starting ₹2,499',desc:'E-commerce & brand product photography that sells.',icon:'fa-box',featured:false},
+        {name:'Event Coverage',price:'Starting ₹5,999',desc:'Corporate events, parties, launches — full coverage guaranteed.',icon:'fa-calendar-alt',featured:false},
+        {name:'Food Photography',price:'Starting ₹1,999',desc:'Mouth-watering food shoots for restaurants, menus & delivery apps.',icon:'fa-utensils',featured:false}
+      ];
+      document.getElementById('hp_servicesList').innerHTML = '';
+      services.forEach(function(s){ addServiceRow(s.name, s.price, s.desc, s.icon, s.featured); });
+      var testis = h.testimonials || [
+        {name:'Srikari Galigari',text:'Hash Shoots made booking a reel maker super easy!'},
+        {name:'Lanka Pravallika',text:'Hash Shoots is a game-changer! Quick booking, talented reel makers.'},
+        {name:'Abhiram Kukunuri',text:'Seamless booking, professional shooters and stunning reels!'}
+      ];
+      document.getElementById('hp_testiList').innerHTML = '';
+      testis.forEach(function(t){ addTestiRow(t.name, t.text); });
+    }
+
+    function addServiceRow(name, price, desc, icon, featured){
+      name=name||''; price=price||''; desc=desc||''; icon=icon||'fa-camera'; featured=featured||false;
+      var div = document.createElement('div');
+      div.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;';
+      div.innerHTML='
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:center;margin-bottom:0.5rem;">'
+        +'<input type="text" placeholder="Service Name" value="'+name+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<input type="text" placeholder="Price e.g. Starting ₹999" value="'+price+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<input type="text" placeholder="Icon e.g. fa-film" value="'+icon+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<button onclick="this.closest(\'div\').parentElement.remove()" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-times"></i></button>'
+        +'</div>'
+        +'<input type="text" placeholder="Description" value="'+desc+'" style="width:100%;background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;margin-bottom:0.5rem;"/>'
+        +'<label style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#a08080;cursor:pointer;text-transform:none;letter-spacing:0;">'
+        +'<input type="checkbox" '+(featured?'checked':'')+' style="accent-color:#e53935;"/> Mark as Most Popular</label>';
+      document.getElementById('hp_servicesList').appendChild(div);
+    }
+
+    function addTestiRow(name, text){
+      name=name||''; text=text||'';
+      var div = document.createElement('div');
+      div.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;display:grid;grid-template-columns:1fr 2fr auto;gap:0.6rem;align-items:center;';
+      div.innerHTML='<input type="text" placeholder="Customer Name" value="'+name+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<input type="text" placeholder="Testimonial text" value="'+text+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<button onclick="this.parentElement.remove()" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-times"></i></button>';
+      document.getElementById('hp_testiList').appendChild(div);
+    }
+
+    function saveHomePage(){
+      var services = Array.from(document.querySelectorAll('#hp_servicesList > div')).map(function(row){
+        var inputs = row.querySelectorAll('input[type=text]');
+        var cb = row.querySelector('input[type=checkbox]');
+        return {name:inputs[0].value.trim(), price:inputs[1].value.trim(), icon:inputs[2].value.trim()||'fa-camera', desc:inputs[3].value.trim(), featured:cb?cb.checked:false};
+      }).filter(function(s){ return s.name; });
+      var testimonials = Array.from(document.querySelectorAll('#hp_testiList > div')).map(function(row){
+        var inputs = row.querySelectorAll('input');
+        return {name:inputs[0].value.trim(), text:inputs[1].value.trim()};
+      }).filter(function(t){ return t.name; });
+      var data = {
+        statReels:   document.getElementById('hp_statReels').value.trim(),
+        statRating:  document.getElementById('hp_statRating').value.trim(),
+        statMakers:  document.getElementById('hp_statMakers').value.trim(),
+        heroTag:     document.getElementById('hp_heroTag').value.trim(),
+        heroSub:     document.getElementById('hp_heroSub').value.trim(),
+        heroBig:     document.getElementById('hp_heroBig').value.trim(),
+        btnBook:     document.getElementById('hp_btnBook').value.trim(),
+        servicesHeading: document.getElementById('hp_servicesHeading').value.trim(),
+        servicesSub:     document.getElementById('hp_servicesSub').value.trim(),
+        plan1Name:   document.getElementById('hp_plan1Name').value.trim(),
+        plan1Price:  document.getElementById('hp_plan1Price').value.trim(),
+        plan1Sub:    document.getElementById('hp_plan1Sub').value.trim(),
+        plan1Desc:   document.getElementById('hp_plan1Desc').value.trim(),
+        plan2Name:   document.getElementById('hp_plan2Name').value.trim(),
+        plan2Price:  document.getElementById('hp_plan2Price').value.trim(),
+        plan2Sub:    document.getElementById('hp_plan2Sub').value.trim(),
+        plan2Desc:   document.getElementById('hp_plan2Desc').value.trim(),
+        email:       document.getElementById('hp_email').value.trim(),
+        instagram:   document.getElementById('hp_instagram').value.trim(),
+        location:    document.getElementById('hp_location').value.trim(),
+        copyright:   document.getElementById('hp_copyright').value.trim(),
+        announcement: document.getElementById('hp_announcement').value.trim(),
+        announceBg:   document.getElementById('hp_announceBg').value,
+        announceColor:document.getElementById('hp_announceColor').value,
+        services, testimonials
+      };
+      saveHP(data);
+      var toast = document.getElementById('hpToast');
+      toast.style.display='block';
+      setTimeout(function(){ toast.style.display='none'; }, 3000);
     }
 
     // ABOUT US
@@ -1957,7 +2216,7 @@
     function addTeamRow(name='', role='') {
       const div = document.createElement('div');
       div.className = 'team-row';
-      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
       document.getElementById('teamRows').appendChild(div);
     }
 

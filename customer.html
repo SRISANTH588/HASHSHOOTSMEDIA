@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0d0000;color:#fff;min-height:100vh;}
-    nav{background:rgba(13,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;}
+    nav{background:rgba(26,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#e53935;}
     .nav-right{display:flex;align-items:center;gap:1rem;}
     .nav-right span{color:#a08080;font-size:0.875rem;}
@@ -25,9 +25,9 @@
     .form-group{display:flex;flex-direction:column;gap:0.4rem;}
     .form-group.full{grid-column:span 2;}
     label{font-size:0.8rem;font-weight:600;color:#ccc;}
-    input,select,textarea{background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
+    input,select,textarea{background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
     input:focus,select:focus,textarea:focus{border-color:var(--accent,#e53935);}
-    select option{background:#1c0000;}
+    select option{background:#280000;}
     textarea{resize:vertical;min-height:80px;}
     .note-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-top:1rem;color:#a08080;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);}
     .btn-submit{width:100%;color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:1.5rem;transition:filter 0.2s,transform 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
@@ -59,7 +59,7 @@
     .stars{display:flex;gap:0.35rem;margin-bottom:0.75rem;}
     .star{font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;line-height:1;}
     .star.active{color:#f5a623;}
-    .fb-textarea{width:100%;background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
+    .fb-textarea{width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
     .fb-textarea:focus{border-color:#e53935;}
     .btn-fb-submit{margin-top:0.65rem;background:#e53935;color:#fff;border:none;border-radius:9px;padding:0.55rem 1.4rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
     .btn-fb-submit:hover{background:#b71c1c;transform:translateY(-1px);}
@@ -81,7 +81,7 @@
     <h1 class="page-title" id="pageTitle">Book Your <span>Shoot</span></h1>
     <p class="subtitle" id="pageSubtitle">Fill in the details and we'll assign a shooter for you.</p>
 
-    <div class="booking-card" id="bookingCard" style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);">
+    <div class="booking-card" id="bookingCard" style="background:#280404;border:1px solid rgba(255,255,255,0.07);">
       <div class="form-grid" id="formGrid">
         <div class="form-group"><label id="lbl_name">Full Name</label><input type="text" id="name" placeholder="Your name"/></div>
         <div class="form-group"><label id="lbl_phone">Phone Number</label><input type="tel" id="phone" placeholder="+91 XXXXX XXXXX"/></div>

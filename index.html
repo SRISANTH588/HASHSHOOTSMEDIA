@@ -17,7 +17,7 @@
   <!-- DISCOVER WITH VIBE -->
   <section class="vibe-section" id="vibe" style="display:none;">
     <style>
-      .vibe-section{background:#060000;padding:5rem 0 4rem;}
+      .vibe-section{background:#1a0000;padding:5rem 0 4rem;}
       .vibe-header{text-align:center;margin-bottom:2rem;}
       .vibe-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:0.4rem;}
       .vibe-title span{color:#e53935;}
@@ -26,10 +26,10 @@
       .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#a08080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;}
       .vibe-cat.active,.vibe-cat:hover{background:#e53935;color:#fff;border-color:transparent;}
       .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
-      .vibe-card{background:#120000;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
+      .vibe-card{background:#200000;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
       .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(229,57,53,0.2);}
       .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#1a0000;}
-      .vibe-thumb-placeholder{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,#1a0000,#0d0000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#3a1a1a;}
+      .vibe-thumb-placeholder{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,#2a0000,#1a0000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#3a1a1a;}
       .vibe-thumb-placeholder i{font-size:2.5rem;}
       .vibe-thumb-placeholder span{font-size:0.75rem;}
       .vibe-info{padding:0.85rem 1rem;}
@@ -127,9 +127,9 @@
   <!-- HERO -->
   <section class="hero" id="home">
     <div class="hero-content">
-      <p class="hero-tag">HASH SHOOTS — WHERE WE DELIVER QUICK CONTENT</p>
+      <p class="hero-tag">The Future of Instant Content Creation</p>
       <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
-      <h2 class="hero-big">Fast & Furious<span class="asterisk">*</span></h2>
+      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
 
       <div class="phone-mockup">
         <div class="phone-glow"></div>
@@ -193,11 +193,11 @@
           <a href="partner.html" class="btn btn-partner">Become a Partner</a>
         </div>
         <div class="hero-stats">
-          <div class="hero-stat"><span class="stat-num" id="statReels">50,000+</span><span class="stat-label">Reels Delivered</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
           <div class="stat-sep"></div>
           <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
           <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statMakers">500+</span><span class="stat-label">Reel-Makers</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statMakers">0</span><span class="stat-label">Reel-Makers</span></div>
         </div>
       </div>
 
@@ -216,169 +216,232 @@
   <!-- WHY US -->
   <section class="whyus-section">
     <style>
-      .whyus-section{background:#0a0000;padding:5rem 0;position:relative;overflow:hidden;}
-      .whyus-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(229,57,53,0.07) 0%,transparent 70%);pointer-events:none;}
-      .whyus-title{text-align:center;font-size:3rem;font-weight:900;color:#fff;margin-bottom:0.5rem;line-height:1.2;}
+      .whyus-section{background:#1a0000;padding:6rem 0;position:relative;overflow:hidden;}
+      .whyus-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(229,57,53,0.06) 0%,transparent 70%);pointer-events:none;animation:wsPulse 4s ease-in-out infinite;}
+      @keyframes wsPulse{0%,100%{opacity:0.5;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}}
+      .whyus-header{text-align:center;max-width:700px;margin:0 auto 4rem;padding:0 2rem;}
+      .whyus-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);color:#e53935;font-size:0.72rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .whyus-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.75rem;line-height:1.15;white-space:nowrap;}
       .whyus-title span{color:#e53935;}
-      .whyus-sub{text-align:center;color:#a08080;font-size:1rem;margin-bottom:3.5rem;}
-      .whyus-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
-      .whyus-card{background:linear-gradient(135deg,rgba(30,5,5,0.95),rgba(20,0,0,0.98));border:1px solid rgba(229,57,53,0.12);border-radius:20px;padding:1.75rem 2rem;display:flex;align-items:center;gap:1.75rem;position:relative;overflow:hidden;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;cursor:default;}
-      .whyus-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(229,57,53,0.05),transparent);opacity:0;transition:opacity 0.3s;border-radius:20px;}
-      .whyus-card:hover{transform:translateY(-4px);border-color:rgba(229,57,53,0.4);box-shadow:0 20px 60px rgba(229,57,53,0.15);}
-      .whyus-card:hover::before{opacity:1;}
-      .whyus-icon-wrap{width:100px;height:100px;flex-shrink:0;border-radius:16px;background:linear-gradient(135deg,rgba(229,57,53,0.15),rgba(100,0,0,0.3));border:1px solid rgba(229,57,53,0.2);display:flex;align-items:center;justify-content:center;font-size:2.5rem;transition:transform 0.3s,background 0.3s;position:relative;}
-      .whyus-card:hover .whyus-icon-wrap{transform:scale(1.08);background:linear-gradient(135deg,rgba(229,57,53,0.25),rgba(150,0,0,0.4));}
-      .whyus-icon-wrap i{font-size:2rem;color:#e53935;filter:drop-shadow(0 0 8px rgba(229,57,53,0.5));}
-      .whyus-text h3{font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:0.4rem;letter-spacing:-0.3px;}
-      .whyus-text p{color:#a08080;font-size:0.875rem;line-height:1.6;}
-      .whyus-badge{position:absolute;top:1rem;right:1rem;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);color:#e53935;font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;text-transform:uppercase;letter-spacing:0.5px;}
-      @media(max-width:768px){.whyus-grid{grid-template-columns:1fr;}.whyus-title{font-size:2rem;}}
+      .whyus-desc{color:#a08080;font-size:0.95rem;line-height:1.8;}
+      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .whyus-card{background:linear-gradient(145deg,rgba(35,5,5,0.9),rgba(22,2,2,0.95));border:1px solid rgba(229,57,53,0.1);border-radius:24px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);cursor:default;}
+      .whyus-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(229,57,53,0.07),transparent 60%);opacity:0;transition:opacity 0.4s;border-radius:24px;}
+      .whyus-card:hover{transform:translateY(-8px);border-color:rgba(229,57,53,0.45);box-shadow:0 30px 70px rgba(229,57,53,0.18),0 0 0 1px rgba(229,57,53,0.1);}
+      .whyus-card:hover::after{opacity:1;}
+      .whyus-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
+      .whyus-icon-wrap{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(229,57,53,0.2),rgba(120,0,0,0.35));border:1px solid rgba(229,57,53,0.25);display:flex;align-items:center;justify-content:center;transition:all 0.4s;flex-shrink:0;}
+      .whyus-card:hover .whyus-icon-wrap{background:linear-gradient(135deg,rgba(229,57,53,0.35),rgba(180,0,0,0.5));transform:scale(1.1) rotate(-5deg);box-shadow:0 8px 25px rgba(229,57,53,0.3);}
+      .whyus-icon-wrap i{font-size:1.4rem;color:#e53935;}
+      .whyus-badge{background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.25);color:#e53935;font-size:0.6rem;font-weight:800;padding:0.22rem 0.65rem;border-radius:50px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+      .whyus-text h3{font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:0.5rem;line-height:1.3;}
+      .whyus-text p{color:#907070;font-size:0.82rem;line-height:1.7;}
+      .whyus-number{position:absolute;bottom:1.25rem;right:1.5rem;font-size:3.5rem;font-weight:900;color:rgba(229,57,53,0.06);line-height:1;pointer-events:none;transition:color 0.4s;}
+      .whyus-card:hover .whyus-number{color:rgba(229,57,53,0.12);}
+      .whyus-card.featured-card{border-color:rgba(229,57,53,0.3);background:linear-gradient(145deg,rgba(50,8,8,0.95),rgba(30,3,3,0.98));}
+      .whyus-card.featured-card .whyus-badge{background:rgba(229,57,53,0.2);}
+      @media(max-width:900px){.whyus-grid{grid-template-columns:1fr 1fr;}}
+      @media(max-width:580px){.whyus-grid{grid-template-columns:1fr;}}
     </style>
-    <div style="max-width:1200px;margin:0 auto;padding:0 2rem;">
-      <p class="whyus-sub">WHY CHOOSE US</p>
-      <h2 class="whyus-title">Not Just Instant <span>Delivery, But..</span></h2>
-      <p class="whyus-sub" style="margin-top:0.5rem;">We go beyond just delivering reels — here's what makes us different</p>
+
+    <div class="whyus-header">
+      <div class="whyus-eyebrow"><i class="fas fa-star"></i> Why Choose Us</div>
+      <h2 class="whyus-title">Not Just Instant Delivery, <span>But..</span></h2>
+      <p class="whyus-desc">We go beyond just delivering reels — here's what makes us different from everyone else.</p>
     </div>
+
     <div class="whyus-grid">
 
-      <div class="whyus-card">
-        <span class="whyus-badge">Verified</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-certificate"></i></div>
-        <div class="whyus-text">
-          <h3>Trained & Certified Reel Makers</h3>
-          <p>Each Partner clears 6 filters to get their certification. Only the best make it through.</p>
+      <div class="whyus-card featured-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-certificate"></i></div>
+          <span class="whyus-badge">Verified</span>
         </div>
+        <div class="whyus-text">
+          <h3>Our Trained and Certified Reel Creators</h3>
+          <p>Every creator goes through a strict 6-step screening process to ensure top-tier quality.</p>
+        </div>
+        <div class="whyus-number">01</div>
       </div>
 
       <div class="whyus-card">
-        <span class="whyus-badge">Simple</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
+          <span class="whyus-badge">Simple</span>
+        </div>
         <div class="whyus-text">
           <h3>Easy Booking</h3>
           <p>Stop struggling with complex booking procedures. Book your shoot in under 2 minutes.</p>
         </div>
+        <div class="whyus-number">02</div>
       </div>
 
       <div class="whyus-card">
-        <span class="whyus-badge">Affordable</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-rupee-sign"></i></div>
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-rupee-sign"></i></div>
+          <span class="whyus-badge">Affordable</span>
+        </div>
         <div class="whyus-text">
           <h3>Unbelievable Pricing</h3>
           <p>Each Reel starts ₹1,999/-. No hidden charges, no surprises. Pay only for what you need.</p>
         </div>
+        <div class="whyus-number">03</div>
       </div>
 
       <div class="whyus-card">
-        <span class="whyus-badge">Trusted</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-shield-alt"></i></div>
-        <div class="whyus-text">
-          <h3>Safe & Secure</h3>
-          <p>You & your data is safe and secured. End-to-end encrypted payments and verified profiles.</p>
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+          <span class="whyus-badge">Trusted</span>
         </div>
+        <div class="whyus-text">
+          <h3>Safe &amp; Secure</h3>
+          <p>You &amp; your data is safe and secured. End-to-end encrypted payments and verified profiles.</p>
+        </div>
+        <div class="whyus-number">04</div>
       </div>
 
       <div class="whyus-card">
-        <span class="whyus-badge">Fast</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-bolt"></i></div>
-        <div class="whyus-text">
-          <h3>Instant Reels, Instant Editing</h3>
-          <p>No hidden charges! Clients get upfront pricing, secure payment options, and a seamless checkout experience.</p>
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-bolt"></i></div>
+          <span class="whyus-badge">Fast</span>
         </div>
+        <div class="whyus-text">
+          <h3>Instant Reels, Seamless Editing</h3>
+          <p>Transparent pricing, secure payments, and a smooth checkout — no surprises, ever.</p>
+        </div>
+        <div class="whyus-number">05</div>
       </div>
 
       <div class="whyus-card">
-        <span class="whyus-badge">Safe</span>
-        <div class="whyus-icon-wrap"><i class="fas fa-female"></i></div>
-        <div class="whyus-text">
-          <h3>Women Safety</h3>
-          <p>A woman can book a female Reel maker. We prioritize comfort, safety and trust for every client.</p>
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-female"></i></div>
+          <span class="whyus-badge">Safe</span>
         </div>
+        <div class="whyus-text">
+          <h3>Women's Safety &amp; Comfort First</h3>
+          <p>Clients can choose a female reel creator for a more comfortable experience. Your safety and trust are always our priority.</p>
+        </div>
+        <div class="whyus-number">06</div>
       </div>
 
     </div>
   </section>
 
   <!-- BESTSELLERS -->
-  <section style="background:#0d0000;padding:5rem 0;">
+  <section class="bs-section">
     <style>
-      .bs2-wrap{max-width:900px;margin:0 auto;padding:0 2rem;}
-      .bs2-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
-      .bs2-card{background:#160303;border-radius:20px;padding:2rem 1.75rem 1.75rem;position:relative;overflow:hidden;transition:transform 0.35s,box-shadow 0.35s;}
-      .bs2-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(229,57,53,0.2);}
-      .bs2-card.bs2-popular{background:#1a0404;border:1px solid rgba(180,80,80,0.2);}
-      .bs2-card::before{content:'';position:absolute;top:-60%;left:-60%;width:220%;height:220%;background:conic-gradient(transparent 0deg,rgba(229,57,53,0.06) 60deg,transparent 120deg);animation:cardRotate 6s linear infinite;pointer-events:none;}
-      @keyframes cardRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-      .bs2-pill{position:absolute;top:1.4rem;right:1.4rem;background:linear-gradient(135deg,#c8860a,#e0a020);color:#fff;font-size:0.62rem;font-weight:800;padding:0.28rem 0.85rem;border-radius:50px;letter-spacing:0.8px;text-transform:uppercase;animation:pillBounce 2s ease-in-out infinite;}
-      @keyframes pillBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
-      .bs2-name{font-size:2.2rem;font-weight:900;color:#fff;text-align:center;margin-bottom:0.35rem;letter-spacing:-0.5px;}
-      .bs2-sub{text-align:center;font-size:0.88rem;font-weight:700;color:#e53935;margin-bottom:0.9rem;}
-      .bs2-sub.gold{color:#f5a623;}
-      .bs2-desc{text-align:center;color:#8a6a6a;font-size:0.88rem;line-height:1.7;margin-bottom:1.75rem;max-width:320px;margin-left:auto;margin-right:auto;}
-      .bs2-price{text-align:center;font-size:4rem;font-weight:900;line-height:1;margin-bottom:0.3rem;background:linear-gradient(90deg,#e53935 30%,#f5a623 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;display:inline-block;width:100%;}
-      .bs2-price::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:60px;height:2px;background:linear-gradient(90deg,#e53935,#f5a623);border-radius:2px;animation:lineGrow 2s ease-in-out infinite alternate;}
-      @keyframes lineGrow{from{width:40px;opacity:0.5;}to{width:90px;opacity:1;}}
-      .bs2-price.gold{background:linear-gradient(90deg,#e53935 20%,#f5a623 80%);-webkit-background-clip:text;background-clip:text;}
-      .bs2-gst{text-align:center;color:#555;font-size:0.8rem;margin-bottom:1.75rem;}
-      .bs2-divider{height:1px;background:rgba(255,255,255,0.06);margin-bottom:1.5rem;}
-      .bs2-label{text-align:center;font-size:0.68rem;font-weight:700;color:#e53935;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .bs2-label.gold{color:#f5a623;}
-      .bs2-list{list-style:none;margin-bottom:2.25rem;padding:0 0.5rem;}
-      .bs2-list li{display:flex;align-items:center;gap:1rem;color:#c8b0b0;font-size:0.92rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:color 0.2s,padding-left 0.2s;}
-      .bs2-list li:last-child{border-bottom:none;}
-      .bs2-list li:hover{color:#fff;padding-left:6px;}
-      .bs2-list li::before{content:'✓';color:#a04040;font-weight:700;font-size:0.95rem;flex-shrink:0;transition:color 0.2s;}
-      .bs2-list li:hover::before{color:#e53935;}
-      .bs2-card.bs2-popular .bs2-list li::before{color:#c08030;}
-      .bs2-card.bs2-popular .bs2-list li:hover::before{color:#f5a623;}
-      .bs2-btn{width:100%;background:#e53935;color:#fff;border:none;border-radius:12px;padding:1.1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.75rem;transition:all 0.3s;position:relative;overflow:hidden;}
-      .bs2-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transform:translateX(-100%);transition:transform 0.5s;}
-      .bs2-btn:hover::after{transform:translateX(100%);}
-      .bs2-btn:hover{background:#c62828;transform:translateY(-2px);box-shadow:0 12px 35px rgba(229,57,53,0.45);}
-      .bs2-card.anim-in{animation:cardSlideUp 0.6s ease forwards;}
-      @keyframes cardSlideUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
-      @media(max-width:640px){.bs2-grid{grid-template-columns:1fr;}}
+      .bs-section{background:#200000;padding:6rem 0;position:relative;overflow:hidden;}
+      .bs-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(229,57,53,0.4),transparent);}
+      .bs-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(229,57,53,0.4),transparent);}
+      .bs-header{text-align:center;margin-bottom:1rem;}
+      .bs-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);color:#e53935;font-size:0.72rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;margin-bottom:0.5rem;}
+      .bs-title span{color:#e53935;}
+      .bs-sub{color:#a08080;font-size:0.95rem;margin-bottom:3.5rem;}
+      .bs-wrap{max-width:1100px;margin:0 auto;padding:0 2rem;}
+      .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+      .bs-card{border-radius:28px;padding:2.5rem 2rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s;}
+      .bs-card:hover{transform:translateY(-8px);}
+      .bs-card-1{background:linear-gradient(145deg,#280404,#1e0202);border:1px solid rgba(229,57,53,0.15);}
+      .bs-card-1:hover{box-shadow:0 30px 70px rgba(229,57,53,0.2);border-color:rgba(229,57,53,0.35);}
+      .bs-card-2{background:linear-gradient(145deg,#300505,#240303);border:1px solid rgba(229,57,53,0.3);}
+      .bs-card-2:hover{box-shadow:0 30px 70px rgba(245,166,35,0.2);border-color:rgba(245,166,35,0.4);}
+      .bs-glow{position:absolute;top:-80px;right:-80px;width:250px;height:250px;border-radius:50%;pointer-events:none;}
+      .bs-card-1 .bs-glow{background:radial-gradient(circle,rgba(229,57,53,0.12) 0%,transparent 70%);}
+      .bs-card-2 .bs-glow{background:radial-gradient(circle,rgba(245,166,35,0.15) 0%,transparent 70%);}
+      .bs-rotate{content:'';position:absolute;top:-60%;left:-60%;width:220%;height:220%;background:conic-gradient(transparent 0deg,rgba(229,57,53,0.04) 60deg,transparent 120deg);animation:bsRotate 8s linear infinite;pointer-events:none;}
+      @keyframes bsRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+      .bs-popular-pill{position:absolute;top:1.5rem;right:1.5rem;background:linear-gradient(135deg,#c8860a,#f5a623);color:#fff;font-size:0.62rem;font-weight:800;padding:0.3rem 0.9rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;box-shadow:0 4px 15px rgba(245,166,35,0.4);animation:pillFloat 2s ease-in-out infinite;}
+      @keyframes pillFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+      .bs-plan-tag{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.2);color:#e53935;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;margin-bottom:1.25rem;}
+      .bs-card-2 .bs-plan-tag{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.25);color:#f5a623;}
+      .bs-name{font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:0.25rem;letter-spacing:-0.5px;}
+      .bs-tagline{font-size:0.85rem;color:#a08080;margin-bottom:2rem;}
+      .bs-price-wrap{display:flex;align-items:flex-end;gap:0.5rem;margin-bottom:0.3rem;}
+      .bs-price{font-size:3.5rem;font-weight:900;line-height:1;background:linear-gradient(90deg,#e53935,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+      .bs-card-2 .bs-price{background:linear-gradient(90deg,#f5a623,#ffcc44);-webkit-background-clip:text;background-clip:text;}
+      .bs-per{font-size:0.85rem;color:#666;margin-bottom:0.5rem;}
+      .bs-gst-note{font-size:0.75rem;color:#555;margin-bottom:2rem;}
+      .bs-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);margin-bottom:1.75rem;}
+      .bs-features-label{font-size:0.65rem;font-weight:800;color:#e53935;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1rem;}
+      .bs-card-2 .bs-features-label{color:#f5a623;}
+      .bs-features{list-style:none;margin-bottom:2rem;display:flex;flex-direction:column;gap:0.6rem;}
+      .bs-features li{display:flex;align-items:center;gap:0.85rem;font-size:0.88rem;color:#c8b0b0;transition:all 0.2s;padding:0.4rem 0.5rem;border-radius:8px;}
+      .bs-features li:hover{background:rgba(255,255,255,0.03);color:#fff;padding-left:0.85rem;}
+      .bs-check{width:20px;height:20px;border-radius:6px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+      .bs-card-2 .bs-check{background:rgba(245,166,35,0.15);border-color:rgba(245,166,35,0.25);}
+      .bs-check i{font-size:0.6rem;color:#e53935;}
+      .bs-card-2 .bs-check i{color:#f5a623;}
+      .bs-btn{width:100%;border:none;border-radius:14px;padding:1.1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.75rem;transition:all 0.3s;position:relative;overflow:hidden;letter-spacing:0.3px;}
+      .bs-btn-1{background:linear-gradient(135deg,#e53935,#c62828);color:#fff;box-shadow:0 8px 25px rgba(229,57,53,0.35);}
+      .bs-btn-1:hover{box-shadow:0 14px 40px rgba(229,57,53,0.55);transform:translateY(-2px);}
+      .bs-btn-2{background:linear-gradient(135deg,#f5a623,#c8860a);color:#fff;box-shadow:0 8px 25px rgba(245,166,35,0.35);}
+      .bs-btn-2:hover{box-shadow:0 14px 40px rgba(245,166,35,0.55);transform:translateY(-2px);}
+      .bs-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transform:translateX(-100%);transition:transform 0.5s;}
+      .bs-btn:hover::before{transform:translateX(100%);}
+      .bs-anim{opacity:0;transform:translateY(40px);transition:opacity 0.6s ease,transform 0.6s ease;}
+      .bs-anim.visible{opacity:1;transform:translateY(0);}
+      @media(max-width:680px){.bs-grid{grid-template-columns:1fr;}}
     </style>
-    <h2 style="text-align:center;font-size:2.8rem;font-weight:900;color:#fff;margin-bottom:3rem;">Bestsellers</h2>
-    <div class="bs2-wrap">
-      <div class="bs2-grid">
 
-        <div class="bs2-card">
-          <div class="bs2-name">Hourly Plan</div>
-          <div class="bs2-sub">Quickest Content</div>
-          <div class="bs2-desc">Perfect for anyone who want a single, fast, high-quality reel.</div>
-          <div class="bs2-price">₹1,699</div>
-          <div class="bs2-gst">+ GST</div>
-          <div class="bs2-divider"></div>
-          <div class="bs2-label">What's Included</div>
-          <ul class="bs2-list">
-            <li>1 Hour Shoot</li>
-            <li>1 Edited Reel Delivered</li>
-            <li>Shot on Latest iPhone</li>
-            <li>Fast Delivery (10 mins post shoot)</li>
-            <li>Trained and Certified Reel Maker</li>
-            <li>Hash Shoots Branding Included</li>
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-eyebrow"><i class="fas fa-fire"></i> Our Plans</div>
+        <h2 class="bs-title">Our <span>Bestsellers</span></h2>
+        <p class="bs-sub">Simple pricing. No hidden fees. Just great content.</p>
+      </div>
+
+      <div class="bs-grid">
+
+        <!-- PLAN 1 -->
+        <div class="bs-card bs-card-1 bs-anim">
+          <div class="bs-glow"></div>
+          <div class="bs-rotate"></div>
+          <div class="bs-plan-tag"><i class="fas fa-bolt"></i> Starter</div>
+          <div class="bs-name">Hourly Plan</div>
+          <div class="bs-tagline">Perfect for a single, fast, high-quality reel.</div>
+          <div class="bs-price-wrap">
+            <div class="bs-price">&#8377;1,699</div>
+            <div class="bs-per">/ shoot</div>
+          </div>
+          <div class="bs-gst-note">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+          <div class="bs-divider"></div>
+          <div class="bs-features-label">What's Included</div>
+          <ul class="bs-features">
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Reel Maker</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
           </ul>
-          <button class="bs2-btn" onclick="window.location.href='booking.html'">₹ &nbsp;Book Now &nbsp;→</button>
+          <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
         </div>
 
-        <div class="bs2-card bs2-popular">
-          <div class="bs2-pill">Most Popular</div>
-          <div class="bs2-name">Half-Day Plan</div>
-          <div class="bs2-sub gold">Event Essential</div>
-          <div class="bs2-desc">Ideal for events and creators who need more time and more content.</div>
-          <div class="bs2-price gold">₹3,999</div>
-          <div class="bs2-gst">+ GST</div>
-          <div class="bs2-divider"></div>
-          <div class="bs2-label gold">What's Included</div>
-          <ul class="bs2-list">
-            <li>Up to 3 Hours Shoot</li>
-            <li>2 Edited reels</li>
-            <li>Shot on Latest iPhone</li>
-            <li>Fast Delivery (10 mins post shoot)</li>
-            <li>Trained and Certified Reel Maker</li>
-            <li>Hash Shoots Branding Included</li>
+        <!-- PLAN 2 -->
+        <div class="bs-card bs-card-2 bs-anim" style="transition-delay:0.15s;">
+          <div class="bs-glow"></div>
+          <div class="bs-rotate"></div>
+          <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
+          <div class="bs-plan-tag"><i class="fas fa-crown"></i> Best Value</div>
+          <div class="bs-name">Half-Day Plan</div>
+          <div class="bs-tagline">Ideal for events &amp; creators who need more content.</div>
+          <div class="bs-price-wrap">
+            <div class="bs-price">&#8377;3,999</div>
+            <div class="bs-per">/ session</div>
+          </div>
+          <div class="bs-gst-note">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
+          <div class="bs-divider"></div>
+          <div class="bs-features-label">What's Included</div>
+          <ul class="bs-features">
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Reel Maker</li>
+            <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
           </ul>
-          <button class="bs2-btn" onclick="window.location.href='booking.html'">₹ &nbsp;Book Now &nbsp;→</button>
+          <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
         </div>
 
       </div>
@@ -386,34 +449,31 @@
   </section>
   <script>
     (function(){
-      const cards = document.querySelectorAll('.bs2-card');
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach((e,i)=>{
-          if(e.isIntersecting){
-            setTimeout(()=>e.target.classList.add('anim-in'), i*150);
-            io.unobserve(e.target);
-          }
+      var cards = document.querySelectorAll('.bs-anim');
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
         });
-      },{threshold:0.2});
-      cards.forEach(c=>io.observe(c));
+      },{threshold:0.15});
+      cards.forEach(function(c){ io.observe(c); });
     })();
   </script>
 
   <!-- FEATURES SECTION -->
   <section class="features-section">
     <style>
-      .features-section{background:#0a0000;padding:5rem 0;overflow:hidden;}
+      .features-section{background:#1a0000;padding:5rem 0;overflow:hidden;}
       .feat-tag-wrap{display:flex;justify-content:center;margin-bottom:1.5rem;}
       .feat-tag-pill{background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);color:#e53935;font-size:0.78rem;font-weight:600;padding:0.45rem 1.2rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.5rem;}
       .feat-heading{text-align:center;font-size:clamp(2rem,4.5vw,3rem);font-weight:900;color:#fff;margin-bottom:3rem;}
       .feat-heading span{color:#e53935;}
       .feat-slider-wrap{position:relative;max-width:1380px;margin:0 auto;padding:0 3.5rem;}
       .feat-slider{display:flex;gap:1rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
-      .feat-c{background:#120000;border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.75rem 1.5rem 1.5rem;flex:0 0 calc(25% - 0.75rem);min-width:0;}
+      .feat-c{background:#200000;border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.75rem 1.5rem 1.5rem;flex:0 0 calc(25% - 0.75rem);min-width:0;}
       .feat-c-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:0.45rem;}
       .feat-c-desc{font-size:0.82rem;color:#5a3535;line-height:1.7;margin-bottom:1.5rem;}
       .feat-mockup{display:flex;justify-content:center;}
-      .feat-mock-frame{width:185px;background:#050505;border-radius:34px;border:2px solid rgba(255,255,255,0.09);overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,0.95);}
+      .feat-mock-frame{width:185px;background:#1a0000;border-radius:34px;border:2px solid rgba(255,255,255,0.09);overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,0.95);}
       .feat-mock-top{height:22px;background:#000;display:flex;justify-content:center;align-items:flex-end;padding-bottom:3px;}
       .feat-mock-pill{width:65px;height:5px;background:#1a1a1a;border-radius:3px;}
       .feat-mock-screen{background:#111;padding:0.7rem;min-height:320px;}
@@ -444,7 +504,7 @@
     </style>
 
     <div class="feat-tag-wrap"><span class="feat-tag-pill"><i class="fas fa-bolt"></i> Get to know Hash Shoots</span></div>
-    <h2 class="feat-heading">Features That Make Us <span>Stand Out</span></h2>
+    <h2 class="feat-heading">What Makes Us <span>Unique</span></h2>
 
     <div class="feat-slider-wrap">
       <button class="feat-arr feat-arr-l" id="fL"><i class="fas fa-chevron-left"></i></button>
@@ -612,7 +672,7 @@
   </script>
 
   <!-- SERVICES -->
-  <section style="background:#080000;padding:5rem 0;">
+  <section style="background:#1a0000;padding:5rem 0;">
     <div class="container">
       <div class="section-header">
         <span class="section-tag">What We Offer</span>
@@ -708,13 +768,13 @@
   <!-- TESTIMONIALS -->
   <section class="testimonials">
     <style>
-      .testimonials{background:#0a0000;padding:5rem 0;}
+      .testimonials{background:#1a0000;padding:5rem 0;}
       .testi-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.6rem;}
       .testi-title span{color:#e53935;}
       .testi-sub{text-align:center;color:#7a5a5a;font-size:0.95rem;margin-bottom:3.5rem;}
       .testi-wrap{position:relative;max-width:1200px;margin:0 auto;padding:0 2rem;overflow:hidden;}
       .testi-track{display:flex;gap:1.5rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
-      .testi-card{background:#1a0303;border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:2rem;flex:0 0 calc(33.33% - 1rem);min-width:0;display:flex;flex-direction:column;justify-content:space-between;min-height:220px;}
+      .testi-card{background:#280404;border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:2rem;flex:0 0 calc(33.33% - 1rem);min-width:0;display:flex;flex-direction:column;justify-content:space-between;min-height:220px;}
       .testi-quote-icon{width:38px;height:38px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:1rem;margin-bottom:1.25rem;}
       .testi-text{font-size:0.95rem;color:#d0b0b0;line-height:1.75;flex:1;margin-bottom:1.5rem;}
       .testi-author{display:flex;align-items:center;gap:0.85rem;}
@@ -726,8 +786,8 @@
       @media(max-width:768px){.testi-card{flex:0 0 calc(50% - 0.75rem);}}
       @media(max-width:480px){.testi-card{flex:0 0 88%;}}
     </style>
-    <div class="testi-title">What Our <span>Loving Customers Say</span></div>
-    <div class="testi-sub">Join thousands of satisfied customers who trust Hash Shoots</div>
+    <div class="testi-title">Loved by Our <span>Clients</span></div>
+    <div class="testi-sub">Be part of a growing community that relies on HashShoot for fast and professional reels.</div>
     <div class="testi-wrap">
       <div class="testi-track" id="testiTrack">
 
@@ -864,7 +924,7 @@
 
   <section class="app-cta-section">
     <style>
-      .app-cta-section{background:linear-gradient(135deg,#0f0000 0%,#1a0000 50%,#0f0000 100%);padding:5rem 0;position:relative;overflow:hidden;}
+      .app-cta-section{background:linear-gradient(135deg,#1a0000 0%,#280000 50%,#1a0000 100%);padding:5rem 0;position:relative;overflow:hidden;}
       .app-cta-section::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(229,57,53,0.12) 0%,transparent 70%);pointer-events:none;}
       .app-cta-inner{max-width:1000px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:4rem;}
       .app-cta-text{flex:1;}
@@ -883,7 +943,7 @@
       .app-screen{width:130px;background:#111;border-radius:24px;border:1.5px solid rgba(255,255,255,0.1);overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,0.8),0 0 40px rgba(229,57,53,0.15);}
       .app-screen:first-child{height:240px;transform:rotate(-4deg) translateY(20px);}
       .app-screen:last-child{height:200px;transform:rotate(4deg) translateY(20px);}
-      .app-screen-inner{height:100%;background:linear-gradient(160deg,#1a0000,#0a0000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1rem;}
+      .app-screen-inner{height:100%;background:linear-gradient(160deg,#280000,#1a0000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1rem;}
       .app-screen-inner i{font-size:2rem;color:#e53935;}
       .app-screen-inner span{font-size:0.6rem;color:#888;text-align:center;}
       @media(max-width:768px){.app-cta-inner{flex-direction:column;gap:2.5rem;}.app-cta-visual{display:none;}}
@@ -987,12 +1047,77 @@
 
   <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
   <script>
-    const completedCount = JSON.parse(localStorage.getItem('hs_bookings') || '[]').filter(function(b){ return b.status === 'completed'; }).length;
-    const feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
-    const avgRating = feedbacks.length ? (feedbacks.reduce(function(s,f){ return s + f.rating; }, 0) / feedbacks.length).toFixed(1) : '5.0';
-    document.getElementById('statReels').textContent = (50000 + completedCount).toLocaleString('en-IN') + '+';
-    document.getElementById('statMakers').textContent = (500 + Math.floor(completedCount / 2)).toLocaleString('en-IN') + '+';
-    document.getElementById('statRating').textContent = avgRating + '/5';
+    try {
+      const hp = JSON.parse(localStorage.getItem('hs_homepage') || '{}');
+      const completedCount = JSON.parse(localStorage.getItem('hs_bookings') || '[]').filter(function(b){ return b.status === 'completed'; }).length;
+      const feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+      const avgRating = feedbacks.length ? (feedbacks.reduce(function(s,f){ return s + (f.rating||0); }, 0) / feedbacks.length).toFixed(1) : '5.0';
+      // Stats — use admin-set values, else hardcoded defaults (never show 0)
+      document.getElementById('statReels').textContent  = hp.statReels  || '0';
+      document.getElementById('statRating').textContent = hp.statRating || '5.0/5';
+      document.getElementById('statMakers').textContent = hp.statMakers || '0';
+      // Hero text
+      if(hp.heroTag) document.querySelector('.hero-tag').textContent = hp.heroTag;
+      if(hp.heroSub) document.querySelector('.hero-sub').textContent = hp.heroSub;
+      if(hp.heroBig) { var hb = document.querySelector('.hero-big'); hb.innerHTML = hp.heroBig + '<span class="asterisk">*</span>'; }
+      if(hp.btnBook) { var bb = document.querySelector('.btn-book'); if(bb) bb.textContent = hp.btnBook; }
+      // Services heading
+      if(hp.servicesHeading) { var sh = document.querySelector('.services .section-header h2'); if(sh) sh.innerHTML = hp.servicesHeading; }
+      if(hp.servicesSub) { var ss = document.querySelector('.services .section-header p'); if(ss) ss.textContent = hp.servicesSub; }
+      // Services cards
+      if(hp.services && hp.services.length) {
+        var grid = document.querySelector('.services-grid');
+        if(grid) {
+          grid.innerHTML = hp.services.map(function(s){
+            return '<div class="service-card' + (s.featured ? ' featured' : '') + '">'
+              + (s.featured ? '<div class="featured-badge">Most Popular</div>' : '')
+              + '<div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas ' + (s.icon||'fa-camera') + '"></i></div>'
+              + '<h3>' + s.name + '</h3>'
+              + '<p>' + s.desc + '</p>'
+              + '<span class="service-price">' + s.price + '</span>'
+              + '<a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>'
+              + '</div>';
+          }).join('');
+        }
+      }
+      // Pricing plans
+      if(hp.plan1Name)  { var el = document.querySelector('.bs2-card:first-child .bs2-name');  if(el) el.textContent = hp.plan1Name; }
+      if(hp.plan1Price) { var el = document.querySelector('.bs2-card:first-child .bs2-price'); if(el) el.textContent = hp.plan1Price; }
+      if(hp.plan1Sub)   { var el = document.querySelector('.bs2-card:first-child .bs2-sub');   if(el) el.textContent = hp.plan1Sub; }
+      if(hp.plan1Desc)  { var el = document.querySelector('.bs2-card:first-child .bs2-desc');  if(el) el.textContent = hp.plan1Desc; }
+      if(hp.plan2Name)  { var el = document.querySelector('.bs2-card.bs2-popular .bs2-name');  if(el) el.textContent = hp.plan2Name; }
+      if(hp.plan2Price) { var el = document.querySelector('.bs2-card.bs2-popular .bs2-price'); if(el) el.textContent = hp.plan2Price; }
+      if(hp.plan2Sub)   { var el = document.querySelector('.bs2-card.bs2-popular .bs2-sub');   if(el) el.textContent = hp.plan2Sub; }
+      if(hp.plan2Desc)  { var el = document.querySelector('.bs2-card.bs2-popular .bs2-desc');  if(el) el.textContent = hp.plan2Desc; }
+      // Footer contact
+      if(hp.email)     { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-envelope')) d.innerHTML = '<i class="fas fa-envelope"></i> ' + hp.email; }); }
+      if(hp.instagram) { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-instagram')) d.innerHTML = '<i class="fab fa-instagram"></i> ' + hp.instagram; }); }
+      if(hp.location)  { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-map-marker')) d.innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + hp.location; }); }
+      if(hp.copyright) { var cp = document.querySelector('.footer-bottom p'); if(cp) cp.innerHTML = hp.copyright + ' Made with <i class="fas fa-heart" style="color:#e53935"></i> in India.'; }
+      // Testimonials
+      if(hp.testimonials && hp.testimonials.length) {
+        var tCards = document.querySelectorAll('.testi-card');
+        hp.testimonials.forEach(function(t, i) {
+          if(tCards[i]) {
+            var txt = tCards[i].querySelector('.testi-text'); if(txt) txt.textContent = t.text;
+            var nm  = tCards[i].querySelector('.testi-name'); if(nm) nm.textContent = t.name;
+          }
+        });
+      }
+      // Announcement bar
+      if(hp.announcement) {
+        var bar = document.createElement('div');
+        bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:10000;text-align:center;padding:0.5rem 1rem;font-size:0.82rem;font-weight:700;';
+        bar.style.background = hp.announceBg || '#e53935';
+        bar.style.color = hp.announceColor || '#fff';
+        bar.textContent = hp.announcement;
+        document.body.prepend(bar);
+      }
+    } catch(e) {
+      document.getElementById('statReels').textContent = '0';
+      document.getElementById('statMakers').textContent = '0';
+      document.getElementById('statRating').textContent = '5.0/5';
+    }
   </script>
   <script src="script.js"></script>
 </body>
