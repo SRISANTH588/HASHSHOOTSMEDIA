@@ -1133,7 +1133,7 @@
     function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
     function saveAssignedShoots(list){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); }
 
-    function populateAssignSelects(){
+    function populateAssignSelects(autoBookingId){
       // bookings dropdown — only pending/confirmed
       var bSel = document.getElementById('as_booking');
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
@@ -1141,19 +1141,53 @@
       bookings.forEach(function(b){
         var o = document.createElement('option');
         o.value = b.id;
-        o.textContent = b.service + ' — ' + b.name + ' (' + b.city + ') · ' + b.date;
+        o.textContent = b.service + ' — ' + b.name + ' (' + b.city + ') · ' + b.date + (b.preferredCreatorName ? ' ⭐ Prefers: ' + b.preferredCreatorName : '');
         bSel.appendChild(o);
       });
-      // staff dropdown — creators only
+      if(autoBookingId) bSel.value = autoBookingId;
+
+      // staff dropdown — all staff, highlight preferred
       var sSel = document.getElementById('as_staff');
       sSel.innerHTML = '<option value="" disabled selected>Select staff member</option>';
-      getStaff().forEach(function(s){
+      var staffList = getStaff();
+      if(!staffList.length){
+        var empty = document.createElement('option');
+        empty.disabled = true;
+        empty.textContent = '— No staff accounts created yet —';
+        sSel.appendChild(empty);
+        return;
+      }
+      staffList.forEach(function(s){
         var o = document.createElement('option');
         o.value = s.id;
         o.textContent = s.name + ' (' + s.role + ')';
         sSel.appendChild(o);
       });
+
+      // auto-select preferred creator if booking is pre-selected
+      if(autoBookingId){
+        var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var bk = allBookings.find(function(b){ return b.id == autoBookingId; });
+        if(bk && bk.preferredCreatorId){
+          sSel.value = bk.preferredCreatorId;
+        }
+      }
     }
+
+    // When booking dropdown changes, auto-select preferred creator
+    document.addEventListener('DOMContentLoaded', function(){
+      var bSel = document.getElementById('as_booking');
+      if(bSel){
+        bSel.addEventListener('change', function(){
+          var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var bk = allBookings.find(function(b){ return b.id == bSel.value; });
+          var sSel = document.getElementById('as_staff');
+          if(bk && bk.preferredCreatorId && sSel){
+            sSel.value = bk.preferredCreatorId;
+          }
+        });
+      }
+    });
 
     function showAssignToast(msg, ok){
       var t = document.getElementById('asToast');
