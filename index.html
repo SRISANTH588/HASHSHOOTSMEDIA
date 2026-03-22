@@ -672,57 +672,82 @@
   </script>
 
   <!-- SERVICES -->
-  <section style="background:#1a0000;padding:5rem 0;">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">What We Offer</span>
-        <h2>Services Built for <span class="red-text">Every Shoot</span></h2>
-        <p>From quick reels to grand weddings — we've got you covered.</p>
+  <section class="svc-section">
+    <style>
+      .svc-section{background:#1a0000;padding:6rem 0;}
+      .svc-header{text-align:center;margin-bottom:3.5rem;}
+      .svc-pill{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);border-radius:50px;padding:0.4rem 1.1rem;font-size:0.78rem;color:#e53935;font-weight:600;letter-spacing:0.05em;margin-bottom:1.2rem;}
+      .svc-h2{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;line-height:1.15;}
+      .svc-h2 span{background:linear-gradient(135deg,#e53935,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+      .svc-sub{color:#5a3535;font-size:1rem;margin-top:0.7rem;}
+      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .svc-card{background:#200000;border:1px solid rgba(255,255,255,0.06);border-radius:22px;padding:2rem 1.8rem;position:relative;overflow:hidden;transition:transform 0.35s ease,border-color 0.35s ease,box-shadow 0.35s ease;display:flex;flex-direction:column;gap:0;}
+      .svc-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(229,57,53,0.08),transparent 60%);pointer-events:none;transition:opacity 0.35s;}
+      .svc-card:hover{transform:translateY(-6px);border-color:rgba(229,57,53,0.4);box-shadow:0 24px 64px rgba(229,57,53,0.13);}
+      .svc-card:hover::before{opacity:2;}
+      .svc-card.pop{border-color:rgba(229,57,53,0.35);box-shadow:0 0 0 1px rgba(229,57,53,0.2),0 20px 60px rgba(229,57,53,0.15);}
+      .svc-pop-badge{position:absolute;top:1.2rem;right:1.2rem;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;font-size:0.68rem;font-weight:700;padding:0.28rem 0.75rem;border-radius:50px;letter-spacing:0.04em;}
+      .svc-icon-wrap{width:54px;height:54px;border-radius:16px;background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#e53935;margin-bottom:1.3rem;transition:background 0.3s,transform 0.3s;}
+      .svc-card:hover .svc-icon-wrap{background:rgba(229,57,53,0.2);transform:scale(1.08);}
+      .svc-name{font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:0.45rem;}
+      .svc-desc{font-size:0.86rem;color:#5a3535;line-height:1.75;flex:1;margin-bottom:1.4rem;}
+      .svc-price{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#e53935,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.3rem;display:block;}
+      .svc-price span{font-size:0.78rem;font-weight:500;color:#5a3535;-webkit-text-fill-color:#5a3535;}
+      .svc-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);color:#e53935;font-size:0.85rem;font-weight:700;padding:0.7rem 1.2rem;border-radius:12px;text-decoration:none;transition:background 0.25s,border-color 0.25s,color 0.25s;}
+      .svc-btn:hover{background:#e53935;border-color:#e53935;color:#fff;}
+      .svc-card.pop .svc-btn{background:#e53935;border-color:#e53935;color:#fff;}
+      .svc-card.pop .svc-btn:hover{background:#b71c1c;border-color:#b71c1c;}
+      @media(max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr);}}
+      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}}
+    </style>
+    <div class="svc-header">
+      <div class="svc-pill"><i class="fas fa-camera"></i> What We Offer</div>
+      <h2 class="svc-h2">Services Built for <span>Every Shoot</span></h2>
+      <p class="svc-sub">From quick reels to grand weddings — we've got you covered.</p>
+    </div>
+    <div class="svc-grid" id="svcGrid">
+      <div class="svc-card">
+        <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
+        <div class="svc-name">Reel Shoots</div>
+        <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 mins.</div>
+        <span class="svc-price">₹999 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
       </div>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-film"></i></div>
-          <h3>Reel Shoots</h3>
-          <p>Trendy, fast-paced reels for Instagram & YouTube. Delivered in 10 mins.</p>
-          <span class="service-price">Starting ₹999</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="service-card featured">
-          <div class="featured-badge">Most Popular</div>
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-user-circle"></i></div>
-          <h3>Portrait Sessions</h3>
-          <p>Professional headshots, personal branding & lifestyle portraits.</p>
-          <span class="service-price">Starting ₹1,499</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-heart"></i></div>
-          <h3>Wedding Photography</h3>
-          <p>Capture every precious moment of your special day beautifully.</p>
-          <span class="service-price">Starting ₹15,000</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-box"></i></div>
-          <h3>Product Shoots</h3>
-          <p>E-commerce & brand product photography that sells.</p>
-          <span class="service-price">Starting ₹2,499</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-calendar-alt"></i></div>
-          <h3>Event Coverage</h3>
-          <p>Corporate events, parties, launches — full coverage guaranteed.</p>
-          <span class="service-price">Starting ₹5,999</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><i class="fas fa-utensils"></i></div>
-          <h3>Food Photography</h3>
-          <p>Mouth-watering food shoots for restaurants, menus & delivery apps.</p>
-          <span class="service-price">Starting ₹1,999</span>
-          <a href="booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
-        </div>
+      <div class="svc-card pop">
+        <div class="svc-pop-badge">Most Popular</div>
+        <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
+        <div class="svc-name">Portrait Sessions</div>
+        <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits.</div>
+        <span class="svc-price">₹1,499 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
+        <div class="svc-name">Wedding Photography</div>
+        <div class="svc-desc">Capture every precious moment of your special day beautifully.</div>
+        <span class="svc-price">₹15,000 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
+        <div class="svc-name">Product Shoots</div>
+        <div class="svc-desc">E-commerce &amp; brand product photography that sells.</div>
+        <span class="svc-price">₹2,499 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
+        <div class="svc-name">Event Coverage</div>
+        <div class="svc-desc">Corporate events, parties, launches — full coverage guaranteed.</div>
+        <span class="svc-price">₹5,999 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
+        <div class="svc-name">Food Photography</div>
+        <div class="svc-desc">Mouth-watering food shoots for restaurants, menus &amp; delivery apps.</div>
+        <span class="svc-price">₹1,999 <span>onwards</span></span>
+        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
   </section>

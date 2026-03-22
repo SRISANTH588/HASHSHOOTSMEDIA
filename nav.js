@@ -120,14 +120,14 @@
         <div id="hsIconGroup" style="display:flex;align-items:center;gap:0;"></div>
       </div>
 
-      <div class="hs-nav-right">
+      <div class="hs-nav-right" id="hsNavRight">
         <a href="booking.html" class="hs-btn hs-btn-outline">
           <i class="fas fa-mobile-alt"></i> Get the App &nbsp;&#8250;
         </a>
-        <a href="#contact" class="hs-btn hs-btn-red">
+        <a href="contact.html" class="hs-btn hs-btn-red">
           Contact Us
         </a>
-        <a href="login.html" class="hs-btn hs-btn-outline">
+        <a href="login.html" class="hs-btn hs-btn-outline" id="hsLoginBtn">
           <i class="fas fa-sign-in-alt"></i> Login
         </a>
       </div>
@@ -139,10 +139,10 @@
     <div class="hs-mobile-menu" id="hsMobileMenu">
       <div id="hsMobileLinks"></div>
       <div class="hs-mobile-divider"></div>
-      <div class="hs-mobile-btns">
-        <a href="login.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeHsMenu()"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <div class="hs-mobile-btns" id="hsMobileBtns">
+        <a href="login.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeHsMenu()" id="hsMobileLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
         <a href="booking.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeHsMenu()"><i class="fas fa-mobile-alt"></i> Get the App</a>
-        <a href="#contact" style="background:#e53935;color:#fff;" onclick="closeHsMenu()">Contact Us</a>
+        <a href="contact.html" style="background:#e53935;color:#fff;" onclick="closeHsMenu()">Contact Us</a>
       </div>
     </div>`;
 
@@ -174,6 +174,96 @@
       m.onclick = closeHsMenu;
       mobileLinks.appendChild(m);
     });
+
+    // Show logged-in state if customer is logged in
+    var role = localStorage.getItem('hs_role');
+    var custName = localStorage.getItem('hs_customer_name');
+    if(role === 'customer' && custName){
+      var navRight = document.getElementById('hsNavRight');
+      var loginBtn = document.getElementById('hsLoginBtn');
+      // Hide login button
+      loginBtn.style.display = 'none';
+
+      // Profile dropdown
+      var profileWrap = document.createElement('div');
+      profileWrap.style.cssText = 'position:relative;';
+      profileWrap.innerHTML = `
+        <style>
+          .hs-profile-btn{display:flex;align-items:center;gap:0.5rem;background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);border-radius:50px;padding:0.38rem 0.9rem 0.38rem 0.45rem;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:700;color:#fff;transition:all 0.2s;white-space:nowrap;}
+          .hs-profile-btn:hover{background:rgba(229,57,53,0.18);border-color:rgba(229,57,53,0.5);}
+          .hs-profile-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:#fff;flex-shrink:0;}
+          .hs-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;background:rgba(10,0,0,0.98);border:1px solid rgba(229,57,53,0.2);border-radius:16px;padding:0.5rem;min-width:210px;z-index:9999;box-shadow:0 20px 50px rgba(0,0,0,0.7);backdrop-filter:blur(20px);}
+          .hs-dropdown.open{display:block;}
+          .hs-dd-header{padding:0.75rem 0.85rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.4rem;}
+          .hs-dd-name{font-size:0.9rem;font-weight:800;color:#fff;}
+          .hs-dd-tag{font-size:0.7rem;color:#e53935;font-weight:600;margin-top:0.1rem;}
+          .hs-dd-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.85rem;border-radius:10px;color:#ccc;font-size:0.83rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.15s,color 0.15s;font-family:'Inter',sans-serif;background:none;border:none;width:100%;text-align:left;}
+          .hs-dd-item:hover{background:rgba(229,57,53,0.1);color:#fff;}
+          .hs-dd-item i{width:16px;text-align:center;color:#e53935;font-size:0.85rem;}
+          .hs-dd-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.4rem 0;}
+          .hs-dd-logout{color:#ff6b6b !important;}
+          .hs-dd-logout i{color:#ff6b6b !important;}
+        </style>
+        <button class="hs-profile-btn" id="hsProfileBtn">
+          <div class="hs-profile-av" id="hsProfileAv"></div>
+          <span id="hsProfileName"></span>
+          <i class="fas fa-chevron-down" style="font-size:0.65rem;color:#888;"></i>
+        </button>
+        <div class="hs-dropdown" id="hsDropdown">
+          <div class="hs-dd-header">
+            <div class="hs-dd-name" id="hsDdName"></div>
+            <div class="hs-dd-tag">Customer Account</div>
+          </div>
+          <a href="customer.html" class="hs-dd-item"><i class="fas fa-user"></i> Profile</a>
+          <a href="customer.html" class="hs-dd-item"><i class="fas fa-box"></i> Order Details</a>
+          <a href="contact.html" class="hs-dd-item"><i class="fas fa-headset"></i> Customer Support</a>
+          <a href="customer.html" class="hs-dd-item"><i class="fas fa-wallet"></i> Wallet</a>
+          <div class="hs-dd-divider"></div>
+          <button class="hs-dd-item hs-dd-logout" id="hsDdLogout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>`;
+
+      navRight.insertBefore(profileWrap, loginBtn);
+
+      var initials = custName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+      document.getElementById('hsProfileAv').textContent = initials;
+      document.getElementById('hsProfileName').textContent = custName.split(' ')[0];
+      document.getElementById('hsDdName').textContent = custName;
+
+      document.getElementById('hsProfileBtn').onclick = function(e){
+        e.stopPropagation();
+        document.getElementById('hsDropdown').classList.toggle('open');
+      };
+      document.addEventListener('click', function(){
+        var dd = document.getElementById('hsDropdown');
+        if(dd) dd.classList.remove('open');
+      });
+      document.getElementById('hsDdLogout').onclick = function(){
+        localStorage.removeItem('hs_role');
+        localStorage.removeItem('hs_user');
+        localStorage.removeItem('hs_customer_name');
+        window.location.href = 'index.html';
+      };
+
+      // Mobile
+      var mobileLoginBtn = document.getElementById('hsMobileLoginBtn');
+      if(mobileLoginBtn){
+        mobileLoginBtn.innerHTML = '<i class="fas fa-user"></i> ' + custName;
+        mobileLoginBtn.href = 'customer.html';
+      }
+      var mobileBtns = document.getElementById('hsMobileBtns');
+      if(mobileBtns){
+        var mLogout = document.createElement('button');
+        mLogout.style.cssText = 'background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#ff6b6b;text-align:center;padding:0.8rem;border-radius:10px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;display:block;width:100%;';
+        mLogout.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+        mLogout.onclick = function(){
+          localStorage.removeItem('hs_role');
+          localStorage.removeItem('hs_user');
+          localStorage.removeItem('hs_customer_name');
+          window.location.href = 'index.html';
+        };
+        mobileBtns.appendChild(mLogout);
+      }
+    }
   }
 
   if(document.readyState === 'loading'){
@@ -189,4 +279,9 @@ function toggleHsMenu(){
 function closeHsMenu(){
   var m = document.getElementById('hsMobileMenu');
   if(m) m.classList.remove('open');
+}
+function hsGoContact(){
+  var el = document.getElementById('contact');
+  if(el){ el.scrollIntoView({behavior:'smooth'}); }
+  else { window.location.href = 'index.html#contact'; }
 }

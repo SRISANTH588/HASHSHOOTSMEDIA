@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:hidden;}
+    .wrapper{padding-top:2.5rem;padding-bottom:2.5rem;}
     .bg-particles{position:fixed;inset:0;z-index:0;overflow:hidden;}
     .particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0;}
     @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.3;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
@@ -56,6 +57,9 @@
     .error-msg{background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#ff6b6b;margin-bottom:1rem;display:none;align-items:center;gap:0.5rem;}
     .back{text-align:center;margin-top:1.5rem;color:#555;font-size:0.82rem;}
     .back a{color:#e53935;text-decoration:none;font-weight:600;}
+    .sub-tab-wrap{display:flex;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:4px;margin-bottom:1.75rem;gap:4px;}
+    .sub-tab{flex:1;padding:0.55rem;border-radius:7px;border:none;background:none;color:#888;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.25s;}
+    .sub-tab.active{background:rgba(229,57,53,0.15);color:#e53935;border:1px solid rgba(229,57,53,0.25);}
     @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
     .shake{animation:shake 0.4s ease;}
   </style>
@@ -74,37 +78,100 @@
 
     <!-- CUSTOMER -->
     <div class="card" id="customerCard">
-      <div class="card-header">
-        <h2>Welcome <span>Back</span></h2>
-        <p>Login to book your next shoot session</p>
+      <!-- Login/Signup sub-tabs -->
+      <div class="sub-tab-wrap">
+        <button class="sub-tab active" id="subLogin" onclick="switchSubTab('login')">Login</button>
+        <button class="sub-tab" id="subSignup" onclick="switchSubTab('signup')">Sign Up</button>
       </div>
-      <div class="error-msg" id="custError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid email or password.</div>
-      <div class="form-group">
-        <label><i class="fas fa-envelope"></i> Email Address</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-envelope"></i>
-          <input type="email" id="custEmail" placeholder="you@email.com"/>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <div class="card-header">
+          <h2>Welcome <span>Back</span></h2>
+          <p>Login to book your next shoot session</p>
         </div>
-      </div>
-      <div class="form-group">
-        <label><i class="fas fa-lock"></i> Password</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-lock"></i>
-          <input type="password" id="custPass" placeholder="••••••••"/>
-          <i class="toggle-pass fas fa-eye" onclick="togglePass('custPass',this)"></i>
+        <div class="error-msg" id="custError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid email or password.</div>
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email Address</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-envelope"></i>
+            <input type="email" id="custEmail" placeholder="you@email.com"/>
+          </div>
         </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-lock"></i>
+            <input type="password" id="custPass" placeholder="••••••••"/>
+            <i class="toggle-pass fas fa-eye" onclick="togglePass('custPass',this)"></i>
+          </div>
+        </div>
+        <div class="remember-row">
+          <label class="remember"><input type="checkbox"/> Remember me</label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+        <button class="btn-login" id="custBtn" onclick="customerLogin()">
+          <span>Login</span>
+          <div class="spinner" id="custSpinner"></div>
+          <i class="fas fa-arrow-right" id="custArrow"></i>
+        </button>
+        <div class="divider">or</div>
+        <p style="text-align:center;font-size:0.82rem;color:#888;">Don't have an account? <a href="#" onclick="switchSubTab('signup')" style="color:#e53935;font-weight:700;">Sign Up</a></p>
       </div>
-      <div class="remember-row">
-        <label class="remember"><input type="checkbox"/> Remember me</label>
-        <a href="#" class="forgot">Forgot password?</a>
+
+      <!-- SIGNUP FORM -->
+      <div id="signupForm" style="display:none;">
+        <div class="card-header">
+          <h2>Create <span>Account</span></h2>
+          <p>Join Hash Shoots and start booking today</p>
+        </div>
+        <div class="error-msg" id="signupError"><i class="fas fa-exclamation-circle"></i>&nbsp; <span id="signupErrMsg">Please fill all fields.</span></div>
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Full Name</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-user"></i>
+            <input type="text" id="signupName" placeholder="Your full name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email Address</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-envelope"></i>
+            <input type="email" id="signupEmail" placeholder="you@email.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> Phone Number</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-phone"></i>
+            <input type="tel" id="signupPhone" placeholder="+91 XXXXXXXXXX"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-lock"></i>
+            <input type="password" id="signupPass" placeholder="Min. 6 characters"/>
+            <i class="toggle-pass fas fa-eye" onclick="togglePass('signupPass',this)"></i>
+          </div>
+          <div class="strength-bar" id="signupStrengthBar" style="display:block;"><div class="strength-fill" id="signupStrengthFill"></div></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Confirm Password</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-lock"></i>
+            <input type="password" id="signupConfirm" placeholder="Re-enter password"/>
+            <i class="toggle-pass fas fa-eye" onclick="togglePass('signupConfirm',this)"></i>
+          </div>
+        </div>
+        <button class="btn-login" id="signupBtn" onclick="customerSignup()">
+          <span>Create Account</span>
+          <div class="spinner" id="signupSpinner"></div>
+          <i class="fas fa-arrow-right" id="signupArrow"></i>
+        </button>
+        <div class="divider">or</div>
+        <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#e53935;font-weight:700;">Login</a></p>
       </div>
-      <button class="btn-login" id="custBtn" onclick="customerLogin()">
-        <span>Login</span>
-        <div class="spinner" id="custSpinner"></div>
-        <i class="fas fa-arrow-right" id="custArrow"></i>
-      </button>
-      <div class="divider">Demo Credentials</div>
-      <div class="demo-creds">📧 Email: <strong>customer@hash.com</strong><br/>🔑 Password: <strong>1234</strong></div>
     </div>
 
     <!-- ADMIN -->
@@ -219,26 +286,82 @@
       fill.style.background=s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
     });
 
+    function switchSubTab(t){
+      document.getElementById('subLogin').classList.toggle('active', t==='login');
+      document.getElementById('subSignup').classList.toggle('active', t==='signup');
+      document.getElementById('loginForm').style.display = t==='login'?'block':'none';
+      document.getElementById('signupForm').style.display = t==='signup'?'block':'none';
+    }
+
+    document.getElementById('signupPass').addEventListener('input', function(){
+      var bar = document.getElementById('signupStrengthFill');
+      var s = 0;
+      if(this.value.length >= 6) s += 25;
+      if(this.value.length >= 10) s += 25;
+      if(/[A-Z]/.test(this.value)) s += 25;
+      if(/[@#$%^&*!]/.test(this.value)) s += 25;
+      bar.style.width = s + '%';
+      bar.style.background = s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
+    });
+
+    function customerSignup(){
+      var name = document.getElementById('signupName').value.trim();
+      var email = document.getElementById('signupEmail').value.trim();
+      var phone = document.getElementById('signupPhone').value.trim();
+      var pass = document.getElementById('signupPass').value;
+      var confirm = document.getElementById('signupConfirm').value;
+      var errEl = document.getElementById('signupError');
+      var errMsg = document.getElementById('signupErrMsg');
+      errEl.style.display = 'none';
+
+      if(!name || !email || !phone || !pass || !confirm){
+        errMsg.textContent = 'Please fill all fields.'; errEl.style.display='flex'; return;
+      }
+      if(pass.length < 6){
+        errMsg.textContent = 'Password must be at least 6 characters.'; errEl.style.display='flex'; return;
+      }
+      if(pass !== confirm){
+        errMsg.textContent = 'Passwords do not match.'; errEl.style.display='flex'; return;
+      }
+      var customers = JSON.parse(localStorage.getItem('hs_customers') || '[]');
+      if(customers.find(function(c){ return c.email === email; })){
+        errMsg.textContent = 'An account with this email already exists.'; errEl.style.display='flex'; return;
+      }
+
+      document.getElementById('signupBtn').classList.add('loading');
+      document.getElementById('signupSpinner').style.display='block';
+      document.getElementById('signupArrow').style.display='none';
+
+      setTimeout(function(){
+        customers.push({ name:name, email:email, phone:phone, password:pass, joined: new Date().toISOString() });
+        localStorage.setItem('hs_customers', JSON.stringify(customers));
+        localStorage.setItem('hs_role', 'customer');
+        localStorage.setItem('hs_user', email);
+        localStorage.setItem('hs_customer_name', name);
+        localStorage.setItem('hs_customer_wallet', '500');
+        window.location.href = 'index.html';
+      }, 1200);
+    }
+
+    // Allow existing customers to login with their signup credentials
     function customerLogin(){
-      const e=document.getElementById('custEmail').value.trim();
-      const p=document.getElementById('custPass').value;
+      var e = document.getElementById('custEmail').value.trim();
+      var p = document.getElementById('custPass').value;
       document.getElementById('custError').style.display='none';
       document.getElementById('custBtn').classList.add('loading');
       document.getElementById('custSpinner').style.display='block';
       document.getElementById('custArrow').style.display='none';
-      setTimeout(()=>{
-        if(e==='customer@hash.com'&&p==='1234'){
+      setTimeout(function(){
+        var customers = JSON.parse(localStorage.getItem('hs_customers') || '[]');
+        var found = customers.find(function(c){ return c.email === e && c.password === p; });
+        if((e==='customer@hash.com' && p==='1234') || found){
           localStorage.setItem('hs_role','customer');
           localStorage.setItem('hs_user', e);
-          localStorage.setItem('hs_customer_name', e.split('@')[0]);
+          localStorage.setItem('hs_customer_name', found ? found.name : e.split('@')[0]);
           localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet') || '500');
-          window.location.href='customer.html';
-        } else {
-          document.getElementById('custBtn').classList.remove('loading');
-          document.getElementById('custSpinner').style.display='none';
-          document.getElementById('custArrow').style.display='inline';
+          window.location.href='index.html';
           document.getElementById('custError').style.display='flex';
-          const card=document.getElementById('customerCard');
+          var card=document.getElementById('customerCard');
           card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
         }
       },1200);

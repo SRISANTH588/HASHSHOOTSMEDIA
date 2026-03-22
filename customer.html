@@ -110,7 +110,8 @@
       </div>
     </div>
 
-    <div class="my-bookings" id="myBookingsSection">
+    <!-- ORDER DETAILS -->
+    <div class="my-bookings" id="orderDetails">
       <h2 id="bookingsTitle">My Bookings</h2>
       <div id="bookingsList"></div>
     </div>
@@ -124,6 +125,69 @@
       <h2>🎬 Demo Session Feedback</h2>
       <div id="demoFeedbackList"></div>
     </div>
+
+    <!-- WALLET -->
+    <div id="wallet" style="margin-top:3rem;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Wallet</h2>
+      <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+        <div>
+          <div style="font-size:0.78rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Available Balance</div>
+          <div style="font-size:2.5rem;font-weight:900;color:#fff;">₹<span id="walletBal">0</span></div>
+          <div style="font-size:0.78rem;color:#5a3535;margin-top:0.3rem;">Use wallet balance on your next booking</div>
+        </div>
+        <div style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.2);border-radius:12px;padding:1rem 1.5rem;text-align:center;">
+          <i class="fas fa-wallet" style="font-size:2rem;color:#e53935;display:block;margin-bottom:0.5rem;"></i>
+          <div style="font-size:0.78rem;color:#a08080;">Cashback &amp; Rewards</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" style="margin-top:3rem;margin-bottom:3rem;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Profile</h2>
+      <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;">
+
+        <!-- Avatar -->
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;">
+          <div style="position:relative;flex-shrink:0;">
+            <div id="profileAv" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fff;overflow:hidden;"></div>
+            <label for="profilePicInput" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:#e53935;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #280404;">
+              <i class="fas fa-camera" style="font-size:0.65rem;color:#fff;"></i>
+            </label>
+            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(this)"/>
+          </div>
+          <div>
+            <div id="profileName" style="font-size:1.15rem;font-weight:800;color:#fff;"></div>
+            <div style="font-size:0.78rem;color:#e53935;font-weight:600;margin-top:0.2rem;">Customer Account</div>
+            <div style="font-size:0.72rem;color:#a08080;margin-top:0.2rem;">Tap camera icon to change photo</div>
+          </div>
+        </div>
+
+        <!-- Editable fields -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-user" style="color:#e53935;"></i> Full Name</label>
+            <input type="text" id="editName" placeholder="Your name" style="background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-phone" style="color:#e53935;"></i> Phone</label>
+            <input type="tel" id="editPhone" placeholder="+91 XXXXX XXXXX" style="background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
+          </div>
+          <div style="grid-column:span 2;">
+            <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-envelope" style="color:#e53935;"></i> Email</label>
+            <input type="text" id="profileEmail" readonly style="background:#180000;border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:0.7rem 1rem;color:#a08080;font-size:0.88rem;font-family:inherit;outline:none;width:100%;cursor:not-allowed;"/>
+          </div>
+        </div>
+
+        <button onclick="saveProfile()" style="background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;display:flex;align-items:center;gap:0.5rem;">
+          <i class="fas fa-save"></i> Save Profile
+        </button>
+        <div id="profileSaveMsg" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;">
+          <i class="fas fa-check-circle"></i> Profile saved!
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -216,12 +280,65 @@
     document.getElementById('successText').textContent = c.successMsg || "Your booking has been sent to our team. We'll contact you shortly.";
 
     // My Bookings section
-    if(c.showBookings === 'no') document.getElementById('myBookingsSection').style.display = 'none';
+    if(c.showBookings === 'no') document.getElementById('orderDetails').style.display = 'none';
     if(c.bookingsTitle) document.getElementById('bookingsTitle').textContent = c.bookingsTitle;
 
     // Welcome message
-    const user = localStorage.getItem('hs_user') || 'Customer';
+    const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
+    const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
+
+    // Wallet
+    document.getElementById('walletBal').textContent = localStorage.getItem('hs_customer_wallet') || '0';
+
+    // Profile
+    function loadProfile(){
+      var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+      var name = prof.name || user;
+      var phone = prof.phone || '';
+      var pic = prof.pic || '';
+      document.getElementById('editName').value = name;
+      document.getElementById('editPhone').value = phone;
+      document.getElementById('profileEmail').value = userEmail || '—';
+      document.getElementById('profileName').textContent = name;
+      var av = document.getElementById('profileAv');
+      if(pic){
+        av.innerHTML = '<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
+      } else {
+        var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+        av.textContent = initials;
+      }
+    }
+    loadProfile();
+
+    function uploadProfilePic(input){
+      var file = input.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+        prof.pic = e.target.result;
+        localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
+        loadProfile();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfile(){
+      var name = document.getElementById('editName').value.trim();
+      var phone = document.getElementById('editPhone').value.trim();
+      if(!name){ alert('Please enter your name.'); return; }
+      var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+      prof.name = name;
+      prof.phone = phone;
+      localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
+      localStorage.setItem('hs_customer_name', name);
+      document.getElementById('profileName').textContent = name;
+      document.getElementById('welcomeMsg').textContent = 'Welcome, ' + name;
+      var msg = document.getElementById('profileSaveMsg');
+      msg.style.display = 'block';
+      setTimeout(function(){ msg.style.display = 'none'; }, 3000);
+    }
 
     function logout() { localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
 
