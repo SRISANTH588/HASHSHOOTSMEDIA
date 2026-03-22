@@ -960,7 +960,13 @@
         // action area
         var actionHTML = '';
         if(d.status === 'pending'){
-          actionHTML = '<div class="demo-upload-zone" id="dropZone_'+d.id+'" ondragover="event.preventDefault();this.style.borderColor=\'#e53935\'" ondragleave="this.style.borderColor=\'\'" ondrop="onDemoDrop(event,'+d.id+')" >'
+          actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
+            +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
+            +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
+            +'</div>'
+            +'<div class="demo-upload-zone" id="dropZone_'+d.id+'" ondragover="event.preventDefault();this.style.borderColor=\'#e53935\'" ondragleave="this.style.borderColor=\'\'" ondrop="onDemoDrop(event,'+d.id+')" >'
             +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
             +'<i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:#e53935;opacity:0.6;"></i>'
             +'<p>Drag & drop your shoot reel or click to browse</p>'
@@ -974,8 +980,9 @@
             +'<i class="fas fa-upload"></i> Submit Reel for Approval'
             +'</button>';
         } else if(d.status === 'submitted'){
-          actionHTML = '<div style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem;background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.15);border-radius:8px;font-size:0.82rem;color:#4caf50;">'
-            +'<i class="fas fa-clock"></i> Reel submitted — waiting for admin approval'
+          actionHTML = '<div style="padding:0.75rem;background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.15);border-radius:8px;font-size:0.82rem;color:#4caf50;">'
+            +'<div style="display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-clock"></i> Reel submitted — waiting for admin approval</div>'
+            +(d.shootDate||d.shootTime ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#a0c8a0;"><i class="fas fa-calendar"></i> '+( d.shootDate||'')+'&nbsp;&nbsp;<i class="fas fa-clock"></i> '+(d.shootTime||'')+'</div>' : '')
             +'</div>';
         } else if(d.status === 'approved'){
           actionHTML = '<div class="demo-admin-note approved">'
@@ -986,6 +993,12 @@
           actionHTML = '<div class="demo-admin-note rejected">'
             +'<div style="font-weight:700;margin-bottom:0.3rem;"><i class="fas fa-times-circle"></i> Rejected — Please re-submit</div>'
             +(d.adminNote ? '<div>&ldquo;'+d.adminNote+'&rdquo;</div>' : '')
+            +'</div>'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
+            +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
+            +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
             +'</div>'
             +'<div class="demo-upload-zone" style="margin-top:0.75rem;" ondragover="event.preventDefault()" ondrop="onDemoDrop(event,'+d.id+')" >'
             +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
@@ -1047,6 +1060,10 @@
     function submitDemoReel(demoId){
       var file = demoFileMap[demoId];
       if(!file){ alert('Please select a video file first.'); return; }
+      var shootDate = document.getElementById('demoDate_' + demoId);
+      var shootTime = document.getElementById('demoTime_' + demoId);
+      if(!shootDate || !shootDate.value){ alert('Please select the shoot date.'); return; }
+      if(!shootTime || !shootTime.value){ alert('Please select the shoot time.'); return; }
       var btn = document.getElementById('demoSubmitBtn_' + demoId);
       var progressWrap = document.getElementById('demoProgress_' + demoId);
       var progressFill = document.getElementById('demoProgressFill_' + demoId);
@@ -1062,10 +1079,14 @@
         if(progressLabel) progressLabel.textContent = 'Finalising...';
         var demos = getDemos();
         var d = demos.find(function(x){ return x.id === demoId; });
+        var sDate = document.getElementById('demoDate_' + demoId);
+        var sTime = document.getElementById('demoTime_' + demoId);
         if(d){
           d.reelVideoId = videoKey;
           d.status = 'submitted';
           d.submittedAt = new Date().toLocaleString();
+          d.shootDate = sDate ? sDate.value : '';
+          d.shootTime = sTime ? sTime.value : '';
           d.adminNote = '';
         }
         saveDemos(demos);
