@@ -229,6 +229,9 @@
       setTimeout(()=>{
         if(e==='customer@hash.com'&&p==='1234'){
           localStorage.setItem('hs_role','customer');
+          localStorage.setItem('hs_user', e);
+          localStorage.setItem('hs_customer_name', e.split('@')[0]);
+          localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet') || '500');
           window.location.href='customer.html';
         } else {
           document.getElementById('custBtn').classList.remove('loading');
