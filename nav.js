@@ -1,5 +1,6 @@
 (function(){
-  var page = window.location.pathname.split('/').pop() || 'index.html';
+  function initNav(){
+    var page = window.location.pathname.split('/').pop() || 'index.html';
 
   var links = [
     { href:'index.html',   icon:'fa-house',       label:'Home' },
@@ -102,10 +103,16 @@
   });
 
   // Scroll darken effect
-  window.addEventListener('scroll', function(){
-    document.getElementById('hsNav').style.background =
-      window.scrollY > 20 ? 'rgba(4,0,0,0.99)' : 'rgba(10,0,0,0.95)';
-  });
+    window.addEventListener('scroll', function(){
+      document.getElementById('hsNav').style.background =
+        window.scrollY > 20 ? 'rgba(4,0,0,0.99)' : 'rgba(10,0,0,0.95)';
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
 })();
 
 function toggleMobileMenu(){
