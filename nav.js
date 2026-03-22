@@ -12,7 +12,9 @@
     var navHTML = `
     <style>
       .hs-nav{
-        background:transparent;
+        background:rgba(0,0,0,0.35);
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
         padding:0 2.5rem;
         display:flex;align-items:center;justify-content:space-between;
         height:58px;position:sticky;top:0;z-index:9999;
