@@ -512,8 +512,27 @@
           </div>
         </div>
         <div class="form-group">
+          <label>Location / Place *</label>
+          <input type="text" id="dm_place" placeholder="e.g. Vijayawada City Center, Studio 4"/>
+        </div>
+        <div class="form-group">
           <label>Description / Instructions</label>
-          <textarea id="dm_desc" placeholder="What should the staff prepare, shoot style, location, etc."></textarea>
+          <textarea id="dm_desc" placeholder="What should the staff prepare, shoot style, etc."></textarea>
+        </div>
+        <h2 style="font-size:0.9rem;font-weight:800;color:#e53935;margin-bottom:1rem;margin-top:0.5rem;"><i class="fas fa-user-tie"></i> &nbsp;Demo Head / Supervisor</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Head Name *</label>
+            <input type="text" id="dm_head_name" placeholder="e.g. Srisanth S"/>
+          </div>
+          <div class="form-group">
+            <label>Head Phone *</label>
+            <input type="tel" id="dm_head_phone" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+          <div class="form-group">
+            <label>Head Email *</label>
+            <input type="email" id="dm_head_email" placeholder="head@hashshoots.com"/>
+          </div>
         </div>
         <button class="btn-save-about" onclick="createDemo()"><i class="fas fa-plus"></i> Create Demo Session</button>
         <div class="save-toast" id="dmToast"></div>
@@ -916,21 +935,26 @@
       const staffId = document.getElementById('dm_staff').value;
       const date = document.getElementById('dm_date').value;
       const time = document.getElementById('dm_time').value;
+      const place = document.getElementById('dm_place').value.trim();
       const desc = document.getElementById('dm_desc').value.trim();
-      if(!title || !staffId || !date || !time){ showDemoToast('Please fill all required fields.', false); return; }
+      const headName = document.getElementById('dm_head_name').value.trim();
+      const headPhone = document.getElementById('dm_head_phone').value.trim();
+      const headEmail = document.getElementById('dm_head_email').value.trim();
+      if(!title || !staffId || !date || !time || !place || !headName || !headPhone || !headEmail){ showDemoToast('Please fill all required fields including head details.', false); return; }
       const staffMember = getStaff().find(s => s.id == staffId);
       const demos = getDemos();
       demos.push({
         id: Date.now(),
-        title, date, time, desc,
+        title, date, time, place, desc,
         staffId: Number(staffId),
         staffName: staffMember ? staffMember.name : 'Unknown',
+        headName, headPhone, headEmail,
         status: 'pending',
         reelUrl: null,
         createdAt: new Date().toLocaleDateString()
       });
       saveDemos(demos);
-      ['dm_title','dm_desc'].forEach(id => document.getElementById(id).value = '');
+      ['dm_title','dm_desc','dm_place','dm_head_name','dm_head_phone','dm_head_email'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('dm_date').value = '';
       document.getElementById('dm_time').value = '';
       document.getElementById('dm_staff').value = '';
@@ -971,7 +995,8 @@
           <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
             <div>
               <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">${d.title}</div>
-              <div style="font-size:0.75rem;color:#a08080;"><i class="fas fa-user" style="color:#e53935;"></i> ${d.staffName} &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ${d.date} &nbsp;·&nbsp; <i class="fas fa-clock"></i> ${d.time}</div>
+              <div style="font-size:0.75rem;color:#a08080;"><i class="fas fa-user" style="color:#e53935;"></i> ${d.staffName} &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ${d.date} &nbsp;·&nbsp; <i class="fas fa-clock"></i> ${d.time}${d.place ? ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + d.place : ''}</div>
+              ${d.headName ? `<div style="font-size:0.72rem;color:#a08080;margin-top:0.25rem;"><i class="fas fa-user-tie" style="color:#e53935;"></i> Head: <strong style="color:#fff;">${d.headName}</strong> &nbsp;·&nbsp; <i class="fas fa-phone"></i> ${d.headPhone} &nbsp;·&nbsp; <i class="fas fa-envelope"></i> ${d.headEmail}</div>` : ''}
               ${d.desc ? `<div style="font-size:0.75rem;color:#666;margin-top:0.3rem;">${d.desc}</div>` : ''}
             </div>
             <div style="display:flex;align-items:center;gap:0.5rem;">

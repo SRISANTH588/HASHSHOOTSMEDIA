@@ -1024,11 +1024,25 @@
         card.innerHTML = '<div class="demo-card-header">'
           +'<div>'
           +'<div class="demo-card-title">'+d.title+'</div>'
-          +'<div class="demo-card-meta"><i class="fas fa-calendar"></i> '+d.date+' &nbsp;·&nbsp; <i class="fas fa-clock"></i> '+d.time+'</div>'
+          +'<div class="demo-card-meta"><i class="fas fa-calendar"></i> '+d.date+' &nbsp;·&nbsp; <i class="fas fa-clock"></i> '+d.time+(d.place ? ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> '+d.place : '')+'</div>'
           +'</div>'
           +'<span class="demo-status-badge '+d.status+'">'+d.status.charAt(0).toUpperCase()+d.status.slice(1)+'</span>'
           +'</div>'
           +(d.desc ? '<div class="demo-desc">'+d.desc+'</div>' : '')
+          +(d.headName ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:1rem;">'
+            +'<div style="background:#0d0000;border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
+            +'<div style="font-size:0.62rem;color:#a08080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-user-tie" style="color:#e53935;"></i> DEMO HEAD</div>'
+            +'<div style="font-size:0.82rem;font-weight:700;color:#fff;">'+d.headName+'</div>'
+            +'</div>'
+            +'<div style="background:#0d0000;border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
+            +'<div style="font-size:0.62rem;color:#a08080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-phone" style="color:#e53935;"></i> PHONE</div>'
+            +'<div style="font-size:0.82rem;font-weight:700;color:#fff;">'+d.headPhone+'</div>'
+            +'</div>'
+            +'<div style="background:#0d0000;border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
+            +'<div style="font-size:0.62rem;color:#a08080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-envelope" style="color:#e53935;"></i> EMAIL</div>'
+            +'<div style="font-size:0.78rem;font-weight:700;color:#fff;word-break:break-all;">'+d.headEmail+'</div>'
+            +'</div>'
+            +'</div>' : '')
           + timelineHTML
           + actionHTML;
 
