@@ -12,13 +12,14 @@
     var navHTML = `
     <style>
       .hs-nav{
-        background:rgba(10,0,0,0.92);
+        background:transparent;
         backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
         border-bottom:1px solid rgba(229,57,53,0.12);
         padding:0 2rem;
         display:flex;align-items:center;justify-content:space-between;
         height:62px;position:sticky;top:0;z-index:9999;
         box-shadow:0 2px 20px rgba(0,0,0,0.5);
+        transition:background 0.3s;
       }
       /* LOGO */
       .hs-logo{font-size:1.4rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;}
@@ -199,7 +200,7 @@
     // Scroll effect
     window.addEventListener('scroll', function(){
       document.getElementById('hsNav').style.background =
-        window.scrollY > 20 ? 'rgba(4,0,0,0.98)' : 'rgba(10,0,0,0.92)';
+        window.scrollY > 20 ? 'rgba(4,0,0,0.97)' : 'transparent';
     });
   }
 
