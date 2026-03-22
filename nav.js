@@ -2,112 +2,203 @@
   function initNav(){
     var page = window.location.pathname.split('/').pop() || 'index.html';
 
-  var links = [
-    { href:'index.html',   icon:'fa-house',       label:'Home' },
-    { href:'vibe.html',    icon:'fa-compass',     label:'Discover the Vibe' },
-    { href:'partner.html', icon:'fa-handshake',   label:'Become a Partner' },
-    { href:'about.html',   icon:'fa-circle-info', label:'About Us' },
-  ];
+    var links = [
+      { href:'index.html',   icon:'fa-house',       title:'Home' },
+      { href:'vibe.html',    icon:'fa-compass',     title:'Discover the Vibe' },
+      { href:'partner.html', icon:'fa-handshake',   title:'Become a Partner' },
+      { href:'about.html',   icon:'fa-circle-info', title:'About Us' },
+    ];
 
-  var navHTML = `
-  <style>
-    .hs-nav{background:rgba(10,0,0,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(229,57,53,0.15);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,0.5);}
-    .hs-nav-logo{font-size:1.35rem;font-weight:900;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0;letter-spacing:-0.5px;}
-    .hs-nav-logo span{color:#e53935;}
-    .hs-nav-links{display:flex;align-items:center;gap:0.15rem;flex:1;justify-content:center;}
-    .hs-nav-link{display:flex;align-items:center;gap:0.4rem;padding:0.45rem 0.85rem;border-radius:8px;color:#a08080;font-size:0.82rem;font-weight:600;text-decoration:none;transition:all 0.2s;white-space:nowrap;border:1px solid transparent;}
-    .hs-nav-link:hover{color:#fff;background:rgba(255,255,255,0.06);}
-    .hs-nav-link.active{color:#e53935;background:rgba(229,57,53,0.1);border-color:rgba(229,57,53,0.2);}
-    .hs-nav-link i{font-size:0.8rem;}
-    .hs-nav-actions{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;}
-    .hs-nav-btn{padding:0.42rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:0.4rem;}
-    .hs-nav-btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#ccc;}
-    .hs-nav-btn-outline:hover{border-color:rgba(229,57,53,0.5);color:#e53935;}
-    .hs-nav-btn-primary{background:#e53935;color:#fff;border:none;box-shadow:0 4px 14px rgba(229,57,53,0.3);}
-    .hs-nav-btn-primary:hover{background:#b71c1c;transform:translateY(-1px);}
-    .hs-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;flex-shrink:0;}
-    .hs-hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;transition:all 0.3s;display:block;}
-    .hs-mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(6,0,0,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 1.25rem 1.5rem;z-index:9998;flex-direction:column;gap:0.3rem;max-height:calc(100vh - 64px);overflow-y:auto;}
-    .hs-mobile-menu.open{display:flex;}
-    .hs-mobile-link{display:flex;align-items:center;gap:0.75rem;padding:0.8rem 1rem;border-radius:10px;color:#a08080;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.2s;border:1px solid transparent;}
-    .hs-mobile-link:hover{color:#fff;background:rgba(255,255,255,0.05);}
-    .hs-mobile-link.active{color:#e53935;background:rgba(229,57,53,0.08);border-color:rgba(229,57,53,0.2);}
-    .hs-mobile-link i{width:20px;text-align:center;font-size:0.95rem;}
-    .hs-mobile-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;}
-    .hs-mobile-actions{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
-    .hs-mobile-actions a{text-align:center;padding:0.8rem;border-radius:10px;font-size:0.88rem;font-weight:700;text-decoration:none;display:block;}
+    var navHTML = `
+    <style>
+      .hs-nav{
+        background:rgba(10,0,0,0.92);
+        backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+        border-bottom:1px solid rgba(229,57,53,0.12);
+        padding:0 2rem;
+        display:flex;align-items:center;justify-content:space-between;
+        height:62px;position:sticky;top:0;z-index:9999;
+        box-shadow:0 2px 20px rgba(0,0,0,0.5);
+      }
+      /* LOGO */
+      .hs-logo{font-size:1.4rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;}
+      .hs-logo span{color:#e53935;}
 
-    /* Tablet: hide text labels, show icons only */
-    @media(max-width:1024px){
-      .hs-nav-link span{display:none;}
-      .hs-nav-link{padding:0.45rem 0.65rem;}
-      .hs-nav-btn span{display:none;}
-      .hs-nav-btn{padding:0.42rem 0.7rem;}
-    }
-    /* Mobile: hide desktop links, show hamburger */
-    @media(max-width:768px){
-      .hs-nav{padding:0 1rem;}
-      .hs-nav-links{display:none;}
-      .hs-nav-actions{display:none;}
-      .hs-hamburger{display:flex;}
-    }
-    /* Small mobile */
-    @media(max-width:400px){
-      .hs-nav-logo{font-size:1.1rem;}
-    }
-  </style>
-  <nav class="hs-nav" id="hsNav">
-    <a href="index.html" class="hs-nav-logo">HA<span>&#9889;</span>H SHOOTS</a>
-    <div class="hs-nav-links" id="hsNavLinks"></div>
-    <div class="hs-nav-actions" id="hsNavActions">
-      <a href="#contact" class="hs-nav-btn hs-nav-btn-outline"><i class="fas fa-envelope"></i><span> Contact Us</span></a>
-      <a href="login.html" class="hs-nav-btn hs-nav-btn-outline"><i class="fas fa-sign-in-alt"></i><span> Login</span></a>
-      <a href="booking.html" class="hs-nav-btn hs-nav-btn-primary"><i class="fas fa-camera"></i><span> Book Now</span></a>
-    </div>
-    <button class="hs-hamburger" id="hsHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-  <div class="hs-mobile-menu" id="hsMobileMenu">
-    <div id="hsMobileLinks"></div>
-    <div class="hs-mobile-divider"></div>
-    <div class="hs-mobile-actions">
-      <a href="#contact" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeMobileMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
-      <a href="login.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeMobileMenu()"><i class="fas fa-sign-in-alt"></i> Login</a>
-      <a href="booking.html" style="background:#e53935;color:#fff;" onclick="closeMobileMenu()"><i class="fas fa-camera"></i> Book Now</a>
-    </div>
-  </div>`;
+      /* CENTER ICON PILL */
+      .hs-nav-center{display:flex;align-items:center;gap:0;}
+      .hs-icon-group{
+        display:flex;align-items:center;gap:0;
+        background:rgba(80,10,10,0.5);
+        border:1px solid rgba(180,50,50,0.25);
+        border-radius:14px;
+        padding:0.2rem 0.3rem;
+      }
+      .hs-icon-sep{width:1px;height:20px;background:rgba(180,50,50,0.3);margin:0 0.1rem;flex-shrink:0;}
+      .hs-icon-btn{
+        width:40px;height:36px;
+        display:flex;align-items:center;justify-content:center;
+        border-radius:10px;
+        color:rgba(255,255,255,0.55);
+        font-size:1rem;
+        text-decoration:none;
+        transition:all 0.2s;
+        position:relative;
+        flex-shrink:0;
+      }
+      .hs-icon-btn:hover{color:#fff;background:rgba(229,57,53,0.2);}
+      .hs-icon-btn.active{color:#e53935;background:rgba(229,57,53,0.18);}
+      /* Tooltip */
+      .hs-icon-btn::after{
+        content:attr(data-title);
+        position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
+        background:rgba(8,0,0,0.95);color:#fff;
+        font-size:0.7rem;font-weight:600;font-family:'Inter',sans-serif;
+        padding:0.3rem 0.7rem;border-radius:7px;
+        white-space:nowrap;pointer-events:none;opacity:0;
+        transition:opacity 0.15s;
+        border:1px solid rgba(229,57,53,0.2);z-index:9999;
+      }
+      .hs-icon-btn:hover::after{opacity:1;}
 
-  document.body.insertAdjacentHTML('afterbegin', navHTML);
+      /* RIGHT BUTTONS */
+      .hs-nav-right{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;}
+      .hs-btn{
+        display:inline-flex;align-items:center;gap:0.45rem;
+        padding:0.48rem 1.1rem;border-radius:50px;
+        font-size:0.82rem;font-weight:700;
+        text-decoration:none;cursor:pointer;
+        font-family:'Inter',sans-serif;
+        transition:all 0.2s;white-space:nowrap;border:none;
+      }
+      .hs-btn-app{
+        background:transparent;
+        border:1px solid rgba(255,255,255,0.18);
+        color:#fff;
+      }
+      .hs-btn-app:hover{border-color:rgba(255,255,255,0.4);}
+      .hs-btn-app i{font-size:0.85rem;}
+      .hs-btn-app .hs-btn-arrow{font-size:0.7rem;opacity:0.6;}
+      .hs-btn-contact{background:#e53935;color:#fff;box-shadow:0 4px 14px rgba(229,57,53,0.35);}
+      .hs-btn-contact:hover{background:#c62828;transform:translateY(-1px);}
 
-  var desktopContainer = document.getElementById('hsNavLinks');
-  var mobileContainer  = document.getElementById('hsMobileLinks');
+      /* HAMBURGER */
+      .hs-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;background:none;border:none;flex-shrink:0;}
+      .hs-hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:all 0.3s;}
 
-  links.forEach(function(l){
-    var isActive = page === l.href || (page === '' && l.href === 'index.html');
+      /* MOBILE MENU */
+      .hs-mobile-menu{
+        display:none;position:fixed;top:62px;left:0;right:0;
+        background:rgba(6,0,0,0.98);backdrop-filter:blur(20px);
+        border-bottom:1px solid rgba(229,57,53,0.15);
+        padding:1rem 1.25rem 1.5rem;z-index:9998;
+        flex-direction:column;gap:0.3rem;
+        max-height:calc(100vh - 62px);overflow-y:auto;
+      }
+      .hs-mobile-menu.open{display:flex;}
+      .hs-mobile-link{
+        display:flex;align-items:center;gap:0.75rem;
+        padding:0.8rem 1rem;border-radius:10px;
+        color:#a08080;font-size:0.9rem;font-weight:600;
+        text-decoration:none;transition:all 0.2s;
+        border:1px solid transparent;
+      }
+      .hs-mobile-link:hover{color:#fff;background:rgba(255,255,255,0.05);}
+      .hs-mobile-link.active{color:#e53935;background:rgba(229,57,53,0.08);border-color:rgba(229,57,53,0.2);}
+      .hs-mobile-link i{width:20px;text-align:center;font-size:0.95rem;}
+      .hs-mobile-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;}
+      .hs-mobile-btns{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
+      .hs-mobile-btns a{
+        text-align:center;padding:0.8rem;border-radius:10px;
+        font-size:0.88rem;font-weight:700;text-decoration:none;display:block;
+        font-family:'Inter',sans-serif;
+      }
 
-    // desktop
-    var a = document.createElement('a');
-    a.href = l.href;
-    a.className = 'hs-nav-link' + (isActive ? ' active' : '');
-    a.innerHTML = '<i class="fas ' + l.icon + '"></i><span>' + l.label + '</span>';
-    desktopContainer.appendChild(a);
+      /* RESPONSIVE */
+      @media(max-width:900px){
+        .hs-btn-app .hs-btn-label{display:none;}
+      }
+      @media(max-width:768px){
+        .hs-nav{padding:0 1rem;}
+        .hs-nav-center{display:none;}
+        .hs-nav-right{display:none;}
+        .hs-hamburger{display:flex;}
+      }
+      @media(max-width:380px){
+        .hs-logo{font-size:1.15rem;}
+      }
+    </style>
+    <nav class="hs-nav" id="hsNav">
+      <a href="index.html" class="hs-logo">HA<span>&#9889;</span>H SHOOTS</a>
 
-    // mobile
-    var m = document.createElement('a');
-    m.href = l.href;
-    m.className = 'hs-mobile-link' + (isActive ? ' active' : '');
-    m.innerHTML = '<i class="fas ' + l.icon + '"></i>' + l.label;
-    m.onclick = closeMobileMenu;
-    mobileContainer.appendChild(m);
-  });
+      <div class="hs-nav-center">
+        <div class="hs-icon-group" id="hsIconGroup"></div>
+      </div>
 
-  // Scroll darken effect
+      <div class="hs-nav-right">
+        <a href="login.html" class="hs-btn hs-btn-app">
+          <i class="fas fa-mobile-alt"></i>
+          <span class="hs-btn-label">Get the App</span>
+          <span class="hs-btn-arrow">&#8250;</span>
+        </a>
+        <a href="#contact" class="hs-btn hs-btn-contact">
+          <i class="fas fa-envelope"></i> Contact Us
+        </a>
+      </div>
+
+      <button class="hs-hamburger" id="hsHamburger" onclick="toggleHsMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="hs-mobile-menu" id="hsMobileMenu">
+      <div id="hsMobileLinks"></div>
+      <div class="hs-mobile-divider"></div>
+      <div class="hs-mobile-btns">
+        <a href="login.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;" onclick="closeHsMenu()"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="booking.html" style="background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);color:#e53935;" onclick="closeHsMenu()"><i class="fas fa-camera"></i> Book Now</a>
+        <a href="#contact" style="background:#e53935;color:#fff;" onclick="closeHsMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
+      </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('afterbegin', navHTML);
+
+    // Build icon group
+    var iconGroup = document.getElementById('hsIconGroup');
+    var mobileLinks = document.getElementById('hsMobileLinks');
+
+    links.forEach(function(l, i){
+      var isActive = page === l.href || (page === '' && l.href === 'index.html');
+
+      // separator before each icon except first
+      if(i > 0){
+        var sep = document.createElement('div');
+        sep.className = 'hs-icon-sep';
+        iconGroup.appendChild(sep);
+      }
+
+      // desktop icon btn
+      var a = document.createElement('a');
+      a.href = l.href;
+      a.className = 'hs-icon-btn' + (isActive ? ' active' : '');
+      a.setAttribute('data-title', l.title);
+      a.innerHTML = '<i class="fas ' + l.icon + '"></i>';
+      iconGroup.appendChild(a);
+
+      // mobile link
+      var m = document.createElement('a');
+      m.href = l.href;
+      m.className = 'hs-mobile-link' + (isActive ? ' active' : '');
+      m.innerHTML = '<i class="fas ' + l.icon + '"></i>' + l.title;
+      m.onclick = closeHsMenu;
+      mobileLinks.appendChild(m);
+    });
+
+    // Scroll effect
     window.addEventListener('scroll', function(){
       document.getElementById('hsNav').style.background =
-        window.scrollY > 20 ? 'rgba(4,0,0,0.99)' : 'rgba(10,0,0,0.95)';
+        window.scrollY > 20 ? 'rgba(4,0,0,0.98)' : 'rgba(10,0,0,0.92)';
     });
   }
+
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', initNav);
   } else {
@@ -115,11 +206,10 @@
   }
 })();
 
-function toggleMobileMenu(){
-  var menu = document.getElementById('hsMobileMenu');
-  menu.classList.toggle('open');
+function toggleHsMenu(){
+  document.getElementById('hsMobileMenu').classList.toggle('open');
 }
-function closeMobileMenu(){
-  var menu = document.getElementById('hsMobileMenu');
-  if(menu) menu.classList.remove('open');
+function closeHsMenu(){
+  var m = document.getElementById('hsMobileMenu');
+  if(m) m.classList.remove('open');
 }
