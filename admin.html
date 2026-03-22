@@ -113,6 +113,8 @@
       <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
       <button class="tab-btn" onclick="switchTab('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
+      <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -620,6 +622,8 @@
         </div>
       </div>
 
+    </div><!-- end tab-feedback -->
+
     <!-- STAFF VIDEOS TAB -->
     <div class="tab-panel" id="tab-videos">
       <div class="about-form">
@@ -632,8 +636,6 @@
         </div>
         <div id="staffVideosAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;"></div>
       </div>
-    </div><!-- end tab-videos -->
-
     </div><!-- end tab-videos -->
 
     <!-- ASSIGN SHOOTS TAB -->
@@ -904,6 +906,34 @@
       </div>
     </div><!-- end tab-cwallets -->
 
+    <!-- ENQUIRIES TAB -->
+    <div class="tab-panel" id="tab-enquiries">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-envelope" style="color:#e53935;margin-right:0.5rem;"></i> Customer Enquiries</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#a08080;" id="enquiriesCount"></span>
+            <button onclick="clearAllEnquiries()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
+          </div>
+        </div>
+        <div id="enquiriesList"></div>
+      </div>
+    </div><!-- end tab-enquiries -->
+
+    <!-- NOTIFICATIONS TAB -->
+    <div class="tab-panel" id="tab-notifications">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-bell" style="color:#e53935;margin-right:0.5rem;"></i> All Notifications</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#a08080;" id="notifCount"></span>
+            <button onclick="clearAllNotifications()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
+          </div>
+        </div>
+        <div id="notificationsList"></div>
+      </div>
+    </div><!-- end tab-notifications -->
+
   </div><!-- end container -->
 
   <!-- FEEDBACK NOTIFICATION TOAST -->
@@ -931,27 +961,27 @@
   </div>
 
   <script>
-    if(localStorage.getItem('hs_role') !== 'admin' && localStorage.getItem('hs_role') !== 'staff') window.location.href='login.html';
+    var _role = localStorage.getItem('hs_role');
+    if(_role !== 'admin' && _role !== 'staff') { window.location.href='login.html'; }
 
-    const isAdmin = localStorage.getItem('hs_role') === 'admin';
-    const staffAccess = JSON.parse(localStorage.getItem('hs_staff_access') || '["all"]');
-    const hasAccess = (tab) => isAdmin || staffAccess.includes('all') || staffAccess.includes(tab);
+    var isAdmin = _role === 'admin';
+    var staffAccess = [];
+    try { staffAccess = JSON.parse(localStorage.getItem('hs_staff_access') || '[]'); } catch(e){ staffAccess = []; }
+    function hasAccess(tab){ return isAdmin || staffAccess.indexOf('all') > -1 || staffAccess.indexOf(tab) > -1; }
 
     // Show admin/staff name
-    const adminName = isAdmin
-      ? (localStorage.getItem('hs_admin_name') || 'Admin')
-      : (localStorage.getItem('hs_staff_name') || 'Staff');
-    const adminRole = isAdmin ? 'Admin' : (localStorage.getItem('hs_staff_role') || 'Staff');
-    document.getElementById('adminNameDisplay').textContent = '👋 ' + adminName + ' (' + adminRole + ')';
+    var adminName = isAdmin ? (localStorage.getItem('hs_admin_name') || 'Admin') : (localStorage.getItem('hs_staff_name') || 'Staff');
+    var adminRole = isAdmin ? 'Admin' : (localStorage.getItem('hs_staff_role') || 'Staff');
+    document.getElementById('adminNameDisplay').textContent = '\uD83D\uDC4B ' + adminName + ' (' + adminRole + ')';
 
-    // Hide tabs staff can't access
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      const tab = btn.getAttribute('onclick').match(/'(\w+)'/)[1];
-      if(!hasAccess(tab)) btn.style.display = 'none';
+    // Hide tabs staff can't access (admin sees all)
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      var m = btn.getAttribute('onclick').match(/'([^']+)'/);
+      if(m && !hasAccess(m[1])) btn.style.display = 'none';
     });
 
     // Activate first visible tab
-    const firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.style.display !== 'none');
+    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
     if(firstVisible) firstVisible.click();
 
     function logout() {
@@ -1193,6 +1223,8 @@
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') renderStaffList();
       if (tab === 'cwallets') renderCustWallets();
+      if (tab === 'enquiries') renderEnquiries();
+      if (tab === 'notifications') renderNotifications();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -1209,15 +1241,11 @@
     function renderStaffVideosAdmin(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').slice().reverse();
       var staffList = getStaff();
-      // populate filter
+      var assigns = getAssignedShoots();
       var sel = document.getElementById('videoFilterStaff');
       var curVal = sel.value;
       sel.innerHTML = '<option value="">All Staff</option>';
-      staffList.forEach(function(s){
-        var o = document.createElement('option');
-        o.value = s.id; o.textContent = s.name;
-        sel.appendChild(o);
-      });
+      staffList.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o); });
       sel.value = curVal;
       if(curVal) videos = videos.filter(function(v){ return v.staffId == curVal; });
       document.getElementById('staffVideosCount').textContent = videos.length + ' video(s)';
@@ -1225,14 +1253,19 @@
       if(!videos.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
       grid.innerHTML = '';
       videos.forEach(function(v){
+        var assign = assigns.find(function(a){ return a.id == v.assignId; });
         var card = document.createElement('div');
-        card.style.cssText = 'background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;position:relative;';
+        card.style.cssText = 'background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;';
         card.innerHTML = '<div id="svp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2rem;"><i class="fas fa-film"></i></div>'
-          +'<div style="padding:0.65rem 0.75rem;">'
-          +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+v.title+'</div>'
-          +'<div style="font-size:0.7rem;color:#e53935;margin-bottom:0.2rem;">'+v.category+'</div>'
-          +'<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.2rem;">'+v.staffName+' &nbsp;·&nbsp; '+v.sizeMB+' MB</div>'
-          +(v.shootDate ? '<div style="font-size:0.68rem;color:#e53935;margin-bottom:0.5rem;"><i class="fas fa-calendar"></i> '+v.shootDate+(v.shootTime?' &nbsp;<i class="fas fa-clock"></i> '+v.shootTime:'')+'</div>' : '<div style="margin-bottom:0.5rem;"></div>')
+          +'<div style="padding:0.75rem;">'
+          +'<div style="font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">'+v.staffName+'</div>'
+          +(assign ? '<div style="font-size:0.7rem;color:#e53935;font-weight:600;margin-bottom:0.15rem;">'+assign.service+'</div>'
+            +'<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.1rem;"><i class="fas fa-user-circle"></i> '+assign.clientName+(assign.clientPhone?' &nbsp;·&nbsp; <i class="fas fa-phone"></i> '+assign.clientPhone:'')+'</div>'
+            +'<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.1rem;"><i class="fas fa-map-marker-alt"></i> '+(assign.location||assign.city)+'</div>'
+            +'<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.1rem;"><i class="fas fa-calendar"></i> '+assign.date+' '+assign.time+'</div>'
+            +(assign.arrivedAt?'<div style="font-size:0.65rem;color:#4caf50;margin-bottom:0.1rem;"><i class="fas fa-check-circle"></i> Arrived: '+assign.arrivedAt+'</div>':'')
+           : '<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.3rem;">'+v.sizeMB+' MB</div>')
+          +'<div style="font-size:0.65rem;color:#555;margin-bottom:0.5rem;">'+(v.uploadedAt||'')+'</div>'
           +'<button onclick="adminDeleteStaffVideo('+v.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;width:100%;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div>';
         openAdminVideoDB(function(db){
@@ -1242,12 +1275,7 @@
             if(req.result && req.result.blob){
               var url = URL.createObjectURL(req.result.blob);
               var placeholder = document.getElementById('svp_'+v.id);
-              if(placeholder){
-                var vid = document.createElement('video');
-                vid.src=url; vid.controls=true; vid.preload='metadata';
-                vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;';
-                placeholder.replaceWith(vid);
-              }
+              if(placeholder){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; placeholder.replaceWith(vid); }
             }
           };
         });
@@ -1271,7 +1299,8 @@
       var cur = document.getElementById('set_curPass').value;
       var nw = document.getElementById('set_newPass').value;
       var toast = document.getElementById('setPassToast');
-      if(cur !== 'SASI@2007'){ toast.textContent='❌ Current password is incorrect.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
+      var correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
+      if(cur !== correctPass){ toast.textContent='❌ Current password is incorrect.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(function(){toast.style.display='none';},3000); return; }
       if(!nw || nw.length < 6){ toast.textContent='❌ New password must be at least 6 characters.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
       localStorage.setItem('hs_admin_password', nw);
       document.getElementById('set_curPass').value='';
@@ -1420,27 +1449,39 @@
         sSel.appendChild(o);
       });
 
-      // auto-select preferred creator if booking is pre-selected
+      // auto-select preferred creator and fill fields if booking is pre-selected
       if(autoBookingId){
         var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
         var bk = allBookings.find(function(b){ return b.id == autoBookingId; });
-        if(bk && bk.preferredCreatorId){
-          sSel.value = bk.preferredCreatorId;
+        if(bk){
+          if(bk.preferredCreatorId) sSel.value = bk.preferredCreatorId;
+          if(bk.date) document.getElementById('as_date').value = bk.date;
+          if(bk.time) document.getElementById('as_time').value = bk.time;
+          if((bk.location || bk.city) && !document.getElementById('as_notes').value)
+            document.getElementById('as_notes').value = 'Location: ' + (bk.location || bk.city);
         }
       }
     }
 
-    // When booking dropdown changes, auto-select preferred creator
+    // When booking dropdown changes, auto-fill date/time/location and preferred creator
     document.addEventListener('DOMContentLoaded', function(){
       var bSel = document.getElementById('as_booking');
       if(bSel){
         bSel.addEventListener('change', function(){
           var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
           var bk = allBookings.find(function(b){ return b.id == bSel.value; });
-          var sSel = document.getElementById('as_staff');
-          if(bk && bk.preferredCreatorId && sSel){
-            sSel.value = bk.preferredCreatorId;
+          if(!bk) return;
+          // Auto-fill date, time, location from booking
+          if(bk.date) document.getElementById('as_date').value = bk.date;
+          if(bk.time) document.getElementById('as_time').value = bk.time;
+          if(bk.location || bk.city){
+            var notesEl = document.getElementById('as_notes');
+            var loc = bk.location || bk.city;
+            if(notesEl && !notesEl.value) notesEl.value = 'Location: ' + loc;
           }
+          // Auto-select preferred creator
+          var sSel = document.getElementById('as_staff');
+          if(bk.preferredCreatorId && sSel) sSel.value = bk.preferredCreatorId;
         });
       }
     });
@@ -1478,7 +1519,9 @@
         staffName: staffMember ? staffMember.name : 'Unknown',
         service: booking ? booking.service : '',
         clientName: booking ? booking.name : '',
+        clientPhone: booking ? booking.phone : '',
         city: booking ? booking.city : '',
+        location: booking ? (booking.location || booking.city) : '',
         date: date, time: time, credit: credit, notes: notes,
         status: 'assigned',
         assignedAt: new Date().toLocaleString()
@@ -1520,40 +1563,126 @@
       // update stats
       document.getElementById('as_statTotal').textContent = list.length;
       document.getElementById('as_statPending').textContent = list.filter(function(a){ return a.status==='assigned'; }).length;
-      document.getElementById('as_statDone').textContent = list.filter(function(a){ return a.status==='completed'; }).length;
+      document.getElementById('as_statDone').textContent = list.filter(function(a){ return a.status==='done'||a.status==='completed'; }).length;
       document.getElementById('as_statPaid').textContent = list.filter(function(a){ return a.status==='paid'; }).length;
       var el = document.getElementById('assignedList');
       if(!list.length){
         el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
         return;
       }
-      var statusColors = { assigned:'#ff9800', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
+      var statusColors = { assigned:'#ff9800', done:'#9c27b0', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
       el.innerHTML = list.map(function(a){
         var color = statusColors[a.status] || '#ff9800';
+
+        // Action buttons based on status
         var actionBtns = '';
         if(a.status === 'assigned'){
-          actionBtns = '<button onclick="markShootComplete(' + a.id + ')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+          actionBtns = '<button onclick="adminMarkDone('+a.id+')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+        } else if(a.status === 'done'){
+          actionBtns = '<button onclick="approveAndPay('+a.id+')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
         } else if(a.status === 'completed'){
-          actionBtns = '<button onclick="releasePayment(' + a.id + ')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
+          actionBtns = '<button onclick="releasePayment('+a.id+')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
         } else if(a.status === 'paid'){
           actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
         }
+
+        // Payout request badge
+        var payoutBadge = (a.payoutRequested && a.status !== 'paid')
+          ? '<span style="background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.4);color:#ff9800;font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;"><i class="fas fa-hand-holding-usd"></i> Payout Requested</span>'
+          : '';
+
+        // Credit edit input for done status
+        var creditEdit = (a.status === 'done')
+          ? '<div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">'
+            + '<span style="font-size:0.72rem;color:#a08080;">Payment Amount:</span>'
+            + '<input type="number" id="creditEdit_'+a.id+'" value="'+a.credit+'" min="0" style="width:90px;background:#200000;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.3rem 0.5rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
+            + '<span style="font-size:0.72rem;color:#a08080;">&#8377;</span>'
+            + '</div>'
+          : '';
+
         return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
           + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
-          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#e53935;"></i> ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + a.city + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#e53935;"></i> Staff: ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;"><i class="fas fa-user-circle" style="color:#e53935;"></i> Customer: ' + a.clientName + (a.clientPhone ? ' &nbsp;·&nbsp; <i class="fas fa-phone" style="color:#e53935;"></i> ' + a.clientPhone : '') + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#e53935;"></i> ' + (a.location || a.city) + '</div>'
+          + (a.arrivedAt ? '<div style="font-size:0.72rem;color:#4caf50;margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Arrived: ' + a.arrivedAt + '</div>' : '')
+          + (a.doneAt ? '<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.2rem;"><i class="fas fa-flag-checkered"></i> Marked Done: ' + a.doneAt + '</div>' : '')
           + (a.notes ? '<div style="font-size:0.72rem;color:#666;margin-top:0.2rem;">' + a.notes + '</div>' : '')
+          + creditEdit
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
-          + '<span style="font-size:0.95rem;font-weight:900;color:#4caf50;">₹' + a.credit.toLocaleString('en-IN') + '</span>'
+          + '<span style="font-size:0.95rem;font-weight:900;color:#4caf50;">&#8377;' + a.credit.toLocaleString('en-IN') + '</span>'
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
+          + payoutBadge
           + actionBtns
           + '<button onclick="deleteAssignment('+a.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
-          + '<div style="font-size:0.65rem;color:#555;">Assigned on ' + a.assignedAt + (a.completedAt ? ' &nbsp;·&nbsp; Done: ' + a.completedAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
+          + adminVideoSection(a)
+          + '<div style="font-size:0.65rem;color:#555;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
           + '</div>';
       }).join('');
+    }
+
+    function adminVideoSection(a){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.assignId == a.id; });
+      if(!videos.length) return '<div style="font-size:0.72rem;color:#555;margin-top:0.5rem;"><i class="fas fa-clock"></i> No edited video uploaded yet.</div>';
+      var html = '<div style="margin-top:0.75rem;padding:0.75rem;background:#1a0000;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">';
+      html += '<div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-film"></i> Edited Video Uploaded by Staff</div>';
+      videos.forEach(function(v){
+        html += '<div id="adminVidPlayer_'+v.id+'" style="color:#a08080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        openAdminVideoDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            var el = document.getElementById('adminVidPlayer_'+v.id);
+            if(!el) return;
+            if(req.result && req.result.blob){
+              var url = URL.createObjectURL(req.result.blob);
+              el.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:220px;border-radius:8px;margin-top:0.3rem;"></video>'
+                + '<div style="font-size:0.68rem;color:#a08080;margin-top:0.3rem;">' + v.staffName + ' &nbsp;·&nbsp; ' + v.sizeMB + ' MB &nbsp;·&nbsp; ' + (v.uploadedAt||'') + '</div>';
+            } else { el.textContent = 'Video not found.'; }
+          };
+        });
+      });
+      html += '</div>';
+      return html;
+    }
+
+    function adminMarkDone(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return x.id===id; });
+      if(!a) return;
+      a.status = 'done';
+      a.doneAt = new Date().toLocaleString();
+      saveAssignedShoots(list);
+      renderAssignedList();
+      showAssignToast('Shoot marked as done. You can now approve and release payment.', true);
+    }
+
+    function approveAndPay(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return x.id===id; });
+      if(!a) return;
+      // Read edited credit amount if admin changed it
+      var inp = document.getElementById('creditEdit_' + id);
+      if(inp && inp.value) a.credit = Number(inp.value) || a.credit;
+      if(!confirm('Approve shoot and release \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
+      var walletKey = 'hs_wallet_' + a.staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+      wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
+      wallet.balance += a.credit;
+      wallet.totalEarned += a.credit;
+      wallet.transactions.push({ type:'credit', amount:a.credit, label:'Payment Released: '+a.service, note:a.clientName+' — '+(a.location||a.city), date:new Date().toLocaleString() });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+      a.status = 'paid';
+      a.paidAt = new Date().toLocaleString();
+      a.payoutRequested = false;
+      saveAssignedShoots(list);
+      renderAssignedList();
+      updateCreatorPendingPayments();
+      showAssignToast('\u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
     function markShootComplete(id){
@@ -1840,62 +1969,16 @@
           + '</div>';
       }).join('');
     }
-      var all = getFeedbacks().slice().reverse();
-      // stats
-      var shoots = all.filter(function(f){ return f.type === 'shoot'; });
-      var demos = all.filter(function(f){ return f.type === 'demo'; });
-      var avg = all.length ? (all.reduce(function(s,f){ return s + f.rating; }, 0) / all.length).toFixed(1) : '0.0';
-      document.getElementById('fb_totalCount').textContent = all.length;
-      document.getElementById('fb_avgRating').textContent = avg;
-      document.getElementById('fb_shootCount').textContent = shoots.length;
-      document.getElementById('fb_demoCount').textContent = demos.length;
 
-      // filter
-      var filtered = all;
-      if(currentFbFilter === 'shoot') filtered = shoots;
-      else if(currentFbFilter === 'demo') filtered = demos;
-      else if(currentFbFilter === '5') filtered = all.filter(function(f){ return f.rating === 5; });
-      else if(currentFbFilter === 'low') filtered = all.filter(function(f){ return f.rating <= 2; });
-
-      var el = document.getElementById('feedbackAdminList');
-      if(!filtered.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No feedback yet.</div>';
-        return;
-      }
-
-      var starColors = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
-      el.innerHTML = filtered.map(function(f){
-        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
-        var color = starColors[f.rating] || '#f5a623';
-        var typeBadge = f.type === 'shoot'
-          ? '<span style="background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-camera"></i> Shoot</span>'
-          : '<span style="background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-chalkboard-teacher"></i> Demo</span>';
-        var title = f.type === 'shoot'
-          ? (f.service + ' — ' + f.city)
-          : f.title;
-        var sub = f.type === 'shoot'
-          ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
-          : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
-          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
-          + '<div style="display:flex;align-items:center;gap:0.75rem;">'
-          + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
-          + '<div>'
-          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">' + title + '</div>'
-          + '<div style="font-size:0.72rem;color:#a08080;">' + sub + '</div>'
-          + '</div></div>'
-          + '<div style="display:flex;align-items:center;gap:0.6rem;">'
-          + typeBadge
-          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
-          + '</div></div>'
-          + (f.comment ? '<div style="background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
-          + (f.description ? '<div style="margin-top:0.5rem;background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
-          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
-          + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
-          + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
-          + '</div>'
-          + '</div>';
-      }).join('');
+    function resetPassword(id){
+      var list = getStaff();
+      var s = list.find(function(x){ return x.id === id; });
+      if(!s) return;
+      var newPass = prompt('Set new password for ' + s.name + ':');
+      if(!newPass || newPass.length < 4){ alert('Password must be at least 4 characters.'); return; }
+      s.password = newPass;
+      saveStaff(list);
+      showStaffToast('Password reset for ' + s.name, true);
     }
 
     // DEMO SESSIONS
@@ -2361,10 +2444,9 @@
       name=name||''; price=price||''; desc=desc||''; icon=icon||'fa-camera'; featured=featured||false;
       var div = document.createElement('div');
       div.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;';
-      div.innerHTML='
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:center;margin-bottom:0.5rem;">'
+      div.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:center;margin-bottom:0.5rem;">'
         +'<input type="text" placeholder="Service Name" value="'+name+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<input type="text" placeholder="Price e.g. Starting ₹999" value="'+price+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
+        +'<input type="text" placeholder="Price e.g. Starting \u20b9999" value="'+price+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
         +'<input type="text" placeholder="Icon e.g. fa-film" value="'+icon+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
         +'<button onclick="this.closest(\'div\').parentElement.remove()" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-times"></i></button>'
         +'</div>'
@@ -2469,6 +2551,188 @@
       toast.style.display = 'block';
       setTimeout(() => toast.style.display = 'none', 2500);
     }
+    // ENQUIRIES
+    function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
+
+    function renderEnquiries(){
+      var list = getEnquiries().slice().reverse();
+      document.getElementById('enquiriesCount').textContent = list.length + ' enquir' + (list.length===1?'y':'ies');
+      var el = document.getElementById('enquiriesList');
+      if(!list.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-envelope" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No enquiries yet.</div>';
+        return;
+      }
+      el.innerHTML = list.map(function(q){
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;align-items:center;gap:0.85rem;">'
+          +'<div style="width:42px;height:42px;border-radius:12px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.25);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#e53935;flex-shrink:0;">'+(q.name?q.name[0].toUpperCase():'?')+'</div>'
+          +'<div>'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;">'+q.name+'</div>'
+          +'<div style="font-size:0.72rem;color:#a08080;margin-top:0.1rem;">'+q.email+' &nbsp;·&nbsp; '+q.phone+'</div>'
+          +'</div></div>'
+          +'<div style="display:flex;align-items:center;gap:0.6rem;">'
+          +'<span style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.2);color:#e53935;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-envelope"></i> Enquiry</span>'
+          +'<button onclick="deleteEnquiry('+q.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+          +'</div></div>'
+          +'<div style="background:#1a0000;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(229,57,53,0.3);">'+q.message+'</div>'
+          +'<div style="font-size:0.68rem;color:#555;margin-top:0.6rem;">'+q.submittedAt+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    function deleteEnquiry(id){
+      if(!confirm('Delete this enquiry?')) return;
+      localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return q.id!==id; })));
+      renderEnquiries();
+    }
+
+    function clearAllEnquiries(){
+      if(!confirm('Delete ALL enquiries?')) return;
+      localStorage.removeItem('hs_enquiries');
+      renderEnquiries();
+    }
+
+    // Enquiries notification badge
+    var lastEnquiryCount = getEnquiries().length;
+    function updateEnquiriesNotifBadge(){
+      var all = getEnquiries();
+      var count = all.length;
+      var badge = document.getElementById('enquiriesNotifBadge');
+      if(currentTab !== 'enquiries' && count > lastEnquiryCount){
+        badge.textContent = count - lastEnquiryCount;
+        badge.style.display = 'inline';
+      } else if(currentTab === 'enquiries'){
+        badge.style.display = 'none';
+        lastEnquiryCount = count;
+      }
+    }
+    setInterval(updateEnquiriesNotifBadge, 3000);
+
+    // ── NOTIFICATIONS ─────────────────────────────────────────
+    function getNotifications(){ return JSON.parse(localStorage.getItem('hs_admin_notifs')||'[]'); }
+    function saveNotifications(list){ localStorage.setItem('hs_admin_notifs', JSON.stringify(list)); }
+
+    function pushNotif(type, title, sub, actionTab){
+      var notifs = getNotifications();
+      // avoid duplicate within 10 seconds
+      var now = Date.now();
+      var dup = notifs.find(function(n){ return n.type===type && n.title===title && (now - n.ts) < 10000; });
+      if(dup) return;
+      notifs.push({ id: now, ts: now, type: type, title: title, sub: sub, actionTab: actionTab, read: false, time: new Date().toLocaleString() });
+      saveNotifications(notifs);
+      updateNotifBadge();
+    }
+
+    function updateNotifBadge(){
+      var notifs = getNotifications();
+      var unread = notifs.filter(function(n){ return !n.read; }).length;
+      var badge = document.getElementById('notifBadge');
+      if(badge){ badge.textContent = unread; badge.style.display = unread > 0 ? 'inline' : 'none'; }
+    }
+
+    function renderNotifications(){
+      var notifs = getNotifications().slice().reverse();
+      // mark all as read
+      notifs.forEach(function(n){ n.read = true; });
+      saveNotifications(notifs.slice().reverse());
+      updateNotifBadge();
+
+      document.getElementById('notifCount').textContent = notifs.length + ' notification' + (notifs.length===1?'':'s');
+      var el = document.getElementById('notificationsList');
+      if(!notifs.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No notifications yet.</div>';
+        return;
+      }
+      var icons = { payout:'fa-hand-holding-usd', done:'fa-flag-checkered', booking:'fa-calendar-alt', enquiry:'fa-envelope', feedback:'fa-star', reel:'fa-film' };
+      var colors = { payout:'#2196f3', done:'#9c27b0', booking:'#4caf50', enquiry:'#e53935', feedback:'#f5a623', reel:'#ff9800' };
+      el.innerHTML = notifs.map(function(n){
+        var icon  = icons[n.type]  || 'fa-bell';
+        var color = colors[n.type] || '#e53935';
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
+          + '<div style="display:flex;align-items:flex-start;gap:0.85rem;">'
+          + '<div style="width:40px;height:40px;border-radius:10px;background:'+color+'22;border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas '+icon+'" style="color:'+color+';"></i></div>'
+          + '<div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">'+n.title+'</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;">'+n.sub+'</div>'
+          + '<div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">'+n.time+'</div>'
+          + '</div></div>'
+          + '<div style="display:flex;gap:0.5rem;align-items:center;">'
+          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif('+n.id+')" style="background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
+          + '<button onclick="deleteNotif('+n.id+')" style="background:rgba(255,255,255,0.04);border:none;color:#555;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + '</div></div>';
+      }).join('');
+    }
+
+    function deleteNotif(id){
+      saveNotifications(getNotifications().filter(function(n){ return n.id !== id; }));
+      renderNotifications();
+    }
+
+    function clearAllNotifications(){
+      if(!confirm('Clear all notifications?')) return;
+      localStorage.removeItem('hs_admin_notifs');
+      renderNotifications();
+    }
+
+    // Poll for new events every 4 seconds
+    var _lastDoneCount    = 0;
+    var _lastPayoutCount  = 0;
+    var _lastBookingCount = 0;
+    var _lastEnquiryCount = 0;
+
+    function pollNotifications(){
+      var assigns  = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var enquiries= JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+
+      // Reel done — staff marked shoot as done
+      var doneList = assigns.filter(function(a){ return a.status === 'done'; });
+      if(doneList.length > _lastDoneCount){
+        var newest = doneList[doneList.length - 1];
+        pushNotif('done', '\uD83C\uDFC1 Reel Marked Done', newest.staffName + ' completed ' + newest.service + ' for ' + newest.clientName, 'assign');
+      }
+      _lastDoneCount = doneList.length;
+
+      // Payout requested
+      var payoutList = assigns.filter(function(a){ return a.payoutRequested && a.status !== 'paid'; });
+      if(payoutList.length > _lastPayoutCount){
+        var np = payoutList[payoutList.length - 1];
+        pushNotif('payout', '\uD83D\uDCB8 Payout Requested', np.staffName + ' requested \u20b9' + np.credit.toLocaleString('en-IN') + ' for ' + np.service, 'assign');
+      }
+      _lastPayoutCount = payoutList.length;
+
+      // New booking
+      if(bookings.length > _lastBookingCount){
+        var nb = bookings[bookings.length - 1];
+        pushNotif('booking', '\uD83D\uDCC5 New Booking', nb.name + ' — ' + nb.service + ' in ' + nb.city, 'bookings');
+      }
+      _lastBookingCount = bookings.length;
+
+      // New enquiry
+      if(enquiries.length > _lastEnquiryCount){
+        var ne = enquiries[enquiries.length - 1];
+        pushNotif('enquiry', '\u2709\uFE0F New Enquiry', ne.name + ' — ' + ne.email, 'enquiries');
+      }
+      _lastEnquiryCount = enquiries.length;
+
+      updateNotifBadge();
+    }
+
+    // Init counts from current data so we don't flood on first load
+    (function initNotifCounts(){
+      var assigns  = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var enquiries= JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+      _lastDoneCount    = assigns.filter(function(a){ return a.status==='done'; }).length;
+      _lastPayoutCount  = assigns.filter(function(a){ return a.payoutRequested && a.status!=='paid'; }).length;
+      _lastBookingCount = bookings.length;
+      _lastEnquiryCount = enquiries.length;
+      updateNotifBadge();
+    })();
+
+    setInterval(pollNotifications, 4000);
+
   </script>
 </body>
 </html>

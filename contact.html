@@ -138,6 +138,42 @@
 <script>
   function submitContact(e){
     e.preventDefault();
+    var form = document.getElementById('ctForm');
+    var inputs = form.querySelectorAll('input, textarea');
+    var name    = inputs[0].value.trim();
+    var email   = inputs[1].value.trim();
+    var phone   = form.querySelector('.phone-num').value.trim();
+    var message = form.querySelector('textarea').value.trim();
+
+    var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
+    enquiries.push({
+      id: Date.now(),
+      name: name,
+      email: email,
+      phone: phone || 'N/A',
+      message: message,
+      submittedAt: new Date().toLocaleString()
+    });
+    localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
+
+    // Also save to customer orders if logged in
+    var role = localStorage.getItem('hs_role');
+    if(role === 'customer'){
+      var custEmail = localStorage.getItem('hs_user') || email;
+      var orders = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
+      orders.push({
+        id: Date.now(),
+        type: 'enquiry',
+        name: name,
+        email: email,
+        phone: phone || 'N/A',
+        message: message,
+        status: 'pending',
+        submittedAt: new Date().toLocaleString()
+      });
+      localStorage.setItem('hs_customer_enquiries_' + custEmail, JSON.stringify(orders));
+    }
+
     document.getElementById('ctForm').style.display='none';
     document.getElementById('ctSuccess').style.display='block';
   }

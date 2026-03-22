@@ -53,28 +53,91 @@
 
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
-    const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
+    var user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
+    var videoDB = null;
+    function openVideoDB(cb){
+      if(videoDB){ cb(videoDB); return; }
+      var req = indexedDB.open('hs_staff_videos_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+      req.onsuccess = function(e){ videoDB = e.target.result; cb(videoDB); };
+      req.onerror = function(){ cb(null); };
+    }
+
     function loadBookings(){
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var bookings  = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var custEmail = localStorage.getItem('hs_user') || '';
+      var enquiries = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
+      var allVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+      var assigns   = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
       var list = document.getElementById('bookingsList');
-      if(!bookings.length){ list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
-      list.innerHTML = bookings.slice().reverse().map(function(b){
-        return '<div class="booking-item">'
+
+      var bookingHTML = bookings.slice().reverse().map(function(b){
+        var assign = assigns.find(function(a){ return a.bookingId == b.id; });
+        var vid    = assign ? allVideos.find(function(v){ return v.assignId == assign.id; }) : null;
+
+        var arrivedBadge = assign && assign.arrivedAt
+          ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-map-marker-alt"></i> Creator Arrived</span>'
+          : '';
+
+        var videoSection = '';
+        if(vid && (b.status === 'confirmed' || b.status === 'completed')){
+          videoSection = '<div id="custVid_'+vid.id+'" style="margin-top:0.75rem;padding:0.75rem;background:#110000;border-radius:10px;border:1px solid rgba(229,57,53,0.2);">'
+            + '<div style="font-size:0.75rem;font-weight:700;color:#e53935;margin-bottom:0.4rem;"><i class="fas fa-film"></i> Your Edited Video is Ready!</div>'
+            + '<div class="vid-loading"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>'
+            + '</div>';
+        }
+
+        return '<div class="booking-item" style="flex-direction:column;align-items:flex-start;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;flex-wrap:wrap;gap:0.5rem;">'
           + '<div class="booking-info">'
-          + '<h4>' + b.service + ' — ' + b.city + '</h4>'
-          + '<p>' + (b.date !== 'N/A' ? b.date + ' at ' + b.time : '') + ' &nbsp;|&nbsp; ' + b.name + ' &nbsp;|&nbsp; ' + b.phone + '</p>'
-          + (b.preferredCreatorName ? '<p style="margin-top:4px;font-size:0.78rem;color:#e53935;"><i class="fas fa-user-circle"></i> Preferred: ' + b.preferredCreatorName + '</p>' : '')
-          + (b.notes ? '<p style="margin-top:4px;font-style:italic">' + b.notes + '</p>' : '')
+          + '<h4>' + b.service + ' &mdash; ' + b.city + '</h4>'
+          + '<p>' + (b.date ? b.date + (b.time ? ' at ' + b.time : '') : '') + (b.location ? ' &nbsp;|&nbsp; ' + b.location : '') + '</p>'
+          + '<p>' + b.name + ' &nbsp;|&nbsp; ' + b.phone + '</p>'
           + '<p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Booked on ' + b.createdAt + '</p>'
           + '</div>'
+          + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;">'
           + '<span class="status ' + b.status + '">' + b.status.charAt(0).toUpperCase() + b.status.slice(1) + '</span>'
+          + arrivedBadge
+          + '</div></div>'
+          + videoSection
           + '</div>';
       }).join('');
+
+      var enquiryHTML = enquiries.slice().reverse().map(function(q){
+        return '<div class="booking-item">'
+          + '<div class="booking-info">'
+          + '<h4><i class="fas fa-envelope" style="color:#e53935;font-size:0.85rem;"></i> &nbsp;Enquiry</h4>'
+          + '<p style="margin-top:4px;">' + q.message + '</p>'
+          + '<p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Submitted on ' + q.submittedAt + '</p>'
+          + '</div>'
+          + '<span class="status pending">Pending</span>'
+          + '</div>';
+      }).join('');
+
+      list.innerHTML = (bookingHTML + enquiryHTML) || '<div class="empty">No orders or enquiries yet.</div>';
+
+      // Load videos from IndexedDB
+      JSON.parse(localStorage.getItem('hs_staff_videos') || '[]').forEach(function(v){
+        var el = document.getElementById('custVid_' + v.id);
+        if(!el) return;
+        openVideoDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            if(!req.result || !req.result.blob) return;
+            var url = URL.createObjectURL(req.result.blob);
+            el.innerHTML = '<div style="font-size:0.75rem;font-weight:700;color:#e53935;margin-bottom:0.5rem;"><i class="fas fa-film"></i> Your Edited Video is Ready!</div>'
+              + '<video src="'+url+'" controls style="width:100%;max-height:260px;border-radius:8px;"></video>'
+              + '<div style="font-size:0.65rem;color:#a08080;margin-top:0.3rem;">Delivered by Hash Shoots</div>';
+          };
+        });
+      });
     }
+
     loadBookings();
-    setInterval(loadBookings, 3000);
+    setInterval(loadBookings, 4000);
 
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
   </script>

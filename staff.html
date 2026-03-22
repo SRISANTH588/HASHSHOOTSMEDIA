@@ -210,13 +210,15 @@
 
   <!-- TAB NAVIGATION -->
   <div class="tab-nav">
-    <button class="tab-btn active" onclick="switchTab('dashboard',this)"><i class="fas fa-home"></i> Dashboard</button>
+    <button class="tab-btn" onclick="switchTab('dashboard',this)"><i class="fas fa-home"></i> Dashboard</button>
+    <button class="tab-btn active" onclick="switchTab('shoots',this)" id="shootsTabBtn"><i class="fas fa-camera"></i> Assigned Shoots <span class="notif" id="shootsPendingBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('demos',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="notif" id="demoPendingBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('upload',this)"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
     <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> My Videos</button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
     <button class="tab-btn" onclick="switchTab('feedback',this)"><i class="fas fa-star"></i> Feedback</button>
     <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
+    <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-hand-holding-usd"></i> Payout <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('bank',this)"><i class="fas fa-university"></i> Bank</button>
     <button class="tab-btn" onclick="switchTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
   </div>
@@ -224,7 +226,7 @@
   <div class="page-wrap">
 
     <!-- DASHBOARD -->
-    <div class="section active" id="sec-dashboard">
+    <div class="section" id="sec-dashboard">
       <div class="welcome-bar">
         <div>
           <h2>Welcome back, <span id="staffNameDisplay">Staff</span> 👋</h2>
@@ -239,6 +241,11 @@
       </div>
       <!-- Quick links -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;">
+        <div onclick="switchTab('shoots',document.querySelector('[onclick*=shoots]'))" style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(229,57,53,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+          <i class="fas fa-camera" style="font-size:1.6rem;color:#e53935;margin-bottom:0.6rem;display:block;"></i>
+          <div style="font-size:0.82rem;font-weight:700;">Assigned Shoots</div>
+          <div style="font-size:0.72rem;color:#a08080;margin-top:0.2rem;"><span id="dashShootCount">0</span> pending</div>
+        </div>
         <div onclick="switchTab('demos',document.querySelector('[onclick*=demos]'))" style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(229,57,53,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
           <i class="fas fa-chalkboard-teacher" style="font-size:1.6rem;color:#e53935;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Demo Sessions</div>
@@ -269,6 +276,12 @@
           <div style="font-size:0.82rem;font-weight:700;">Profile</div>
         </div>
       </div>
+    </div>
+
+    <!-- ASSIGNED SHOOTS -->
+    <div class="section active" id="sec-shoots">
+      <div class="sec-title"><i class="fas fa-camera"></i> My Assigned Shoots</div>
+      <div id="assignedShootsList"></div>
     </div>
 
     <!-- DEMO SESSIONS -->
@@ -416,6 +429,39 @@
       <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#280404;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
     </div>
 
+    <!-- PAYOUT -->
+    <div class="section" id="sec-payout">
+      <div class="sec-title"><i class="fas fa-hand-holding-usd"></i> Payout Requests</div>
+
+      <!-- Summary cards -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#e53935;" id="po_balance">&#8377;0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Available Balance</div>
+        </div>
+        <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="po_pending">&#8377;0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Pending Payment</div>
+        </div>
+        <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="po_total">&#8377;0</div>
+          <div style="font-size:0.7rem;color:#a08080;margin-top:0.2rem;">Total Earned</div>
+        </div>
+      </div>
+
+      <!-- Shoots eligible for payout -->
+      <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-camera" style="color:#e53935;margin-right:0.5rem;"></i>Completed Shoots</div>
+        <div id="po_shootsList"></div>
+      </div>
+
+      <!-- Payout history -->
+      <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-history" style="color:#e53935;margin-right:0.5rem;"></i>Payout History</div>
+        <div id="po_history"></div>
+      </div>
+    </div>
+
     <!-- BANK -->
     <div class="section" id="sec-bank">
       <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
@@ -479,9 +525,11 @@
       document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
       document.getElementById('sec-' + name).classList.add('active');
       btn.classList.add('active');
+      if(name === 'shoots') renderAssignedShoots();
       if(name === 'videos') renderMyVideos();
       if(name === 'feedback') renderCreatorFeedback();
       if(name === 'wallet') renderWallet();
+      if(name === 'payout') renderPayout();
       if(name === 'bank') loadBankDetails();
     }
 
@@ -507,6 +555,8 @@
     document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(id); }).length;
     document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.staffId == id; }).length;
     document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(id); }).length;
+    var dashShootCount = document.getElementById('dashShootCount');
+    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(id) && a.status === 'assigned'; }).length;
     // update dashboard wallet balance
     var w = JSON.parse(localStorage.getItem('hs_wallet_' + id) || '{"balance":0}');
     var dashBal = document.getElementById('dashWalletBal');
@@ -902,6 +952,241 @@
       });
     }
 
+    // ── ASSIGNED SHOOTS ─────────────────────────────────────────
+    var shootFileMap = {};
+
+    function renderAssignedShoots(){
+      var rawId  = localStorage.getItem('hs_staff_id');
+      var staffId = rawId;
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
+        .filter(function(a){ return String(a.staffId) === String(staffId); })
+        .slice().reverse();
+
+      var badge = document.getElementById('shootsPendingBadge');
+      var pending = shoots.filter(function(a){ return a.status === 'assigned'; }).length;
+      badge.textContent = pending;
+      badge.style.display = pending > 0 ? 'inline' : 'none';
+
+      var el = document.getElementById('assignedShootsList');
+      if(!shoots.length){
+        el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#280404;border-radius:16px;"><i class="fas fa-camera" style="font-size:2rem;color:#e53935;opacity:0.2;display:block;margin-bottom:0.75rem;"></i><p style="color:#5a3535;font-size:0.85rem;">No shoots assigned yet. Admin will assign shoots to you.</p></div>';
+        return;
+      }
+
+      var statusColors = { assigned:'#ff9800', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
+      el.innerHTML = '';
+
+      shoots.forEach(function(a){
+        var color = statusColors[a.status] || '#ff9800';
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var booking = bookings.find(function(b){ return b.id === a.bookingId; });
+        var custName   = booking ? booking.name  : (a.clientName || '—');
+        var custPhone  = booking ? booking.phone : '—';
+        var custCity   = booking ? booking.city  : (a.city || '—');
+        var arrivedKey = 'hs_arrived_' + a.id;
+        var arrived    = localStorage.getItem(arrivedKey) === '1';
+
+        var card = document.createElement('div');
+        card.id  = 'shootCard_' + a.id;
+        card.style.cssText = 'background:#280404;border:1px solid rgba(255,255,255,0.07);border-left:4px solid '+color+';border-radius:16px;padding:1.5rem;margin-bottom:1rem;';
+
+        // Header row
+        var headerHTML =
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">'
+          +'<div>'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+a.service+'</div>'
+          +'<div style="font-size:0.72rem;color:#a08080;">Assigned on '+a.assignedAt+'</div>'
+          +'</div>'
+          +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;">'+a.status.charAt(0).toUpperCase()+a.status.slice(1)+'</span>'
+          +'</div>';
+
+        // Details grid
+        var detailsHTML =
+          '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-bottom:1.25rem;">'
+          +detailBox('fa-calendar','Date', a.date || '—')
+          +detailBox('fa-clock','Time', a.time || '—')
+          +detailBox('fa-map-marker-alt','Location', custCity)
+          +detailBox('fa-user','Customer', custName)
+          +detailBox('fa-phone','Contact', custPhone)
+          +(a.notes ? detailBox('fa-sticky-note','Notes', a.notes) : '')
+          +'</div>';
+
+        // Arrived button
+        var arrivedHTML = '';
+        if(a.status === 'assigned'){
+          arrivedHTML = arrived
+            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:700;margin-bottom:1rem;"><i class="fas fa-check-circle"></i> Arrived at Location</div>'
+            : '<button onclick="markArrived('+a.id+')" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,152,0,0.22)\'" onmouseout="this.style.background=\'rgba(255,152,0,0.12)\'"><i class="fas fa-map-marker-alt"></i> Mark Arrived at Location</button>';
+        }
+
+        // Upload edited video + Mark Done
+        var uploadHTML = '';
+        if(a.status === 'assigned' || a.status === 'done'){
+          var uploaded = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
+            .filter(function(v){ return v.assignId == a.id; });
+          if(uploaded.length){
+            var doneBtn = a.status !== 'done'
+              ? '<button onclick="markShootDone('+a.id+')" style="margin-top:0.75rem;width:100%;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-check-double"></i> Mark as Done — Notify Admin</button>'
+              : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
+            var payoutBtn = '';
+            uploadHTML = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:0.85rem 1rem;margin-top:0.5rem;">'
+              +'<div style="font-size:0.78rem;font-weight:700;color:#4caf50;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> '+uploaded.length+' edited video'+(uploaded.length>1?'s':'')+' uploaded</div>'
+              +'<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+              +uploaded.map(function(v){ return '<div style="background:#1a0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#ccc;"><i class="fas fa-film" style="color:#e53935;"></i> '+v.title+'</div>'; }).join('')
+              +'</div>'
+              +shootUploadZone(a.id)
+              +doneBtn
+              +payoutBtn
+              +'</div>';
+          } else {
+            uploadHTML = '<div style="margin-top:0.5rem;">'
+              +'<div style="font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-upload" style="color:#e53935;"></i> Upload Edited Video</div>'
+              +shootUploadZone(a.id)
+              +'</div>';
+          }
+        } else if(a.status === 'completed' || a.status === 'paid'){
+          var paidLabel = a.status === 'paid'
+            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released — &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
+            : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed — Awaiting Payment</div>';
+          uploadHTML = paidLabel;
+        }
+
+        card.innerHTML = headerHTML + detailsHTML + arrivedHTML + uploadHTML;
+        el.appendChild(card);
+      });
+    }
+
+    function detailBox(icon, label, value){
+      return '<div style="background:#1a0000;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem 0.9rem;">'
+        +'<div style="font-size:0.62rem;color:#a08080;font-weight:600;margin-bottom:0.25rem;"><i class="fas '+icon+'" style="color:#e53935;"></i> '+label.toUpperCase()+'</div>'
+        +'<div style="font-size:0.85rem;font-weight:700;color:#fff;">'+value+'</div>'
+        +'</div>';
+    }
+
+    function shootUploadZone(assignId){
+      return '<div style="border:2px dashed rgba(229,57,53,0.25);border-radius:10px;padding:1rem;text-align:center;position:relative;background:rgba(229,57,53,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#e53935\'" onmouseout="this.style.borderColor=\'rgba(229,57,53,0.25)\'">'
+        +'<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onShootFileSelected(this,'+assignId+')" />'
+        +'<i class="fas fa-cloud-upload-alt" style="font-size:1.4rem;color:#e53935;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
+        +'<div style="font-size:0.75rem;color:#a08080;">Click or drag to upload edited video</div>'
+        +'</div>'
+        +'<div id="shootFileInfo_'+assignId+'" style="display:none;margin-top:0.5rem;background:#1a0000;border:1px solid rgba(229,57,53,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#e53935;font-weight:600;"></div>'
+        +'<div id="shootUploadProgress_'+assignId+'" style="display:none;margin-top:0.5rem;">'
+        +'<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.3rem;" id="shootProgressLabel_'+assignId+'">Uploading...</div>'
+        +'<div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="shootProgressFill_'+assignId+'" style="height:100%;background:linear-gradient(90deg,#e53935,#ff6b6b);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
+        +'</div>'
+        +'<button id="shootUploadBtn_'+assignId+'" onclick="uploadShootVideo('+assignId+')" disabled style="margin-top:0.65rem;width:100%;background:#e53935;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;opacity:0.5;"><i class="fas fa-upload"></i> Upload Edited Video</button>';
+    }
+
+    function onShootFileSelected(input, assignId){
+      var file = input.files[0];
+      if(!file) return;
+      shootFileMap[String(assignId)] = file;
+      var info = document.getElementById('shootFileInfo_' + assignId);
+      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-film"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#a08080;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
+      var btn = document.getElementById('shootUploadBtn_' + assignId);
+      if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+    }
+
+    function uploadShootVideo(assignId){
+      var file = shootFileMap[String(assignId)];
+      if(!file){ alert('Please select a video file first.'); return; }
+      var btn   = document.getElementById('shootUploadBtn_' + assignId);
+      var prog  = document.getElementById('shootUploadProgress_' + assignId);
+      var fill  = document.getElementById('shootProgressFill_' + assignId);
+      var label = document.getElementById('shootProgressLabel_' + assignId);
+      if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
+      if(prog) prog.style.display='block';
+      if(label) label.textContent='Saving...';
+      if(fill) fill.style.width='20%';
+
+      var videoId   = Date.now();
+      var staffId   = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
+
+      // Read file as ArrayBuffer for reliable IndexedDB storage
+      var reader = new FileReader();
+      reader.onload = function(e){
+        if(fill) fill.style.width='60%';
+        if(label) label.textContent='Storing...';
+        var blob = new Blob([e.target.result], {type: file.type});
+        openStaffDB(function(db){
+          if(!db){
+            alert('Storage unavailable. Try a different browser.');
+            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+            return;
+          }
+          var tx = db.transaction('videos','readwrite');
+          var store = tx.objectStore('videos');
+          store.put({id: videoId, blob: blob});
+          tx.oncomplete = function(){
+            if(fill) fill.style.width='90%';
+            if(label) label.textContent='Finalising...';
+            var videos = getStaffVideos();
+            videos.push({
+              id: videoId,
+              assignId: Number(assignId),
+              title: (shoot ? shoot.service : 'Shoot') + ' — ' + (shoot ? shoot.clientName : ''),
+              category: 'Shoot Delivery',
+              shootDate: shoot ? shoot.date : '',
+              shootTime: shoot ? shoot.time : '',
+              staffId: staffId,
+              staffName: staffName,
+              fileName: file.name,
+              sizeMB: (file.size/1024/1024).toFixed(1),
+              uploadedAt: new Date().toLocaleString()
+            });
+            saveStaffVideos(videos);
+            if(fill) fill.style.width='100%';
+            if(label) label.textContent='Uploaded!';
+            delete shootFileMap[String(assignId)];
+            setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
+          };
+          tx.onerror = function(){
+            alert('Upload failed: ' + tx.error);
+            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+          };
+        });
+      };
+      reader.onerror = function(){ alert('Could not read file.'); };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function markShootDone(assignId){
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var s = shoots.find(function(a){ return a.id === assignId; });
+      if(!s) return;
+      s.status = 'done';
+      s.doneAt = new Date().toLocaleString();
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      renderAssignedShoots();
+    }
+
+    function requestPayout(assignId){
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var s = shoots.find(function(a){ return a.id === assignId; });
+      if(!s) return;
+      s.payoutRequested = true;
+      s.payoutRequestedAt = new Date().toLocaleString();
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      renderAssignedShoots();
+      renderPayout();
+    }
+
+    function markArrived(assignId){
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var s = shoots.find(function(a){ return a.id === assignId; });
+      if(s && !s.arrivedAt){ s.arrivedAt = new Date().toLocaleString(); localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
+      localStorage.setItem('hs_arrived_' + assignId, '1');
+      renderAssignedShoots();
+    }
+
+    renderAssignedShoots();
+    setInterval(function(){ renderAssignedShoots(); renderPayout(); }, 5000);
+
+    // ── END ASSIGNED SHOOTS ──────────────────────────────────────
+
     initCreatorDemo();
     setInterval(renderCreatorDemos, 5000);
 
@@ -1055,9 +1340,74 @@
       }).join('');
     }
 
-    // BANK
-    function saveBankDetails(){
+    // PAYOUT
+    function renderPayout(){
       var staffId = localStorage.getItem('hs_staff_id');
+      var w = getWallet();
+      document.getElementById('po_balance').textContent = '\u20b9' + (w.balance||0).toLocaleString('en-IN');
+      document.getElementById('po_pending').textContent = '\u20b9' + (w.pending||0).toLocaleString('en-IN');
+      document.getElementById('po_total').textContent   = '\u20b9' + (w.totalEarned||0).toLocaleString('en-IN');
+
+      var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
+        .filter(function(a){ return String(a.staffId) === String(staffId); })
+        .slice().reverse();
+
+      // Shoots list
+      var shootsEl = document.getElementById('po_shootsList');
+      var eligible = assigns.filter(function(a){ return a.status === 'done' || a.status === 'completed' || a.status === 'paid'; });
+      if(!eligible.length){
+        shootsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+      } else {
+        shootsEl.innerHTML = eligible.map(function(a){
+          var statusColor = a.status==='paid' ? '#2196f3' : a.status==='done' ? '#9c27b0' : '#4caf50';
+          var statusLabel = a.status==='paid' ? 'Paid' : a.status==='done' ? 'Done — Awaiting Admin Payment' : 'Completed';
+          var payoutSection = '';
+          if(a.status === 'done'){
+            payoutSection = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(156,39,176,0.08);border:1px solid rgba(156,39,176,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#ce93d8;"><i class="fas fa-clock"></i> Shoot marked done — Admin will review and release payment</div>';
+          } else if(a.status === 'paid'){
+            payoutSection = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#2196f3;"><i class="fas fa-check-double"></i> &#8377;'+a.credit.toLocaleString('en-IN')+' Released on '+a.paidAt+'</div>';
+          }
+          return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+            + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'
+            + '<div>'
+            + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">'+a.service+' — '+a.clientName+'</div>'
+            + '<div style="font-size:0.72rem;color:#a08080;margin-top:0.2rem;"><i class="fas fa-calendar" style="color:#e53935;"></i> '+a.date+' '+a.time+' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt" style="color:#e53935;"></i> '+(a.location||a.city)+'</div>'
+            + (a.doneAt ? '<div style="font-size:0.68rem;color:#9c27b0;margin-top:0.15rem;"><i class="fas fa-flag-checkered"></i> Done: '+a.doneAt+'</div>' : '')
+            + '</div>'
+            + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">'
+            + '<span style="font-size:1rem;font-weight:900;color:#4caf50;">&#8377;'+a.credit.toLocaleString('en-IN')+'</span>'
+            + '<span style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">'+statusLabel+'</span>'
+            + '</div></div>'
+            + payoutSection
+            + '</div>';
+        }).join('');
+      }
+
+      // Payout history from wallet transactions
+      var histEl = document.getElementById('po_history');
+      var paid = (w.transactions||[]).filter(function(t){ return t.type==='credit'; }).slice().reverse();
+      if(!paid.length){
+        histEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payouts received yet.</div>';
+      } else {
+        histEl.innerHTML = paid.map(function(t){
+          return '<div style="background:#1f0000;border:1px solid rgba(76,175,80,0.15);border-left:3px solid #4caf50;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+            + '<div>'
+            + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">'+t.label+'</div>'
+            + '<div style="font-size:0.7rem;color:#a08080;margin-top:0.15rem;">'+t.date+(t.note?' &nbsp;·&nbsp; '+t.note:'')+'</div>'
+            + '</div>'
+            + '<div style="font-size:1.1rem;font-weight:900;color:#4caf50;">+&#8377;'+t.amount.toLocaleString('en-IN')+'</div>'
+            + '</div>';
+        }).join('');
+      }
+
+      // Update notif badge — show if any done shoot awaiting payment
+      var needsAction = assigns.filter(function(a){ return a.status==='done'; }).length;
+      var badge = document.getElementById('payoutNotifBadge');
+      if(badge){ badge.textContent = needsAction; badge.style.display = needsAction > 0 ? 'inline' : 'none'; }
+    }
+
+    // BANK
+    function saveBankDetails(){      var staffId = localStorage.getItem('hs_staff_id');
       var data = {
         name: document.getElementById('bankName').value.trim(),
         bankName: document.getElementById('bankBankName').value.trim(),

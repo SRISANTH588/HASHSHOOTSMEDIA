@@ -108,29 +108,29 @@
       <form onsubmit="handleBooking(event)">
         <div class="form-group">
           <label class="form-label">Full Name <span>*</span></label>
-          <input type="text" class="form-input" placeholder="Enter your full name" required/>
+          <input type="text" id="bk_name" class="form-input" placeholder="Enter your full name" required/>
         </div>
 
         <div class="form-group">
           <label class="form-label">Contact Number <span>*</span></label>
           <div class="phone-row">
-            <select class="phone-code">
+            <select id="bk_code" class="phone-code">
               <option>🇮🇳 +91</option>
               <option>🇺🇸 +1</option>
               <option>🇬🇧 +44</option>
             </select>
-            <input type="tel" class="form-input" placeholder="Enter phone number" required/>
+            <input type="tel" id="bk_phone" class="form-input" placeholder="Enter phone number" required/>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Email Address <span>*</span></label>
-          <input type="email" class="form-input" placeholder="Enter your email" required/>
+          <input type="email" id="bk_email" class="form-input" placeholder="Enter your email" required/>
         </div>
 
         <div class="form-group">
           <label class="form-label">Occasion <span>*</span></label>
-          <select class="form-select" required>
+          <select id="bk_service" class="form-select" required>
             <option value="" disabled selected>Select occasion</option>
             <option>Reel Shoot</option>
             <option>Portrait Session</option>
@@ -143,7 +143,7 @@
 
         <div class="form-group">
           <label class="form-label">City <span>*</span></label>
-          <select class="form-select" required>
+          <select id="bk_city" class="form-select" required>
             <option value="" disabled selected>Select city</option>
             <option>Vijayawada</option>
             <option>Hyderabad</option>
@@ -159,20 +159,60 @@
           <label class="form-label">Date of the occasion <span>*</span></label>
           <div class="date-wrap">
             <i class="fas fa-calendar-alt"></i>
-            <input type="date" class="form-input" required/>
+            <input type="date" id="bk_date" class="form-input" required/>
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Submit Enquiry</button>
+        <div class="form-group">
+          <label class="form-label">Time <span>*</span></label>
+          <input type="time" id="bk_time" class="form-input" required/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Location / Address <span>*</span></label>
+          <input type="text" id="bk_location" class="form-input" placeholder="e.g. MG Road, Vijayawada" required/>
+        </div>
+
+        <div id="bk_success" style="display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#4caf50;font-weight:600;font-size:0.9rem;">
+          <i class="fas fa-check-circle"></i> Booking submitted! We'll contact you shortly.
+        </div>
+
+        <button type="submit" id="bk_btn" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Enquiry</button>
       </form>
     </div>
   </div>
 
   <script>
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
+
     function handleBooking(e){
       e.preventDefault();
-      alert('Booking submitted! We will contact you shortly.');
+      var name    = document.getElementById('bk_name').value.trim();
+      var code    = document.getElementById('bk_code').value;
+      var phone   = code.split(' ')[1] + document.getElementById('bk_phone').value.trim();
+      var email   = document.getElementById('bk_email').value.trim();
+      var service = document.getElementById('bk_service').value;
+      var city    = document.getElementById('bk_city').value;
+      var date    = document.getElementById('bk_date').value;
+      var time    = document.getElementById('bk_time').value;
+      var location= document.getElementById('bk_location').value.trim();
+      var now     = new Date().toLocaleString();
+      var id      = Date.now();
+
+      // Save to hs_bookings (shows in admin Bookings tab)
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      bookings.push({ id: id, name: name, phone: phone, email: email, service: service, city: city, location: location, date: date, time: time, notes: '', status: 'pending', createdAt: now });
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+
+      // Save to hs_enquiries (shows in admin Enquiries tab)
+      var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
+      enquiries.push({ id: id, name: name, phone: phone, email: email, message: 'Service: ' + service + ' | City: ' + city + ' | Location: ' + location + ' | Date: ' + date + ' at ' + time, submittedAt: now });
+      localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
+
+      // Show success, hide button
+      document.getElementById('bk_success').style.display = 'block';
+      document.getElementById('bk_btn').style.display = 'none';
+      e.target.querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
     }
   </script>
 </body>

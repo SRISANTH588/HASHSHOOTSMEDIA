@@ -78,7 +78,6 @@
 
     <!-- CUSTOMER -->
     <div class="card" id="customerCard">
-      <!-- Login/Signup sub-tabs -->
       <div class="sub-tab-wrap">
         <button class="sub-tab active" id="subLogin" onclick="switchSubTab('login')">Login</button>
         <button class="sub-tab" id="subSignup" onclick="switchSubTab('signup')">Sign Up</button>
@@ -343,7 +342,6 @@
       }, 1200);
     }
 
-    // Allow existing customers to login with their signup credentials
     function customerLogin(){
       var e = document.getElementById('custEmail').value.trim();
       var p = document.getElementById('custPass').value;
@@ -360,6 +358,10 @@
           localStorage.setItem('hs_customer_name', found ? found.name : e.split('@')[0]);
           localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet') || '500');
           window.location.href='index.html';
+        } else {
+          document.getElementById('custBtn').classList.remove('loading');
+          document.getElementById('custSpinner').style.display='none';
+          document.getElementById('custArrow').style.display='';
           document.getElementById('custError').style.display='flex';
           var card=document.getElementById('customerCard');
           card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
@@ -374,7 +376,8 @@
       document.getElementById('adminBtn').classList.add('loading');
       document.getElementById('adminSpinner').style.display='block';
       setTimeout(()=>{
-        if(u==='SRISANTH'&&p==='SASI@2007'){
+        var correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
+        if(u==='SRISANTH'&&p===correctPass){
           localStorage.setItem('hs_role','admin');
           localStorage.setItem('hs_admin_name','SRISANTH');
           window.location.href='admin.html';
@@ -393,10 +396,7 @@
       const p = document.getElementById('staffPass').value;
       document.getElementById('staffError').style.display='none';
 
-      // Hardcoded staff credential
       const isHardcoded = u.toUpperCase() === 'SASI' && p === 'SASI2468';
-
-      // Also check admin-created staff list
       const staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
       const found = staffList.find(s => s.username.toLowerCase() === u.toLowerCase() && s.password === p);
 
