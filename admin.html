@@ -1206,7 +1206,8 @@
       var time      = document.getElementById('as_time').value;
       var credit    = Number(document.getElementById('as_credit').value);
       var notes     = document.getElementById('as_notes').value.trim();
-      if(!bookingId||!staffId||!date||!time||!credit){ showAssignToast('Please fill all required fields.', false); return; }
+      if(!bookingId||!staffId||!date||!time){ showAssignToast('Please fill all required fields.', false); return; }
+      if(!credit) credit = 0;
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var booking  = bookings.find(function(b){ return b.id===bookingId; });
