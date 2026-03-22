@@ -2,12 +2,13 @@
   var page = window.location.pathname.split('/').pop() || 'index.html';
 
   var links = [
-    { href:'index.html',            icon:'fa-house',         label:'Home' },
-    { href:'vibe.html',             icon:'fa-compass',       label:'Discover' },
-    { href:'booking.html',          icon:'fa-camera',        label:'Book Now' },
-    { href:'about.html',            icon:'fa-circle-info',   label:'About' },
-    { href:'partner.html',          icon:'fa-handshake',     label:'Partner' },
-    { href:'career.html',           icon:'fa-briefcase',     label:'Careers' },
+    { href:'index.html',    icon:'fa-house',       label:'Home' },
+    { href:'vibe.html',     icon:'fa-compass',     label:'Discover the Vibe' },
+    { href:'booking.html',  icon:'fa-camera',      label:'Book Now' },
+    { href:'about.html',    icon:'fa-circle-info', label:'About Us' },
+    { href:'partner.html',  icon:'fa-handshake',   label:'Become a Partner' },
+    { href:'career.html',   icon:'fa-briefcase',   label:'Careers' },
+    { href:'#contact',      icon:'fa-envelope',    label:'Contact Us' },
   ];
 
   var navHTML = `
@@ -36,7 +37,7 @@
     .hs-mobile-link i{width:18px;text-align:center;font-size:0.9rem;}
     .hs-mobile-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;}
     .hs-mobile-actions{display:flex;gap:0.65rem;margin-top:0.5rem;}
-    .hs-mobile-actions a{flex:1;text-align:center;padding:0.7rem;border-radius:10px;font-size:0.85rem;font-weight:700;text-decoration:none;}
+    .hs-mobile-actions a{flex:1;text-align:center;padding:0.7rem;border-radius:10px;font-size:0.82rem;font-weight:700;text-decoration:none;}
     @media(max-width:860px){.hs-nav-links{display:none;}.hs-hamburger{display:flex;}}
     @media(max-width:500px){.hs-nav-actions{display:none;}}
   </style>
