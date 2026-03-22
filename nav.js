@@ -136,6 +136,10 @@
 
       <div class="hs-nav-right">
         <a href="login.html" class="hs-btn hs-btn-app">
+          <i class="fas fa-sign-in-alt"></i>
+          <span class="hs-btn-label">Login</span>
+        </a>
+        <a href="booking.html" class="hs-btn hs-btn-app">
           <i class="fas fa-mobile-alt"></i>
           <span class="hs-btn-label">Get the App</span>
           <span class="hs-btn-arrow">&#8250;</span>
