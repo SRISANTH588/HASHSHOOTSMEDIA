@@ -13,13 +13,11 @@
     <style>
       .hs-nav{
         background:transparent;
-        backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-        border-bottom:1px solid rgba(229,57,53,0.12);
+        border-bottom:1px solid transparent;
         padding:0 2rem;
         display:flex;align-items:center;justify-content:space-between;
         height:62px;position:sticky;top:0;z-index:9999;
-        box-shadow:0 2px 20px rgba(0,0,0,0.5);
-        transition:background 0.3s;
+        transition:background 0.3s, border-color 0.3s;
       }
       /* LOGO */
       .hs-logo{font-size:1.4rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;}
@@ -199,8 +197,18 @@
 
     // Scroll effect
     window.addEventListener('scroll', function(){
-      document.getElementById('hsNav').style.background =
-        window.scrollY > 20 ? 'rgba(4,0,0,0.97)' : 'transparent';
+      var nav = document.getElementById('hsNav');
+      if(window.scrollY > 20){
+        nav.style.background = 'rgba(4,0,0,0.97)';
+        nav.style.backdropFilter = 'blur(20px)';
+        nav.style.borderBottomColor = 'rgba(229,57,53,0.15)';
+        nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.5)';
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottomColor = 'transparent';
+        nav.style.boxShadow = 'none';
+      }
     });
   }
 
