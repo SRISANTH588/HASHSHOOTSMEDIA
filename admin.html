@@ -108,6 +108,8 @@
       <button class="tab-btn" onclick="switchTab('staff',this)"><i class="fas fa-users-cog"></i> Staff & Access</button>
       <button class="tab-btn" onclick="switchTab('demo',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span id="demoNotifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Feedback <span id="feedbackNotifBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
+      <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -581,6 +583,78 @@
 
     </div><!-- end tab-feedback -->
 
+    <!-- STAFF VIDEOS TAB -->
+    <div class="tab-panel" id="tab-videos">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-photo-video" style="color:#e53935;margin-right:0.5rem;"></i> Staff Uploaded Videos</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <select id="videoFilterStaff" onchange="renderStaffVideosAdmin()" style="background:#110000;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
+            <span style="font-size:0.8rem;color:#a08080;" id="staffVideosCount"></span>
+          </div>
+        </div>
+        <div id="staffVideosAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;"></div>
+      </div>
+    </div><!-- end tab-videos -->
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-panel" id="tab-settings">
+
+      <!-- CHANGE ADMIN PASSWORD -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-key" style="color:#e53935;margin-right:0.5rem;"></i> Change Admin Password</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="set_curPass" placeholder="Enter current password"/>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="set_newPass" placeholder="Enter new password"/>
+          </div>
+        </div>
+        <button class="btn-save-about" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Update Password</button>
+        <div class="save-toast" id="setPassToast"></div>
+      </div>
+
+      <!-- BOOKING CONTROLS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-calendar-alt" style="color:#e53935;margin-right:0.5rem;"></i> Booking Controls</h2>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button onclick="bulkUpdateBookings('confirmed')" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Confirm All Pending</button>
+          <button onclick="bulkUpdateBookings('completed')" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-flag-checkered"></i> Complete All Confirmed</button>
+          <button onclick="clearAllBookings()" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash-alt"></i> Clear All Bookings</button>
+        </div>
+      </div>
+
+      <!-- FEEDBACK CONTROLS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-star" style="color:#e53935;margin-right:0.5rem;"></i> Feedback Controls</h2>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button onclick="clearAllFeedback()" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash-alt"></i> Clear All Feedback</button>
+        </div>
+      </div>
+
+      <!-- DEMO CONTROLS -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-chalkboard-teacher" style="color:#e53935;margin-right:0.5rem;"></i> Demo Session Controls</h2>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button onclick="clearAllDemos()" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash-alt"></i> Clear All Demo Sessions</button>
+        </div>
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div class="about-form" style="border-color:rgba(244,67,54,0.3);">
+        <h2 style="font-size:1rem;font-weight:800;color:#f44336;margin-bottom:1.5rem;"><i class="fas fa-exclamation-triangle"></i> &nbsp;Danger Zone</h2>
+        <p style="font-size:0.85rem;color:#a08080;margin-bottom:1.25rem;">These actions are irreversible. All data will be permanently deleted.</p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button onclick="clearAllStaff()" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-users-slash"></i> Delete All Staff</button>
+          <button onclick="resetEverything()" style="background:#f44336;border:none;color:#fff;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bomb"></i> Reset Everything</button>
+        </div>
+      </div>
+
+    </div><!-- end tab-settings -->
+
   </div><!-- end container -->
 
   <!-- FEEDBACK NOTIFICATION TOAST -->
@@ -687,6 +761,7 @@
               ${b.status==='pending'?`<button class="btn-action btn-confirm" onclick="updateStatus(${b.id},'confirmed')">Confirm</button>`:''}
               ${b.status==='confirmed'?`<button class="btn-action btn-complete" onclick="updateStatus(${b.id},'completed')">Complete</button>`:''}
               ${b.status!=='cancelled'&&b.status!=='completed'?`<button class="btn-action btn-cancel" onclick="updateStatus(${b.id},'cancelled')">Cancel</button>`:''}
+              <button class="btn-action" style="background:rgba(33,150,243,0.15);color:#2196f3;" onclick="editBooking(${b.id})"><i class="fas fa-edit"></i></button>
               <button class="btn-action btn-delete" onclick="deleteBooking(${b.id})"><i class="fas fa-trash"></i></button>
             </div>
           </td>
@@ -709,6 +784,24 @@
     function deleteBooking(id) {
       if(!confirm('Delete this booking?')) return;
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>b.id!==id);
+      localStorage.setItem('hs_bookings',JSON.stringify(bookings));
+      loadAll();
+    }
+
+    function editBooking(id){
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      const b = bookings.find(x=>x.id===id);
+      if(!b) return;
+      const name = prompt('Customer Name:', b.name); if(name===null) return;
+      const phone = prompt('Phone:', b.phone); if(phone===null) return;
+      const service = prompt('Service:', b.service); if(service===null) return;
+      const city = prompt('City:', b.city); if(city===null) return;
+      const date = prompt('Date (YYYY-MM-DD):', b.date); if(date===null) return;
+      const time = prompt('Time (HH:MM):', b.time); if(time===null) return;
+      const notes = prompt('Notes:', b.notes||''); if(notes===null) return;
+      b.name=name.trim()||b.name; b.phone=phone.trim()||b.phone;
+      b.service=service.trim()||b.service; b.city=city.trim()||b.city;
+      b.date=date.trim()||b.date; b.time=time.trim()||b.time; b.notes=notes.trim();
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
       loadAll();
     }
@@ -813,6 +906,109 @@
       if (tab === 'staff') renderStaffList();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
+      if (tab === 'videos') renderStaffVideosAdmin();
+    }
+
+    function deleteFeedback(id){
+      if(!confirm('Delete this feedback?')) return;
+      localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){ return f.id !== id; })));
+      renderFeedbackAdmin();
+    }
+
+    // STAFF VIDEOS ADMIN
+    function renderStaffVideosAdmin(){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').slice().reverse();
+      var staffList = getStaff();
+      // populate filter
+      var sel = document.getElementById('videoFilterStaff');
+      var curVal = sel.value;
+      sel.innerHTML = '<option value="">All Staff</option>';
+      staffList.forEach(function(s){
+        var o = document.createElement('option');
+        o.value = s.id; o.textContent = s.name;
+        sel.appendChild(o);
+      });
+      sel.value = curVal;
+      if(curVal) videos = videos.filter(function(v){ return v.staffId == curVal; });
+      document.getElementById('staffVideosCount').textContent = videos.length + ' video(s)';
+      var grid = document.getElementById('staffVideosAdminGrid');
+      if(!videos.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
+      grid.innerHTML = '';
+      videos.forEach(function(v){
+        var card = document.createElement('div');
+        card.style.cssText = 'background:#110000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;position:relative;';
+        card.innerHTML = '<div id="svp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0d0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2rem;"><i class="fas fa-film"></i></div>'
+          +'<div style="padding:0.65rem 0.75rem;">'
+          +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+v.title+'</div>'
+          +'<div style="font-size:0.7rem;color:#e53935;margin-bottom:0.2rem;">'+v.category+'</div>'
+          +'<div style="font-size:0.68rem;color:#a08080;margin-bottom:0.5rem;">'+v.staffName+' &nbsp;·&nbsp; '+v.sizeMB+' MB</div>'
+          +'<button onclick="adminDeleteStaffVideo('+v.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;width:100%;"><i class="fas fa-trash"></i> Delete</button>'
+          +'</div>';
+        openAdminVideoDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            if(req.result && req.result.blob){
+              var url = URL.createObjectURL(req.result.blob);
+              var placeholder = document.getElementById('svp_'+v.id);
+              if(placeholder){
+                var vid = document.createElement('video');
+                vid.src=url; vid.controls=true; vid.preload='metadata';
+                vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;';
+                placeholder.replaceWith(vid);
+              }
+            }
+          };
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function adminDeleteStaffVideo(id){
+      if(!confirm('Delete this video?')) return;
+      openAdminVideoDB(function(db){
+        if(db) db.transaction('videos','readwrite').objectStore('videos').delete(id);
+      });
+      localStorage.setItem('hs_staff_videos', JSON.stringify(
+        JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.id !== id; })
+      ));
+      renderStaffVideosAdmin();
+    }
+
+    // SETTINGS
+    function changeAdminPassword(){
+      var cur = document.getElementById('set_curPass').value;
+      var nw = document.getElementById('set_newPass').value;
+      var toast = document.getElementById('setPassToast');
+      if(cur !== 'SASI@2007'){ toast.textContent='❌ Current password is incorrect.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
+      if(!nw || nw.length < 6){ toast.textContent='❌ New password must be at least 6 characters.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
+      localStorage.setItem('hs_admin_password', nw);
+      document.getElementById('set_curPass').value='';
+      document.getElementById('set_newPass').value='';
+      toast.textContent='✅ Password updated successfully!';
+      toast.style.display='block'; toast.style.color='#4caf50'; toast.style.background='rgba(76,175,80,0.12)'; toast.style.borderColor='rgba(76,175,80,0.3)';
+      setTimeout(()=>toast.style.display='none',3000);
+    }
+
+    function bulkUpdateBookings(status){
+      var from = status === 'confirmed' ? 'pending' : 'confirmed';
+      if(!confirm('Mark all ' + from + ' bookings as ' + status + '?')) return;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      bookings.forEach(function(b){ if(b.status===from) b.status=status; });
+      localStorage.setItem('hs_bookings',JSON.stringify(bookings));
+      loadAll();
+    }
+
+    function clearAllBookings(){ if(!confirm('Delete ALL bookings? This cannot be undone.')) return; localStorage.removeItem('hs_bookings'); loadAll(); }
+    function clearAllFeedback(){ if(!confirm('Delete ALL feedback? This cannot be undone.')) return; localStorage.removeItem('hs_feedbacks'); renderFeedbackAdmin(); }
+    function clearAllDemos(){ if(!confirm('Delete ALL demo sessions? This cannot be undone.')) return; localStorage.removeItem('hs_demos'); renderDemoAdminList(); }
+    function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
+    function resetEverything(){
+      if(!confirm('⚠️ RESET EVERYTHING? All bookings, staff, demos, feedback, and content will be permanently deleted.')) return;
+      if(!confirm('Are you absolutely sure? This CANNOT be undone.')) return;
+      ['hs_bookings','hs_staff','hs_demos','hs_feedbacks','hs_vibe','hs_about','hs_customer_page','hs_staff_videos'].forEach(k=>localStorage.removeItem(k));
+      alert('All data has been reset.');
+      loadAll();
     }
 
     // STAFF MANAGEMENT
@@ -1005,7 +1201,10 @@
           + '</div></div>'
           + (f.comment ? '<div style="background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
           + (f.description ? '<div style="margin-top:0.5rem;background:#0d0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
-          + '<div style="font-size:0.68rem;color:#555;margin-top:0.6rem;">' + f.submittedAt + '</div>'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
+          + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
+          + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          + '</div>'
           + '</div>';
       }).join('');
     }
