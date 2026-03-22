@@ -12,8 +12,8 @@
     var navHTML = `
     <style>
       .hs-nav{
-        background:rgba(30,4,4,0.97);
-        border-bottom:1px solid rgba(229,57,53,0.15);
+        background:transparent;
+        border-bottom:1px solid transparent;
         padding:0 2rem;
         display:flex;align-items:center;justify-content:space-between;
         height:56px;position:sticky;top:0;z-index:9999;
@@ -197,7 +197,15 @@
     // Scroll effect
     window.addEventListener('scroll', function(){
       var nav = document.getElementById('hsNav');
-      nav.style.background = window.scrollY > 20 ? 'rgba(15,2,2,0.99)' : 'rgba(30,4,4,0.97)';
+      if(window.scrollY > 20){
+        nav.style.background = 'rgba(10,0,0,0.95)';
+        nav.style.backdropFilter = 'blur(20px)';
+        nav.style.borderBottomColor = 'rgba(229,57,53,0.15)';
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottomColor = 'transparent';
+      }
     });
   }
 
