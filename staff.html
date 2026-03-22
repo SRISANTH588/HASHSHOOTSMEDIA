@@ -966,11 +966,13 @@
         // action area
         var actionHTML = '';
         if(d.status === 'pending'){
-          actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
+          actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
             +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
             +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
             +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
             +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
+            +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
             +'</div>'
             +'<div class="demo-upload-zone" id="dropZone_'+d.id+'" ondragover="event.preventDefault();this.style.borderColor=\'#e53935\'" ondragleave="this.style.borderColor=\'\'" ondrop="onDemoDrop(event,'+d.id+')" >'
             +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
@@ -988,7 +990,7 @@
         } else if(d.status === 'submitted'){
           actionHTML = '<div style="padding:0.75rem;background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.15);border-radius:8px;font-size:0.82rem;color:#4caf50;">'
             +'<div style="display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-clock"></i> Reel submitted — waiting for admin approval</div>'
-            +(d.shootDate||d.shootTime ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#a0c8a0;"><i class="fas fa-calendar"></i> '+( d.shootDate||'')+'&nbsp;&nbsp;<i class="fas fa-clock"></i> '+(d.shootTime||'')+'</div>' : '')
+            +(d.shootDate||d.shootTime ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#a0c8a0;"><i class="fas fa-calendar"></i> '+(d.shootDate||'')+'&nbsp;&nbsp;<i class="fas fa-clock"></i> '+(d.shootTime||'')+(d.shootPlace ? '&nbsp;&nbsp;<i class="fas fa-map-marker-alt"></i> '+d.shootPlace : '')+'</div>' : '')
             +'</div>';
         } else if(d.status === 'approved'){
           actionHTML = '<div class="demo-admin-note approved">'
@@ -1000,11 +1002,13 @@
             +'<div style="font-weight:700;margin-bottom:0.3rem;"><i class="fas fa-times-circle"></i> Rejected — Please re-submit</div>'
             +(d.adminNote ? '<div>&ldquo;'+d.adminNote+'&rdquo;</div>' : '')
             +'</div>'
-            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
             +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
             +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
             +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
             +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
+            +'<div><label style="font-size:0.7rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
+            +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
             +'</div>'
             +'<div class="demo-upload-zone" style="margin-top:0.75rem;" ondragover="event.preventDefault()" ondrop="onDemoDrop(event,'+d.id+')" >'
             +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
@@ -1084,6 +1088,8 @@
       var shootTime = document.getElementById('demoTime_' + demoId);
       if(!shootDate || !shootDate.value){ alert('Please select the shoot date.'); return; }
       if(!shootTime || !shootTime.value){ alert('Please select the shoot time.'); return; }
+      var shootPlace = document.getElementById('demoPlace_' + demoId);
+      if(!shootPlace || !shootPlace.value.trim()){ alert('Please enter the shoot place.'); return; }
       var btn = document.getElementById('demoSubmitBtn_' + demoId);
       var progressWrap = document.getElementById('demoProgress_' + demoId);
       var progressFill = document.getElementById('demoProgressFill_' + demoId);
@@ -1107,6 +1113,8 @@
           d.submittedAt = new Date().toLocaleString();
           d.shootDate = sDate ? sDate.value : '';
           d.shootTime = sTime ? sTime.value : '';
+          var sPlace = document.getElementById('demoPlace_' + demoId);
+          d.shootPlace = sPlace ? sPlace.value.trim() : '';
           d.adminNote = '';
         }
         saveDemos(demos);
