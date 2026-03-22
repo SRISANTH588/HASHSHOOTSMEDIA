@@ -65,6 +65,55 @@
     .btn-fb-submit:hover{background:#b71c1c;transform:translateY(-1px);}
     .fb-stars-display{color:#f5a623;font-size:1.1rem;letter-spacing:2px;margin-bottom:0.3rem;}
     .fb-comment-display{color:#a08080;font-size:0.82rem;margin-top:0.25rem;font-style:italic;}
+    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:#a08080;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.45rem;transition:all 0.2s;}
+    .ctab:hover{color:#fff;}
+    .ctab.active{color:#e53935;border-bottom-color:#e53935;}
+    .ctab i{font-size:0.8rem;}
+    a.ctab{text-decoration:none;}
+    .tab-section{display:none;}
+    .tab-section.active{display:block;}
+    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a0000;border-top:1px solid rgba(229,57,53,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
+    .cookie-banner p{font-size:0.82rem;color:#a08080;margin:0;}
+    .cookie-banner a{color:#e53935;}
+    .cookie-btns{display:flex;gap:0.5rem;}
+    .btn-cookie-accept{background:#e53935;color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-decline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#a08080;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .terms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
+    .terms-overlay.open{display:flex;}
+    .terms-box{background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
+    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
+    .terms-header h3{font-size:1rem;font-weight:800;color:#fff;}
+    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:#a08080;line-height:1.7;}
+    .terms-body h4{color:#fff;font-size:0.88rem;margin:1rem 0 0.4rem;}
+    .terms-body h4:first-child{margin-top:0;}
+    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;}
+    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#ccc;cursor:pointer;}
+    .terms-check input{accent-color:#e53935;width:16px;height:16px;cursor:pointer;}
+    .btn-terms-proceed{background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
+    .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
+    .btn-terms-cancel{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    /* COOKIE BANNER */
+    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a0000;border-top:1px solid rgba(229,57,53,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
+    .cookie-banner p{font-size:0.82rem;color:#a08080;margin:0;}
+    .cookie-banner a{color:#e53935;text-decoration:underline;}
+    .cookie-btns{display:flex;gap:0.5rem;}
+    .btn-cookie-accept{background:#e53935;color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-decline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#a08080;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    /* TERMS MODAL */
+    .terms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
+    .terms-overlay.open{display:flex;}
+    .terms-box{background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
+    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
+    .terms-header h3{font-size:1rem;font-weight:800;color:#fff;}
+    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:#a08080;line-height:1.7;}
+    .terms-body h4{color:#fff;font-size:0.88rem;margin:1rem 0 0.4rem;}
+    .terms-body h4:first-child{margin-top:0;}
+    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;}
+    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#ccc;cursor:pointer;}
+    .terms-check input{accent-color:#e53935;width:16px;height:16px;cursor:pointer;}
+    .btn-terms-proceed{background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
+    .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
+    .btn-terms-cancel{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
   </style>
 </head>
 <body>
@@ -72,18 +121,60 @@
     <div class="logo">HA<span>⚡</span>H SHOOTS</div>
     <div class="nav-right">
       <span id="welcomeMsg">Welcome, Customer</span>
-      <button onclick="document.getElementById('profile').scrollIntoView({behavior:'smooth'})" style="background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:0.4rem;color:#a08080;font-size:0.85rem;font-family:inherit;padding:0.3rem 0.6rem;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a08080'">
-        <div id="navProfilePic" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#fff;overflow:hidden;flex-shrink:0;"></div>
-        Profile
-      </button>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </nav>
+  <!-- TAB NAV -->
+  <div style="background:#110000;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+    <button class="ctab active" onclick="showTab('home',this)"><i class="fas fa-house"></i> Home</button>
+    <button class="ctab" onclick="showTab('book',this)"><i class="fas fa-camera"></i> Book</button>
+    <a class="ctab" href="customer-orders.html"><i class="fas fa-list"></i> My Orders</a>
+    <a class="ctab" href="customer-support.html"><i class="fas fa-headset"></i> Support</a>
+    <a class="ctab" href="customer-wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+    <a class="ctab" href="customer-profile.html"><i class="fas fa-user"></i> Profile</a>
+  </div>
 
   <div class="container">
     <div class="banner-bar" id="bannerBar"></div>
-    <h1 class="page-title" id="pageTitle">Book Your <span>Shoot</span></h1>
-    <p class="subtitle" id="pageSubtitle">Fill in the details and we'll assign a shooter for you.</p>
+
+    <!-- HOME TAB -->
+    <div class="tab-section active" id="tab-home">
+      <div style="padding:2.5rem 0 1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+          <a href="customer-profile.html" style="text-decoration:none;flex-shrink:0;">
+            <div id="homeProfileAv" style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;color:#fff;overflow:hidden;border:2px solid #e53935;"></div>
+          </a>
+          <div>
+            <h1 class="page-title" id="pageTitle" style="margin-bottom:0;">Book Your <span>Shoot</span></h1>
+            <p class="subtitle" id="pageSubtitle" style="margin-bottom:0;">Fill in the details and we'll assign a shooter for you.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <button onclick="showTab('book',document.querySelectorAll('.ctab')[1])" style="background:#e53935;color:#fff;border:none;border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-camera"></i> Book a Shoot</button>
+          <a href="customer-orders.html" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><i class="fas fa-list"></i> My Orders</a>
+        </div>
+        <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+          <div style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+            <div id="statTotal" style="font-size:1.8rem;font-weight:900;color:#e53935;">0</div>
+            <div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;">Total Bookings</div>
+          </div>
+          <div style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+            <div id="statPending" style="font-size:1.8rem;font-weight:900;color:#ff9800;">0</div>
+            <div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;">Pending</div>
+          </div>
+          <div style="background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+            <div id="statDone" style="font-size:1.8rem;font-weight:900;color:#4caf50;">0</div>
+            <div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;">Completed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK TAB -->
+    <div class="tab-section" id="tab-book">
+      <div style="padding-top:2rem;">
+        <h1 class="page-title" id="pageTitle2">Book Your <span style="color:#e53935;">Shoot</span></h1>
+        <p class="subtitle" id="pageSubtitle2">Fill in the details and we'll assign a shooter for you.</p>
 
     <div class="booking-card" id="bookingCard" style="background:#280404;border:1px solid rgba(255,255,255,0.07);">
       <div class="form-grid" id="formGrid">
@@ -103,7 +194,7 @@
         <div class="form-group full" id="notesGroup"><label id="lbl_notes">Additional Notes</label><textarea id="notes" placeholder="Any special requirements..."></textarea></div>
       </div>
       <div class="note-bar" id="noteBar"></div>
-      <button class="btn-submit" id="submitBtn" onclick="submitBooking()">
+      <button class="btn-submit" id="submitBtn" onclick="openTerms(null)">
         <i class="fas fa-camera" id="btnIcon"></i>
         <span id="btnText">Confirm Booking</span>
       </button>
@@ -115,7 +206,7 @@
     </div>
 
     <!-- ORDER DETAILS -->
-    <div class="my-bookings" id="orderDetails">
+    <div class="my-bookings" id="orderDetails" style="display:none;">
       <h2 id="bookingsTitle">My Bookings</h2>
       <div id="bookingsList"></div>
     </div>
@@ -131,7 +222,7 @@
     </div>
 
     <!-- WALLET -->
-    <div id="wallet" style="margin-top:3rem;">
+    <div id="wallet" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Wallet</h2>
       <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
         <div>
@@ -147,7 +238,7 @@
     </div>
 
     <!-- PROFILE -->
-    <div id="profile" style="margin-top:3rem;margin-bottom:3rem;">
+    <div id="profile" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Profile</h2>
       <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;">
 
@@ -196,6 +287,61 @@
 
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
+
+    function showTab(name, btn){
+      document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); });
+      document.querySelectorAll('.ctab').forEach(function(b){ b.classList.remove('active'); });
+      var sec = document.getElementById('tab-' + name);
+      if(sec) sec.classList.add('active');
+      if(btn) btn.classList.add('active');
+    }
+
+    var _pendingBookBtn = null;
+    function openTerms(btn){
+      // Validate form first before showing terms
+      var name = document.getElementById('name').value.trim();
+      var phone = document.getElementById('phone').value.trim();
+      var service = document.getElementById('service').value;
+      var city = document.getElementById('city').value.trim();
+      if(!name || !phone || !service || !city){ alert('Please fill all required fields first.'); return; }
+      if(c.showDate !== 'no' && !document.getElementById('date').value){ alert('Please select a date.'); return; }
+      if(c.showTime !== 'no' && !document.getElementById('time').value){ alert('Please select a time.'); return; }
+      if(c.requireNotes === 'yes' && !document.getElementById('notes').value.trim()){ alert('Please fill in the notes field.'); return; }
+      _pendingBookBtn = btn;
+      document.getElementById('termsCheck').checked = false;
+      document.getElementById('termsProceedBtn').classList.remove('enabled');
+      document.getElementById('termsOverlay').classList.add('open');
+    }
+    function closeTerms(){
+      document.getElementById('termsOverlay').classList.remove('open');
+    }
+    function toggleProceed(cb){
+      document.getElementById('termsProceedBtn').classList.toggle('enabled', cb.checked);
+    }
+    function proceedBooking(){
+      closeTerms();
+      submitBooking();
+    }
+
+    function dismissCookie(accepted){
+      localStorage.setItem('hs_cookie_consent', accepted ? 'accepted' : 'declined');
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+    if(localStorage.getItem('hs_cookie_consent')){
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+
+    (function loadHomeAvatar(){
+      var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+      var av = document.getElementById('homeProfileAv');
+      if(!av) return;
+      if(prof.pic){
+        av.innerHTML = '<img src="'+prof.pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
+      } else {
+        var name = prof.name || localStorage.getItem('hs_customer_name') || 'C';
+        av.textContent = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+      }
+    })();
 
     const c = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
 
@@ -307,13 +453,10 @@
       document.getElementById('profileName').textContent = name;
       var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
       var av = document.getElementById('profileAv');
-      var navAv = document.getElementById('navProfilePic');
       if(pic){
         av.innerHTML = '<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
-        navAv.innerHTML = '<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
       } else {
         av.textContent = initials;
-        navAv.textContent = initials;
       }
     }
     loadProfile();
@@ -357,11 +500,6 @@
       const date = c.showDate !== 'no' ? document.getElementById('date').value : 'N/A';
       const time = c.showTime !== 'no' ? document.getElementById('time').value : 'N/A';
       const notes = c.showNotes !== 'no' ? document.getElementById('notes').value.trim() : '';
-
-      if(!name || !phone || !service || !city) { alert('Please fill all required fields.'); return; }
-      if(c.showDate !== 'no' && !date) { alert('Please select a date.'); return; }
-      if(c.showTime !== 'no' && !time) { alert('Please select a time.'); return; }
-      if(c.requireNotes === 'yes' && !notes) { alert('Please fill in the notes field.'); return; }
 
       const preferredCreatorEl = document.getElementById('preferredCreator');
       const preferredCreatorId = preferredCreatorEl ? preferredCreatorEl.value : '';
@@ -535,5 +673,58 @@
     renderDemoFeedback();
     setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 3000);
   </script>
+
+  <!-- TAWK.TO LIVE CHAT - PASTE YOUR SCRIPT BELOW -->
+  <script>
+    // Go to tawk.to > Administration > Chat Widget > copy embed script and paste here
+    // var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    // (function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    // s1.async=true;s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
+    // s1.charset='UTF-8';s1.setAttribute('crossorigin','*');
+    // s0.parentNode.insertBefore(s1,s0);})();
+  </script>
+
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner" id="cookieBanner">
+    <p><i class="fas fa-cookie-bite" style="color:#e53935;margin-right:0.4rem;"></i> We use cookies to improve your experience. <a href="cookies.html" target="_blank">Learn more</a></p>
+    <div class="cookie-btns">
+      <button class="btn-cookie-decline" onclick="dismissCookie(false)">Decline</button>
+      <button class="btn-cookie-accept" onclick="dismissCookie(true)"><i class="fas fa-check"></i> Accept</button>
+    </div>
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div class="terms-overlay" id="termsOverlay">
+    <div class="terms-box">
+      <div class="terms-header">
+        <h3><i class="fas fa-file-contract" style="color:#e53935;margin-right:0.5rem;"></i> Terms &amp; Conditions</h3>
+        <button onclick="closeTerms()" style="background:none;border:none;color:#a08080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="terms-body">
+        <h4>1. Booking Agreement</h4>
+        By booking a shoot with Hash Shoots, you agree to provide accurate information. Bookings are subject to creator availability and admin confirmation.
+        <h4>2. Cancellation Policy</h4>
+        Cancellations must be made at least 24 hours before the scheduled shoot. Late cancellations may incur a fee.
+        <h4>3. Content &amp; Delivery</h4>
+        Edited reels and photos will be delivered within the agreed timeframe. Hash Shoots retains the right to use content for portfolio purposes unless otherwise agreed.
+        <h4>4. Payment</h4>
+        Full payment is required before or on the day of the shoot. Wallet credits can be applied at checkout.
+        <h4>5. Privacy</h4>
+        Your personal information is used solely for booking and communication purposes. We do not share your data with third parties. See our <a href="privacy.html" target="_blank">Privacy Policy</a>.
+        <h4>6. Conduct</h4>
+        Both parties agree to maintain professional conduct during shoots. Hash Shoots reserves the right to cancel bookings due to misconduct.
+        <h4>7. Liability</h4>
+        Hash Shoots is not liable for delays caused by weather, location restrictions, or circumstances beyond our control.
+      </div>
+      <div class="terms-footer">
+        <label class="terms-check">
+          <input type="checkbox" id="termsCheck" onchange="toggleProceed(this)"/>
+          I have read and agree to the Terms &amp; Conditions
+        </label>
+        <button class="btn-terms-proceed" id="termsProceedBtn" onclick="proceedBooking()"><i class="fas fa-check"></i> Accept &amp; Submit Enquiry</button>
+        <button class="btn-terms-cancel" onclick="closeTerms()">Cancel</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

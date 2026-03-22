@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Wallet - Hash Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;}
+    nav{background:rgba(26,0,0,0.97);border-bottom:1px solid rgba(229,57,53,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#e53935;}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .nav-right span{color:#a08080;font-size:0.875rem;}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .btn:hover{border-color:#e53935;color:#e53935;}
+    .tab-bar{background:#110000;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;overflow-x:auto;scrollbar-width:none;}
+    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:#a08080;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:0.45rem;text-decoration:none;transition:all 0.2s;}
+    .ctab:hover{color:#fff;}
+    .ctab.active{color:#e53935;border-bottom-color:#e53935;}
+    .container{max-width:600px;margin:3rem auto;padding:0 1.5rem;}
+    .page-title{font-size:1.8rem;font-weight:900;margin-bottom:0.4rem;}
+    .page-title span{color:#e53935;}
+    .subtitle{color:#a08080;margin-bottom:2rem;font-size:0.9rem;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">HA<span>⚡</span>H SHOOTS</div>
+    <div class="nav-right">
+      <span id="welcomeMsg">Welcome, Customer</span>
+      <a href="customer.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+      <button class="btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    <h1 class="page-title">My <span>Wallet</span></h1>
+    <p class="subtitle">Your cashback and rewards balance</p>
+
+    <div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+      <div>
+        <div style="font-size:0.78rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Available Balance</div>
+        <div style="font-size:2.5rem;font-weight:900;color:#fff;">&#8377;<span id="walletBal">0</span></div>
+        <div style="font-size:0.78rem;color:#5a3535;margin-top:0.3rem;">Use wallet balance on your next booking</div>
+      </div>
+      <div style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.2);border-radius:12px;padding:1rem 1.5rem;text-align:center;">
+        <i class="fas fa-wallet" style="font-size:2rem;color:#e53935;display:block;margin-bottom:0.5rem;"></i>
+        <div style="font-size:0.78rem;color:#a08080;">Cashback &amp; Rewards</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;background:#1c0000;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:1rem;color:#a08080;">Transaction History</div>
+      <div id="txList" style="color:#a08080;font-size:0.85rem;text-align:center;padding:1.5rem 0;">No transactions yet.</div>
+    </div>
+  </div>
+
+  <script>
+    if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
+    const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
+    document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
+    // Get wallet by phone (set by admin per booking phone)
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+    var myBooking = bookings.find(function(b){ return b.name === user; });
+    var phone = myBooking ? myBooking.phone : '';
+    var bal = phone ? (localStorage.getItem('hs_cw_' + phone) || '0') : '0';
+    document.getElementById('walletBal').textContent = bal;
+    function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
+  </script>
+</body>
+</html>

@@ -112,6 +112,7 @@
       <button class="tab-btn" onclick="switchTab('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
       <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
+      <button class="tab-btn" onclick="switchTab('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -430,6 +431,15 @@
 
       <button class="btn-save-about" onclick="saveCustomerPage()"><i class="fas fa-save"></i> Save All Changes</button>
       <div class="save-toast" id="cpToast"><i class="fas fa-check-circle"></i> Saved! Changes are live on the customer page.</div>
+
+      <!-- CUSTOMER ACCOUNTS -->
+      <div class="about-form" style="margin-top:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-users" style="color:#e53935;margin-right:0.5rem;"></i> Customer Accounts</h2>
+          <button onclick="renderCustomerAccounts()" style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.3);color:#e53935;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="customerAccountsList"></div>
+      </div>
     </div><!-- end tab-customer -->
 
     <!-- STAFF & ACCESS TAB -->
@@ -879,6 +889,21 @@
 
     </div><!-- end tab-settings -->
 
+    <!-- CUSTOMER WALLETS TAB -->
+    <div class="tab-panel" id="tab-cwallets">
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-wallet" style="color:#e53935;margin-right:0.5rem;"></i> Customer Wallet Management</h2>
+        <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+          <input type="text" id="cwEmail" placeholder="Customer email / username" style="flex:1;min-width:200px;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <input type="number" id="cwAmount" placeholder="Amount (₹)" min="0" style="width:150px;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <button onclick="setCustWallet()" style="background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Set Balance</button>
+          <button onclick="addCustWallet()" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add to Balance</button>
+        </div>
+        <div id="cwMsg" style="display:none;margin-bottom:1rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"></div>
+        <div id="cwList"></div>
+      </div>
+    </div><!-- end tab-cwallets -->
+
   </div><!-- end container -->
 
   <!-- FEEDBACK NOTIFICATION TOAST -->
@@ -1165,8 +1190,9 @@
       if (tab === 'homepage') loadHomePage();
       if (tab === 'about') loadAboutForm();
       if (tab === 'vibe') renderVibeAdmin();
-      if (tab === 'customer') loadCustomerForm();
+      if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') renderStaffList();
+      if (tab === 'cwallets') renderCustWallets();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -1268,6 +1294,89 @@
     function clearAllFeedback(){ if(!confirm('Delete ALL feedback? This cannot be undone.')) return; localStorage.removeItem('hs_feedbacks'); renderFeedbackAdmin(); }
     function clearAllDemos(){ if(!confirm('Delete ALL demo sessions? This cannot be undone.')) return; localStorage.removeItem('hs_demos'); renderDemoAdminList(); }
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
+
+    function renderCustWallets(){
+      var list = document.getElementById('cwList');
+      if(!list) return;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var seen = {};
+      var customers = [];
+      bookings.forEach(function(b){
+        if(b.name && !seen[b.phone]){
+          seen[b.phone] = true;
+          customers.push({ name: b.name, phone: b.phone });
+        }
+      });
+      if(!customers.length){ list.innerHTML = '<div style="color:#a08080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
+      list.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
+        + '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.08);">'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#a08080;">Name</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#a08080;">Phone</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#a08080;">Balance</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#a08080;">Actions</th>'
+        + '</tr></thead><tbody>'
+        + customers.map(function(cu){
+            var key = 'hs_cw_' + cu.phone;
+            var bal = parseInt(localStorage.getItem(key) || '0');
+            return '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+              + '<td style="padding:0.65rem 0.75rem;font-size:0.88rem;font-weight:600;">' + cu.name + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#a08080;">' + cu.phone + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:1rem;font-weight:800;color:#4caf50;">₹' + bal + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
+              + '<input type="number" id="cw_inp_' + cu.phone + '" placeholder="Amount" min="0" style="width:100px;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
+              + '<button onclick="setCustWalletRow(\'' + cu.phone + '\')" style="background:#e53935;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
+              + '<button onclick="addCustWalletRow(\'' + cu.phone + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
+              + '</td></tr>';
+          }).join('')
+        + '</tbody></table>';
+    }
+
+    function setCustWalletRow(phone){
+      var inp = document.getElementById('cw_inp_' + phone);
+      var amt = parseInt(inp.value);
+      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      localStorage.setItem('hs_cw_' + phone, amt);
+      inp.value = '';
+      renderCustWallets();
+    }
+
+    function addCustWalletRow(phone){
+      var inp = document.getElementById('cw_inp_' + phone);
+      var amt = parseInt(inp.value);
+      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      var cur = parseInt(localStorage.getItem('hs_cw_' + phone) || '0');
+      localStorage.setItem('hs_cw_' + phone, cur + amt);
+      inp.value = '';
+      renderCustWallets();
+    }
+
+    function setCustWallet(){
+      var email = document.getElementById('cwEmail').value.trim();
+      var amt = parseInt(document.getElementById('cwAmount').value);
+      if(!email){ alert('Enter customer email/username.'); return; }
+      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      localStorage.setItem('hs_customer_wallet', amt);
+      showCwMsg('Balance set to ₹' + amt + ' for ' + email);
+      renderCustWallets();
+    }
+
+    function addCustWallet(){
+      var email = document.getElementById('cwEmail').value.trim();
+      var amt = parseInt(document.getElementById('cwAmount').value);
+      if(!email){ alert('Enter customer email/username.'); return; }
+      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      var cur = parseInt(localStorage.getItem('hs_customer_wallet') || '0');
+      localStorage.setItem('hs_customer_wallet', cur + amt);
+      showCwMsg('Added ₹' + amt + '. New balance: ₹' + (cur + amt));
+      renderCustWallets();
+    }
+
+    function showCwMsg(txt){
+      var el = document.getElementById('cwMsg');
+      el.textContent = txt; el.style.display = 'block';
+      setTimeout(function(){ el.style.display = 'none'; }, 3000);
+    }
+
     function resetEverything(){
       if(!confirm('⚠️ RESET EVERYTHING? All bookings, staff, demos, feedback, and content will be permanently deleted.')) return;
       if(!confirm('Are you absolutely sure? This CANNOT be undone.')) return;
@@ -1584,29 +1693,59 @@
       const list = getStaff();
       const s = list.find(x => x.id === id);
       if(!s) return;
-      const newName = prompt('Full Name:', s.name);
-      if(newName === null) return;
-      const newRole = prompt('Role (creator/editor/pr/manager/support or custom):', s.role);
-      if(newRole === null) return;
-      const newAccess = prompt('Access (comma separated: bookings,about,vibe,customer,staff or all):', (s.access||[]).join(','));
-      if(newAccess === null) return;
-      s.name = newName.trim() || s.name;
-      s.role = newRole.trim() || s.role;
-      s.access = newAccess.split(',').map(a=>a.trim()).filter(Boolean);
-      saveStaff(list);
-      renderStaffList();
-      showStaffToast('Account updated for ' + s.name, true);
+      // Build inline modal
+      var existing = document.getElementById('staffEditModal');
+      if(existing) existing.remove();
+      var roles = ['creator','editor','pr','manager','support','custom'];
+      var roleOpts = roles.map(r => `<option value="${r}" ${s.role===r?'selected':''}>${r}</option>`).join('');
+      var accessList = ['bookings','about','vibe','customer','staff'];
+      var accessChecks = accessList.map(a =>
+        `<label style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:#ccc;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.4rem 0.75rem;cursor:pointer;">
+          <input type="checkbox" value="${a}" ${(s.access||[]).includes(a)?'checked':''} style="accent-color:#e53935;"/> ${a}
+        </label>`).join('');
+      var modal = document.createElement('div');
+      modal.id = 'staffEditModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+      modal.innerHTML = `
+        <div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-edit" style="color:#e53935;"></i> Edit Staff — ${s.name}</h3>
+            <button onclick="document.getElementById('staffEditModal').remove()" style="background:none;border:none;color:#a08080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+          </div>
+          <div style="display:grid;gap:1rem;">
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Full Name</label>
+              <input id="em_name" value="${s.name}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Username</label>
+              <input id="em_username" value="${s.username}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">New Password (leave blank to keep current)</label>
+              <input id="em_password" type="password" placeholder="New password" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Role</label>
+              <select id="em_role" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">${roleOpts}</select></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.5rem;">Page Access</label>
+              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;" id="em_access">${accessChecks}</div></div>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+            <button onclick="saveEditStaff(${id})" style="flex:1;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
+            <button onclick="document.getElementById('staffEditModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
     }
 
-    function resetPassword(id){
+    function saveEditStaff(id){
       const list = getStaff();
       const s = list.find(x => x.id === id);
       if(!s) return;
-      const newPass = prompt('Set new password for @' + s.username + ':');
-      if(!newPass || newPass.length < 4){ alert('Password must be at least 4 characters.'); return; }
-      s.password = newPass;
+      s.name = document.getElementById('em_name').value.trim() || s.name;
+      s.username = document.getElementById('em_username').value.trim() || s.username;
+      var newPass = document.getElementById('em_password').value;
+      if(newPass && newPass.length >= 4) s.password = newPass;
+      s.role = document.getElementById('em_role').value;
+      s.access = Array.from(document.querySelectorAll('#em_access input:checked')).map(function(c){ return c.value; });
       saveStaff(list);
-      showStaffToast('Password reset for @' + s.username, true);
+      renderStaffList();
+      document.getElementById('staffEditModal').remove();
+      showStaffToast('Account updated for ' + s.name, true);
     }
 
     // Open staff videos DB (same DB staff uses)
@@ -1977,7 +2116,97 @@
       setTimeout(() => toast.style.display = 'none', 3000);
     }
 
-    // VIBE — IndexedDB for video blobs, localStorage for metadata
+    function renderCustomerAccounts(){
+      var el = document.getElementById('customerAccountsList');
+      if(!el) return;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var seen = {}; var customers = [];
+      bookings.forEach(function(b){
+        if(b.name && b.phone && !seen[b.phone]){
+          seen[b.phone] = true;
+          customers.push({ name: b.name, phone: b.phone });
+        }
+      });
+      if(!customers.length){ el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No customers yet. They appear here after making a booking.</p>'; return; }
+      el.innerHTML = customers.map(function(cu){
+        var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+        var bal = localStorage.getItem('hs_cw_' + cu.phone) || '0';
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+          + '<div style="display:flex;align-items:center;gap:1rem;">'
+          + '<div style="width:40px;height:40px;border-radius:10px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#e53935;flex-shrink:0;">' + cu.name[0].toUpperCase() + '</div>'
+          + '<div><div style="font-size:0.9rem;font-weight:700;color:#fff;">' + cu.name + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.1rem;">' + cu.phone + ' &nbsp;·&nbsp; Wallet: <span style="color:#4caf50;font-weight:700;">&#8377;' + bal + '</span></div></div></div>'
+          + '<button onclick="editCustomerAccount(\'' + cu.phone + '\',\'' + cu.name + '\')" style="background:rgba(33,150,243,0.12);border:none;color:#2196f3;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          + '</div>';
+      }).join('');
+    }
+
+    function editCustomerAccount(phone, name){
+      var existing = document.getElementById('custEditModal');
+      if(existing) existing.remove();
+      var bal = localStorage.getItem('hs_cw_' + phone) || '0';
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var modal = document.createElement('div');
+      modal.id = 'custEditModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+      modal.innerHTML = `
+        <div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;width:100%;max-width:440px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-user-edit" style="color:#e53935;"></i> Edit Customer</h3>
+            <button onclick="document.getElementById('custEditModal').remove()" style="background:none;border:none;color:#a08080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+          </div>
+          <div style="display:grid;gap:1rem;">
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Full Name</label>
+              <input id="ce_name" value="${name}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Phone</label>
+              <input id="ce_phone" value="${phone}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Wallet Balance (&#8377;)</label>
+              <input id="ce_wallet" type="number" value="${bal}" min="0" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
+            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Booking Status Override</label>
+              <select id="ce_status" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
+                <option value="">— Don't change —</option>
+                <option value="pending">Set all to Pending</option>
+                <option value="confirmed">Set all to Confirmed</option>
+                <option value="completed">Set all to Completed</option>
+                <option value="cancelled">Set all to Cancelled</option>
+              </select></div>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+            <button onclick="saveEditCustomer('${phone}')" style="flex:1;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
+            <button onclick="document.getElementById('custEditModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    function saveEditCustomer(oldPhone){
+      var newName = document.getElementById('ce_name').value.trim();
+      var newPhone = document.getElementById('ce_phone').value.trim();
+      var newWallet = document.getElementById('ce_wallet').value;
+      var statusOverride = document.getElementById('ce_status').value;
+      if(!newName || !newPhone){ alert('Name and phone are required.'); return; }
+      // Update bookings
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      bookings = bookings.map(function(b){
+        if(b.phone === oldPhone){
+          b.name = newName;
+          b.phone = newPhone;
+          if(statusOverride) b.status = statusOverride;
+        }
+        return b;
+      });
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+      // Update wallet key
+      if(newPhone !== oldPhone){
+        localStorage.setItem('hs_cw_' + newPhone, newWallet);
+        localStorage.removeItem('hs_cw_' + oldPhone);
+      } else {
+        localStorage.setItem('hs_cw_' + newPhone, newWallet);
+      }
+      document.getElementById('custEditModal').remove();
+      renderCustomerAccounts();
+      renderCustWallets();
+    }
     var vibeDB = null;
     function openVibeDB(cb){
       if(vibeDB){ cb(vibeDB); return; }

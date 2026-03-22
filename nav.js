@@ -214,10 +214,10 @@
             <div class="hs-dd-name" id="hsDdName"></div>
             <div class="hs-dd-tag">Customer Account</div>
           </div>
-          <a href="customer.html" class="hs-dd-item"><i class="fas fa-user"></i> Profile</a>
-          <a href="customer.html" class="hs-dd-item"><i class="fas fa-box"></i> Order Details</a>
-          <a href="contact.html" class="hs-dd-item"><i class="fas fa-headset"></i> Customer Support</a>
-          <a href="customer.html" class="hs-dd-item"><i class="fas fa-wallet"></i> Wallet</a>
+          <button class="hs-dd-item" onclick="navigate('customer-profile.html')"><i class="fas fa-user"></i> Profile</button>
+          <button class="hs-dd-item" onclick="navigate('customer-orders.html')"><i class="fas fa-box"></i> Order Details</button>
+          <button class="hs-dd-item" onclick="navigate('customer-support.html')"><i class="fas fa-headset"></i> Customer Support</button>
+          <button class="hs-dd-item" onclick="navigate('customer-wallet.html')"><i class="fas fa-wallet"></i> Wallet</button>
           <div class="hs-dd-divider"></div>
           <button class="hs-dd-item hs-dd-logout" id="hsDdLogout"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>`;
@@ -225,7 +225,13 @@
       navRight.insertBefore(profileWrap, loginBtn);
 
       var initials = custName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
-      document.getElementById('hsProfileAv').textContent = initials;
+      var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
+      var avEl = document.getElementById('hsProfileAv');
+      if(prof.pic){
+        avEl.innerHTML = '<img src="'+prof.pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
+      } else {
+        avEl.textContent = initials;
+      }
       document.getElementById('hsProfileName').textContent = custName.split(' ')[0];
       document.getElementById('hsDdName').textContent = custName;
 
@@ -284,4 +290,8 @@ function hsGoContact(){
   var el = document.getElementById('contact');
   if(el){ el.scrollIntoView({behavior:'smooth'}); }
   else { window.location.href = 'index.html#contact'; }
+}
+function navigate(page){
+  var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+  window.location.href = base + page;
 }
