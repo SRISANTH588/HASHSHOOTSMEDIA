@@ -12,40 +12,40 @@
     var navHTML = `
     <style>
       .hs-nav{
-        background:transparent;
-        border-bottom:1px solid transparent;
+        background:rgba(30,4,4,0.97);
+        border-bottom:1px solid rgba(229,57,53,0.15);
         padding:0 2rem;
         display:flex;align-items:center;justify-content:space-between;
-        height:62px;position:sticky;top:0;z-index:9999;
-        transition:background 0.3s, border-color 0.3s;
+        height:56px;position:sticky;top:0;z-index:9999;
+        transition:background 0.3s;
       }
       /* LOGO */
-      .hs-logo{font-size:1.4rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;}
+      .hs-logo{font-size:1.3rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:1px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;text-transform:uppercase;}
       .hs-logo span{color:#e53935;}
 
       /* CENTER ICON PILL */
       .hs-nav-center{display:flex;align-items:center;gap:0;}
       .hs-icon-group{
         display:flex;align-items:center;gap:0;
-        background:rgba(80,10,10,0.5);
-        border:1px solid rgba(180,50,50,0.25);
+        background:transparent;
+        border:none;
         border-radius:14px;
         padding:0.2rem 0.3rem;
       }
-      .hs-icon-sep{width:1px;height:20px;background:rgba(180,50,50,0.3);margin:0 0.1rem;flex-shrink:0;}
+      .hs-icon-sep{width:1px;height:20px;background:rgba(229,57,53,0.25);margin:0 0.1rem;flex-shrink:0;}
       .hs-icon-btn{
         width:40px;height:36px;
         display:flex;align-items:center;justify-content:center;
         border-radius:10px;
-        color:rgba(255,255,255,0.55);
+        color:rgba(229,57,53,0.7);
         font-size:1rem;
         text-decoration:none;
         transition:all 0.2s;
         position:relative;
         flex-shrink:0;
       }
-      .hs-icon-btn:hover{color:#fff;background:rgba(229,57,53,0.2);}
-      .hs-icon-btn.active{color:#e53935;background:rgba(229,57,53,0.18);}
+      .hs-icon-btn:hover{color:#e53935;background:rgba(229,57,53,0.12);}
+      .hs-icon-btn.active{color:#e53935;}
       /* Tooltip */
       .hs-icon-btn::after{
         content:attr(data-title);
@@ -71,13 +71,12 @@
       }
       .hs-btn-app{
         background:transparent;
-        border:1px solid rgba(255,255,255,0.18);
+        border:1px solid rgba(255,255,255,0.2);
         color:#fff;
+        border-radius:8px;
       }
       .hs-btn-app:hover{border-color:rgba(255,255,255,0.4);}
-      .hs-btn-app i{font-size:0.85rem;}
-      .hs-btn-app .hs-btn-arrow{font-size:0.7rem;opacity:0.6;}
-      .hs-btn-contact{background:#e53935;color:#fff;box-shadow:0 4px 14px rgba(229,57,53,0.35);}
+      .hs-btn-contact{background:#e53935;color:#fff;border-radius:8px;box-shadow:0 4px 14px rgba(229,57,53,0.35);}
       .hs-btn-contact:hover{background:#c62828;transform:translateY(-1px);}
 
       /* HAMBURGER */
@@ -198,17 +197,7 @@
     // Scroll effect
     window.addEventListener('scroll', function(){
       var nav = document.getElementById('hsNav');
-      if(window.scrollY > 20){
-        nav.style.background = 'rgba(4,0,0,0.97)';
-        nav.style.backdropFilter = 'blur(20px)';
-        nav.style.borderBottomColor = 'rgba(229,57,53,0.15)';
-        nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.5)';
-      } else {
-        nav.style.background = 'transparent';
-        nav.style.backdropFilter = 'none';
-        nav.style.borderBottomColor = 'transparent';
-        nav.style.boxShadow = 'none';
-      }
+      nav.style.background = window.scrollY > 20 ? 'rgba(15,2,2,0.99)' : 'rgba(30,4,4,0.97)';
     });
   }
 
