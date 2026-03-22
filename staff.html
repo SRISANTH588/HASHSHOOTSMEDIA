@@ -240,6 +240,12 @@
         <div id="creatorDemoList"></div>
       </div>
 
+      <!-- CREATOR FEEDBACK (Creator only) -->
+      <div id="creatorFeedbackSection" style="display:none;margin-bottom:1.75rem;">
+        <div class="sec-title"><i class="fas fa-star"></i> Customer Feedback</div>
+        <div id="creatorFeedbackList"></div>
+      </div>
+
       <!-- UPLOAD VIDEOS -->
       <div class="upload-section">
         <div class="sec-title" style="margin-bottom:1rem;"><i class="fas fa-cloud-upload-alt"></i> Upload Shoot Videos</div>
@@ -1101,6 +1107,42 @@
 
     initCreatorDemo();
     setInterval(renderCreatorDemos, 5000);
+
+    // CREATOR FEEDBACK SECTION
+    function initCreatorFeedback(){
+      var staffRole = (localStorage.getItem('hs_staff_role') || '').toLowerCase();
+      if(staffRole !== 'creator') return;
+      document.getElementById('creatorFeedbackSection').style.display = 'block';
+      renderCreatorFeedback();
+      setInterval(renderCreatorFeedback, 5000);
+    }
+
+    function renderCreatorFeedback(){
+      var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+      var el = document.getElementById('creatorFeedbackList');
+      if(!feedbacks.length){
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#160303;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-star" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer feedback yet.</div>';
+        return;
+      }
+      var starColors = {5:'#4caf50',4:'#8bc34a',3:'#f5a623',2:'#ff9800',1:'#f44336'};
+      el.innerHTML = feedbacks.slice().reverse().map(function(f){
+        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
+        var color = starColors[f.rating] || '#f5a623';
+        var label = f.type === 'demo' ? (f.title || 'Demo Session') : ((f.service || 'Shoot') + (f.city ? ' — ' + f.city : ''));
+        return '<div style="background:#160303;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;border-left:3px solid ' + color + ';">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">' +
+          '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + label + '</div>' +
+          '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>' +
+          '</div>' +
+          (f.customerName ? '<div style="font-size:0.7rem;color:#a08080;margin-bottom:0.4rem;"><i class="fas fa-user"></i> ' + f.customerName + '</div>' : '') +
+          (f.comment ? '<div style="font-size:0.8rem;color:#e0b0b0;font-style:italic;margin-bottom:0.4rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '') +
+          (f.description ? '<div style="font-size:0.8rem;color:#c8a0a0;line-height:1.65;border-left:2px solid rgba(229,57,53,0.3);padding-left:0.65rem;margin-top:0.3rem;">' + f.description + '</div>' : '') +
+          '<div style="font-size:0.62rem;color:#555;margin-top:0.5rem;">' + (f.submittedAt || '') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    initCreatorFeedback();
 
     // SHOOT FEEDBACK for staff
     function renderShootFbPanel(){

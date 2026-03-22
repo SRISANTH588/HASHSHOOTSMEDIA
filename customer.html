@@ -284,6 +284,7 @@
             + '</div>'
             + '<div class="fb-stars-display">' + stars + '</div>'
             + (existing.comment ? '<div class="fb-comment-display">&ldquo;' + existing.comment + '&rdquo;</div>' : '')
+            + (existing.description ? '<div style="margin-top:0.5rem;font-size:0.82rem;color:#c8a0a0;line-height:1.6;border-left:2px solid rgba(229,57,53,0.3);padding-left:0.75rem;">' + existing.description + '</div>' : '')
             + '</div>';
         }
         return '<div class="fb-card">'
@@ -295,7 +296,8 @@
           + '<div class="stars">' + [1,2,3,4,5].map(function(v){
               return '<span class="star" data-id="' + b.id + '" data-val="' + v + '" onclick="setStars(' + b.id + ',' + v + ')">★</span>';
             }).join('') + '</div>'
-          + '<textarea class="fb-textarea" id="fbtext_' + b.id + '" placeholder="Tell us about your experience..."></textarea>'
+          + '<textarea class="fb-textarea" id="fbtext_' + b.id + '" placeholder="Short comment (optional)"></textarea>'
+          + '<textarea class="fb-textarea" id="fbdesc_' + b.id + '" placeholder="Describe your experience in detail..." style="margin-top:0.5rem;min-height:90px;"></textarea>'
           + '<button class="btn-fb-submit" onclick="submitShootFeedback(' + b.id + ')"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
           + '</div>';
       }).join('');
@@ -306,6 +308,8 @@
       if(!rating){ alert('Please select a star rating.'); return; }
       var el = document.getElementById('fbtext_' + bookingId);
       var comment = el ? el.value.trim() : '';
+      var descEl = document.getElementById('fbdesc_' + bookingId);
+      var description = descEl ? descEl.value.trim() : '';
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var b = bookings.find(function(x){ return x.id === bookingId; });
       var feedbacks = getFeedbacks();
@@ -313,7 +317,7 @@
         id: Date.now(), type: 'shoot', refId: bookingId,
         service: b ? b.service : '', city: b ? b.city : '',
         customerName: b ? b.name : '',
-        date: b ? b.date : '', rating: rating, comment: comment,
+        date: b ? b.date : '', rating: rating, comment: comment, description: description,
         submittedAt: new Date().toLocaleString()
       });
       saveFeedbacks(feedbacks);
@@ -339,6 +343,7 @@
             + '</div>'
             + '<div class="fb-stars-display">' + stars + '</div>'
             + (existing.comment ? '<div class="fb-comment-display">&ldquo;' + existing.comment + '&rdquo;</div>' : '')
+            + (existing.description ? '<div style="margin-top:0.5rem;font-size:0.82rem;color:#c8a0a0;line-height:1.6;border-left:2px solid rgba(229,57,53,0.3);padding-left:0.75rem;">' + existing.description + '</div>' : '')
             + '</div>';
         }
         return '<div class="fb-card">'
@@ -350,7 +355,8 @@
           + '<div class="stars">' + [1,2,3,4,5].map(function(v){
               return '<span class="star" data-id="demo_' + d.id + '" data-val="' + v + '" onclick="setStars(\u0027demo_' + d.id + '\u0027,' + v + ')">★</span>';
             }).join('') + '</div>'
-          + '<textarea class="fb-textarea" id="fbtext_demo_' + d.id + '" placeholder="How was the demo session?"></textarea>'
+          + '<textarea class="fb-textarea" id="fbtext_demo_' + d.id + '" placeholder="Short comment (optional)"></textarea>'
+          + '<textarea class="fb-textarea" id="fbdesc_demo_' + d.id + '" placeholder="Describe the demo session in detail..." style="margin-top:0.5rem;min-height:90px;"></textarea>'
           + '<button class="btn-fb-submit" onclick="submitDemoFeedback(' + d.id + ')"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
           + '</div>';
       }).join('');
@@ -361,13 +367,15 @@
       if(!rating){ alert('Please select a star rating.'); return; }
       var el = document.getElementById('fbtext_demo_' + demoId);
       var comment = el ? el.value.trim() : '';
+      var descEl = document.getElementById('fbdesc_demo_' + demoId);
+      var description = descEl ? descEl.value.trim() : '';
       var demos = JSON.parse(localStorage.getItem('hs_demos') || '[]');
       var d = demos.find(function(x){ return x.id === demoId; });
       var feedbacks = getFeedbacks();
       feedbacks.push({
         id: Date.now(), type: 'demo', refId: demoId,
         title: d ? d.title : '', staffName: d ? d.staffName : '',
-        date: d ? d.date : '', rating: rating, comment: comment,
+        date: d ? d.date : '', rating: rating, comment: comment, description: description,
         submittedAt: new Date().toLocaleString()
       });
       saveFeedbacks(feedbacks);
