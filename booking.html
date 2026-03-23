@@ -10,7 +10,6 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#fff;}
 
-    /* NAVBAR */
     .logo{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-0.5px;text-decoration:none;}
     .logo-flash{color:#c9a84c;}
     .nav-actions{display:flex;gap:0.75rem;align-items:center;margin-left:auto;}
@@ -27,21 +26,19 @@
     .hero-title span{color:#c9a84c;}
     .hero-desc{color:#706050;font-size:1rem;line-height:1.7;max-width:560px;margin:0 auto 3rem;}
 
-    /* FEATURE CARDS */
     .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:900px;margin:0 auto 2.5rem;}
-    .feat-card{background:rgba(20,2,2,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;text-align:center;}
+    .feat-card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;text-align:center;}
     .feat-icon{width:44px;height:44px;background:rgba(201,168,76,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:1.1rem;margin:0 auto 0.75rem;}
     .feat-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.4rem;}
     .feat-desc{font-size:0.78rem;color:#605040;line-height:1.6;}
 
-    /* CHECKS */
     .checks{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:4rem;}
     .check{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:#888070;}
     .check i{color:#c9a84c;font-size:0.75rem;}
 
     /* FORM */
     .form-wrap{max-width:700px;margin:0 auto;padding:0 2rem 5rem;}
-    .form-box{background:rgba(8,8,8,0.85);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem;}
+    .form-box{background:#0f0f0f;border:1px solid rgba(201,168,76,0.12);border-radius:24px;padding:2.5rem;}
     .form-title{font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:0.3rem;}
     .form-sub{font-size:0.83rem;color:#605040;margin-bottom:2rem;}
     .form-group{margin-bottom:1.25rem;}
@@ -52,55 +49,60 @@
     .form-input::placeholder{color:#302820;}
     .phone-row{display:flex;gap:0.5rem;}
     .phone-code{width:110px;flex-shrink:0;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 0.75rem;font-size:0.88rem;color:#fff;font-family:inherit;outline:none;cursor:pointer;}
-    .form-select{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 1rem;font-size:0.9rem;color:#302820;font-family:inherit;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;transition:border-color 0.2s;}
-    .form-select:focus{border-color:rgba(201,168,76,0.5);color:#fff;}
+    .form-select{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 1rem;font-size:0.9rem;color:#fff;font-family:inherit;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;transition:border-color 0.2s;}
+    .form-select:focus{border-color:rgba(201,168,76,0.5);}
     .form-select option{background:#1a1a1a;color:#fff;}
     .date-wrap{position:relative;}
     .date-wrap i{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#302820;font-size:0.85rem;pointer-events:none;}
     .date-wrap .form-input{padding-left:2.5rem;}
-    .submit-btn{width:100%;background:#c9a84c;color:#fff;border:none;border-radius:12px;padding:1.1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;margin-top:0.5rem;letter-spacing:0.3px;}
-    .submit-btn:hover{background:#8a6520;transform:translateY(-2px);box-shadow:0 12px 35px rgba(201,168,76,0.4);}
+    .submit-btn{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1.1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.3s;margin-top:0.5rem;letter-spacing:0.3px;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .submit-btn:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);transform:translateY(-2px);box-shadow:0 12px 35px rgba(201,168,76,0.4);}
 
-    /* PLAN SELECTION */
-    .plan-step { max-width:700px; margin:0 auto; padding:0 2rem 3rem; }
-    .plan-step-title { font-size:1.1rem; font-weight:800; color:#fff; margin-bottom:0.4rem; text-align:center; }
-    .plan-step-sub { font-size:0.82rem; color:#706050; text-align:center; margin-bottom:1.75rem; }
-    .plan-cards { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
-    .plan-card { background:#111; border:2px solid rgba(201,168,76,0.12); border-radius:16px; padding:1.5rem; cursor:pointer; transition:all 0.25s; position:relative; }
-    .plan-card:hover { border-color:rgba(201,168,76,0.4); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.4); }
-    .plan-card.selected { border-color:#c9a84c; background:rgba(201,168,76,0.06); }
-    .plan-card-badge { position:absolute; top:-10px; right:1rem; background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; font-size:0.6rem; font-weight:800; padding:0.2rem 0.75rem; border-radius:50px; letter-spacing:1px; text-transform:uppercase; }
-    .plan-card-name { font-size:1rem; font-weight:800; color:#fff; margin-bottom:0.25rem; }
-    .plan-card-price { font-size:1.6rem; font-weight:900; color:#c9a84c; margin-bottom:0.5rem; }
-    .plan-card-price span { font-size:0.75rem; color:#706050; font-weight:400; }
-    .plan-card-desc { font-size:0.75rem; color:#706050; line-height:1.6; }
-    .plan-card-features { list-style:none; margin-top:0.75rem; display:flex; flex-direction:column; gap:0.3rem; }
-    .plan-card-features li { font-size:0.75rem; color:#9a9080; display:flex; align-items:center; gap:0.5rem; }
-    .plan-card-features li i { color:#c9a84c; font-size:0.6rem; }
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:24px;padding:2.5rem;width:100%;max-width:500px;position:relative;box-shadow:0 40px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.06);max-height:90vh;overflow-y:auto;}
+    .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.1rem;cursor:pointer;}
+    .modal-eyebrow{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.22rem 0.7rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem;}
+    .modal-title{font-size:1.3rem;font-weight:900;color:#f0ece0;margin-bottom:1.5rem;}
 
-    /* PLAN MODAL */
-    .plan-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; }
-    .plan-modal-overlay.open { display:flex; }
-    .plan-modal { background:#0f0f0f; border:1px solid rgba(201,168,76,0.25); border-radius:24px; padding:2.5rem; width:100%; max-width:460px; position:relative; box-shadow:0 40px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.06); }
-    .plan-modal-close { position:absolute; top:1rem; right:1rem; background:none; border:none; color:#888; font-size:1.1rem; cursor:pointer; }
-    .plan-modal-tag { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); color:#c9a84c; font-size:0.62rem; font-weight:700; padding:0.22rem 0.7rem; border-radius:50px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:1rem; }
-    .plan-modal h2 { font-size:1.5rem; font-weight:900; color:#f0ece0; margin-bottom:0.25rem; }
-    .plan-modal-price { font-size:2.5rem; font-weight:900; color:#c9a84c; margin:0.75rem 0 0.2rem; line-height:1; }
-    .plan-modal-price span { font-size:0.85rem; color:#706050; font-weight:400; }
-    .plan-modal-gst { font-size:0.72rem; color:#4a4030; margin-bottom:1.25rem; }
-    .plan-modal-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent); margin:1.25rem 0; }
-    .plan-modal-features { list-style:none; display:flex; flex-direction:column; gap:0.55rem; margin-bottom:1.75rem; }
-    .plan-modal-features li { display:flex; align-items:center; gap:0.75rem; font-size:0.85rem; color:#b8b0a0; }
-    .plan-modal-features li i { color:#c9a84c; font-size:0.65rem; width:14px; }
-    .plan-continue-btn { width:100%; background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; border:none; border-radius:12px; padding:1rem; font-size:0.95rem; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.6rem; }
-    .plan-continue-btn:hover { background:linear-gradient(135deg,#e8c96a,#c9a84c); transform:translateY(-2px); box-shadow:0 10px 30px rgba(201,168,76,0.3); }
+    /* Summary rows */
+    .summary-box{background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;}
+    .summary-label{font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.85rem;}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;padding:0.3rem 0;border-bottom:1px solid rgba(201,168,76,0.05);}
+    .summary-row:last-child{border-bottom:none;}
+    .summary-row-key{color:#6a6050;}
+    .summary-row-val{color:#d0c8b8;font-weight:600;text-align:right;max-width:60%;}
 
-    @media(max-width:640px){ .plan-cards{grid-template-columns:1fr;} }
+    /* Plan box */
+    .plan-box{background:#111;border:1px solid rgba(201,168,76,0.18);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;}
+    .plan-box-name{font-size:1rem;font-weight:800;color:#f0ece0;margin-bottom:0.2rem;}
+    .plan-box-price{font-size:2rem;font-weight:900;color:#c9a84c;line-height:1;margin-bottom:0.15rem;}
+    .plan-box-price span{font-size:0.78rem;color:#706050;font-weight:400;}
+    .plan-box-gst{font-size:0.68rem;color:#4a4030;margin-bottom:1rem;}
+    .plan-box-features{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+    .plan-box-features li{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:#b8b0a0;}
+    .plan-box-features li i{color:#c9a84c;font-size:0.6rem;}
+
+    /* T&C */
+    .tnc-box{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;}
+    .tnc-check{display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;}
+    .tnc-check input{accent-color:#c9a84c;width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;}
+    .tnc-text{font-size:0.78rem;color:#9a9080;line-height:1.6;}
+    .tnc-text a{color:#c9a84c;text-decoration:none;}
+    .tnc-text a:hover{text-decoration:underline;}
+
+    .confirm-btn{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .confirm-btn:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,0.3);}
+    .confirm-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+    @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}.checks{gap:1rem;}}
   </style>
-
   <script src="nav.js"></script>
 </head>
 <body>
+
+  <!-- NAVBAR -->
 
   <!-- HERO -->
   <div class="hero">
@@ -112,7 +114,7 @@
       <div class="feat-card">
         <div class="feat-icon"><i class="fas fa-camera"></i></div>
         <div class="feat-title">High-Quality Content</div>
-        <div class="feat-desc">Shot on Latest iPhones for cinematic-quality short videos with top-tier clarity and stabilisation.</div>
+        <div class="feat-desc">Shot on Latest iPhones for cinematic-quality short videos with top-tier clarity.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon"><i class="fas fa-bolt"></i></div>
@@ -122,7 +124,7 @@
       <div class="feat-card">
         <div class="feat-icon"><i class="fas fa-magic"></i></div>
         <div class="feat-title">Professional Editing</div>
-        <div class="feat-desc">Expert editing to make your content stand out with perfect transitions and effects.</div>
+        <div class="feat-desc">Expert editing with perfect transitions and effects to make your content stand out.</div>
       </div>
     </div>
 
@@ -133,11 +135,53 @@
     </div>
   </div>
 
-  <!-- FORM -->
-  <div class="form-wrap" id="formStep">
+  <!-- PLAN SELECTION -->
+  <div id="planStep" style="max-width:700px;margin:0 auto;padding:0 2rem 3rem;">
+    <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
+    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')">
+        <div class="plan-card-name">Hourly Plan</div>
+        <div class="plan-card-price">&#8377;1,699 <span>/ shoot</span></div>
+        <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
+        <ul class="plan-card-features"><li><i class="fas fa-check"></i>1 Hour Shoot</li><li><i class="fas fa-check"></i>1 Edited Reel</li><li><i class="fas fa-check"></i>10 Min Delivery</li></ul>
+      </div>
+      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')">
+        <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
+        <div class="plan-card-name">Half-Day Plan</div>
+        <div class="plan-card-price">&#8377;3,999 <span>/ session</span></div>
+        <div class="plan-card-desc">Ideal for events &amp; creators who need more content.</div>
+        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>10 Min Delivery</li></ul>
+      </div>
+      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')">
+        <div class="plan-card-name">Wedding Plan</div>
+        <div class="plan-card-price">&#8377;15,000 <span>/ event</span></div>
+        <div class="plan-card-desc">Complete wedding coverage with cinematic reels.</div>
+        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>5+ Edited Reels</li><li><i class="fas fa-check"></i>Same Day Delivery</li></ul>
+      </div>
+      <div class="plan-card" id="pc_custom" onclick="pickPlan('custom')">
+        <div class="plan-card-name">Custom Plan</div>
+        <div class="plan-card-price" style="font-size:1.1rem;">Let's Talk</div>
+        <div class="plan-card-desc">Have a unique requirement? We'll build a plan just for you.</div>
+        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Flexible Hours</li><li><i class="fas fa-check"></i>Custom Deliverables</li><li><i class="fas fa-check"></i>Dedicated Support</li></ul>
+      </div>
+    </div>
+    <div style="margin-top:1.25rem;text-align:center;">
+      <button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right"></i> &nbsp;Book Selected Plan</button>
+      <div id="planErr" style="display:none;color:#f44336;font-size:0.8rem;margin-top:0.6rem;">Please select a plan first.</div>
+    </div>
+  </div>
+
+  <!-- BOOKING FORM -->
+  <div class="form-wrap" id="formStep" style="display:none;">
     <div class="form-box">
       <div class="form-title">Book Your Shoot</div>
-      <div class="form-sub">Fill in the details below and we'll get back to you instantly.</div>
+      <div class="form-sub">Fill in your details and we'll show you the plan before you confirm.</div>
+      <!-- Selected plan summary -->
+      <div id="formPlanBar" style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <div><span id="formPlanName" style="font-weight:800;color:#fff;"></span> &nbsp;<span id="formPlanPrice" style="color:#c9a84c;font-weight:700;"></span> <span style="color:#4a4030;font-size:0.75rem;">+ GST</span></div>
+        <button type="button" onclick="changePlan()" style="background:none;border:none;color:#c9a84c;font-size:0.75rem;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;">Change Plan</button>
+      </div>
 
       <form onsubmit="handleBooking(event)">
         <div class="form-group">
@@ -163,9 +207,9 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Occasion <span>*</span></label>
+          <label class="form-label">Select Service <span>*</span></label>
           <select id="bk_service" class="form-select" required>
-            <option value="" disabled selected>Select occasion</option>
+            <option value="" disabled selected>Select a service</option>
             <option>Reel Shoot</option>
             <option>Portrait Session</option>
             <option>Wedding Photography</option>
@@ -190,7 +234,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Date of the occasion <span>*</span></label>
+          <label class="form-label">Date <span>*</span></label>
           <div class="date-wrap">
             <i class="fas fa-calendar-alt"></i>
             <input type="date" id="bk_date" class="form-input" required/>
@@ -208,53 +252,97 @@
         </div>
 
         <div id="bk_success" style="display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#4caf50;font-weight:600;font-size:0.9rem;">
-          <i class="fas fa-check-circle"></i> Booking submitted! We'll contact you shortly.
+          <i class="fas fa-check-circle"></i> Enquiry submitted! Our team will contact you shortly.
         </div>
 
-        <button type="submit" id="bk_btn" class="submit-btn"><i class="fas fa-paper-plane"></i> Review & Submit</button>
+        <button type="submit" id="bk_btn" class="submit-btn"><i class="fas fa-eye"></i> Review & Book</button>
       </form>
     </div>
   </div>
 
-  <!-- PLAN REVIEW MODAL -->
-  <div id="planReviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1.5rem;">
-    <div style="background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:24px;padding:2.5rem;width:100%;max-width:460px;position:relative;box-shadow:0 40px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.06);">
-      <button onclick="document.getElementById('planReviewModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
-      <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.22rem 0.7rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem;"><i class="fas fa-receipt"></i> Review Your Booking</div>
-      <h2 style="font-size:1.3rem;font-weight:900;color:#f0ece0;margin-bottom:1.25rem;">Confirm Your Enquiry</h2>
+  <!-- REVIEW MODAL -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeReview()"><i class="fas fa-times"></i></button>
+      <div class="modal-eyebrow"><i class="fas fa-receipt"></i> Review Your Booking</div>
+      <div class="modal-title">Confirm & Submit Enquiry</div>
 
-      <!-- Booking Summary -->
-      <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.85rem;">Your Details</div>
-        <div id="reviewSummary" style="display:flex;flex-direction:column;gap:0.45rem;"></div>
+      <!-- Booking details -->
+      <div class="summary-box">
+        <div class="summary-label">Your Details</div>
+        <div id="reviewSummary"></div>
       </div>
 
-      <!-- Plan Details -->
-      <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;">
-        <div style="font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.85rem;">Selected Plan</div>
-        <div id="reviewPlanName" style="font-size:1rem;font-weight:800;color:#f0ece0;margin-bottom:0.25rem;"></div>
-        <div id="reviewPlanPrice" style="font-size:1.8rem;font-weight:900;color:#c9a84c;line-height:1;margin-bottom:0.2rem;"></div>
-        <div style="font-size:0.7rem;color:#4a4030;margin-bottom:1rem;">+ GST &nbsp;·&nbsp; No hidden charges</div>
-        <ul id="reviewPlanFeatures" style="list-style:none;display:flex;flex-direction:column;gap:0.4rem;"></ul>
+      <!-- Plan details -->
+      <div class="plan-box">
+        <div class="summary-label">Your Plan</div>
+        <div id="planName" class="plan-box-name"></div>
+        <div id="planPrice" class="plan-box-price"></div>
+        <div class="plan-box-gst">+ GST &nbsp;·&nbsp; No hidden charges</div>
+        <ul id="planFeatures" class="plan-box-features"></ul>
       </div>
 
-      <button onclick="confirmSubmit()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;">
-        <i class="fas fa-check-circle"></i> Confirm & Send Enquiry
+      <!-- T&C -->
+      <div class="tnc-box">
+        <label class="tnc-check">
+          <input type="checkbox" id="tncCheck" onchange="toggleConfirm()"/>
+          <span class="tnc-text">I have reviewed my booking details and the plan. I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a> and <a href="privacy.html" target="_blank">Privacy Policy</a> of Hash Shoots.</span>
+        </label>
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmSubmit()" disabled>
+        <i class="fas fa-check-circle"></i> Submit Enquiry
       </button>
-      <p style="text-align:center;font-size:0.72rem;color:#4a4030;margin-top:0.75rem;">By confirming, you agree to be contacted by our team.</p>
     </div>
   </div>
 
   <script>
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
 
+    var planData = {
+      hourly:  { service:'Reel Shoot',          name:'Hourly Plan',   price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      halfday: { service:'Event Coverage',       name:'Half-Day Plan', price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      wedding: { service:'Wedding Photography',  name:'Wedding Plan',  price:'\u20b915,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      custom:  { service:'',                     name:'Custom Plan',   price:'Let\'s Talk', per:'',          features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
+    };
+
+    var selectedPlanKey = null;
+
+    function pickPlan(key) {
+      selectedPlanKey = key;
+      document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
+      document.getElementById('pc_' + key).classList.add('selected');
+      document.getElementById('planErr').style.display = 'none';
+    }
+
+    function bookSelectedPlan() {
+      if (!selectedPlanKey) { document.getElementById('planErr').style.display = 'block'; return; }
+      var p = planData[selectedPlanKey];
+      // Show form, hide plan step
+      document.getElementById('planStep').style.display = 'none';
+      document.getElementById('formStep').style.display = 'block';
+      // Update plan bar
+      document.getElementById('formPlanName').textContent = p.name;
+      document.getElementById('formPlanPrice').textContent = p.price + (p.per ? ' ' + p.per : '');
+      // Pre-fill service dropdown
+      var sel = document.getElementById('bk_service');
+      if (sel && p.service) Array.from(sel.options).forEach(function(o){ if(o.value === p.service || o.text === p.service) o.selected = true; });
+      window.scrollTo({ top: document.getElementById('formStep').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function changePlan() {
+      document.getElementById('formStep').style.display = 'none';
+      document.getElementById('planStep').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('planStep').offsetTop - 80, behavior: 'smooth' });
+    }
+
     var plans = {
-      'Reel Shoot':            { name:'Hourly Plan',    price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Portrait Session':      { name:'Hourly Plan',    price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Wedding Photography':   { name:'Wedding Plan',   price:'\u20b915,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      'Product Shoot':         { name:'Half-Day Plan',  price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Event Coverage':        { name:'Half-Day Plan',  price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Food Photography':      { name:'Hourly Plan',    price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Reel Shoot':          { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Portrait Session':    { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Wedding Photography': { name:'Wedding Plan',  price:'₹15,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      'Product Shoot':       { name:'Half-Day Plan', price:'₹3,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Event Coverage':      { name:'Half-Day Plan', price:'₹3,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Food Photography':    { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] }
     };
 
     var pendingData = null;
@@ -262,8 +350,8 @@
     function handleBooking(e) {
       e.preventDefault();
       var name     = document.getElementById('bk_name').value.trim();
-      var code     = document.getElementById('bk_code').value;
-      var phone    = code.split(' ')[1] + document.getElementById('bk_phone').value.trim();
+      var code     = document.getElementById('bk_code').value.split(' ')[1];
+      var phone    = code + document.getElementById('bk_phone').value.trim();
       var email    = document.getElementById('bk_email').value.trim();
       var service  = document.getElementById('bk_service').value;
       var city     = document.getElementById('bk_city').value;
@@ -273,30 +361,37 @@
 
       pendingData = { name, phone, email, service, city, date, time, location };
 
-      // Fill review summary
-      var rows = [
-        ['Name', name], ['Phone', phone], ['Email', email],
-        ['Service', service], ['City', city], ['Date', date], ['Time', time], ['Location', location]
-      ];
+      // Fill booking summary
+      var rows = [['Name',name],['Phone',phone],['Email',email],['Service',service],['City',city],['Date',date],['Time',time],['Location',location]];
       document.getElementById('reviewSummary').innerHTML = rows.map(function(r){
-        return '<div style="display:flex;justify-content:space-between;font-size:0.8rem;">'
-          +'<span style="color:#6a6050;">'+r[0]+'</span>'
-          +'<span style="color:#d0c8b8;font-weight:600;">'+r[1]+'</span></div>';
+        return '<div class="summary-row"><span class="summary-row-key">'+r[0]+'</span><span class="summary-row-val">'+r[1]+'</span></div>';
       }).join('');
 
-      // Fill plan details
-      var plan = plans[service] || { name:'Custom Plan', price:'Let\'s Talk', per:'', features:['Flexible Hours','Custom Deliverables','Dedicated Support'] };
-      document.getElementById('reviewPlanName').textContent = plan.name;
-      document.getElementById('reviewPlanPrice').innerHTML = plan.price + (plan.per ? ' <span style="font-size:0.8rem;color:#706050;font-weight:400;">'+plan.per+'</span>' : '');
-      document.getElementById('reviewPlanFeatures').innerHTML = plan.features.map(function(f){
-        return '<li style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:#b8b0a0;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;"></i>'+f+'</li>';
+      // Fill plan
+      var plan = (selectedPlanKey && planData[selectedPlanKey]) ? planData[selectedPlanKey] : (plans[service] || { name:'Custom Plan', price:'Let\'s Talk', per:'', features:['Flexible Hours','Custom Deliverables','Dedicated Support'] });
+      document.getElementById('planName').textContent = plan.name;
+      document.getElementById('planPrice').innerHTML = plan.price + (plan.per ? ' <span>'+plan.per+'</span>' : '');
+      document.getElementById('planFeatures').innerHTML = plan.features.map(function(f){
+        return '<li><i class="fas fa-check"></i>'+f+'</li>';
       }).join('');
 
-      document.getElementById('planReviewModal').style.display = 'flex';
+      // Reset T&C
+      document.getElementById('tncCheck').checked = false;
+      document.getElementById('confirmBtn').disabled = true;
+
+      document.getElementById('reviewModal').classList.add('open');
+    }
+
+    function toggleConfirm() {
+      document.getElementById('confirmBtn').disabled = !document.getElementById('tncCheck').checked;
+    }
+
+    function closeReview() {
+      document.getElementById('reviewModal').classList.remove('open');
     }
 
     function confirmSubmit() {
-      if (!pendingData) return;
+      if (!pendingData || !document.getElementById('tncCheck').checked) return;
       var now = new Date().toLocaleString();
       var id  = Date.now();
       var d   = pendingData;
@@ -309,41 +404,11 @@
       enquiries.push({ id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time, submittedAt:now });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
 
-      document.getElementById('planReviewModal').style.display = 'none';
+      closeReview();
       document.getElementById('bk_success').style.display = 'block';
       document.getElementById('bk_btn').style.display = 'none';
       document.querySelector('form').querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
       pendingData = null;
-    }
-
-    function handleBooking(e){
-      e.preventDefault();
-      var name    = document.getElementById('bk_name').value.trim();
-      var code    = document.getElementById('bk_code').value;
-      var phone   = code.split(' ')[1] + document.getElementById('bk_phone').value.trim();
-      var email   = document.getElementById('bk_email').value.trim();
-      var service = document.getElementById('bk_service').value;
-      var city    = document.getElementById('bk_city').value;
-      var date    = document.getElementById('bk_date').value;
-      var time    = document.getElementById('bk_time').value;
-      var location= document.getElementById('bk_location').value.trim();
-      var now     = new Date().toLocaleString();
-      var id      = Date.now();
-
-      // Save to hs_bookings (shows in admin Bookings tab)
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id: id, name: name, phone: phone, email: email, service: service, city: city, location: location, date: date, time: time, notes: '', status: 'pending', createdAt: now });
-      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-
-      // Save to hs_enquiries (shows in admin Enquiries tab)
-      var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
-      enquiries.push({ id: id, name: name, phone: phone, email: email, message: 'Service: ' + service + ' | City: ' + city + ' | Location: ' + location + ' | Date: ' + date + ' at ' + time, submittedAt: now });
-      localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
-
-      // Show success, hide button
-      document.getElementById('bk_success').style.display = 'block';
-      document.getElementById('bk_btn').style.display = 'none';
-      e.target.querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
     }
   </script>
 </body>
