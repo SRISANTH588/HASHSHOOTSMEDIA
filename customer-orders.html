@@ -81,7 +81,7 @@
 
         // ── CREATOR CARD ──────────────────────────────────────────
         var creatorCard = '';
-        if(assign){
+        if(assign && assign.staffName){
           var staffMember = staffList.find(function(s){ return String(s.id) === String(assign.staffId); });
 
           var arrivedBadge = assign.arrivedAt
