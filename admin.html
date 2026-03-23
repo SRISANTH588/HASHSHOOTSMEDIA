@@ -127,7 +127,7 @@
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
       <button class="tab-btn" onclick="switchTab('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
       <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('testimonial-videos',this)"><i class="fas fa-play-circle"></i> Testimonial Videos</button>
+      <button class="tab-btn" onclick="switchTab('testimonial-videos',this)"><i class="fas fa-video"></i> Client Testimonials</button>
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
     </div>
 
@@ -608,6 +608,10 @@
     <div class="tab-panel" id="tab-feedback">
 
       <!-- STATS ROW -->
+      <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.82rem;color:#9a9080;">
+        <i class="fas fa-info-circle" style="color:#c9a84c;margin-right:0.5rem;"></i>
+        <strong style="color:#c9a84c;">Feedback</strong> = star ratings &amp; written reviews submitted by customers after their shoot. These are <em>not</em> the same as Client Testimonial Videos.
+      </div>
       <div class="stats-row" style="margin-bottom:2rem;">
         <div class="stat-card"><div class="num" id="fb_totalCount">0</div><div class="lbl">Total Feedback</div></div>
         <div class="stat-card"><div class="num" style="color:#f5a623" id="fb_avgRating">0.0</div><div class="lbl">Avg Rating</div></div>
@@ -795,7 +799,7 @@
 
       <!-- TESTIMONIALS -->
       <div class="about-form" style="margin-bottom:1rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-quote-right" style="color:#c9a84c;margin-right:0.5rem;"></i> Testimonials</h2>
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-quote-right" style="color:#c9a84c;margin-right:0.5rem;"></i> Written Feedback / Reviews <span style="font-size:0.72rem;color:#6a6050;font-weight:500;">(text reviews shown in Vibe → Testimonials)</span></h2>
         <div id="hp_testiList"></div>
         <button class="btn-add-team" onclick="addTestiRow()"><i class="fas fa-plus"></i> Add Testimonial</button>
       </div>
@@ -1177,7 +1181,7 @@
     <div class="tab-panel" id="tab-testimonial-videos">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-play-circle" style="color:#c9a84c;margin-right:0.5rem;"></i> Client Testimonial Videos</h2>
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-video" style="color:#c9a84c;margin-right:0.5rem;"></i> Client Testimonial Videos <span style="font-size:0.72rem;color:#6a6050;font-weight:500;">(video testimonials shown in Vibe → Testimonials)</span></h2>
           <span style="font-size:0.8rem;color:#9a9080;" id="testiVidCount"></span>
         </div>
         <!-- Upload Form -->
