@@ -2916,6 +2916,9 @@
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var enquiries= JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
 
+      // Auto-refresh enquiries list if on that tab
+      if(currentTab === 'enquiries') renderEnquiries();
+
       // Reel done — staff marked shoot as done
       var doneList = assigns.filter(function(a){ return a.status === 'done'; });
       if(doneList.length > _lastDoneCount){

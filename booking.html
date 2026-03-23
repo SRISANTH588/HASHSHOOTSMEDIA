@@ -402,7 +402,7 @@
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
-      enquiries.push({ id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time, submittedAt:now });
+      enquiries.push({ id:id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time+' | Plan: '+(selectedPlanKey && planData[selectedPlanKey] ? planData[selectedPlanKey].name+' '+planData[selectedPlanKey].price : ''), submittedAt:now });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
 
       closeReview();
