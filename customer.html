@@ -95,6 +95,20 @@
     .btn-terms-proceed{background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    /* PLAN PREVIEW MODAL */
+    .plan-preview-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
+    .plan-preview-overlay.open{display:flex;}
+    .plan-preview-box{background:#0d0000;border:1px solid rgba(229,57,53,0.3);border-radius:20px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+    .plan-preview-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
+    .plan-preview-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .plan-preview-body{padding:1.5rem;}
+    .plan-preview-name{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:0.3rem;}
+    .plan-preview-price{font-size:2.5rem;font-weight:900;background:linear-gradient(90deg,#e53935,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;}
+    .plan-preview-desc{font-size:0.85rem;color:#a08080;line-height:1.7;margin-bottom:1.25rem;}
+    .plan-preview-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.6rem;}
+    .btn-plan-continue{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);transition:all 0.2s;}
+    .btn-plan-continue:hover{transform:translateY(-1px);box-shadow:0 10px 35px rgba(229,57,53,0.5);}
+    .btn-plan-back{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     /* PAYMENT T&C MODAL */
     .pay-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
     .pay-tnc-overlay.open{display:flex;}
@@ -324,7 +338,7 @@
 
     var _pendingBookBtn = null;
     function openTerms(btn){
-      // Validate form first before showing terms
+      // Validate form first before showing plan preview
       var name = document.getElementById('name').value.trim();
       var phone = document.getElementById('phone').value.trim();
       var service = document.getElementById('service').value;
@@ -334,6 +348,34 @@
       if(c.showTime !== 'no' && !document.getElementById('time').value){ alert('Please select a time.'); return; }
       if(c.requireNotes === 'yes' && !document.getElementById('notes').value.trim()){ alert('Please fill in the notes field.'); return; }
       _pendingBookBtn = btn;
+      // Show plan preview modal first
+      openPlanPreview(service);
+    }
+
+    function openPlanPreview(serviceName){
+      // Try to find matching plan from hs_customer_page services (format: Name|Price|Description)
+      var parts = [];
+      var svcs = c.services || [];
+      var match = svcs.find(function(s){ return s.split('|')[0].trim() === serviceName; });
+      if(match) parts = match.split('|');
+      var planName = parts[0] || serviceName;
+      var planPrice = parts[1] ? parts[1].trim() : '';
+      var planDesc = parts[2] ? parts[2].trim() : '';
+      document.getElementById('ppName').textContent = planName;
+      document.getElementById('ppPrice').textContent = planPrice || 'Price on request';
+      document.getElementById('ppPrice').style.webkitTextFillColor = planPrice ? '' : '#a08080';
+      document.getElementById('ppPrice').style.fontSize = planPrice ? '' : '1.1rem';
+      document.getElementById('ppDesc').textContent = planDesc || 'Our team will get in touch with you to confirm the details and pricing for this service.';
+      document.getElementById('planPreviewOverlay').classList.add('open');
+    }
+
+    function closePlanPreview(){
+      document.getElementById('planPreviewOverlay').classList.remove('open');
+    }
+
+    function confirmPlanAndProceed(){
+      closePlanPreview();
+      // Now show the T&C modal
       document.getElementById('termsCheck').checked = false;
       document.getElementById('termsProceedBtn').classList.remove('enabled');
       document.getElementById('termsOverlay').classList.add('open');
@@ -409,10 +451,15 @@
     document.getElementById('lbl_city').textContent = c.labelCity || 'City';
     document.getElementById('lbl_notes').textContent = c.labelNotes || 'Additional Notes';
 
-    // Services
+    // Services — format: Name|Price|Description (price/desc optional)
     const sel = document.getElementById('service');
     const services = c.services && c.services.length ? c.services : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
-    services.forEach(s => { const o = document.createElement('option'); o.textContent = s; sel.appendChild(o); });
+    services.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.split('|')[0].trim(); // store just the name as value
+      o.textContent = s.split('|')[0].trim();
+      sel.appendChild(o);
+    });
 
     // Preferred Creator dropdown — load creators from hs_staff
     (function loadCreators(){
@@ -810,6 +857,30 @@
     <div class="cookie-btns">
       <button class="btn-cookie-decline" onclick="dismissCookie(false)">Decline</button>
       <button class="btn-cookie-accept" onclick="dismissCookie(true)"><i class="fas fa-check"></i> Accept</button>
+    </div>
+  </div>
+
+  <!-- PLAN PREVIEW MODAL -->
+  <div class="plan-preview-overlay" id="planPreviewOverlay">
+    <div class="plan-preview-box">
+      <div class="plan-preview-header">
+        <h3><i class="fas fa-camera" style="color:#e53935;"></i> Plan Details</h3>
+        <button onclick="closePlanPreview()" style="background:none;border:none;color:#a08080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="plan-preview-body">
+        <div style="font-size:0.72rem;font-weight:700;color:#e53935;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">Selected Plan</div>
+        <div class="plan-preview-name" id="ppName"></div>
+        <div class="plan-preview-price" id="ppPrice"></div>
+        <div class="plan-preview-desc" id="ppDesc"></div>
+        <div style="background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#a08080;line-height:1.6;">
+          <i class="fas fa-info-circle" style="color:#e53935;margin-right:0.4rem;"></i>
+          Clicking <strong style="color:#fff;">Continue</strong> will submit your enquiry to our team. We'll confirm your booking shortly.
+        </div>
+      </div>
+      <div class="plan-preview-footer">
+        <button class="btn-plan-continue" onclick="confirmPlanAndProceed()"><i class="fas fa-arrow-right"></i> Continue &amp; Submit Enquiry</button>
+        <button class="btn-plan-back" onclick="closePlanPreview()"><i class="fas fa-arrow-left"></i> Go Back &amp; Edit</button>
+      </div>
     </div>
   </div>
 
