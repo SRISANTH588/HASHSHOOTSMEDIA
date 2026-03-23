@@ -191,6 +191,7 @@
         <div class="hero-btns">
           <a href="booking.html" class="btn btn-book">Book Now</a>
           <a href="partner.html" class="btn btn-partner">Become a Partner</a>
+          <a href="#testimonials" class="btn btn-partner" onclick="document.getElementById('testimonials').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.5rem;"><i class="fas fa-star" style="color:#f5a623;"></i> Testimonials</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
@@ -791,7 +792,7 @@
 
 
   <!-- TESTIMONIALS -->
-  <section class="testimonials">
+  <section class="testimonials" id="testimonials">
     <style>
       .testimonials{background:#1a0000;padding:5rem 0;}
       .testi-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.6rem;}
