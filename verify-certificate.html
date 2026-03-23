@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #1a0000; color: #fff; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; }
     .page-bg {
       min-height: 100vh;
       background:
@@ -18,12 +18,12 @@
         linear-gradient(180deg, #2a0505 0%, #150202 40%, #0a0000 100%);
     }
     .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
-    .logo-flash { color: #e53935; }
+    .logo-flash { color: #c9a84c; }
     .nav-right { display: flex; gap: 0.75rem; align-items: center; }
     .btn-app { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
     .btn-app:hover { border-color: #fff; }
-    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #e53935; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
-    .btn-contact:hover { background: #b71c1c; }
+    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #c9a84c; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
+    .btn-contact:hover { background: #a07830; }
 
     /* PAGE */
     .page-wrap {
@@ -34,7 +34,7 @@
 
     .pill {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(180,30,30,0.35); border: 1px solid rgba(229,57,53,0.25);
+      background: rgba(180,30,30,0.35); border: 1px solid rgba(201,168,76,0.25);
       color: #e07070; font-size: 0.8rem; font-weight: 600;
       padding: 0.45rem 1.1rem; border-radius: 50px; margin-bottom: 1.5rem;
     }
@@ -74,29 +74,29 @@
       transition: border-color 0.2s;
     }
     .cert-input::placeholder { color: #6a4040; }
-    .cert-input:focus { border-color: rgba(229,57,53,0.5); }
+    .cert-input:focus { border-color: rgba(201,168,76,0.5); }
 
     .field-hint {
       font-size: 0.78rem; color: #e07070; margin-bottom: 1.5rem;
     }
 
     .verify-btn {
-      width: 100%; background: #e53935; color: #fff; border: none;
+      width: 100%; background: #c9a84c; color: #fff; border: none;
       border-radius: 14px; padding: 1.1rem; font-size: 1rem; font-weight: 700;
       cursor: pointer; font-family: inherit; display: flex; align-items: center;
       justify-content: center; gap: 0.6rem;
       transition: background 0.2s, transform 0.2s; margin-bottom: 2rem;
     }
-    .verify-btn:hover { background: #c62828; transform: translateY(-2px); }
+    .verify-btn:hover { background: #8a6520; transform: translateY(-2px); }
 
     /* RESULT */
     .result-box { display: none; border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; }
     .result-box.success { background: rgba(30,80,30,0.3); border: 1px solid rgba(76,175,80,0.3); }
-    .result-box.error { background: rgba(180,20,20,0.3); border: 1px solid rgba(229,57,53,0.3); }
+    .result-box.error { background: rgba(180,20,20,0.3); border: 1px solid rgba(201,168,76,0.3); }
     .result-box .result-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     .result-box .result-icon { font-size: 1.3rem; }
     .result-box.success .result-icon { color: #4caf50; }
-    .result-box.error .result-icon { color: #e53935; }
+    .result-box.error .result-icon { color: #c9a84c; }
     .result-box h3 { font-size: 1rem; font-weight: 800; color: #fff; }
     .result-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
     .result-detail { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 0.75rem 1rem; }
@@ -112,7 +112,7 @@
     .about-card .about-header {
       display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
     }
-    .about-card .about-header i { color: #e53935; font-size: 1rem; }
+    .about-card .about-header i { color: #c9a84c; font-size: 1rem; }
     .about-card .about-header h3 { font-size: 1rem; font-weight: 800; color: #fff; }
     .about-card p { font-size: 0.88rem; color: #a07070; line-height: 1.75; margin-bottom: 0.75rem; }
     .about-card p:last-child { margin-bottom: 0; }

@@ -9,39 +9,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#1a0000;font-family:'Inter',sans-serif;min-height:100vh;}
+    body{background:#0a0a0a;font-family:'Inter',sans-serif;min-height:100vh;}
 
     .ct-page{padding:6rem 2rem 5rem;max-width:1200px;margin:0 auto;}
 
     .ct-header{text-align:center;margin-bottom:3.5rem;}
     .ct-h1{font-size:clamp(2.4rem,6vw,4rem);font-weight:900;color:#fff;line-height:1.1;}
-    .ct-h1 span{color:#e53935;}
-    .ct-sub{color:#7a5a5a;font-size:1rem;margin-top:0.8rem;}
+    .ct-h1 span{color:#c9a84c;}
+    .ct-sub{color:#706050;font-size:1rem;margin-top:0.8rem;}
 
     .ct-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:1.5rem;align-items:start;}
 
     /* LEFT INFO CARD */
-    .ct-info{background:#200000;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2.2rem;}
+    .ct-info{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2.2rem;}
     .ct-info-item{display:flex;align-items:flex-start;gap:1.1rem;padding:1.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
     .ct-info-item:last-child{border-bottom:none;padding-bottom:0;}
     .ct-info-item:first-child{padding-top:0;}
-    .ct-info-icon{width:44px;height:44px;background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:1rem;flex-shrink:0;}
+    .ct-info-icon{width:44px;height:44px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:1rem;flex-shrink:0;}
     .ct-info-label{font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.35rem;}
-    .ct-info-val{font-size:0.88rem;color:#7a5a5a;line-height:1.7;}
+    .ct-info-val{font-size:0.88rem;color:#706050;line-height:1.7;}
 
     /* RIGHT FORM CARD */
-    .ct-form-card{background:#200000;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2.2rem;}
+    .ct-form-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2.2rem;}
     .ct-field{margin-bottom:1.3rem;}
     .ct-label{display:block;font-size:0.88rem;font-weight:600;color:#ccc;margin-bottom:0.55rem;}
     .ct-input,.ct-textarea{width:100%;background:#2a0505;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:0.85rem 1.1rem;font-size:0.92rem;color:#fff;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
-    .ct-input:focus,.ct-textarea:focus{border-color:rgba(229,57,53,0.5);}
+    .ct-input:focus,.ct-textarea:focus{border-color:rgba(201,168,76,0.5);}
     .ct-textarea{resize:vertical;min-height:130px;}
     .ct-phone-wrap{display:flex;gap:0.6rem;}
     .ct-phone-code{display:flex;align-items:center;gap:0.4rem;background:#2a0505;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:0.85rem 1rem;font-size:0.88rem;color:#ccc;cursor:pointer;white-space:nowrap;flex-shrink:0;}
     .ct-phone-code select{background:transparent;border:none;color:#ccc;font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;cursor:pointer;}
     .ct-phone-code select option{background:#2a0505;}
     .ct-input.phone-num{flex:1;}
-    .ct-submit{width:100%;background:linear-gradient(135deg,#e53935,#b71c1c);border:none;border-radius:14px;padding:1rem;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:opacity 0.2s,transform 0.2s;margin-top:0.5rem;}
+    .ct-submit{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);border:none;border-radius:14px;padding:1rem;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:opacity 0.2s,transform 0.2s;margin-top:0.5rem;}
     .ct-submit:hover{opacity:0.9;transform:translateY(-2px);}
 
     .ct-success{display:none;text-align:center;padding:2rem;color:#4caf50;font-size:1rem;font-weight:600;}

@@ -6,23 +6,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;padding:2rem;}
-    h1{font-size:1.4rem;font-weight:900;margin-bottom:0.3rem;}h1 span{color:#e53935;}
-    .sub{color:#a08080;font-size:0.85rem;margin-bottom:2rem;}
-    .card{background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;}
-    .card h2{font-size:0.95rem;font-weight:800;color:#e53935;margin-bottom:1rem;}
+    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;padding:2rem;}
+    h1{font-size:1.4rem;font-weight:900;margin-bottom:0.3rem;}h1 span{color:#c9a84c;}
+    .sub{color:#888070;font-size:0.85rem;margin-bottom:2rem;}
+    .card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;}
+    .card h2{font-size:0.95rem;font-weight:800;color:#c9a84c;margin-bottom:1rem;}
     .row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;align-items:center;}
-    label{font-size:0.75rem;color:#a08080;font-weight:600;min-width:120px;}
-    input,select{background:#1a0000;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;flex:1;min-width:160px;}
+    label{font-size:0.75rem;color:#888070;font-weight:600;min-width:120px;}
+    input,select{background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;flex:1;min-width:160px;}
     .btn{padding:0.6rem 1.4rem;border-radius:8px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;transition:all 0.2s;}
-    .btn-red{background:#e53935;color:#fff;}
+    .btn-red{background:#c9a84c;color:#fff;}
     .btn-green{background:#4caf50;color:#fff;}
     .btn-blue{background:#1976d2;color:#fff;}
     .btn-orange{background:#ff9800;color:#000;}
     .btn-grey{background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.1);}
-    .status{background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;font-size:0.82rem;line-height:1.8;white-space:pre-wrap;font-family:monospace;color:#a0d0a0;margin-top:0.75rem;max-height:300px;overflow-y:auto;}
-    .step{display:flex;align-items:center;gap:0.75rem;background:#1f0000;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.5rem;}
-    .step-num{width:28px;height:28px;border-radius:50%;background:#e53935;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;flex-shrink:0;}
+    .status{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;font-size:0.82rem;line-height:1.8;white-space:pre-wrap;font-family:monospace;color:#a0d0a0;margin-top:0.75rem;max-height:300px;overflow-y:auto;}
+    .step{display:flex;align-items:center;gap:0.75rem;background:#141414;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.5rem;}
+    .step-num{width:28px;height:28px;border-radius:50%;background:#c9a84c;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;flex-shrink:0;}
     .step-text{font-size:0.82rem;color:#ccc;}
     .step-text strong{color:#fff;}
     .divider{border:none;border-top:1px solid rgba(255,255,255,0.06);margin:1.25rem 0;}
@@ -94,7 +94,7 @@
 <!-- SIMULATE STAFF ACTIONS -->
 <div class="card">
   <h2>👤 Step 2 — Simulate Staff Actions</h2>
-  <p style="font-size:0.8rem;color:#a08080;margin-bottom:1rem;">These buttons simulate what staff does on staff.html — use them if you want to test without opening staff page.</p>
+  <p style="font-size:0.8rem;color:#888070;margin-bottom:1rem;">These buttons simulate what staff does on staff.html — use them if you want to test without opening staff page.</p>
   <div class="row">
     <button class="btn btn-orange" onclick="simMarkArrived()">📍 Mark Arrived</button>
     <button class="btn btn-green" onclick="simMarkDone()">✅ Mark as Done</button>

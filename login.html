@@ -8,58 +8,58 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#1a0000;color:#fff;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:hidden;}
+    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:hidden;}
     .wrapper{padding-top:2.5rem;padding-bottom:2.5rem;}
     .bg-particles{position:fixed;inset:0;z-index:0;overflow:hidden;}
     .particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0;}
     @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.3;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
-    .bg-glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 50% at 20% 50%,rgba(229,57,53,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 30%,rgba(180,0,0,0.08) 0%,transparent 60%);}
+    .bg-glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 50% at 20% 50%,rgba(201,168,76,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 30%,rgba(180,0,0,0.08) 0%,transparent 60%);}
     .wrapper{position:relative;z-index:1;width:100%;max-width:460px;padding:1.5rem;}
     .logo{text-align:center;font-size:2rem;font-weight:900;margin-bottom:0.3rem;letter-spacing:-1px;}
-    .logo span{color:#e53935;}
-    .logo-sub{text-align:center;color:#a08080;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem;}
+    .logo span{color:#c9a84c;}
+    .logo-sub{text-align:center;color:#888070;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem;}
     .tab-wrap{display:flex;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:5px;margin-bottom:1.75rem;gap:5px;}
     .tab{flex:1;padding:0.65rem;border-radius:10px;border:none;background:none;color:#888;font-weight:700;font-size:0.875rem;cursor:pointer;font-family:inherit;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-    .tab.active{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;box-shadow:0 4px 20px rgba(229,57,53,0.35);}
-    .card{background:rgba(40,4,4,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,0.6);animation:cardIn 0.4s ease;}
+    .tab.active{background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;box-shadow:0 4px 20px rgba(229,57,53,0.35);}
+    .card{background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,0.6);animation:cardIn 0.4s ease;}
     @keyframes cardIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
     .card-header{margin-bottom:2rem;}
     .card-header h2{font-size:1.6rem;font-weight:900;margin-bottom:0.3rem;}
-    .card-header h2 span{color:#e53935;}
-    .card-header p{color:#a08080;font-size:0.875rem;}
-    .admin-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:1.25rem;border:3px solid rgba(229,57,53,0.3);box-shadow:0 0 30px rgba(229,57,53,0.3);animation:avatarPulse 2s ease-in-out infinite;}
-    @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(229,57,53,0.3);}50%{box-shadow:0 0 40px rgba(229,57,53,0.6);}}
+    .card-header h2 span{color:#c9a84c;}
+    .card-header p{color:#888070;font-size:0.875rem;}
+    .admin-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:1.25rem;border:3px solid rgba(201,168,76,0.3);box-shadow:0 0 30px rgba(201,168,76,0.3);animation:avatarPulse 2s ease-in-out infinite;}
+    @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.3);}50%{box-shadow:0 0 40px rgba(229,57,53,0.6);}}
     .form-group{margin-bottom:1.25rem;}
     .form-group label{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:700;color:#888;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;}
     .input-wrap{position:relative;}
     .input-wrap i.icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#555;font-size:0.9rem;pointer-events:none;}
     .input-wrap input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:all 0.3s;}
-    .input-wrap input:focus{border-color:#e53935;background:rgba(229,57,53,0.05);box-shadow:0 0 0 3px rgba(229,57,53,0.1);}
+    .input-wrap input:focus{border-color:#c9a84c;background:rgba(201,168,76,0.05);box-shadow:0 0 0 3px rgba(201,168,76,0.1);}
     .toggle-pass{position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:#555;cursor:pointer;font-size:0.9rem;transition:color 0.2s;}
-    .toggle-pass:hover{color:#e53935;}
+    .toggle-pass:hover{color:#c9a84c;}
     .strength-bar{height:3px;border-radius:2px;margin-top:0.5rem;background:rgba(255,255,255,0.06);overflow:hidden;display:none;}
     .strength-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s;width:0%;}
     .remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
     .remember{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.82rem;color:#888;}
-    .remember input{accent-color:#e53935;width:15px;height:15px;}
-    .forgot{color:#e53935;font-size:0.82rem;text-decoration:none;font-weight:600;}
+    .remember input{accent-color:#c9a84c;width:15px;height:15px;}
+    .forgot{color:#c9a84c;font-size:0.82rem;text-decoration:none;font-weight:600;}
     .forgot:hover{text-decoration:underline;}
-    .btn-login{width:100%;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);}
-    .btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(229,57,53,0.5);}
+    .btn-login{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);}
+    .btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(201,168,76,0.5);}
     .btn-login:active{transform:translateY(0);}
     .btn-login.loading{pointer-events:none;opacity:0.8;}
     .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
     @keyframes spin{to{transform:rotate(360deg);}}
     .divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:#555;font-size:0.78rem;}
     .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06);}
-    .demo-creds{background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.15);border-radius:10px;padding:0.85rem 1rem;font-size:0.78rem;color:#a08080;line-height:1.9;}
-    .demo-creds strong{color:#e53935;}
+    .demo-creds{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;font-size:0.78rem;color:#888070;line-height:1.9;}
+    .demo-creds strong{color:#c9a84c;}
     .error-msg{background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#ff6b6b;margin-bottom:1rem;display:none;align-items:center;gap:0.5rem;}
     .back{text-align:center;margin-top:1.5rem;color:#555;font-size:0.82rem;}
-    .back a{color:#e53935;text-decoration:none;font-weight:600;}
+    .back a{color:#c9a84c;text-decoration:none;font-weight:600;}
     .sub-tab-wrap{display:flex;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:4px;margin-bottom:1.75rem;gap:4px;}
     .sub-tab{flex:1;padding:0.55rem;border-radius:7px;border:none;background:none;color:#888;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.25s;}
-    .sub-tab.active{background:rgba(229,57,53,0.15);color:#e53935;border:1px solid rgba(229,57,53,0.25);}
+    .sub-tab.active{background:rgba(201,168,76,0.15);color:#c9a84c;border:1px solid rgba(201,168,76,0.25);}
     @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
     .shake{animation:shake 0.4s ease;}
   </style>
@@ -109,7 +109,7 @@
           <i class="fas fa-arrow-right" id="loginArrow"></i>
         </button>
         <div class="divider">or</div>
-        <p style="text-align:center;font-size:0.82rem;color:#888;">New customer? <a href="#" onclick="switchSubTab('signup')" style="color:#e53935;font-weight:700;">Sign Up</a></p>
+        <p style="text-align:center;font-size:0.82rem;color:#888;">New customer? <a href="#" onclick="switchSubTab('signup')" style="color:#c9a84c;font-weight:700;">Sign Up</a></p>
       </div>
 
       <!-- SIGNUP FORM (customers only) -->
@@ -163,7 +163,7 @@
           <i class="fas fa-arrow-right" id="signupArrow"></i>
         </button>
         <div class="divider">or</div>
-        <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#e53935;font-weight:700;">Login</a></p>
+        <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#c9a84c;font-weight:700;">Login</a></p>
       </div>
     </div>
 
@@ -171,8 +171,8 @@
     <div id="forgotModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:none;align-items:center;justify-content:center;">
       <div style="background:#1e0404;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:90%;max-width:400px;position:relative;">
         <button onclick="closeForgot()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
-        <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem;">Forgot <span style="color:#e53935;">Password?</span></h3>
-        <p style="color:#a08080;font-size:0.82rem;margin-bottom:1.5rem;">Enter your username or email to reset your password.</p>
+        <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem;">Forgot <span style="color:#c9a84c;">Password?</span></h3>
+        <p style="color:#888070;font-size:0.82rem;margin-bottom:1.5rem;">Enter your username or email to reset your password.</p>
         <div class="error-msg" id="forgotError" style="margin-bottom:1rem;"><i class="fas fa-exclamation-circle"></i>&nbsp; <span id="forgotErrMsg"></span></div>
         <div id="forgotSuccess" style="display:none;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#81c784;margin-bottom:1rem;"></div>
         <div class="form-group">
