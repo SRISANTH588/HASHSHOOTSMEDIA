@@ -80,7 +80,7 @@
     .form-group input,.form-group textarea{background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
     .form-group input:focus,.form-group textarea:focus{border-color:var(--gold);}
     .form-group textarea{resize:vertical;min-height:90px;}
-    .team-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
+    .team-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.75rem;align-items:start;margin-bottom:1rem;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);border-radius:12px;padding:0.75rem;}
     .btn-add-team{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;margin-bottom:1rem;transition:all 0.2s;}
     .btn-add-team:hover{background:var(--gold);color:var(--text);}
     .btn-remove{background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;}
@@ -2619,21 +2619,54 @@
       document.getElementById('ab_statCities').value = a.statCities || '';
       const team = a.team || [{name:'Srisanth S',role:'Founder & CEO'},{name:'Kiran M',role:'Head of Operations'},{name:'Priya R',role:'Lead Content Maker'}];
       document.getElementById('teamRows').innerHTML = '';
-      team.forEach(m => addTeamRow(m.name, m.role, m.insta||''));
+      team.forEach(m => addTeamRow(m.name, m.role, m.insta||'', m.photo||''));
     }
 
-    function addTeamRow(name='', role='', insta='') {
+    function addTeamRow(name='', role='', insta='', photo='') {
       const div = document.createElement('div');
       div.className = 'team-row';
-      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Instagram @username" value="${insta}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+      const uid = 'tm_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+      div.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <input type="text" placeholder="Name" value="${name}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;width:100%;"/>
+          <input type="text" placeholder="Role" value="${role}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;width:100%;"/>
+          <input type="text" placeholder="Instagram @username" value="${insta}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;width:100%;"/>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+          <div style="width:80px;height:80px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);background:#111;display:flex;align-items:center;justify-content:center;">
+            <img id="prev_${uid}" src="${photo||''}" style="width:100%;height:100%;object-fit:cover;display:${photo?'block':'none'};" />
+            <i class="fas fa-user" id="icon_${uid}" style="color:rgba(201,168,76,0.3);font-size:1.5rem;display:${photo?'none':'block'};"></i>
+          </div>
+          <label style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.72rem;font-weight:700;padding:0.3rem 0.75rem;border-radius:8px;cursor:pointer;">
+            <i class="fas fa-upload"></i> Photo
+            <input type="file" accept="image/*" style="display:none;" onchange="previewTeamPhoto(this,'${uid}')" />
+          </label>
+          <input type="hidden" id="photo_${uid}" value="${photo||''}" />
+        </div>
+        <button class="btn-remove" onclick="this.closest('.team-row').remove()" style="align-self:start;"><i class="fas fa-times"></i></button>`;
       document.getElementById('teamRows').appendChild(div);
+    }
+
+    function previewTeamPhoto(input, uid) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const b64 = e.target.result;
+        document.getElementById('prev_' + uid).src = b64;
+        document.getElementById('prev_' + uid).style.display = 'block';
+        document.getElementById('icon_' + uid).style.display = 'none';
+        document.getElementById('photo_' + uid).value = b64;
+      };
+      reader.readAsDataURL(file);
     }
 
     function saveAbout() {
       const team = Array.from(document.querySelectorAll('#teamRows .team-row')).map(row => ({
-        name: row.querySelectorAll('input')[0].value,
-        role: row.querySelectorAll('input')[1].value,
-        insta: row.querySelectorAll('input')[2].value
+        name: row.querySelectorAll('input[type=text]')[0].value,
+        role: row.querySelectorAll('input[type=text]')[1].value,
+        insta: row.querySelectorAll('input[type=text]')[2].value,
+        photo: row.querySelector('input[type=hidden]') ? row.querySelector('input[type=hidden]').value : ''
       })).filter(m => m.name);
       const data = {
         heroTitle: document.getElementById('ab_heroTitle').value,
