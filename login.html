@@ -70,14 +70,8 @@
   <div class="wrapper">
     <div class="logo">HA<span>⚡</span>H SHOOTS</div>
     <div class="logo-sub">Professional Shoot Platform</div>
-    <div class="tab-wrap">
-      <button class="tab active" id="tabCustomer" onclick="switchTab('customer')"><i class="fas fa-user"></i> Customer</button>
-      <button class="tab" id="tabAdmin" onclick="switchTab('admin')"><i class="fas fa-shield-alt"></i> Admin</button>
-      <button class="tab" id="tabStaff" onclick="switchTab('staff')"><i class="fas fa-users"></i> Staff</button>
-    </div>
-
-    <!-- CUSTOMER -->
-    <div class="card" id="customerCard">
+    <!-- UNIFIED LOGIN -->
+    <div class="card" id="loginCard">
       <div class="sub-tab-wrap">
         <button class="sub-tab active" id="subLogin" onclick="switchSubTab('login')">Login</button>
         <button class="sub-tab" id="subSignup" onclick="switchSubTab('signup')">Sign Up</button>
@@ -87,38 +81,38 @@
       <div id="loginForm">
         <div class="card-header">
           <h2>Welcome <span>Back</span></h2>
-          <p>Login to book your next shoot session</p>
+          <p>Login as Customer, Staff or Admin</p>
         </div>
-        <div class="error-msg" id="custError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid email or password.</div>
+        <div class="error-msg" id="loginError"><i class="fas fa-exclamation-circle"></i>&nbsp; <span id="loginErrMsg">Invalid credentials.</span></div>
         <div class="form-group">
-          <label><i class="fas fa-envelope"></i> Email Address</label>
+          <label><i class="fas fa-user"></i> Username / Email</label>
           <div class="input-wrap">
-            <i class="icon fas fa-envelope"></i>
-            <input type="email" id="custEmail" placeholder="you@email.com"/>
+            <i class="icon fas fa-user"></i>
+            <input type="text" id="loginIdentifier" placeholder="Email or username"/>
           </div>
         </div>
         <div class="form-group">
           <label><i class="fas fa-lock"></i> Password</label>
           <div class="input-wrap">
             <i class="icon fas fa-lock"></i>
-            <input type="password" id="custPass" placeholder="••••••••"/>
-            <i class="toggle-pass fas fa-eye" onclick="togglePass('custPass',this)"></i>
+            <input type="password" id="loginPass" placeholder="••••••••"/>
+            <i class="toggle-pass fas fa-eye" onclick="togglePass('loginPass',this)"></i>
           </div>
         </div>
         <div class="remember-row">
           <label class="remember"><input type="checkbox"/> Remember me</label>
-          <a href="#" class="forgot">Forgot password?</a>
+          <a href="#" class="forgot" onclick="openForgot();return false;">Forgot password?</a>
         </div>
-        <button class="btn-login" id="custBtn" onclick="customerLogin()">
+        <button class="btn-login" id="loginBtn" onclick="unifiedLogin()">
           <span>Login</span>
-          <div class="spinner" id="custSpinner"></div>
-          <i class="fas fa-arrow-right" id="custArrow"></i>
+          <div class="spinner" id="loginSpinner"></div>
+          <i class="fas fa-arrow-right" id="loginArrow"></i>
         </button>
         <div class="divider">or</div>
-        <p style="text-align:center;font-size:0.82rem;color:#888;">Don't have an account? <a href="#" onclick="switchSubTab('signup')" style="color:#e53935;font-weight:700;">Sign Up</a></p>
+        <p style="text-align:center;font-size:0.82rem;color:#888;">New customer? <a href="#" onclick="switchSubTab('signup')" style="color:#e53935;font-weight:700;">Sign Up</a></p>
       </div>
 
-      <!-- SIGNUP FORM -->
+      <!-- SIGNUP FORM (customers only) -->
       <div id="signupForm" style="display:none;">
         <div class="card-header">
           <h2>Create <span>Account</span></h2>
@@ -173,72 +167,44 @@
       </div>
     </div>
 
-    <!-- ADMIN -->
-    <div class="card" id="adminCard" style="display:none">
-      <div class="card-header">
-        <div class="admin-avatar">S</div>
-        <h2>Admin <span>Portal</span></h2>
-        <p>Restricted access — authorized personnel only</p>
-      </div>
-      <div class="error-msg" id="adminError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid admin credentials.</div>
-      <div class="form-group">
-        <label><i class="fas fa-user-shield"></i> Username</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-user-shield"></i>
-          <input type="text" id="adminUser" placeholder="Enter username"/>
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:none;align-items:center;justify-content:center;">
+      <div style="background:#1e0404;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:90%;max-width:400px;position:relative;">
+        <button onclick="closeForgot()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem;">Forgot <span style="color:#e53935;">Password?</span></h3>
+        <p style="color:#a08080;font-size:0.82rem;margin-bottom:1.5rem;">Enter your username or email to reset your password.</p>
+        <div class="error-msg" id="forgotError" style="margin-bottom:1rem;"><i class="fas fa-exclamation-circle"></i>&nbsp; <span id="forgotErrMsg"></span></div>
+        <div id="forgotSuccess" style="display:none;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#81c784;margin-bottom:1rem;"></div>
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Username / Email</label>
+          <div class="input-wrap">
+            <i class="icon fas fa-user"></i>
+            <input type="text" id="forgotIdentifier" placeholder="Enter your username or email"/>
+          </div>
+        </div>
+        <div id="forgotNewPassWrap" style="display:none;">
+          <div class="form-group">
+            <label><i class="fas fa-lock"></i> New Password</label>
+            <div class="input-wrap">
+              <i class="icon fas fa-lock"></i>
+              <input type="password" id="forgotNewPass" placeholder="Min. 6 characters"/>
+              <i class="toggle-pass fas fa-eye" onclick="togglePass('forgotNewPass',this)"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-lock"></i> Confirm New Password</label>
+            <div class="input-wrap">
+              <i class="icon fas fa-lock"></i>
+              <input type="password" id="forgotConfirmPass" placeholder="Re-enter new password"/>
+              <i class="toggle-pass fas fa-eye" onclick="togglePass('forgotConfirmPass',this)"></i>
+            </div>
+          </div>
+          <button class="btn-login" onclick="resetPassword()" style="margin-top:0.5rem;"><span>Reset Password</span><i class="fas fa-check" style="margin-left:0.5rem;"></i></button>
+        </div>
+        <div id="forgotFindBtn">
+          <button class="btn-login" onclick="findAccount()" style="margin-top:0.5rem;"><span>Find Account</span><i class="fas fa-search" style="margin-left:0.5rem;"></i></button>
         </div>
       </div>
-      <div class="form-group">
-        <label><i class="fas fa-key"></i> Password</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-key"></i>
-          <input type="password" id="adminPass" placeholder="••••••••"/>
-          <i class="toggle-pass fas fa-eye" onclick="togglePass('adminPass',this)"></i>
-        </div>
-        <div class="strength-bar" id="strengthBar"><div class="strength-fill" id="strengthFill"></div></div>
-      </div>
-      <div class="remember-row">
-        <label class="remember"><input type="checkbox"/> Keep me signed in</label>
-      </div>
-      <button class="btn-login" id="adminBtn" onclick="adminLogin()">
-        <i class="fas fa-shield-alt"></i>
-        <span>Access Dashboard</span>
-        <div class="spinner" id="adminSpinner"></div>
-      </button>
-      <div class="divider">Admin Credentials</div>
-      <div class="demo-creds">👤 Username: <strong>SRISANTH</strong><br/>🔑 Password: <strong>SASI@2007</strong></div>
-    </div>
-
-    <!-- STAFF -->
-    <div class="card" id="staffCard" style="display:none">
-      <div class="card-header">
-        <div class="admin-avatar" style="background:linear-gradient(135deg,#1565c0,#0d47a1)"><i class="fas fa-users" style="font-size:1.2rem"></i></div>
-        <h2>Staff <span>Login</span></h2>
-        <p>Login with your assigned staff credentials</p>
-      </div>
-      <div class="error-msg" id="staffError"><i class="fas fa-exclamation-circle"></i>&nbsp; Invalid staff credentials.</div>
-      <div class="form-group">
-        <label><i class="fas fa-user"></i> Username</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-user"></i>
-          <input type="text" id="staffUser" placeholder="Enter your username"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label><i class="fas fa-lock"></i> Password</label>
-        <div class="input-wrap">
-          <i class="icon fas fa-lock"></i>
-          <input type="password" id="staffPass" placeholder="••••••••"/>
-          <i class="toggle-pass fas fa-eye" onclick="togglePass('staffPass',this)"></i>
-        </div>
-      </div>
-      <button class="btn-login" id="staffBtn" onclick="staffLogin()">
-        <i class="fas fa-sign-in-alt"></i>
-        <span>Login to Dashboard</span>
-        <div class="spinner" id="staffSpinner"></div>
-      </button>
-      <div class="divider">Note</div>
-      <div class="demo-creds">👤 Username: <strong>SASI</strong><br/>🔑 Password: <strong>SASI2468</strong></div>
     </div>
 
     <div class="back"><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a></div>
@@ -255,15 +221,6 @@
       container.appendChild(p);
     }
 
-    function switchTab(type){
-      document.getElementById('tabCustomer').classList.toggle('active',type==='customer');
-      document.getElementById('tabAdmin').classList.toggle('active',type==='admin');
-      document.getElementById('tabStaff').classList.toggle('active',type==='staff');
-      document.getElementById('customerCard').style.display = type==='customer'?'block':'none';
-      document.getElementById('adminCard').style.display = type==='admin'?'block':'none';
-      document.getElementById('staffCard').style.display = type==='staff'?'block':'none';
-    }
-
     function togglePass(id,icon){
       const input=document.getElementById(id);
       const isPass=input.type==='password';
@@ -271,19 +228,6 @@
       icon.classList.toggle('fa-eye',!isPass);
       icon.classList.toggle('fa-eye-slash',isPass);
     }
-
-    document.getElementById('adminPass').addEventListener('input',function(){
-      const bar=document.getElementById('strengthBar');
-      const fill=document.getElementById('strengthFill');
-      bar.style.display='block';
-      let s=0;
-      if(this.value.length>=6)s+=25;
-      if(this.value.length>=10)s+=25;
-      if(/[A-Z]/.test(this.value))s+=25;
-      if(/[@#$%^&*!]/.test(this.value))s+=25;
-      fill.style.width=s+'%';
-      fill.style.background=s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
-    });
 
     function switchSubTab(t){
       document.getElementById('subLogin').classList.toggle('active', t==='login');
@@ -293,145 +237,194 @@
     }
 
     document.getElementById('signupPass').addEventListener('input', function(){
-      var bar = document.getElementById('signupStrengthFill');
-      var s = 0;
-      if(this.value.length >= 6) s += 25;
-      if(this.value.length >= 10) s += 25;
-      if(/[A-Z]/.test(this.value)) s += 25;
-      if(/[@#$%^&*!]/.test(this.value)) s += 25;
-      bar.style.width = s + '%';
-      bar.style.background = s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
+      const bar = document.getElementById('signupStrengthFill');
+      let s=0;
+      if(this.value.length>=6)s+=25;
+      if(this.value.length>=10)s+=25;
+      if(/[A-Z]/.test(this.value))s+=25;
+      if(/[@#$%^&*!]/.test(this.value))s+=25;
+      bar.style.width=s+'%';
+      bar.style.background=s<=25?'#f44336':s<=50?'#ff9800':s<=75?'#ffeb3b':'#4caf50';
     });
 
-    function customerSignup(){
-      var name = document.getElementById('signupName').value.trim();
-      var email = document.getElementById('signupEmail').value.trim();
-      var phone = document.getElementById('signupPhone').value.trim();
-      var pass = document.getElementById('signupPass').value;
-      var confirm = document.getElementById('signupConfirm').value;
-      var errEl = document.getElementById('signupError');
-      var errMsg = document.getElementById('signupErrMsg');
-      errEl.style.display = 'none';
-
-      if(!name || !email || !phone || !pass || !confirm){
-        errMsg.textContent = 'Please fill all fields.'; errEl.style.display='flex'; return;
-      }
-      if(pass.length < 6){
-        errMsg.textContent = 'Password must be at least 6 characters.'; errEl.style.display='flex'; return;
-      }
-      if(pass !== confirm){
-        errMsg.textContent = 'Passwords do not match.'; errEl.style.display='flex'; return;
-      }
-      var customers = JSON.parse(localStorage.getItem('hs_customers') || '[]');
-      if(customers.find(function(c){ return c.email === email; })){
-        errMsg.textContent = 'An account with this email already exists.'; errEl.style.display='flex'; return;
-      }
-
-      document.getElementById('signupBtn').classList.add('loading');
-      document.getElementById('signupSpinner').style.display='block';
-      document.getElementById('signupArrow').style.display='none';
-
-      setTimeout(function(){
-        customers.push({ name:name, email:email, phone:phone, password:pass, joined: new Date().toISOString() });
-        localStorage.setItem('hs_customers', JSON.stringify(customers));
-        localStorage.setItem('hs_role', 'customer');
-        localStorage.setItem('hs_user', email);
-        localStorage.setItem('hs_customer_name', name);
-        localStorage.setItem('hs_customer_wallet', '500');
-        window.location.href = 'index.html';
-      }, 1200);
+    function showLoginError(msg){
+      document.getElementById('loginErrMsg').textContent = msg;
+      document.getElementById('loginError').style.display = 'flex';
+      document.getElementById('loginBtn').classList.remove('loading');
+      document.getElementById('loginSpinner').style.display='none';
+      document.getElementById('loginArrow').style.display='';
+      const card=document.getElementById('loginCard');
+      card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
     }
 
-    function customerLogin(){
-      var e = document.getElementById('custEmail').value.trim();
-      var p = document.getElementById('custPass').value;
-      document.getElementById('custError').style.display='none';
-      document.getElementById('custBtn').classList.add('loading');
-      document.getElementById('custSpinner').style.display='block';
-      document.getElementById('custArrow').style.display='none';
-      setTimeout(function(){
-        var customers = JSON.parse(localStorage.getItem('hs_customers') || '[]');
-        var found = customers.find(function(c){ return c.email === e && c.password === p; });
-        if((e==='customer@hash.com' && p==='1234') || found){
-          localStorage.setItem('hs_role','customer');
-          localStorage.setItem('hs_user', e);
-          localStorage.setItem('hs_customer_name', found ? found.name : e.split('@')[0]);
-          localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet') || '500');
-          window.location.href='index.html';
-        } else {
-          document.getElementById('custBtn').classList.remove('loading');
-          document.getElementById('custSpinner').style.display='none';
-          document.getElementById('custArrow').style.display='';
-          document.getElementById('custError').style.display='flex';
-          var card=document.getElementById('customerCard');
-          card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
-        }
-      },1200);
-    }
+    function unifiedLogin(){
+      const id = document.getElementById('loginIdentifier').value.trim();
+      const p  = document.getElementById('loginPass').value;
+      document.getElementById('loginError').style.display='none';
+      if(!id||!p){ showLoginError('Please enter your username/email and password.'); return; }
 
-    function adminLogin(){
-      const u=document.getElementById('adminUser').value.trim();
-      const p=document.getElementById('adminPass').value;
-      document.getElementById('adminError').style.display='none';
-      document.getElementById('adminBtn').classList.add('loading');
-      document.getElementById('adminSpinner').style.display='block';
+      document.getElementById('loginBtn').classList.add('loading');
+      document.getElementById('loginSpinner').style.display='block';
+      document.getElementById('loginArrow').style.display='none';
+
       setTimeout(()=>{
-        var correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
-        if(u==='SRISANTH'&&p===correctPass){
+        // 1. Admin check
+        const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
+        if(id.toUpperCase()==='SRISANTH' && p===correctPass){
           localStorage.setItem('hs_role','admin');
           localStorage.setItem('hs_admin_name','SRISANTH');
-          window.location.href='admin.html';
-        } else {
-          document.getElementById('adminBtn').classList.remove('loading');
-          document.getElementById('adminSpinner').style.display='none';
-          document.getElementById('adminError').style.display='flex';
-          const card=document.getElementById('adminCard');
-          card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+          window.location.href='admin.html'; return;
         }
-      },1200);
-    }
 
-    function staffLogin(){
-      const u = document.getElementById('staffUser').value.trim();
-      const p = document.getElementById('staffPass').value;
-      document.getElementById('staffError').style.display='none';
-
-      const isHardcoded = u.toUpperCase() === 'SASI' && p === 'SASI2468';
-      const staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
-      const found = staffList.find(s => s.username.toLowerCase() === u.toLowerCase() && s.password === p);
-
-      if(!isHardcoded && !found){
-        document.getElementById('staffError').style.display='flex';
-        const card=document.getElementById('staffCard');
-        card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
-        return;
-      }
-
-      document.getElementById('staffBtn').classList.add('loading');
-      document.getElementById('staffSpinner').style.display='block';
-      setTimeout(()=>{
-        localStorage.setItem('hs_role','staff');
-        if(isHardcoded){
-          localStorage.setItem('hs_staff_id', 'SASI');
-          localStorage.setItem('hs_staff_name', 'SASI');
-          localStorage.setItem('hs_staff_role', 'Staff');
-          localStorage.setItem('hs_staff_access', JSON.stringify(['Shoots','Orders','Classes']));
-        } else {
-          localStorage.setItem('hs_staff_id', found.id);
-          localStorage.setItem('hs_staff_name', found.name);
-          localStorage.setItem('hs_staff_role', found.role);
-          localStorage.setItem('hs_staff_access', JSON.stringify(found.access || []));
+        // 2. Staff check
+        const staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+        const staff = staffList.find(s=>s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
+        if(id.toUpperCase()==='SASI' && p==='SASI2468'){
+          localStorage.setItem('hs_role','staff');
+          localStorage.setItem('hs_staff_id','SASI');
+          localStorage.setItem('hs_staff_name','SASI');
+          localStorage.setItem('hs_staff_role','Staff');
+          localStorage.setItem('hs_staff_access',JSON.stringify(['Shoots','Orders','Classes']));
+          window.location.href='staff.html'; return;
         }
-        window.location.href = 'staff.html';
+        if(staff){
+          localStorage.setItem('hs_role','staff');
+          localStorage.setItem('hs_staff_id', staff.id);
+          localStorage.setItem('hs_staff_name', staff.name);
+          localStorage.setItem('hs_staff_role', staff.role);
+          localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||[]));
+          window.location.href='staff.html'; return;
+        }
+
+        // 3. Customer check
+        const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+        const cust = customers.find(c=>c.email===id&&c.password===p);
+        if((id==='customer@hash.com'&&p==='1234')||cust){
+          localStorage.setItem('hs_role','customer');
+          localStorage.setItem('hs_user', id);
+          localStorage.setItem('hs_customer_name', cust?cust.name:id.split('@')[0]);
+          localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet')||'500');
+          window.location.href='index.html'; return;
+        }
+
+        showLoginError('Invalid credentials. Please try again.');
       }, 1000);
     }
 
-    document.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        if(document.getElementById('customerCard').style.display!=='none') customerLogin();
-        else if(document.getElementById('adminCard').style.display!=='none') adminLogin();
-        else staffLogin();
+    function customerSignup(){
+      const name=document.getElementById('signupName').value.trim();
+      const email=document.getElementById('signupEmail').value.trim();
+      const phone=document.getElementById('signupPhone').value.trim();
+      const pass=document.getElementById('signupPass').value;
+      const confirm=document.getElementById('signupConfirm').value;
+      const errEl=document.getElementById('signupError');
+      const errMsg=document.getElementById('signupErrMsg');
+      errEl.style.display='none';
+      if(!name||!email||!phone||!pass||!confirm){errMsg.textContent='Please fill all fields.';errEl.style.display='flex';return;}
+      if(pass.length<6){errMsg.textContent='Password must be at least 6 characters.';errEl.style.display='flex';return;}
+      if(pass!==confirm){errMsg.textContent='Passwords do not match.';errEl.style.display='flex';return;}
+      const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
+      if(customers.find(c=>c.email===email)){errMsg.textContent='Account with this email already exists.';errEl.style.display='flex';return;}
+      document.getElementById('signupBtn').classList.add('loading');
+      document.getElementById('signupSpinner').style.display='block';
+      document.getElementById('signupArrow').style.display='none';
+      setTimeout(()=>{
+        customers.push({name,email,phone,password:pass,joined:new Date().toISOString()});
+        localStorage.setItem('hs_customers',JSON.stringify(customers));
+        localStorage.setItem('hs_role','customer');
+        localStorage.setItem('hs_user',email);
+        localStorage.setItem('hs_customer_name',name);
+        localStorage.setItem('hs_customer_wallet','500');
+        window.location.href='index.html';
+      },1200);
+    }
+
+    // ---- FORGOT PASSWORD ----
+    let _forgotRole=null, _forgotTarget=null;
+
+    function openForgot(){
+      _forgotRole=null; _forgotTarget=null;
+      document.getElementById('forgotIdentifier').value='';
+      document.getElementById('forgotNewPass').value='';
+      document.getElementById('forgotConfirmPass').value='';
+      document.getElementById('forgotError').style.display='none';
+      document.getElementById('forgotSuccess').style.display='none';
+      document.getElementById('forgotNewPassWrap').style.display='none';
+      document.getElementById('forgotFindBtn').style.display='block';
+      document.getElementById('forgotModal').style.display='flex';
+    }
+
+    function closeForgot(){
+      document.getElementById('forgotModal').style.display='none';
+    }
+
+    function findAccount(){
+      const id=document.getElementById('forgotIdentifier').value.trim();
+      const errEl=document.getElementById('forgotError');
+      const errMsg=document.getElementById('forgotErrMsg');
+      errEl.style.display='none';
+      document.getElementById('forgotSuccess').style.display='none';
+      if(!id){errMsg.textContent='Please enter your username or email.';errEl.style.display='flex';return;}
+
+      // Admin?
+      if(id.toUpperCase()==='SRISANTH'){
+        _forgotRole='admin'; _forgotTarget=null;
+        document.getElementById('forgotNewPassWrap').style.display='block';
+        document.getElementById('forgotFindBtn').style.display='none';
+        return;
       }
+      // Staff?
+      const staffList=JSON.parse(localStorage.getItem('hs_staff')||'[]');
+      const staff=staffList.find(s=>s.username.toLowerCase()===id.toLowerCase());
+      if(staff){
+        _forgotRole='staff'; _forgotTarget=staff;
+        document.getElementById('forgotNewPassWrap').style.display='block';
+        document.getElementById('forgotFindBtn').style.display='none';
+        return;
+      }
+      // Customer?
+      const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
+      const cust=customers.find(c=>c.email===id);
+      if(cust){
+        _forgotRole='customer'; _forgotTarget=cust;
+        document.getElementById('forgotNewPassWrap').style.display='block';
+        document.getElementById('forgotFindBtn').style.display='none';
+        return;
+      }
+      errMsg.textContent='No account found with that username or email.';
+      errEl.style.display='flex';
+    }
+
+    function resetPassword(){
+      const np=document.getElementById('forgotNewPass').value;
+      const cp=document.getElementById('forgotConfirmPass').value;
+      const errEl=document.getElementById('forgotError');
+      const errMsg=document.getElementById('forgotErrMsg');
+      errEl.style.display='none';
+      if(np.length<6){errMsg.textContent='Password must be at least 6 characters.';errEl.style.display='flex';return;}
+      if(np!==cp){errMsg.textContent='Passwords do not match.';errEl.style.display='flex';return;}
+
+      if(_forgotRole==='admin'){
+        localStorage.setItem('hs_admin_password', np);
+      } else if(_forgotRole==='staff'){
+        const staffList=JSON.parse(localStorage.getItem('hs_staff')||'[]');
+        const idx=staffList.findIndex(s=>s.id===_forgotTarget.id);
+        if(idx>-1){staffList[idx].password=np;localStorage.setItem('hs_staff',JSON.stringify(staffList));}
+      } else if(_forgotRole==='customer'){
+        const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
+        const idx=customers.findIndex(c=>c.email===_forgotTarget.email);
+        if(idx>-1){customers[idx].password=np;localStorage.setItem('hs_customers',JSON.stringify(customers));}
+      }
+
+      const suc=document.getElementById('forgotSuccess');
+      suc.textContent='Password reset successfully! You can now login.';
+      suc.style.display='block';
+      document.getElementById('forgotNewPassWrap').style.display='none';
+      setTimeout(closeForgot, 2000);
+    }
+
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Enter') unifiedLogin();
     });
   </script>
 </body>
