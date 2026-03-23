@@ -350,8 +350,9 @@
     function handleBooking(e) {
       e.preventDefault();
       var name     = document.getElementById('bk_name').value.trim();
-      var code     = document.getElementById('bk_code').value.split(' ')[1];
-      var phone    = code + document.getElementById('bk_phone').value.trim();
+      var code     = document.getElementById('bk_code').value;
+      var codeNum  = code.replace(/[^+0-9]/g,'');
+      var phone    = codeNum + document.getElementById('bk_phone').value.trim();
       var email    = document.getElementById('bk_email').value.trim();
       var service  = document.getElementById('bk_service').value;
       var city     = document.getElementById('bk_city').value;
