@@ -1000,6 +1000,76 @@
 
 
 
+  <!-- MEET THE TEAM -->
+  <section class="team-section">
+    <style>
+      .team-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
+      .team-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .team-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .team-inner{max-width:900px;margin:0 auto;padding:0 2rem;}
+      .team-header{text-align:center;margin-bottom:4rem;}
+      .team-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .team-title{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;line-height:1.15;}
+      .team-title span{color:#c9a84c;}
+      .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;justify-items:center;}
+      .team-card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:24px;overflow:hidden;width:100%;max-width:380px;transition:transform 0.35s,box-shadow 0.35s,border-color 0.35s;}
+      .team-card:hover{transform:translateY(-8px);border-color:rgba(201,168,76,0.35);box-shadow:0 30px 70px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.1);}
+      .team-photo-wrap{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;}
+      .team-photo{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform 0.5s;}
+      .team-card:hover .team-photo{transform:scale(1.05);}
+      .team-photo-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);}
+      .team-info{padding:1.5rem 1.75rem 1.75rem;}
+      .team-name{font-size:1.2rem;font-weight:800;color:#f0ece0;margin-bottom:0.2rem;}
+      .team-role{font-size:0.78rem;font-weight:700;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;}
+      .team-bio{font-size:0.83rem;color:#6a6050;line-height:1.75;}
+      .team-socials{display:flex;gap:0.6rem;margin-top:1.1rem;}
+      .team-social{width:34px;height:34px;border-radius:8px;border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;color:#888070;font-size:0.85rem;text-decoration:none;transition:all 0.2s;}
+      .team-social:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.08);}
+      @media(max-width:640px){.team-grid{grid-template-columns:1fr;}.team-card{max-width:100%;}}
+    </style>
+    <div class="team-inner">
+      <div class="team-header">
+        <div class="team-eyebrow"><i class="fas fa-users"></i> The People Behind It</div>
+        <h2 class="team-title">Meet the <span>Team</span></h2>
+      </div>
+      <div class="team-grid">
+
+        <div class="team-card">
+          <div class="team-photo-wrap">
+            <img class="team-photo" src="srisanth.jpeg" alt="Srisanth"/>
+            <div class="team-photo-overlay"></div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Srisanth</div>
+            <div class="team-role">Co-Founder</div>
+            <div class="team-bio">Visionary behind Hash Shoots, driving the mission to make instant content creation accessible to everyone.</div>
+            <div class="team-socials">
+              <a href="#" class="team-social"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="team-social"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo-wrap">
+            <img class="team-photo" src="sumanth.jpeg" alt="Sumanth"/>
+            <div class="team-photo-overlay"></div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Sumanth</div>
+            <div class="team-role">Co-Founder</div>
+            <div class="team-bio">The creative force at Hash Shoots, crafting experiences that connect creators with clients seamlessly.</div>
+            <div class="team-socials">
+              <a href="#" class="team-social"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="team-social"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <section class="contact" id="contact">
     <div class="container">
