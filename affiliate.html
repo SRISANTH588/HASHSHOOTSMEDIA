@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Affiliate Program – Hash Shoots</title>
+  <title>About Us – Hash Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -11,325 +11,326 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; }
 
-    .page-bg {
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse 90% 70% at 50% 10%, rgba(180,20,20,0.55) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120,10,10,0.3) 0%, transparent 70%),
-        linear-gradient(180deg, #2a0505 0%, #150202 40%, #080808 100%);
-    }
-
     /* NAVBAR */
-    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
-    .logo-flash { color: #c9a84c; }
-    .nav-right { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-app { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
-    .btn-app:hover { border-color: #fff; }
-    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #c9a84c; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
+    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; text-transform: uppercase; }
+    .logo-flash { color: #c9a84c; margin: 0 1px; }
+    .logo-shoots { color: #fff; }
+    .nav-icons { display: flex; align-items: center; gap: 0; margin: 0 auto; background: rgba(80,10,10,0.55); border: 1px solid rgba(180,60,60,0.25); border-radius: 14px; padding: 0.25rem 0.35rem; backdrop-filter: blur(10px); }
+    .nav-icon-btn { color: rgba(255,255,255,0.6); font-size: 1.05rem; text-decoration: none; transition: all 0.2s; width: 42px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; position: relative; }
+    .nav-icon-btn::after { content: attr(title); position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: rgba(10,0,0,0.92); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(201,168,76,0.25); z-index: 9999; }
+    .nav-icon-btn:hover::after { opacity: 1; }
+    .nav-icon-btn:hover { color: #fff; background: rgba(201,168,76,0.2); }
+    .nav-icon-btn.active-icon { color: #c9a84c; background: rgba(201,168,76,0.18); }
+    .nav-icon-sep { width: 1px; height: 22px; background: rgba(180,60,60,0.35); margin: 0 0.1rem; flex-shrink: 0; }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.875rem; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .btn-app { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-app:hover { border-color: #fff; } .btn-contact { background: #c9a84c; color: #fff; }
     .btn-contact:hover { background: #a07830; }
 
-    /* PILL */
-    .pill { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(180,30,30,0.35); border: 1px solid rgba(201,168,76,0.25); color: #e07070; font-size: 0.8rem; font-weight: 600; padding: 0.45rem 1.1rem; border-radius: 50px; margin-bottom: 1.25rem; }
-
     /* HERO */
-    .hero-section { padding: 9rem 1.5rem 5rem; text-align: center; }
-    .hero-section h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 1.5rem; }
-    .hero-section h1 span { color: #c9a84c; }
-    .hero-desc { max-width: 680px; margin: 0 auto 2.5rem; color: #c09090; font-size: 1rem; line-height: 1.8; }
-    .hero-cta { display: inline-flex; align-items: center; gap: 0.6rem; background: #c9a84c; color: #fff; border: none; border-radius: 12px; padding: 1rem 2.2rem; font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.2s; }
-    .hero-cta:hover { background: #a07830; transform: translateY(-2px); }
+    .hero {
+      min-height: unset;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 65%), #080808;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e53935' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); color: #c9a84c; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 1rem; border-radius: 50px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -2px; }
+    .hero h1 span { color: #c9a84c; }
+    .hero-desc { color: #888070; font-size: 1.05rem; line-height: 1.8; max-width: 580px; margin: 0 auto 3rem; }
+    .hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .hero-stat-num { font-size: 2.5rem; font-weight: 900; color: #c9a84c; display: block; line-height: 1; }
+    .hero-stat-lbl { font-size: 0.8rem; color: #706050; margin-top: 0.3rem; }
+    .hero-stat-sep { width: 1px; background: rgba(201,168,76,0.2); }
 
-    /* COMMISSION BANNER */
-    .commission-banner { max-width: 900px; margin: 0 auto 3rem; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: 16px; padding: 2rem; display: flex; align-items: center; justify-content: space-around; gap: 1rem; flex-wrap: wrap; }
-    .comm-stat { text-align: center; }
-    .comm-num { font-size: 2.5rem; font-weight: 900; color: #c9a84c; display: block; }
-    .comm-label { font-size: 0.82rem; color: #a07070; margin-top: 0.2rem; }
-    .comm-sep { width: 1px; height: 50px; background: rgba(201,168,76,0.2); }
+    /* TEAM SECTION */
+    .team-section { padding: 6rem 1.5rem; background: #0a0a0a; }
+    .section-label { text-align: center; font-size: 0.75rem; font-weight: 700; color: #c9a84c; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section-title { text-align: center; font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 0.75rem; }
+    .section-title span { color: #c9a84c; }
+    .section-sub { text-align: center; color: #706050; font-size: 0.95rem; margin-bottom: 4rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 860px; margin: 0 auto; }
+    .team-card { position: relative; border-radius: 24px; overflow: hidden; aspect-ratio: 3/4; transition: transform 0.4s, box-shadow 0.4s; }
+    .team-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(201,168,76,0.2); }
+    .team-photo { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.5s; }
+    .team-card:hover .team-photo { transform: scale(1.04); }
+    .team-photo-bg { width: 100%; height: 100%; background: linear-gradient(135deg, #0a0a0a, #080808); display: flex; align-items: center; justify-content: center; font-size: 4rem; font-weight: 900; color: rgba(201,168,76,0.3); }
+    .team-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, transparent 70%); }
+    .team-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem 1.75rem; }
+    .team-name { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.6rem; }
+    .team-role-pill { display: inline-flex; align-items: center; background: rgba(15,0,0,0.8); border: 1px solid rgba(255,255,255,0.12); color: #ccc; font-size: 0.78rem; font-weight: 500; padding: 0.35rem 1rem; border-radius: 50px; backdrop-filter: blur(8px); }
+    .team-insta { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.6rem; color: rgba(201,168,76,0.7); font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .team-insta:hover { color: #c9a84c; }
 
-    /* SECTIONS */
-    .section { padding: 5rem 1.5rem; }
-    .section-inner { max-width: 900px; margin: 0 auto; text-align: center; }
-    .section h2 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 0.6rem; }
-    .section-sub { color: #a07070; font-size: 0.95rem; margin-bottom: 3rem; }
+    /* STORY + MISSION */
+    .story-section { padding: 6rem 1.5rem; background: #0f0f0f; }
+    .story-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .story-text-wrap {}
+    .story-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); color: #c9a84c; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.9rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.25rem; }
+    .story-title { font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 1.25rem; }
+    .story-title span { color: #c9a84c; }
+    .story-body { color: #888070; font-size: 0.95rem; line-height: 1.9; }
+    .story-visual { position: relative; }
+    .story-card { background: linear-gradient(135deg, #0a0a0a, #080808); border: 1px solid rgba(201,168,76,0.15); border-radius: 24px; padding: 2.5rem; }
+    .story-card-icon { width: 56px; height: 56px; background: rgba(201,168,76,0.15); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #c9a84c; margin-bottom: 1.5rem; }
+    .story-card h3 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; }
+    .story-card p { color: #888070; font-size: 0.88rem; line-height: 1.8; }
+    .story-card + .story-card { margin-top: 1rem; }
 
-    /* CARDS GRID */
-    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
-    .card { background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 16px; padding: 1.75rem; text-align: left; transition: border-color 0.2s, transform 0.2s; }
-    .card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-3px); }
-    .card-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(180,30,30,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1rem; }
-    .card h3 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
-    .card p { font-size: 0.85rem; color: #a07070; line-height: 1.6; }
-    .card.featured { border-color: rgba(229,57,53,0.35); grid-column: 1 / -1; }
-    .card.featured h3 { color: #c9a84c; }
-
-    /* STEPS */
-    .steps-wrap { max-width: 900px; margin: 0 auto; position: relative; }
-    .steps-line { position: absolute; left: 28px; top: 20px; bottom: 20px; width: 2px; background: rgba(201,168,76,0.2); }
-    .step-row { display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 1rem; position: relative; }
-    .step-num { width: 56px; height: 56px; border-radius: 14px; background: rgba(180,30,30,0.6); border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 900; color: #c9a84c; flex-shrink: 0; position: relative; z-index: 1; }
-    .step-card { flex: 1; background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 14px; padding: 1.25rem 1.5rem; }
-    .step-card h4 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
-    .step-card p { font-size: 0.82rem; color: #a07070; }
-
-    /* TIERS */
-    .tiers-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; max-width: 900px; margin: 0 auto; }
-    .tier-card { background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 16px; padding: 1.75rem; text-align: center; transition: border-color 0.2s, transform 0.2s; }
-    .tier-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-3px); }
-    .tier-card.top { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.08); }
-    .tier-emoji { font-size: 2rem; margin-bottom: 0.75rem; }
-    .tier-name { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; }
-    .tier-commission { font-size: 2rem; font-weight: 900; color: #c9a84c; margin-bottom: 0.3rem; }
-    .tier-req { font-size: 0.78rem; color: #a07070; }
-
-    /* FORM */
-    .form-wrap { max-width: 600px; margin: 0 auto; background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 20px; padding: 2.5rem; text-align: left; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #c09090; margin-bottom: 0.4rem; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; background: rgba(8,8,8,0.6); border: 1px solid rgba(180,60,60,0.25); border-radius: 10px; padding: 0.85rem 1rem; color: #fff; font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: rgba(201,168,76,0.5); }
-    .form-group select option { background: #0a0a0a; }
-    .form-group textarea { resize: vertical; min-height: 100px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .submit-btn { width: 100%; background: #c9a84c; color: #fff; border: none; border-radius: 12px; padding: 1rem; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.2s; margin-top: 0.5rem; }
-    .submit-btn:hover { background: #a07830; transform: translateY(-2px); }
-    .success-msg { display: none; text-align: center; padding: 1.5rem; background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.3); border-radius: 12px; color: #81c784; font-weight: 600; margin-top: 1rem; }
-
-    /* DIVIDER */
-    .divider { height: 1px; background: rgba(180,30,30,0.2); max-width: 900px; margin: 0 auto; }
+    /* VALUES */
+    .values-section { padding: 6rem 1.5rem; background: #0a0a0a; }
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1100px; margin: 0 auto; }
+    .value-card { background: linear-gradient(135deg, #0a0a0a, #080808); border: 1px solid rgba(201,168,76,0.1); border-radius: 20px; padding: 2rem 1.5rem; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+    .value-card:hover { border-color: rgba(229,57,53,0.35); transform: translateY(-4px); }
+    .value-icon { width: 56px; height: 56px; background: rgba(201,168,76,0.12); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #c9a84c; margin: 0 auto 1.25rem; }
+    .value-card h4 { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .value-card p { font-size: 0.8rem; color: #706050; line-height: 1.7; }
 
     /* CTA */
-    .cta-section { padding: 5rem 1.5rem; text-align: center; }
-    .cta-section h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; color: #fff; margin-bottom: 0.6rem; }
-    .cta-section p { color: #a07070; font-size: 0.95rem; margin-bottom: 2rem; }
+    .cta-section { padding: 6rem 1.5rem; text-align: center; background: linear-gradient(135deg, #0a0a0a, #111111, #0a0a0a); position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%); pointer-events: none; }
+    .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 1rem; }
+    .cta-section h2 span { color: #c9a84c; }
+    .cta-section p { color: #888070; font-size: 0.95rem; margin-bottom: 2.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-btn-primary { background: #c9a84c; color: #fff; padding: 1rem 2.5rem; border-radius: 12px; font-size: 1rem; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+    .cta-btn-primary:hover { background: #a07830; transform: translateY(-2px); }
+    .cta-btn-secondary { background: transparent; color: #fff; padding: 1rem 2.5rem; border-radius: 12px; font-size: 1rem; font-weight: 700; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s; }
+    .cta-btn-secondary:hover { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
 
-    @media(max-width: 640px) {
-      .cards-grid, .tiers-grid { grid-template-columns: 1fr; }
-      .card.featured { grid-column: 1; }
-      .form-row { grid-template-columns: 1fr; }
-      .commission-banner { flex-direction: column; }
-      .comm-sep { width: 50px; height: 1px; }
+    @media(max-width: 768px) {
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .story-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 1.5rem; }
+    }
+    @media(max-width: 480px) {
+      .team-grid { grid-template-columns: 1fr; max-width: 360px; }
+      .values-grid { grid-template-columns: 1fr; }
     }
   </style>
 
   <script src="nav.js"></script>
 </head>
 <body>
-<div class="page-bg">
 
   <!-- NAVBAR -->
 
   <!-- HERO -->
-  <div class="hero-section">
-    <div class="pill"><i class="fas fa-rupee-sign"></i> Affiliate Program</div>
-    <h1>Refer & Earn with<br/><span>Hash Shoots</span></h1>
-    <p class="hero-desc">Share Hash Shoots with your audience and earn a commission on every booking made through your referral link. No investment needed — just share and earn.</p>
-    <a href="#apply" class="hero-cta">Join the Program &nbsp;→</a>
-  </div>
-
-  <!-- COMMISSION STATS -->
-  <div class="section" style="padding-top:0;">
-    <div class="commission-banner">
-      <div class="comm-stat">
-        <span class="comm-num">5%</span>
-        <div class="comm-label">Commission per Booking</div>
-      </div>
-      <div class="comm-sep"></div>
-      <div class="comm-stat">
-        <span class="comm-num">₹0</span>
-        <div class="comm-label">Zero Investment</div>
-      </div>
-      <div class="comm-sep"></div>
-      <div class="comm-stat">
-        <span class="comm-num">24h</span>
-        <div class="comm-label">Payout Turnaround</div>
-      </div>
-      <div class="comm-sep"></div>
-      <div class="comm-stat">
-        <span class="comm-num">∞</span>
-        <div class="comm-label">No Referral Limit</div>
-      </div>
+  <section class="hero">
+    <div style="position:relative;z-index:1;">
+      <div class="hero-tag"><i class="fas fa-info-circle"></i> About Us</div>
+      <h1>We Are <span id="heroTitle">Hash Shoots</span></h1>
+      <p class="hero-desc" id="heroDesc">India's first on-demand reel creation service. We shoot, edit, and deliver professional reels in just 10 minutes — right at your doorstep.</p>
     </div>
-  </div>
+  </section>
 
-  <div class="divider"></div>
-
-  <!-- WHY JOIN -->
-  <div class="section">
-    <div class="section-inner">
-      <h2>Why Join Our Affiliate Program?</h2>
-      <p class="section-sub">Simple, transparent, and rewarding</p>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-icon">💸</div>
-          <h3>Earn on Every Booking</h3>
-          <p>Get a commission for every successful booking made through your unique referral link.</p>
+  <!-- TEAM -->
+  <section class="team-section">
+    <p class="section-label"><i class="fas fa-users"></i> &nbsp;Meet Our Team</p>
+    <h2 class="section-title">The Minds Behind <span>Hash Shoots</span></h2>
+    <p class="section-sub">Meet the passionate individuals who are revolutionizing content creation</p>
+    <div class="team-grid" id="teamGrid">
+      <div class="team-card">
+        <img src="srisanth.jpeg" alt="Boddu Srisanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">BS</div>
+        <div class="team-overlay"></div>
+        <div class="team-info">
+          <div class="team-name">Boddu Srisanth</div>
+          <span class="team-role-pill">Founder &amp; CEO</span>
+          <div><a href="https://instagram.com/srisanth588" target="_blank" class="team-insta" id="insta_srisanth"><i class="fab fa-instagram"></i> @srisanth588</a></div>
         </div>
-        <div class="card">
-          <div class="card-icon">🔗</div>
-          <h3>Unique Referral Link</h3>
-          <p>Get your own trackable link instantly after signing up. Share it anywhere — Instagram, WhatsApp, YouTube.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">📊</div>
-          <h3>Real-Time Dashboard</h3>
-          <p>Track your clicks, conversions, and earnings in real-time through your affiliate dashboard.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">⚡</div>
-          <h3>Fast Payouts</h3>
-          <p>Earnings are processed within 24 hours of a confirmed booking. No delays, no hassle.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">🎯</div>
-          <h3>High Conversion Product</h3>
-          <p>Hash Shoots is a high-demand service — your referrals are more likely to convert into bookings.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">🤝</div>
-          <h3>Dedicated Support</h3>
-          <p>Our affiliate team is available to help you maximize your earnings and answer any questions.</p>
-        </div>
-        <div class="card featured">
-          <div class="card-icon">🚀</div>
-          <h3>Scale Your Earnings — No Cap</h3>
-          <p>There's no limit on how many referrals you can make. The more you share, the more you earn. Top affiliates earn ₹50,000+ per month.</p>
+      </div>
+      <div class="team-card">
+        <img src="sumanth.jpeg" alt="Gulimi Sumanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">GS</div>
+        <div class="team-overlay"></div>
+        <div class="team-info">
+          <div class="team-name">Gulimi Sumanth</div>
+          <span class="team-role-pill">Managing Director</span>
+          <div><a href="https://instagram.com/gulimi_sumanth" target="_blank" class="team-insta" id="insta_sumanth"><i class="fab fa-instagram"></i> @gulimi_sumanth</a></div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="divider"></div>
-
-  <!-- COMMISSION TIERS -->
-  <div class="section">
-    <div class="section-inner">
-      <div class="pill"><i class="fas fa-trophy"></i> Commission Tiers</div>
-      <h2>Earn More as You Grow</h2>
-      <p class="section-sub">Higher referrals unlock higher commissions</p>
-      <div class="tiers-grid">
-        <div class="tier-card">
-          <div class="tier-emoji">🌱</div>
-          <div class="tier-name">Starter</div>
-          <div class="tier-commission">3%</div>
-          <div class="tier-req">1–10 referrals/month</div>
+  <!-- STORY + MISSION -->
+  <section class="story-section">
+    <div class="story-inner">
+      <div class="story-text-wrap">
+        <span class="story-tag"><i class="fas fa-book-open"></i> Our Story</span>
+        <h2 class="story-title">Born from a <span>Simple Idea</span></h2>
+        <p class="story-body" id="storyText">Hash Shoots was born from a simple idea — what if getting a professional reel was as easy as ordering food? We saw creators struggling to find affordable, fast, and reliable content creators. So we built a platform that connects you with trained, certified content makers who arrive at your location and deliver edited content on the spot.</p>
+      </div>
+      <div>
+        <div class="story-card">
+          <div class="story-card-icon"><i class="fas fa-bullseye"></i></div>
+          <h3>Our Mission</h3>
+          <p id="missionText">To democratize content creation by making professional reel-making accessible, affordable, and instant for everyone — from solo creators to large brands.</p>
         </div>
-        <div class="tier-card top">
-          <div class="tier-emoji">🔥</div>
-          <div class="tier-name">Pro</div>
-          <div class="tier-commission">4%</div>
-          <div class="tier-req">11–50 referrals/month</div>
-        </div>
-        <div class="tier-card">
-          <div class="tier-emoji">👑</div>
-          <div class="tier-name">Elite</div>
-          <div class="tier-commission">5%</div>
-          <div class="tier-req">51+ referrals/month</div>
+        <div class="story-card" style="margin-top:1rem;">
+          <div class="story-card-icon"><i class="fas fa-eye"></i></div>
+          <h3>Our Vision</h3>
+          <p>To become India's most trusted on-demand content creation platform — where every creator, brand, and business can get world-class reels in minutes.</p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="divider"></div>
-
-  <!-- HOW IT WORKS -->
-  <div class="section">
-    <div class="section-inner">
-      <div class="pill"><i class="fas fa-arrow-right"></i> How It Works</div>
-      <h2>Start Earning in 3 Steps</h2>
-      <p class="section-sub">Simple and straightforward</p>
-    </div>
-    <div class="steps-wrap">
-      <div class="steps-line"></div>
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-card">
-          <h4>Sign Up Below</h4>
-          <p>Fill out the affiliate application form. We'll review and approve your account within 24 hours.</p>
-        </div>
+  <!-- VALUES -->
+  <section class="values-section">
+    <p class="section-label">What We Stand For</p>
+    <h2 class="section-title" style="margin-bottom:0.75rem;">Our <span>Core Values</span></h2>
+    <p class="section-sub">The principles that guide everything we do</p>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-bolt"></i></div>
+        <h4>Speed</h4>
+        <p>Delivered in 10 minutes. No waiting, no delays.</p>
       </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-card">
-          <h4>Get Your Referral Link</h4>
-          <p>Once approved, you'll receive a unique referral link and access to your affiliate dashboard.</p>
-        </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-certificate"></i></div>
+        <h4>Quality</h4>
+        <p>Every partner is trained and certified by us.</p>
       </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-card">
-          <h4>Share & Earn</h4>
-          <p>Share your link on social media, WhatsApp, or your website. Earn a commission on every booking made through your link.</p>
-        </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-shield-alt"></i></div>
+        <h4>Trust</h4>
+        <p>Safe, secure, and transparent at every step.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-heart"></i></div>
+        <h4>Inclusivity</h4>
+        <p>Female content makers available for every client.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="divider"></div>
-
-  <!-- APPLICATION FORM -->
-  <div class="section" id="apply">
-    <div class="section-inner">
-      <div class="pill"><i class="fas fa-user-plus"></i> Apply Now</div>
-      <h2>Join the Affiliate Program</h2>
-      <p class="section-sub">Fill in your details and we'll get back to you within 24 hours</p>
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Ready to Create <span>Something Amazing?</span></h2>
+    <p>Book a certified content maker near you and get stunning content delivered in minutes.</p>
+    <div class="cta-btns">
+      <a href="booking.html" class="cta-btn-primary">Book a Shoot &nbsp;→</a>
+      <a href="partner.html" class="cta-btn-secondary">Become a Partner</a>
     </div>
-    <div class="form-wrap">
-      <form id="affiliateForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" placeholder="Your full name" required/>
+  </section>
+
+  <!-- FOOTER -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></div>
+          <p>India's fastest growing on-demand photography & videography platform. Book top shooters near you instantly.</p>
+          <div class="contact-details">
+            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
-          <div class="form-group">
-            <label>Phone Number *</label>
-            <input type="tel" placeholder="+91 XXXXX XXXXX" required/>
+          <div class="social-links">
+            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
           </div>
         </div>
-        <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" placeholder="your@email.com" required/>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="booking.html">Reel Shoots</a></li>
+              <li><a href="booking.html">Portrait Sessions</a></li>
+              <li><a href="booking.html">Wedding Photography</a></li>
+              <li><a href="booking.html">Product Shoots</a></li>
+              <li><a href="booking.html">Event Coverage</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="career.html">Careers</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Press</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Join Us</h4>
+            <ul>
+              <li><a href="partner.html">Become a Shooter</a></li>
+              <li><a href="partner.html">Partner with Us</a></li>
+              <li><a href="affiliate.html">Affiliate Program</a></li>
+            </ul>
+          </div>
         </div>
-        <div class="form-group">
-          <label>How will you promote Hash Shoots? *</label>
-          <select required>
-            <option value="" disabled selected>Select a channel</option>
-            <option>Instagram</option>
-            <option>YouTube</option>
-            <option>WhatsApp Groups</option>
-            <option>Website / Blog</option>
-            <option>LinkedIn</option>
-            <option>Other</option>
-          </select>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Hash Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="cookies.html">Cookies</a>
+          <a href="verify-certificate.html">Verify Certificate</a>
         </div>
-        <div class="form-group">
-          <label>Social Media Profile / Website Link</label>
-          <input type="url" placeholder="https://instagram.com/yourprofile"/>
-        </div>
-        <div class="form-group">
-          <label>Tell us about your audience</label>
-          <textarea placeholder="Briefly describe your audience size and niche..."></textarea>
-        </div>
-        <button type="submit" class="submit-btn">Submit Application &nbsp;→</button>
-        <div class="success-msg" id="successMsg">
-          <i class="fas fa-check-circle"></i> &nbsp; Application submitted! We'll reach out within 24 hours.
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
+  </section>
 
-</div><!-- end page-bg -->
+  <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
 
-<script>
-  window.addEventListener('scroll', () => {
-    document.getElementById('navbar').style.background =
-      window.scrollY > 50 ? 'rgba(15,2,2,0.97)' : 'rgba(20,2,2,0.85)';
-  });
+  <script>
+    const about = JSON.parse(localStorage.getItem('hs_about') || '{}');
+    if (about.heroTitle) document.getElementById('heroTitle').textContent = about.heroTitle;
+    if (about.heroDesc) document.getElementById('heroDesc').textContent = about.heroDesc;
+    if (about.storyText) document.getElementById('storyText').textContent = about.storyText;
+    if (about.missionText) document.getElementById('missionText').textContent = about.missionText;
+    if (about.team && about.team.length) {
+      const grid = document.getElementById('teamGrid');
+      grid.innerHTML = about.team.map(m => {
+        const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const imgSrc = m.photo || '';
+        const imgHtml = imgSrc
+          ? `<img src="${imgSrc}" alt="${m.name}" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="team-photo-bg" style="display:none;">${initials}</div>`
+          : `<div class="team-photo-bg">${initials}</div>`;
+        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
+        return `<div class="team-card">${imgHtml}<div class="team-overlay"></div><div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
+      }).join('');
+    }
+    if (about.team && about.team.length) {
+      const grid = document.getElementById('teamGrid');
+      grid.innerHTML = about.team.map(m => {
+        const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
+        return `<div class="team-card">
+          <div class="team-photo-bg">${initials}</div>
+          <div class="team-overlay"></div>
+          <div class="team-info">
+            <div class="team-name">${m.name}</div>
+            <span class="team-role-pill">${m.role}</span>
+            ${instaHtml}
+          </div>
+        </div>`;
+      }).join('');
+    }
 
-  document.getElementById('affiliateForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    this.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = true);
-    document.getElementById('successMsg').style.display = 'block';
-  });
-</script>
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('hsNav');
+      if(nav) nav.style.background = window.scrollY > 50 ? 'rgba(5,0,0,0.97)' : '';
+      btt.classList.toggle('visible', window.scrollY > 400);
+    });
+    const btt = document.getElementById('backToTop');
+    btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  </script>
 </body>
 </html>
