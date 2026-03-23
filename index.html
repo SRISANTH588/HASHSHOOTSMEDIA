@@ -729,81 +729,114 @@
   <!-- SERVICES -->
   <section class="svc-section">
     <style>
-      .svc-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
-      .svc-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:900px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.35),transparent);}
-      .svc-section::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:900px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.35),transparent);}
-      .svc-header{text-align:center;margin-bottom:4rem;}
-      .svc-pill{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:50px;padding:0.4rem 1.1rem;font-size:0.7rem;color:#c9a84c;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .svc-h2{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#f0ece0;line-height:1.15;letter-spacing:-0.5px;}
-      .svc-h2 span{background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-      .svc-sub{color:#9a9080;font-size:0.95rem;margin-top:0.75rem;}
-      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;max-width:1200px;margin:0 auto;padding:0 2rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.1);border-radius:24px;overflow:hidden;}
-      .svc-card{background:#0d0d0d;padding:2.25rem 2rem;position:relative;overflow:hidden;transition:background 0.35s ease;display:flex;flex-direction:column;}
-      .svc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent);}
-      .svc-card:hover{background:#111;}
-      .svc-card.pop{background:#111;}
-      .svc-card.pop::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;}
-      .svc-pop-badge{display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:800;padding:0.22rem 0.7rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem;width:fit-content;}
-      .svc-icon-wrap{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#c9a84c;margin-bottom:1.25rem;transition:all 0.3s;}
-      .svc-card:hover .svc-icon-wrap{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.3);box-shadow:0 0 16px rgba(201,168,76,0.12);}
-      .svc-name{font-size:1.05rem;font-weight:800;color:#f0ece0;margin-bottom:0.4rem;letter-spacing:-0.2px;}
-      .svc-desc{font-size:0.83rem;color:#9a9080;line-height:1.75;flex:1;margin-bottom:1.25rem;}
-      .svc-price{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.25rem;display:block;}
-      .svc-price span{font-size:0.75rem;font-weight:500;color:#9a9080;-webkit-text-fill-color:#9a9080;}
-      .svc-btn{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;border:none;color:#c9a84c;font-size:0.82rem;font-weight:700;padding:0;text-decoration:none;transition:gap 0.25s,opacity 0.25s;letter-spacing:0.5px;}
-      .svc-btn:hover{gap:0.85rem;opacity:0.8;}
+      .svc-section{background:#080808;padding:8rem 0;position:relative;overflow:hidden;}
+      .svc-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .svc-section::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      /* ambient glow */
+      .svc-ambient{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
+      .svc-inner{max-width:1200px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+      .svc-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5rem;flex-wrap:wrap;gap:1.5rem;}
+      .svc-header-left{}
+      .svc-pill{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;border:none;color:#c9a84c;font-size:0.68rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:1rem;padding:0;}
+      .svc-pill::before{content:'';display:inline-block;width:24px;height:1px;background:#c9a84c;}
+      .svc-h2{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;letter-spacing:-1px;}
+      .svc-h2 span{background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+      .svc-header-right{max-width:320px;}
+      .svc-sub{color:#9a9080;font-size:0.92rem;line-height:1.8;}
+      /* grid */
+      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid rgba(201,168,76,0.1);border-radius:2px;overflow:hidden;}
+      .svc-card{background:#0a0a0a;padding:2.75rem 2.25rem;position:relative;border-right:1px solid rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;transition:background 0.4s;cursor:default;}
+      .svc-card:nth-child(3n){border-right:none;}
+      .svc-card:nth-child(n+4){border-bottom:none;}
+      .svc-card:hover{background:#0e0e0e;}
+      .svc-card.pop{background:#0e0e0e;}
+      /* top gold line on hover */
+      .svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0),transparent);transition:background 0.4s;}
+      .svc-card:hover::before,.svc-card.pop::before{background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);}
+      /* number */
+      .svc-num{font-size:0.65rem;font-weight:700;color:rgba(201,168,76,0.3);letter-spacing:3px;margin-bottom:2rem;font-variant-numeric:tabular-nums;}
+      .svc-card.pop .svc-num{color:rgba(201,168,76,0.6);}
+      /* icon */
+      .svc-icon-wrap{width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#c9a84c;margin-bottom:1.5rem;transition:all 0.4s;}
+      .svc-card:hover .svc-icon-wrap{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);transform:translateY(-2px);}
+      /* badge */
+      .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.55rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:2px;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
+      .svc-name{font-size:1.1rem;font-weight:800;color:#f0ece0;margin-bottom:0.6rem;letter-spacing:-0.3px;line-height:1.2;}
+      .svc-desc{font-size:0.82rem;color:#6a6050;line-height:1.8;flex:1;margin-bottom:2rem;}
+      /* price */
+      .svc-price-row{display:flex;align-items:baseline;gap:0.4rem;margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid rgba(201,168,76,0.08);}
+      .svc-price{font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+      .svc-price-label{font-size:0.72rem;color:#6a6050;letter-spacing:0.5px;}
+      /* cta */
+      .svc-btn{display:inline-flex;align-items:center;gap:0.6rem;color:#c9a84c;font-size:0.78rem;font-weight:700;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:gap 0.3s,color 0.3s;}
+      .svc-btn i{font-size:0.7rem;transition:transform 0.3s;}
+      .svc-btn:hover{gap:1rem;color:#e8c96a;}
+      .svc-btn:hover i{transform:translateX(3px);}
       .svc-card.pop .svc-btn{color:#e8c96a;}
-      @media(max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr);}}
-      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}}
+      @media(max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-card:nth-child(3n){border-right:1px solid rgba(201,168,76,0.08);}.svc-card:nth-child(2n){border-right:none;}}
+      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-card{border-right:none;}.svc-header{flex-direction:column;align-items:flex-start;}}
     </style>
-    <div class="svc-header">
-      <div class="svc-pill"><i class="fas fa-camera"></i> What We Offer</div>
-      <h2 class="svc-h2">Services Built for <span>Every Shoot</span></h2>
-      <p class="svc-sub">From quick reels to grand weddings — we've got you covered.</p>
-    </div>
-    <div class="svc-grid" id="svcGrid">
-      <div class="svc-card">
-        <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
-        <div class="svc-name">Reel Shoots</div>
-        <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 mins.</div>
-        <span class="svc-price">₹999 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+    <div class="svc-ambient"></div>
+    <div class="svc-inner">
+      <div class="svc-header">
+        <div class="svc-header-left">
+          <div class="svc-pill">What We Offer</div>
+          <h2 class="svc-h2">Services Built for<br><span>Every Shoot</span></h2>
+        </div>
+        <div class="svc-header-right">
+          <p class="svc-sub">From quick reels to grand weddings — every service crafted for perfection, delivered with precision.</p>
+        </div>
       </div>
-      <div class="svc-card pop">
-        <div class="svc-pop-badge">Most Popular</div>
-        <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
-        <div class="svc-name">Portrait Sessions</div>
-        <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits.</div>
-        <span class="svc-price">₹1,499 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="svc-card">
-        <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
-        <div class="svc-name">Wedding Photography</div>
-        <div class="svc-desc">Capture every precious moment of your special day beautifully.</div>
-        <span class="svc-price">₹15,000 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="svc-card">
-        <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
-        <div class="svc-name">Product Shoots</div>
-        <div class="svc-desc">E-commerce &amp; brand product photography that sells.</div>
-        <span class="svc-price">₹2,499 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="svc-card">
-        <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
-        <div class="svc-name">Event Coverage</div>
-        <div class="svc-desc">Corporate events, parties, launches — full coverage guaranteed.</div>
-        <span class="svc-price">₹5,999 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="svc-card">
-        <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
-        <div class="svc-name">Food Photography</div>
-        <div class="svc-desc">Mouth-watering food shoots for restaurants, menus &amp; delivery apps.</div>
-        <span class="svc-price">₹1,999 <span>onwards</span></span>
-        <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      <div class="svc-grid" id="svcGrid">
+        <div class="svc-card">
+          <div class="svc-num">01</div>
+          <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
+          <div class="svc-name">Reel Shoots</div>
+          <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 mins.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;999</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="svc-card pop">
+          <div class="svc-num">02</div>
+          <div class="svc-pop-badge"><i class="fas fa-star"></i> Most Popular</div>
+          <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
+          <div class="svc-name">Portrait Sessions</div>
+          <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;1,499</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">03</div>
+          <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
+          <div class="svc-name">Wedding Photography</div>
+          <div class="svc-desc">Capture every precious moment of your special day beautifully.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;15,000</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">04</div>
+          <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
+          <div class="svc-name">Product Shoots</div>
+          <div class="svc-desc">E-commerce &amp; brand product photography that sells.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;2,499</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">05</div>
+          <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
+          <div class="svc-name">Event Coverage</div>
+          <div class="svc-desc">Corporate events, parties, launches — full coverage guaranteed.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;5,999</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">06</div>
+          <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
+          <div class="svc-name">Food Photography</div>
+          <div class="svc-desc">Mouth-watering food shoots for restaurants, menus &amp; delivery apps.</div>
+          <div class="svc-price-row"><span class="svc-price">&#8377;1,999</span><span class="svc-price-label">onwards</span></div>
+          <a href="booking.html" class="svc-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+        </div>
       </div>
     </div>
   </section>
