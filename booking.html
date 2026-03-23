@@ -61,7 +61,41 @@
     .submit-btn{width:100%;background:#c9a84c;color:#fff;border:none;border-radius:12px;padding:1.1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;margin-top:0.5rem;letter-spacing:0.3px;}
     .submit-btn:hover{background:#8a6520;transform:translateY(-2px);box-shadow:0 12px 35px rgba(201,168,76,0.4);}
 
-    @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}.checks{gap:1rem;}}
+    /* PLAN SELECTION */
+    .plan-step { max-width:700px; margin:0 auto; padding:0 2rem 3rem; }
+    .plan-step-title { font-size:1.1rem; font-weight:800; color:#fff; margin-bottom:0.4rem; text-align:center; }
+    .plan-step-sub { font-size:0.82rem; color:#706050; text-align:center; margin-bottom:1.75rem; }
+    .plan-cards { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+    .plan-card { background:#111; border:2px solid rgba(201,168,76,0.12); border-radius:16px; padding:1.5rem; cursor:pointer; transition:all 0.25s; position:relative; }
+    .plan-card:hover { border-color:rgba(201,168,76,0.4); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.4); }
+    .plan-card.selected { border-color:#c9a84c; background:rgba(201,168,76,0.06); }
+    .plan-card-badge { position:absolute; top:-10px; right:1rem; background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; font-size:0.6rem; font-weight:800; padding:0.2rem 0.75rem; border-radius:50px; letter-spacing:1px; text-transform:uppercase; }
+    .plan-card-name { font-size:1rem; font-weight:800; color:#fff; margin-bottom:0.25rem; }
+    .plan-card-price { font-size:1.6rem; font-weight:900; color:#c9a84c; margin-bottom:0.5rem; }
+    .plan-card-price span { font-size:0.75rem; color:#706050; font-weight:400; }
+    .plan-card-desc { font-size:0.75rem; color:#706050; line-height:1.6; }
+    .plan-card-features { list-style:none; margin-top:0.75rem; display:flex; flex-direction:column; gap:0.3rem; }
+    .plan-card-features li { font-size:0.75rem; color:#9a9080; display:flex; align-items:center; gap:0.5rem; }
+    .plan-card-features li i { color:#c9a84c; font-size:0.6rem; }
+
+    /* PLAN MODAL */
+    .plan-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; }
+    .plan-modal-overlay.open { display:flex; }
+    .plan-modal { background:#0f0f0f; border:1px solid rgba(201,168,76,0.25); border-radius:24px; padding:2.5rem; width:100%; max-width:460px; position:relative; box-shadow:0 40px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.06); }
+    .plan-modal-close { position:absolute; top:1rem; right:1rem; background:none; border:none; color:#888; font-size:1.1rem; cursor:pointer; }
+    .plan-modal-tag { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); color:#c9a84c; font-size:0.62rem; font-weight:700; padding:0.22rem 0.7rem; border-radius:50px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:1rem; }
+    .plan-modal h2 { font-size:1.5rem; font-weight:900; color:#f0ece0; margin-bottom:0.25rem; }
+    .plan-modal-price { font-size:2.5rem; font-weight:900; color:#c9a84c; margin:0.75rem 0 0.2rem; line-height:1; }
+    .plan-modal-price span { font-size:0.85rem; color:#706050; font-weight:400; }
+    .plan-modal-gst { font-size:0.72rem; color:#4a4030; margin-bottom:1.25rem; }
+    .plan-modal-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent); margin:1.25rem 0; }
+    .plan-modal-features { list-style:none; display:flex; flex-direction:column; gap:0.55rem; margin-bottom:1.75rem; }
+    .plan-modal-features li { display:flex; align-items:center; gap:0.75rem; font-size:0.85rem; color:#b8b0a0; }
+    .plan-modal-features li i { color:#c9a84c; font-size:0.65rem; width:14px; }
+    .plan-continue-btn { width:100%; background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; border:none; border-radius:12px; padding:1rem; font-size:0.95rem; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.6rem; }
+    .plan-continue-btn:hover { background:linear-gradient(135deg,#e8c96a,#c9a84c); transform:translateY(-2px); box-shadow:0 10px 30px rgba(201,168,76,0.3); }
+
+    @media(max-width:640px){ .plan-cards{grid-template-columns:1fr;} }
   </style>
 
   <script src="nav.js"></script>
@@ -99,11 +133,80 @@
     </div>
   </div>
 
+  <!-- PLAN SELECTION -->
+  <div class="plan-step" id="planStep">
+    <div class="plan-step-title">Choose Your Plan</div>
+    <div class="plan-step-sub">Select a plan to see full details before booking</div>
+    <div class="plan-cards">
+
+      <div class="plan-card" onclick="selectPlan('hourly')">
+        <div class="plan-card-name">Hourly Plan</div>
+        <div class="plan-card-price">₹1,699 <span>/ shoot</span></div>
+        <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
+        <ul class="plan-card-features">
+          <li><i class="fas fa-check"></i> 1 Hour Shoot</li>
+          <li><i class="fas fa-check"></i> 1 Edited Reel</li>
+          <li><i class="fas fa-check"></i> 10 Min Delivery</li>
+        </ul>
+      </div>
+
+      <div class="plan-card" onclick="selectPlan('halfday')">
+        <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
+        <div class="plan-card-name">Half-Day Plan</div>
+        <div class="plan-card-price">₹3,999 <span>/ session</span></div>
+        <div class="plan-card-desc">Ideal for events & creators who need more content.</div>
+        <ul class="plan-card-features">
+          <li><i class="fas fa-check"></i> Up to 3 Hours</li>
+          <li><i class="fas fa-check"></i> 2 Edited Reels</li>
+          <li><i class="fas fa-check"></i> 10 Min Delivery</li>
+        </ul>
+      </div>
+
+      <div class="plan-card" onclick="selectPlan('wedding')">
+        <div class="plan-card-name">Wedding Plan</div>
+        <div class="plan-card-price">₹15,000 <span>/ event</span></div>
+        <div class="plan-card-desc">Complete wedding coverage with cinematic reels.</div>
+        <ul class="plan-card-features">
+          <li><i class="fas fa-check"></i> Full Day Coverage</li>
+          <li><i class="fas fa-check"></i> 5+ Edited Reels</li>
+          <li><i class="fas fa-check"></i> Same Day Delivery</li>
+        </ul>
+      </div>
+
+      <div class="plan-card" onclick="selectPlan('custom')">
+        <div class="plan-card-name">Custom Plan</div>
+        <div class="plan-card-price" style="font-size:1.1rem;margin-top:0.4rem;">Let's Talk</div>
+        <div class="plan-card-desc">Have a unique requirement? We'll build a plan just for you.</div>
+        <ul class="plan-card-features">
+          <li><i class="fas fa-check"></i> Flexible Hours</li>
+          <li><i class="fas fa-check"></i> Custom Deliverables</li>
+          <li><i class="fas fa-check"></i> Dedicated Support</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PLAN DETAILS MODAL -->
+  <div class="plan-modal-overlay" id="planModal">
+    <div class="plan-modal">
+      <button class="plan-modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      <div class="plan-modal-tag" id="modalTag"></div>
+      <h2 id="modalName"></h2>
+      <div class="plan-modal-price" id="modalPrice"></div>
+      <div class="plan-modal-gst">+ GST &nbsp;·&nbsp; No hidden charges</div>
+      <div class="plan-modal-divider"></div>
+      <ul class="plan-modal-features" id="modalFeatures"></ul>
+      <button class="plan-continue-btn" onclick="continueToForm()"><i class="fas fa-arrow-right"></i> Continue to Book</button>
+    </div>
+  </div>
+
   <!-- FORM -->
-  <div class="form-wrap">
+  <div class="form-wrap" id="formStep" style="display:none;">
     <div class="form-box">
       <div class="form-title">Book Your Shoot</div>
       <div class="form-sub">Fill in the details below and we'll get back to you instantly.</div>
+      <div id="selectedPlanSummary" style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.82rem;color:#9a9080;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;"></div>
 
       <form onsubmit="handleBooking(event)">
         <div class="form-group">
@@ -184,6 +287,81 @@
 
   <script>
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
+
+    var plans = {
+      hourly: {
+        tag: 'Starter',
+        name: 'Hourly Plan',
+        price: '\u20b91,699',
+        per: '/ shoot',
+        features: ['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','Fast Delivery (10 mins post shoot)','Trained & Certified Content Maker','Hash Shoots Branding Included']
+      },
+      halfday: {
+        tag: 'Most Popular',
+        name: 'Half-Day Plan',
+        price: '\u20b93,999',
+        per: '/ session',
+        features: ['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','Fast Delivery (10 mins post shoot)','Trained & Certified Content Maker','Hash Shoots Branding Included']
+      },
+      wedding: {
+        tag: 'Premium',
+        name: 'Wedding Plan',
+        price: '\u20b915,000',
+        per: '/ event',
+        features: ['Full Day Coverage','5+ Edited Reels Delivered','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation','Hash Shoots Branding Included']
+      },
+      custom: {
+        tag: 'Custom',
+        name: 'Custom Plan',
+        price: 'Let\'s Talk',
+        per: '',
+        features: ['Flexible Shoot Hours','Custom Number of Reels','Tailored to Your Needs','Dedicated Support Team','Priority Booking','Custom Pricing']
+      }
+    };
+
+    var selectedPlan = null;
+
+    function selectPlan(key) {
+      selectedPlan = key;
+      var p = plans[key];
+      document.getElementById('modalTag').textContent = p.tag;
+      document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalPrice').innerHTML = p.price + (p.per ? ' <span>' + p.per + '</span>' : '');
+      document.getElementById('modalFeatures').innerHTML = p.features.map(function(f){
+        return '<li><i class="fas fa-check"></i>' + f + '</li>';
+      }).join('');
+      document.getElementById('planModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('planModal').classList.remove('open');
+    }
+
+    function continueToForm() {
+      closeModal();
+      document.getElementById('planStep').style.display = 'none';
+      document.getElementById('formStep').style.display = 'block';
+      // Pre-fill service field
+      var serviceMap = { hourly:'Reel Shoot', halfday:'Reel Shoot', wedding:'Wedding Photography', custom:'Other' };
+      var sel = document.getElementById('bk_service');
+      if (sel && serviceMap[selectedPlan]) {
+        Array.from(sel.options).forEach(function(o){
+          if (o.text === serviceMap[selectedPlan]) o.selected = true;
+        });
+      }
+      // Show selected plan summary in form
+      var p = plans[selectedPlan];
+      document.getElementById('selectedPlanSummary').innerHTML =
+        '<i class="fas fa-check-circle" style="color:#c9a84c;"></i> <strong style="color:#fff;">' + p.name + '</strong> &nbsp;·&nbsp; <span style="color:#c9a84c;font-weight:700;">' + p.price + '</span> &nbsp;·&nbsp; <span style="color:#706050;font-size:0.78rem;">+ GST</span>'
+        + ' &nbsp;<button onclick="changePlan()" style="background:none;border:none;color:#c9a84c;font-size:0.75rem;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;">Change</button>';
+      window.scrollTo({ top: document.getElementById('formStep').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function changePlan() {
+      document.getElementById('formStep').style.display = 'none';
+      document.getElementById('planStep').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     function handleBooking(e){
       e.preventDefault();
