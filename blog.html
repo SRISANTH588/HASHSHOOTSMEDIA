@@ -98,7 +98,44 @@
     .nl-btn { background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; border:none; border-radius:10px; padding:0.85rem 1.5rem; font-size:0.88rem; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.2s; white-space:nowrap; }
     .nl-btn:hover { background:linear-gradient(135deg,#e8c96a,#c9a84c); transform:translateY(-2px); }
 
-    @media(max-width:900px){ .blog-grid{grid-template-columns:1fr 1fr;} .featured-card{grid-template-columns:1fr;} }
+    /* AUTHORS */
+    .author-chip { display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; }
+    .author-avatar { width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid rgba(201,168,76,0.3); }
+    .author-avatar-placeholder { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#c9a84c,#a07830); display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:900; color:#000; flex-shrink:0; }
+    .author-name { font-size:0.72rem; font-weight:700; color:#9a9080; }
+    .author-role { font-size:0.65rem; color:#4a4030; }
+
+    /* FILTERS */
+    .blog-filters { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+    .blog-filter-btn { padding:0.4rem 1rem; border-radius:50px; border:1px solid rgba(201,168,76,0.15); background:transparent; color:#888070; font-size:0.75rem; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+    .blog-filter-btn.active, .blog-filter-btn:hover { background:#c9a84c; color:#000; border-color:transparent; }
+
+    /* ARTICLE PREVIEW STRIP */
+    .article-preview { display:flex; gap:1rem; align-items:flex-start; padding:1.25rem 0; border-bottom:1px solid rgba(201,168,76,0.07); }
+    .article-preview:last-child { border-bottom:none; }
+    .article-preview-img { width:80px; height:80px; border-radius:10px; object-fit:cover; flex-shrink:0; background:#111; }
+    .article-preview-body { flex:1; }
+    .article-preview-body h4 { font-size:0.88rem; font-weight:700; color:#f0ece0; line-height:1.4; margin-bottom:0.3rem; }
+    .article-preview-body p { font-size:0.75rem; color:#6a6050; line-height:1.6; margin-bottom:0.4rem; }
+    .article-preview-meta { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; }
+    .article-preview-meta span { font-size:0.65rem; color:#4a4030; display:flex; align-items:center; gap:0.25rem; }
+    .article-preview-meta i { color:#c9a84c; }
+    .article-num { font-size:2rem; font-weight:900; color:rgba(201,168,76,0.08); line-height:1; flex-shrink:0; width:36px; text-align:right; }
+
+    /* SIDEBAR */
+    .blog-layout { display:grid; grid-template-columns:1fr 300px; gap:3rem; align-items:start; }
+    .blog-sidebar {}
+    .sidebar-section { background:#111; border:1px solid rgba(201,168,76,0.1); border-radius:16px; padding:1.5rem; margin-bottom:1.5rem; }
+    .sidebar-title { font-size:0.65rem; font-weight:800; color:#c9a84c; letter-spacing:3px; text-transform:uppercase; margin-bottom:1.25rem; }
+    .sidebar-tag { display:inline-flex; margin:0.2rem; padding:0.3rem 0.75rem; border-radius:50px; border:1px solid rgba(201,168,76,0.15); color:#888070; font-size:0.72rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .sidebar-tag:hover { background:rgba(201,168,76,0.1); color:#c9a84c; border-color:rgba(201,168,76,0.3); }
+    .trending-item { display:flex; gap:0.75rem; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid rgba(201,168,76,0.06); }
+    .trending-item:last-child { border-bottom:none; }
+    .trending-num { font-size:1.1rem; font-weight:900; color:rgba(201,168,76,0.2); width:20px; flex-shrink:0; line-height:1.2; }
+    .trending-title { font-size:0.78rem; font-weight:600; color:#d0c8b8; line-height:1.4; }
+    .trending-meta { font-size:0.65rem; color:#4a4030; margin-top:0.2rem; }
+
+    @media(max-width:900px){ .blog-layout{grid-template-columns:1fr;} }
     @media(max-width:580px){ .blog-grid{grid-template-columns:1fr;} .nl-form{flex-direction:column;} }
   </style>
   <script src="nav.js"></script>
@@ -142,87 +179,188 @@
       <div class="section-label">Latest</div>
       <div class="section-title">From the <span>Journal</span></div>
 
-      <div class="blog-grid">
+      <!-- FILTERS -->
+      <div class="blog-filters">
+        <button class="blog-filter-btn active" onclick="filterBlog('all',this)">All</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Tips',this)">Tips</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Trends',this)">Trends</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Business',this)">Business</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Weddings',this)">Weddings</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Locations',this)">Locations</button>
+        <button class="blog-filter-btn" onclick="filterBlog('Behind the Scenes',this)">Behind the Scenes</button>
+      </div>
 
-        <div class="blog-card">
+      <div class="blog-layout">
+        <!-- MAIN GRID -->
+        <div>
+          <div class="blog-grid" id="blogGrid">
+
+        <div class="blog-card" data-cat="Tips">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80" alt="Poses" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Tips</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">SR</div><div><div class="author-name">Srisanth B.</div><div class="author-role">Founder</div></div></div>
             <h3>5 Poses That Always Look Great on Camera</h3>
             <p>Whether it's your first shoot or your fiftieth, these poses never fail to deliver stunning results.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Feb 2025</span>
-              <span><i class="fas fa-clock"></i> 3 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Feb 2025</span><span><i class="fas fa-clock"></i> 3 min</span><span><i class="fas fa-eye"></i> 2.4k</span></div>
           </div>
         </div>
 
-        <div class="blog-card">
+        <div class="blog-card" data-cat="Trends">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&q=80" alt="Reel trends" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Trends</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">GS</div><div><div class="author-name">Sumanth G.</div><div class="author-role">MD</div></div></div>
             <h3>Top Reel Trends Dominating Instagram in 2025</h3>
             <p>Stay ahead of the curve with the formats, transitions, and styles that are going viral right now.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Jan 2025</span>
-              <span><i class="fas fa-clock"></i> 4 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Jan 2025</span><span><i class="fas fa-clock"></i> 4 min</span><span><i class="fas fa-eye"></i> 5.1k</span></div>
           </div>
         </div>
 
-        <div class="blog-card">
+        <div class="blog-card" data-cat="Business">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" alt="Brand content" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Business</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">SR</div><div><div class="author-name">Srisanth B.</div><div class="author-role">Founder</div></div></div>
             <h3>Why Every Brand Needs a Content Maker on Speed Dial</h3>
             <p>In a world of instant content, brands that move fast win. Here's how to stay ready.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Jan 2025</span>
-              <span><i class="fas fa-clock"></i> 4 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Jan 2025</span><span><i class="fas fa-clock"></i> 4 min</span><span><i class="fas fa-eye"></i> 3.8k</span></div>
           </div>
         </div>
 
-        <div class="blog-card">
+        <div class="blog-card" data-cat="Weddings">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Wedding" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Weddings</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">GS</div><div><div class="author-name">Sumanth G.</div><div class="author-role">MD</div></div></div>
             <h3>Why Couples Are Booking Reel Creators for Their Wedding Day</h3>
             <p>Traditional photography is timeless, but reels capture the energy and emotion like nothing else.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Dec 2024</span>
-              <span><i class="fas fa-clock"></i> 5 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Dec 2024</span><span><i class="fas fa-clock"></i> 5 min</span><span><i class="fas fa-eye"></i> 7.2k</span></div>
           </div>
         </div>
 
-        <div class="blog-card">
+        <div class="blog-card" data-cat="Locations">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="Locations" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Locations</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">SR</div><div><div class="author-name">Srisanth B.</div><div class="author-role">Founder</div></div></div>
             <h3>Best Shoot Locations in Vijayawada for Stunning Reels</h3>
             <p>From golden hour spots to urban backdrops — our top picks for your next shoot in the city.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Dec 2024</span>
-              <span><i class="fas fa-clock"></i> 3 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Dec 2024</span><span><i class="fas fa-clock"></i> 3 min</span><span><i class="fas fa-eye"></i> 4.6k</span></div>
           </div>
         </div>
 
-        <div class="blog-card">
+        <div class="blog-card" data-cat="Behind the Scenes">
           <div class="blog-card-img"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=600&q=80" alt="Certified creator" style="width:100%;height:100%;object-fit:cover;"/></div>
           <div class="blog-card-body">
             <div class="blog-card-tag">Behind the Scenes</div>
+            <div class="author-chip"><div class="author-avatar-placeholder">GS</div><div><div class="author-name">Sumanth G.</div><div class="author-role">MD</div></div></div>
             <h3>What It Takes to Become a Certified Hash Shoots Creator</h3>
             <p>Our 6-step certification process ensures every creator meets the highest standard before going live.</p>
-            <div class="blog-card-meta">
-              <span><i class="fas fa-calendar-alt"></i> Nov 2024</span>
-              <span><i class="fas fa-clock"></i> 6 min</span>
-            </div>
+            <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Nov 2024</span><span><i class="fas fa-clock"></i> 6 min</span><span><i class="fas fa-eye"></i> 6.9k</span></div>
           </div>
         </div>
 
+      </div><!-- end blog-grid -->
+
+      <!-- ARTICLE PREVIEWS -->
+      <div style="margin-top:2.5rem;">
+        <div class="section-label" style="margin-bottom:1rem;">Quick Reads</div>
+        <div id="articlePreviews">
+          <div class="article-preview">
+            <span class="article-num">01</span>
+            <img class="article-preview-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200&q=80" alt=""/>
+            <div class="article-preview-body">
+              <h4>The Secret Behind Our 10-Minute Reel Delivery</h4>
+              <p>We break down the exact process our creators follow to shoot, edit, and deliver in record time.</p>
+              <div class="article-preview-meta">
+                <span><i class="fas fa-user"></i> Srisanth B.</span>
+                <span><i class="fas fa-clock"></i> 2 min</span>
+                <span><i class="fas fa-eye"></i> 8.3k views</span>
+              </div>
+            </div>
+          </div>
+          <div class="article-preview">
+            <span class="article-num">02</span>
+            <img class="article-preview-img" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=200&q=80" alt=""/>
+            <div class="article-preview-body">
+              <h4>How to Brief Your Content Maker for the Perfect Reel</h4>
+              <p>A good brief saves time and gets you better content. Here's exactly what to tell your creator.</p>
+              <div class="article-preview-meta">
+                <span><i class="fas fa-user"></i> Sumanth G.</span>
+                <span><i class="fas fa-clock"></i> 3 min</span>
+                <span><i class="fas fa-eye"></i> 5.7k views</span>
+              </div>
+            </div>
+          </div>
+          <div class="article-preview">
+            <span class="article-num">03</span>
+            <img class="article-preview-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=200&q=80" alt=""/>
+            <div class="article-preview-body">
+              <h4>Golden Hour vs Studio Light — Which Works Better for Reels?</h4>
+              <p>Natural light or controlled studio? We tested both and the results might surprise you.</p>
+              <div class="article-preview-meta">
+                <span><i class="fas fa-user"></i> Srisanth B.</span>
+                <span><i class="fas fa-clock"></i> 4 min</span>
+                <span><i class="fas fa-eye"></i> 4.1k views</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+        </div><!-- end main -->
+
+        <!-- SIDEBAR -->
+        <div class="blog-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-title">Trending Topics</div>
+            <div>
+              <span class="sidebar-tag">Reels</span>
+              <span class="sidebar-tag">Weddings</span>
+              <span class="sidebar-tag">Tips</span>
+              <span class="sidebar-tag">Vijayawada</span>
+              <span class="sidebar-tag">iPhone Shoots</span>
+              <span class="sidebar-tag">Editing</span>
+              <span class="sidebar-tag">Business</span>
+              <span class="sidebar-tag">Trends 2025</span>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Most Read</div>
+            <div class="trending-item">
+              <span class="trending-num">1</span>
+              <div><div class="trending-title">Why Couples Are Booking Reel Creators for Their Wedding</div><div class="trending-meta">7.2k views · 5 min</div></div>
+            </div>
+            <div class="trending-item">
+              <span class="trending-num">2</span>
+              <div><div class="trending-title">The Secret Behind Our 10-Minute Reel Delivery</div><div class="trending-meta">8.3k views · 2 min</div></div>
+            </div>
+            <div class="trending-item">
+              <span class="trending-num">3</span>
+              <div><div class="trending-title">Top Reel Trends Dominating Instagram in 2025</div><div class="trending-meta">5.1k views · 4 min</div></div>
+            </div>
+            <div class="trending-item">
+              <span class="trending-num">4</span>
+              <div><div class="trending-title">What It Takes to Become a Certified Creator</div><div class="trending-meta">6.9k views · 6 min</div></div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Meet the Authors</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="author-avatar-placeholder" style="width:40px;height:40px;font-size:0.8rem;">SR</div>
+                <div><div style="font-size:0.82rem;font-weight:700;color:#f0ece0;">Srisanth B.</div><div style="font-size:0.7rem;color:#6a6050;">Founder & CEO · 12 articles</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="author-avatar-placeholder" style="width:40px;height:40px;font-size:0.8rem;background:linear-gradient(135deg,#a07830,#c9a84c);">GS</div>
+                <div><div style="font-size:0.82rem;font-weight:700;color:#f0ece0;">Sumanth G.</div><div style="font-size:0.7rem;color:#6a6050;">Managing Director · 9 articles</div></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- end sidebar -->
+
+      </div><!-- end blog-layout -->
     </div>
 
     <div class="gold-divider"></div>
@@ -304,6 +442,14 @@
     const btt = document.getElementById('backToTop');
     window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400));
     btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    function filterBlog(cat, btn) {
+      document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('#blogGrid .blog-card').forEach(card => {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+      });
+    }
 
     // Load blog posts from admin localStorage
     (function(){
