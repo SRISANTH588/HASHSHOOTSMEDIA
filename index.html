@@ -732,20 +732,20 @@
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
       .svc-section{background:#060606;padding:9rem 0;position:relative;overflow:hidden;}
       .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none;}
-      .svc-inner{max-width:1280px;margin:0 auto;padding:0 3rem;position:relative;z-index:1;}
+      .svc-inner{max-width:1200px;margin:0 auto;padding:0 3rem;position:relative;z-index:1;}
       /* HEADER */
-      .svc-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:6rem;}
-      .svc-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
-      .svc-eyebrow-line{width:40px;height:1px;background:linear-gradient(90deg,#c9a84c,transparent);}
-      .svc-eyebrow-text{font-size:0.65rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
-      .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;color:#f0ece0;line-height:1.05;letter-spacing:-1px;}
+      .svc-header{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:5rem;padding-bottom:4rem;border-bottom:1px solid rgba(201,168,76,0.08);}
+      .svc-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;}
+      .svc-eyebrow-line{width:36px;height:1px;background:linear-gradient(90deg,#c9a84c,transparent);}
+      .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
+      .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.8vw,3.2rem);font-weight:900;color:#f0ece0;line-height:1.1;letter-spacing:-0.5px;}
       .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-      .svc-header-right{padding-bottom:0.5rem;}
-      .svc-sub{color:#6a6050;font-size:0.95rem;line-height:1.9;margin-bottom:2rem;}
-      .svc-header-cta{display:inline-flex;align-items:center;gap:0.75rem;color:#c9a84c;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:gap 0.3s;}
-      .svc-header-cta::after{content:'';display:inline-block;width:32px;height:1px;background:#c9a84c;transition:width 0.3s;}
+      .svc-header-right{display:flex;flex-direction:column;justify-content:center;gap:1.75rem;}
+      .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.9;margin:0;}
+      .svc-header-cta{display:inline-flex;align-items:center;gap:0.75rem;color:#c9a84c;font-size:0.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:gap 0.3s;width:fit-content;}
+      .svc-header-cta::after{content:'';display:inline-block;width:28px;height:1px;background:#c9a84c;transition:width 0.3s;}
       .svc-header-cta:hover{gap:1.25rem;}
-      .svc-header-cta:hover::after{width:48px;}
+      .svc-header-cta:hover::after{width:44px;}
       /* GRID */
       .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
       .svc-card{background:#0d0d0d;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:2.75rem 2.25rem;position:relative;display:flex;flex-direction:column;transition:transform 0.4s,border-color 0.4s,box-shadow 0.4s;overflow:hidden;}
@@ -773,7 +773,7 @@
       .svc-btn::after{content:'';display:inline-block;width:20px;height:1px;background:currentColor;margin-left:0.75rem;transition:width 0.4s;}
       .svc-card:hover .svc-btn,.svc-card.pop .svc-btn{color:#c9a84c;}
       .svc-card:hover .svc-btn::after,.svc-card.pop .svc-btn::after{width:36px;}
-      @media(max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-header{grid-template-columns:1fr;gap:1.5rem;}}
+      @media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-header{grid-template-columns:1fr;gap:2rem;padding-bottom:2.5rem;}}
       @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-inner{padding:0 1.5rem;}}
     </style>
     <div class="svc-inner">
