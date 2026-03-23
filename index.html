@@ -97,9 +97,8 @@
           currentCat = btn.dataset.cat;
           if(currentCat === 'Testimonials'){
             document.getElementById('vibeGrid').style.display = 'none';
-            var panel = document.getElementById('vibeTestiPanel');
-            panel.style.display = 'block';
-            renderVibeTestimonials(panel);
+            document.getElementById('vibeTestiPanel').style.display = 'block';
+            renderTestimonials();
           } else {
             document.getElementById('vibeGrid').style.display = 'grid';
             document.getElementById('vibeTestiPanel').style.display = 'none';
@@ -108,67 +107,67 @@
         });
       });
 
-      function renderVibeTestimonials(panel){
-        var staticTestis = [
-          {name:'Srikari Galigari', text:'Hash Shoots made booking a content maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!', service:'Reel Shoot'},
-          {name:'Lanka Pravallika', text:'Hash Shoots is a game-changer! Quick booking, talented content makers, and amazing event coverage. Loved the experience!', service:'Event Coverage'},
-          {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! Hash Shoots made capturing memories effortlessly beautiful.', service:'Portrait Session'},
-          {name:'Rahul Verma', text:'The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.', service:'Reel Shoot'},
-          {name:'Ananya Reddy', text:'Used Hash Shoots for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!', service:'Event Coverage'},
-          {name:'Priya Sharma', text:'My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.', service:'Product Shoot'},
-          {name:'Nikhil Kumar', text:'Amazing experience from start to finish. The content maker was on time, creative, and delivered edited content within minutes!', service:'Reel Shoot'},
-          {name:'Sneha Mehta', text:'Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!', service:'Portrait Session'},
-          {name:'Vikram Rao', text:'I was skeptical at first but Hash Shoots blew me away. Professional, fast, and the reels went viral. 10/10 service!', service:'Reel Shoot'}
-        ];
-        var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
-        // Show static text testimonials always
-        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;">';
-        staticTestis.forEach(function(t){
-          var initials = t.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-          html += '<div class="vibe-card" style="padding:1.5rem;">'
+      function renderTestimonials(){
+        var panel = document.getElementById('vibeTestiPanel');
+        var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+        var textTestis = hp.testimonials || [];
+        var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
+
+        if(!textTestis.length && !videoMeta.length){
+          panel.innerHTML = '<div class="vibe-empty"><i class="fas fa-star"></i>No testimonials yet. Check back soon!</div>';
+          return;
+        }
+
+        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">';
+
+        // Text testimonials from admin Home Page editor
+        textTestis.forEach(function(t){
+          var initials = (t.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          html += '<div class="vibe-card" style="padding:1.5rem;cursor:default;">'
             +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">'
             +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#fff;flex-shrink:0;">'+initials+'</div>'
             +'<div><div style="font-size:0.92rem;font-weight:700;color:#fff;">'+t.name+'</div>'
             +'<div style="color:#f5a623;font-size:0.8rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>'
-            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;margin-bottom:0.75rem;">&ldquo;'+t.text+'&rdquo;</div>'
-            +'<div style="font-size:0.72rem;color:#e53935;font-weight:600;"><i class="fas fa-camera"></i> '+t.service+'</div>'
+            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
             +'</div>';
         });
-        // Also show uploaded video testimonials if any
-        if(meta.length){
-          meta.forEach(function(v){
-            html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
-              +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
-              +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
-              +'</div>';
-          });
-        }
+
+        // Video testimonials from admin Testimonial Videos tab
+        videoMeta.forEach(function(v){
+          html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
+            +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-spinner fa-spin"></i></div>'
+            +'<div class="vibe-info"><div class="vibe-info-title">'+(v.clientName||v.title||'Testimonial')+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
+            +'</div>';
+        });
+
         html += '</div>';
         panel.innerHTML = html;
+
         // Load videos from IndexedDB
-        if(meta.length){
-          var _db = null;
-          function openDB(cb){
-            if(_db){ cb(_db); return; }
+        if(videoMeta.length){
+          var _tdb = null;
+          function openTDB(cb){
+            if(_tdb){ cb(_tdb); return; }
             var r = indexedDB.open('hs_testi_videos_db',1);
             r.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
-            r.onsuccess = function(e){ _db=e.target.result; cb(_db); };
+            r.onsuccess = function(e){ _tdb=e.target.result; cb(_tdb); };
             r.onerror = function(){ cb(null); };
           }
-          meta.forEach(function(v){
-            openDB(function(db){
+          videoMeta.forEach(function(v){
+            openTDB(function(db){
               if(!db) return;
               var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
               req.onsuccess = function(){
                 if(!req.result) return;
                 var url = URL.createObjectURL(req.result.blob);
                 var ph = document.getElementById('vtpi_'+v.id);
-                if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+                if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;'; ph.replaceWith(vid); }
               };
             });
           });
         }
       }
+
       window.openVibeLb = function(idx){
         var items = getVibeItems();
         var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
@@ -192,12 +191,10 @@
         if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
       });
       renderVibe();
-      // If no vibe content, auto-show Testimonials
-      if(!getVibeItems().length){
-        var testiBtn = document.querySelector('.vibe-cat[data-cat="Testimonials"]');
-        if(testiBtn) testiBtn.click();
-      }
-      window.addEventListener('storage',function(e){ if(e.key==='hs_vibe') renderVibe(); });
+      window.addEventListener('storage',function(e){
+        if(e.key==='hs_vibe') renderVibe();
+        if((e.key==='hs_homepage'||e.key==='hs_testi_videos') && currentCat==='Testimonials') renderTestimonials();
+      });
     })();
   </script>
 
@@ -268,7 +265,6 @@
         <div class="hero-btns">
           <a href="booking.html" class="btn btn-book">Book Now</a>
           <a href="partner.html" class="btn btn-partner">Become a Partner</a>
-          <a href="#testimonials" class="btn btn-partner" onclick="document.getElementById('testimonials').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.5rem;"><i class="fas fa-star" style="color:#f5a623;"></i> Testimonials</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
@@ -869,193 +865,6 @@
 
 
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials" id="testimonials">
-    <style>
-      .testimonials{background:#1a0000;padding:5rem 0;}
-      .testi-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.6rem;}
-      .testi-title span{color:#e53935;}
-      .testi-sub{text-align:center;color:#7a5a5a;font-size:0.95rem;margin-bottom:3.5rem;}
-      .testi-wrap{position:relative;max-width:1200px;margin:0 auto;padding:0 2rem;overflow:hidden;}
-      .testi-track{display:flex;gap:1.5rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
-      .testi-card{background:#280404;border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:2rem;flex:0 0 calc(33.33% - 1rem);min-width:0;display:flex;flex-direction:column;justify-content:space-between;min-height:220px;}
-      .testi-quote-icon{width:38px;height:38px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:1rem;margin-bottom:1.25rem;}
-      .testi-text{font-size:0.95rem;color:#d0b0b0;line-height:1.75;flex:1;margin-bottom:1.5rem;}
-      .testi-author{display:flex;align-items:center;gap:0.85rem;}
-      .testi-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden;border:2px solid rgba(229,57,53,0.3);}
-      .testi-name{font-size:0.95rem;font-weight:700;color:#fff;}
-      .testi-dots{display:flex;justify-content:center;gap:0.4rem;margin-top:2.5rem;}
-      .testi-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all 0.3s;}
-      .testi-dot.active{background:#e53935;width:24px;border-radius:4px;}
-      @media(max-width:768px){.testi-card{flex:0 0 calc(50% - 0.75rem);}}
-      @media(max-width:480px){.testi-card{flex:0 0 88%;}}
-    </style>
-    <div class="testi-title">Loved by Our <span>Clients</span></div>
-    <div class="testi-sub">Be part of a growing community that relies on HashShoot for fast and professional reels.</div>
-    <div class="testi-wrap">
-      <div class="testi-track" id="testiTrack">
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Hash Shoots made booking a content maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">SG</div>
-            <div class="testi-name">Srikari Galigari</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Hash Shoots is a game-changer! Quick booking, talented content makers, and amazing event coverage. Loved the experience!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">LP</div>
-            <div class="testi-name">Lanka Pravallika</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Seamless booking, professional shooters and stunning reels! Hash Shoots made capturing memories effortlessly beautiful.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">AK</div>
-            <div class="testi-name">Abhiram Kukunuri</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">RV</div>
-            <div class="testi-name">Rahul Verma</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Used Hash Shoots for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">AR</div>
-            <div class="testi-name">Ananya Reddy</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">PS</div>
-            <div class="testi-name">Priya Sharma</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Amazing experience from start to finish. The content maker was on time, creative, and delivered edited content within minutes!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">NK</div>
-            <div class="testi-name">Nikhil Kumar</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">SM</div>
-            <div class="testi-name">Sneha Mehta</div>
-          </div>
-        </div>
-
-        <div class="testi-card">
-          <div>
-            <div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>
-            <div class="testi-text">I was skeptical at first but Hash Shoots blew me away. Professional, fast, and the reels went viral. 10/10 service!</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar">VR</div>
-            <div class="testi-name">Vikram Rao</div>
-          </div>
-        </div>
-
-      </div>
-      <div class="testi-dots" id="testiDots"></div>
-    </div>
-  </section>
-  <script>
-    (function(){
-      var track = document.getElementById('testiTrack');
-      var dotsWrap = document.getElementById('testiDots');
-      var idx = 0;
-      function vis(){ return window.innerWidth<=480?1:window.innerWidth<=768?2:3; }
-      var total = track.children.length;
-      function pages(){ return Math.ceil(total/vis()); }
-      function buildDots(){
-        dotsWrap.innerHTML='';
-        for(var i=0;i<pages();i++){
-          var d=document.createElement('div');
-          d.className='testi-dot'+(i===idx?' active':'');
-          (function(i){d.onclick=function(){idx=i;go();};})(i);
-          dotsWrap.appendChild(d);
-        }
-      }
-      function go(){
-        var gap=24;
-        var w=track.children[0].offsetWidth+gap;
-        track.style.transform='translateX(-'+(idx*vis()*w)+'px)';
-        document.querySelectorAll('.testi-dot').forEach(function(d,i){d.classList.toggle('active',i===idx);});
-      }
-      buildDots();
-      setInterval(function(){idx=(idx+1)%pages();go();buildDots();go();},4000);
-
-      // Inject real client testimonials from localStorage
-      (function injectRealTestimonials(){
-        var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks')||'[]')
-          .filter(function(f){ return f.rating >= 4 && f.comment; })
-          .slice(-6).reverse();
-        if(!feedbacks.length) return;
-        feedbacks.forEach(function(f){
-          var initials = (f.customerName||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-          var stars = '★'.repeat(f.rating) + '☆'.repeat(5-f.rating);
-          var card = document.createElement('div');
-          card.className = 'testi-card';
-          card.innerHTML =
-            '<div>'
-            +'<div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>'
-            +'<div class="testi-text">'+f.comment+'</div>'
-            +'</div>'
-            +'<div class="testi-author">'
-            +'<div class="testi-avatar">'+initials+'</div>'
-            +'<div>'
-            +'<div class="testi-name">'+f.customerName+'</div>'
-            +'<div style="color:#f5a623;font-size:0.78rem;letter-spacing:1px;">'+stars+'</div>'
-            +(f.service?'<div style="font-size:0.72rem;color:#e53935;margin-top:0.15rem;">'+f.service+'</div>':'')
-            +'</div>'
-            +'</div>';
-          track.appendChild(card);
-        });
-        // Rebuild dots after adding new cards
-        buildDots();
-      })();
-    })();
-  </script>
-
   <section class="app-cta-section">
     <style>
       .app-cta-section{background:linear-gradient(135deg,#1a0000 0%,#280000 50%,#1a0000 100%);padding:5rem 0;position:relative;overflow:hidden;}
@@ -1228,16 +1037,6 @@
       if(hp.instagram) { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-instagram')) d.innerHTML = '<i class="fab fa-instagram"></i> ' + hp.instagram; }); }
       if(hp.location)  { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-map-marker')) d.innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + hp.location; }); }
       if(hp.copyright) { var cp = document.querySelector('.footer-bottom p'); if(cp) cp.innerHTML = hp.copyright + ' Made with <i class="fas fa-heart" style="color:#e53935"></i> in India.'; }
-      // Testimonials
-      if(hp.testimonials && hp.testimonials.length) {
-        var tCards = document.querySelectorAll('.testi-card');
-        hp.testimonials.forEach(function(t, i) {
-          if(tCards[i]) {
-            var txt = tCards[i].querySelector('.testi-text'); if(txt) txt.textContent = t.text;
-            var nm  = tCards[i].querySelector('.testi-name'); if(nm) nm.textContent = t.name;
-          }
-        });
-      }
       // Announcement bar
       if(hp.announcement) {
         var bar = document.createElement('div');
