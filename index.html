@@ -22,8 +22,9 @@
       .vibe-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:0.4rem;}
       .vibe-title span{color:#e53935;}
       .vibe-subtitle{color:#7a5a5a;font-size:0.95rem;}
-      .vibe-cats{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;padding:0 1.5rem;margin-bottom:2.5rem;}
-      .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#a08080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;}
+      .vibe-cats{display:flex;gap:0.6rem;justify-content:flex-start;flex-wrap:nowrap;padding:0 1.5rem;margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+      .vibe-cats::-webkit-scrollbar{display:none;}
+      .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#a08080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
       .vibe-cat.active,.vibe-cat:hover{background:#e53935;color:#fff;border-color:transparent;}
       .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
       .vibe-card{background:#200000;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
