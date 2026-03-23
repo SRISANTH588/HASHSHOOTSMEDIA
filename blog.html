@@ -304,6 +304,41 @@
     const btt = document.getElementById('backToTop');
     window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400));
     btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Load blog posts from admin localStorage
+    (function(){
+      var posts = JSON.parse(localStorage.getItem('hs_blogs') || '[]');
+      if (!posts.length) return;
+
+      // Featured post
+      var featured = posts.find(function(p){ return p.featured; }) || posts[posts.length - 1];
+      var fc = document.querySelector('.featured-card');
+      if (fc && featured) {
+        fc.querySelector('.featured-img').innerHTML = featured.img
+          ? '<img src="'+featured.img+'" alt="'+featured.title+'" style="width:100%;height:100%;object-fit:cover;"/>'
+          : '<i class="fas fa-camera featured-img-icon"></i>';
+        fc.querySelector('.featured-body h2').textContent = featured.title;
+        fc.querySelector('.featured-body p').textContent = featured.desc;
+        fc.querySelectorAll('.feat-meta span')[0].innerHTML = '<i class="fas fa-calendar-alt"></i> ' + featured.date;
+        fc.querySelectorAll('.feat-meta span')[1].innerHTML = '<i class="fas fa-clock"></i> ' + featured.read;
+      }
+
+      // Grid posts (exclude featured)
+      var grid = document.querySelector('.blog-grid');
+      if (!grid) return;
+      var gridPosts = posts.filter(function(p){ return !p.featured; }).reverse();
+      if (!gridPosts.length) return;
+      grid.innerHTML = gridPosts.map(function(p){
+        return '<div class="blog-card">'
+          +'<div class="blog-card-img">'+(p.img ? '<img src="'+p.img+'" alt="'+p.title+'" style="width:100%;height:100%;object-fit:cover;"/>' : '<i class="fas fa-pen-nib"></i>')+'</div>'
+          +'<div class="blog-card-body">'
+          +'<div class="blog-card-tag">'+p.category+'</div>'
+          +'<h3>'+p.title+'</h3>'
+          +'<p>'+p.desc+'</p>'
+          +'<div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> '+p.date+'</span><span><i class="fas fa-clock"></i> '+p.read+'</span></div>'
+          +'</div></div>';
+      }).join('');
+    })();
   </script>
 </body>
 </html>
