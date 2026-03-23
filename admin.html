@@ -2656,11 +2656,22 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const b64 = e.target.result;
-        document.getElementById('prev_' + uid).src = b64;
-        document.getElementById('prev_' + uid).style.display = 'block';
-        document.getElementById('icon_' + uid).style.display = 'none';
-        document.getElementById('photo_' + uid).value = b64;
+        const img = new Image();
+        img.onload = function() {
+          // Compress: max 400px wide, quality 0.7
+          const canvas = document.createElement('canvas');
+          const MAX = 400;
+          const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+          canvas.width  = Math.round(img.width  * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          const b64 = canvas.toDataURL('image/jpeg', 0.75);
+          document.getElementById('prev_' + uid).src = b64;
+          document.getElementById('prev_' + uid).style.display = 'block';
+          document.getElementById('icon_' + uid).style.display = 'none';
+          document.getElementById('photo_' + uid).value = b64;
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -2682,10 +2693,14 @@
         statCities: document.getElementById('ab_statCities').value,
         team
       };
-      localStorage.setItem('hs_about', JSON.stringify(data));
-      const toast = document.getElementById('saveToast');
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 2500);
+      try {
+        localStorage.setItem('hs_about', JSON.stringify(data));
+        const toast = document.getElementById('saveToast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2500);
+      } catch(e) {
+        alert('Storage full! Please use smaller photos (the system auto-compresses, but your images may still be too large). Try removing one photo and saving again.');
+      }
     }
     // ENQUIRIES
     function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
