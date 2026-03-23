@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Press – Hash Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; }
+
+    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; text-transform: uppercase; }
+    .logo-flash { color: #c9a84c; margin: 0 1px; font-size: 1.2rem; }
+    .logo-shoots { color: #fff; }
+    .nav-icons { display: flex; align-items: center; gap: 0; margin: 0 auto; background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.18); border-radius: 14px; padding: 0.25rem 0.35rem; backdrop-filter: blur(10px); }
+    .nav-icon-btn { color: rgba(255,255,255,0.6); font-size: 1.05rem; text-decoration: none; transition: all 0.2s; width: 42px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; position: relative; }
+    .nav-icon-btn::after { content: attr(title); position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: rgba(10,0,0,0.92); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(201,168,76,0.25); z-index: 9999; }
+    .nav-icon-btn:hover::after { opacity: 1; }
+    .nav-icon-btn:hover { color: #fff; background: rgba(201,168,76,0.15); }
+    .nav-icon-btn.active-icon { color: #c9a84c; background: rgba(201,168,76,0.12); }
+    .nav-icon-sep { width: 1px; height: 22px; background: rgba(201,168,76,0.2); margin: 0 0.1rem; flex-shrink: 0; }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.875rem; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .btn-app { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-app:hover { border-color: #fff; }
+    .btn-contact { background: #c9a84c; color: #fff; }
+    .btn-contact:hover { background: #a07830; }
+
+    /* HERO */
+    .press-hero {
+      padding: 9rem 1.5rem 5rem; text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 65%), #080808;
+      position: relative; overflow: hidden;
+    }
+    .press-hero::before { content:''; position:absolute; inset:0; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(201,168,76,0.012) 2px,rgba(201,168,76,0.012) 4px), repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(201,168,76,0.008) 2px,rgba(201,168,76,0.008) 4px); pointer-events:none; }
+    .eyebrow { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.25); color:#c9a84c; font-size:0.72rem; font-weight:700; padding:0.35rem 1rem; border-radius:50px; letter-spacing:3px; text-transform:uppercase; margin-bottom:1.5rem; }
+    .press-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,6vw,5rem); font-weight:900; color:#f0ece0; line-height:1.1; margin-bottom:1rem; }
+    .press-hero h1 em { font-style:italic; color:#c9a84c; }
+    .press-hero p { color:#888070; font-size:1rem; line-height:1.8; max-width:520px; margin:0 auto; }
+
+    .press-inner { max-width:1100px; margin:0 auto; padding:0 2rem; }
+    .press-section { padding:5rem 0; }
+    .section-label { font-size:0.68rem; font-weight:700; color:#c9a84c; letter-spacing:4px; text-transform:uppercase; margin-bottom:0.6rem; }
+    .section-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.2rem); font-weight:900; color:#f0ece0; margin-bottom:2.5rem; }
+    .section-title span { color:#c9a84c; }
+    .gold-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent); margin:0; }
+
+    /* STATS */
+    .press-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.1); border-radius:20px; overflow:hidden; margin-bottom:5rem; }
+    .press-stat { background:#0f0f0f; padding:2.5rem 1.5rem; text-align:center; }
+    .press-stat-num { font-size:2.5rem; font-weight:900; background:linear-gradient(135deg,#e8c96a,#c9a84c); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; line-height:1; margin-bottom:0.4rem; }
+    .press-stat-lbl { font-size:0.75rem; color:#6a6050; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+
+    /* COVERAGE */
+    .coverage-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .coverage-card { background:#111; border:1px solid rgba(201,168,76,0.1); border-radius:20px; padding:2rem; transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s; }
+    .coverage-card:hover { transform:translateY(-5px); border-color:rgba(201,168,76,0.3); box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 30px rgba(201,168,76,0.07); }
+    .coverage-pub { font-size:0.65rem; font-weight:800; color:#c9a84c; letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .coverage-pub::before { content:''; width:20px; height:1px; background:#c9a84c; }
+    .coverage-card h3 { font-size:0.98rem; font-weight:700; color:#f0ece0; line-height:1.5; margin-bottom:0.75rem; }
+    .coverage-card p { font-size:0.8rem; color:#6a6050; line-height:1.7; margin-bottom:1.25rem; }
+    .coverage-link { display:inline-flex; align-items:center; gap:0.4rem; color:rgba(201,168,76,0.6); font-size:0.72rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; transition:color 0.2s; }
+    .coverage-link:hover { color:#c9a84c; }
+    .coverage-date { font-size:0.7rem; color:#3a3020; margin-top:0.5rem; }
+
+    /* PRESS KIT */
+    .presskit { background:#111; border:1px solid rgba(201,168,76,0.15); border-radius:24px; padding:3.5rem; display:grid; grid-template-columns:1fr auto; gap:3rem; align-items:center; }
+    .presskit h2 { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:#f0ece0; margin-bottom:0.75rem; }
+    .presskit p { color:#888070; font-size:0.88rem; line-height:1.8; margin-bottom:1.5rem; max-width:480px; }
+    .kit-items { display:flex; flex-direction:column; gap:0.6rem; }
+    .kit-item { display:flex; align-items:center; gap:0.75rem; font-size:0.82rem; color:#9a9080; }
+    .kit-item i { color:#c9a84c; width:16px; }
+    .kit-btns { display:flex; flex-direction:column; gap:0.75rem; }
+    .kit-btn-primary { background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; border:none; border-radius:12px; padding:1rem 2rem; font-size:0.9rem; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; gap:0.6rem; white-space:nowrap; }
+    .kit-btn-primary:hover { background:linear-gradient(135deg,#e8c96a,#c9a84c); transform:translateY(-2px); box-shadow:0 10px 30px rgba(201,168,76,0.3); }
+    .kit-btn-secondary { background:transparent; color:#c9a84c; border:1px solid rgba(201,168,76,0.3); border-radius:12px; padding:1rem 2rem; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; gap:0.6rem; white-space:nowrap; }
+    .kit-btn-secondary:hover { background:rgba(201,168,76,0.08); border-color:rgba(201,168,76,0.5); }
+
+    /* CONTACT */
+    .press-contact { text-align:center; padding:5rem 0; }
+    .press-contact h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.5rem); font-weight:900; color:#f0ece0; margin-bottom:0.75rem; }
+    .press-contact h2 span { color:#c9a84c; }
+    .press-contact p { color:#888070; font-size:0.9rem; margin-bottom:2rem; }
+    .press-contact-btn { display:inline-flex; align-items:center; gap:0.6rem; background:linear-gradient(135deg,#c9a84c,#a07830); color:#000; border:none; border-radius:12px; padding:1rem 2.5rem; font-size:0.95rem; font-weight:800; text-decoration:none; transition:all 0.2s; }
+    .press-contact-btn:hover { background:linear-gradient(135deg,#e8c96a,#c9a84c); transform:translateY(-2px); box-shadow:0 12px 35px rgba(201,168,76,0.3); }
+
+    @media(max-width:900px){ .coverage-grid{grid-template-columns:1fr 1fr;} .press-stats{grid-template-columns:1fr 1fr;} .presskit{grid-template-columns:1fr;} }
+    @media(max-width:580px){ .coverage-grid{grid-template-columns:1fr;} .press-stats{grid-template-columns:1fr 1fr;} }
+  </style>
+  <script src="nav.js"></script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+
+  <!-- HERO -->
+  <div class="press-hero">
+    <div style="position:relative;z-index:1;">
+      <div class="eyebrow"><i class="fas fa-newspaper"></i> Press Room</div>
+      <h1>Hash Shoots in<br/><em>the News</em></h1>
+      <p>Media coverage, press releases, and resources for journalists and media partners.</p>
+    </div>
+  </div>
+
+  <div class="gold-divider"></div>
+
+  <div class="press-inner">
+
+    <!-- STATS -->
+    <div class="press-section">
+      <div class="press-stats">
+        <div class="press-stat"><span class="press-stat-num">2024</span><span class="press-stat-lbl">Founded</span></div>
+        <div class="press-stat"><span class="press-stat-num">10+</span><span class="press-stat-lbl">Cities</span></div>
+        <div class="press-stat"><span class="press-stat-num">500+</span><span class="press-stat-lbl">Creators</span></div>
+        <div class="press-stat"><span class="press-stat-num">10K+</span><span class="press-stat-lbl">Reels Delivered</span></div>
+      </div>
+
+      <!-- COVERAGE -->
+      <div class="section-label">Media Coverage</div>
+      <div class="section-title">Hash Shoots in the <span>Spotlight</span></div>
+
+      <div class="coverage-grid">
+
+        <div class="coverage-card">
+          <div class="coverage-pub">YourStory</div>
+          <h3>"The Startup Delivering Professional Reels in 10 Minutes Flat"</h3>
+          <p>How Hash Shoots is disrupting the content creation industry with its on-demand model across India.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">March 2025</div>
+        </div>
+
+        <div class="coverage-card">
+          <div class="coverage-pub">Inc42</div>
+          <h3>"On-Demand Content Creation: The Next Big Gig Economy Play"</h3>
+          <p>Inc42 features Hash Shoots as one of the most innovative startups redefining creator services in India.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">February 2025</div>
+        </div>
+
+        <div class="coverage-card">
+          <div class="coverage-pub">The Hindu</div>
+          <h3>"Vijayawada Startup Brings Hollywood-Speed Content to Your Doorstep"</h3>
+          <p>A local success story — how two founders from Vijayawada are changing the way India creates content.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">January 2025</div>
+        </div>
+
+        <div class="coverage-card">
+          <div class="coverage-pub">Entrepreneur India</div>
+          <h3>"Meet the Founders Turning Content Creation into a 10-Minute Service"</h3>
+          <p>An exclusive interview with the Hash Shoots founding team on their vision, challenges, and growth plans.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">December 2024</div>
+        </div>
+
+        <div class="coverage-card">
+          <div class="coverage-pub">Business Standard</div>
+          <h3>"The Rise of Instant Content Platforms in Tier-2 India"</h3>
+          <p>Hash Shoots is cited as a leading example of how startups are bringing premium services to smaller cities.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">November 2024</div>
+        </div>
+
+        <div class="coverage-card">
+          <div class="coverage-pub">Deccan Chronicle</div>
+          <h3>"Andhra Pradesh's Fastest Growing Content Startup"</h3>
+          <p>Hash Shoots is making waves in Andhra Pradesh with its unique model of certified, on-demand reel creators.</p>
+          <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
+          <div class="coverage-date">October 2024</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <!-- PRESS KIT -->
+    <div class="press-section">
+      <div class="section-label">Resources</div>
+      <div class="section-title">Press <span>Kit</span></div>
+      <div class="presskit">
+        <div>
+          <h2>Everything You Need to Cover Hash Shoots</h2>
+          <p>Download our official press kit including logos, brand guidelines, founder photos, company facts, and approved media assets.</p>
+          <div class="kit-items">
+            <div class="kit-item"><i class="fas fa-check"></i> High-res logos (PNG, SVG)</div>
+            <div class="kit-item"><i class="fas fa-check"></i> Founder photos & bios</div>
+            <div class="kit-item"><i class="fas fa-check"></i> Brand guidelines & color palette</div>
+            <div class="kit-item"><i class="fas fa-check"></i> Company fact sheet & timeline</div>
+            <div class="kit-item"><i class="fas fa-check"></i> Product screenshots</div>
+          </div>
+        </div>
+        <div class="kit-btns">
+          <button class="kit-btn-primary"><i class="fas fa-download"></i> Download Press Kit</button>
+          <a href="mailto:hashshootsmedia@gmail.com" class="kit-btn-secondary"><i class="fas fa-envelope"></i> Contact PR Team</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <!-- CONTACT -->
+    <div class="press-contact">
+      <div class="eyebrow"><i class="fas fa-microphone"></i> Media Enquiries</div>
+      <h2>Want to Feature <span>Hash Shoots?</span></h2>
+      <p>For interviews, press releases, or media partnerships, reach out to our PR team directly.</p>
+      <a href="mailto:hashshootsmedia@gmail.com" class="press-contact-btn"><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem">HA<span class="logo-flash"><i class="fas fa-bolt"></i></span>H <span class="logo-shoots">SHOOTS</span></div>
+          <p>India's fastest growing on-demand photography & videography platform.</p>
+          <div class="contact-details">
+            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="booking.html">Reel Shoots</a></li>
+              <li><a href="booking.html">Portrait Sessions</a></li>
+              <li><a href="booking.html">Wedding Photography</a></li>
+              <li><a href="booking.html">Product Shoots</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="career.html">Careers</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="press.html">Press</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Join Us</h4>
+            <ul>
+              <li><a href="partner.html">Become a Shooter</a></li>
+              <li><a href="partner.html">Partner with Us</a></li>
+              <li><a href="affiliate.html">Affiliate Program</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Hash Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="cookies.html">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+  <script>
+    const btt = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400));
+    btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  </script>
+</body>
+</html>
