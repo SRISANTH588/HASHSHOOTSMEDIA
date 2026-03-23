@@ -736,7 +736,8 @@
       /* HEADER */
       .svc-header{text-align:center;margin-bottom:5rem;padding-bottom:3rem;border-bottom:1px solid rgba(201,168,76,0.08);}
       .svc-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;justify-content:center;}
-      .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,#c9a84c,transparent);flex-shrink:0;}
+      .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
+      .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
       .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
       .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
       .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -775,7 +776,7 @@
     </style>
     <div class="svc-inner">
       <div class="svc-header">
-        <div class="svc-eyebrow"><span class="svc-eyebrow-line"></span><span class="svc-eyebrow-text">What We Offer</span></div>
+        <div class="svc-eyebrow"><span class="svc-eyebrow-line"></span><span class="svc-eyebrow-text">What We Offer</span><span class="svc-eyebrow-line right"></span></div>
         <h2 class="svc-h2">Services Built for <em>Every Shoot</em></h2>
         <p class="svc-sub">From portraits to grand weddings &mdash; crafted with precision, delivered with excellence.</p>
       </div>
