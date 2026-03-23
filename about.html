@@ -315,22 +315,6 @@
         return `<div class="team-card">${imgHtml}<div class="team-overlay"></div>${instaHover}<div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
       }).join('');
     }
-    if (about.team && about.team.length) {
-      const grid = document.getElementById('teamGrid');
-      grid.innerHTML = about.team.map(m => {
-        const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
-        return `<div class="team-card">
-          <div class="team-photo-bg">${initials}</div>
-          <div class="team-overlay"></div>
-          <div class="team-info">
-            <div class="team-name">${m.name}</div>
-            <span class="team-role-pill">${m.role}</span>
-            ${instaHtml}
-          </div>
-        </div>`;
-      }).join('');
-    }
 
     window.addEventListener('scroll', () => {
       const nav = document.getElementById('hsNav');
