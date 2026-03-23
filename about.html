@@ -297,10 +297,15 @@
     if (about.missionText) document.getElementById('missionText').textContent = about.missionText;
     if (about.team && about.team.length) {
       const grid = document.getElementById('teamGrid');
+      const photoMap = { 'boddu srisanth': 'srisanth.jpeg', 'srisanth': 'srisanth.jpeg', 'gulimi sumanth': 'sumanth.jpeg', 'sumanth': 'sumanth.jpeg' };
       grid.innerHTML = about.team.map(m => {
         const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const photo = photoMap[m.name.toLowerCase().trim()];
+        const imgHtml = photo
+          ? `<img src="${photo}" alt="${m.name}" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="team-photo-bg" style="display:none;">${initials}</div>`
+          : `<div class="team-photo-bg">${initials}</div>`;
         const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
-        return `<div class="team-card"><div class="team-photo-bg">${initials}</div><div class="team-overlay"></div><div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
+        return `<div class="team-card">${imgHtml}<div class="team-overlay"></div><div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
       }).join('');
     }
     if (about.team && about.team.length) {
