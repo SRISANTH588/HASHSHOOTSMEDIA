@@ -112,6 +112,7 @@
       <button class="tab-btn" onclick="switchTab('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
       <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
+      <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('razorpay',this)"><i class="fas fa-credit-card"></i> Razorpay</button>
       <button class="tab-btn" onclick="switchTab('tawk',this)"><i class="fas fa-comments"></i> Tawk.to</button>
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
@@ -697,15 +698,6 @@
         <div id="assignedList"></div>
       </div>
 
-      <!-- PAYOUT REQUESTS FROM STAFF -->
-      <div class="about-form" style="margin-top:1.25rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;margin-right:0.5rem;"></i> Staff Payout Requests</h2>
-          <span style="font-size:0.8rem;color:#a08080;" id="payoutReqCount"></span>
-        </div>
-        <div id="payoutRequestsList"></div>
-      </div>
-
     </div><!-- end tab-assign -->
 
     <!-- HOME PAGE TAB -->
@@ -928,6 +920,33 @@
       </div>
 
     </div><!-- end tab-store -->
+
+    <!-- STAFF WITHDRAW TAB -->
+    <div class="tab-panel" id="tab-withdraw">
+
+      <!-- STATS -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div class="stat-card"><div class="num" id="wd_pendingCount" style="color:#ff9800;">0</div><div class="lbl">Pending Requests</div></div>
+        <div class="stat-card"><div class="num" id="wd_approvedCount" style="color:#4caf50;">0</div><div class="lbl">Approved</div></div>
+        <div class="stat-card"><div class="num" id="wd_totalAmt" style="color:#2196f3;">&#8377;0</div><div class="lbl">Total Paid Out</div></div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="filters" style="margin-bottom:1.25rem;">
+        <button class="filter-btn active" onclick="filterWithdraw('all',this)">All</button>
+        <button class="filter-btn" onclick="filterWithdraw('pending',this)">Pending</button>
+        <button class="filter-btn" onclick="filterWithdraw('approved',this)">Approved</button>
+        <button class="filter-btn" onclick="filterWithdraw('rejected',this)">Rejected</button>
+      </div>
+
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-money-bill-wave" style="color:#4caf50;margin-right:0.5rem;"></i> Staff Withdrawal Requests</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="wdCount"></span>
+        </div>
+        <div id="withdrawList"></div>
+      </div>
+    </div><!-- end tab-withdraw -->
 
     <!-- RAZORPAY TAB -->
     <div class="tab-panel" id="tab-razorpay">
@@ -1442,6 +1461,7 @@
       if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
       if (tab === 'homepage') loadHomePage();
+      if (tab === 'withdraw') loadWithdrawTab();
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
       if (tab === 'razorpay') loadRazorpayTab();
@@ -1455,7 +1475,7 @@
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
-      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); renderPayoutRequests(); }
+      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
     }
 
     function deleteFeedback(id){
@@ -2058,1054 +2078,111 @@
       showAssignToast('Payment of ₹' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
-    function renderPayoutRequests(){
-      var staffList = getStaff();
-      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]').slice().reverse();
-      var el = document.getElementById('payoutRequestsList');
-      var countEl = document.getElementById('payoutReqCount');
-      if(countEl) countEl.textContent = reqs.length + ' request(s)';
-      if(!reqs.length){
-        el.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-hand-holding-usd" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
+    // STAFF WITHDRAW TAB
+    var currentWdFilter = 'all';
+
+    function loadWithdrawTab(){
+      currentWdFilter = 'all';
+      document.querySelectorAll('#tab-withdraw .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      var first = document.querySelector('#tab-withdraw .filter-btn');
+      if(first) first.classList.add('active');
+      renderWithdrawList();
+      updateWithdrawBadge();
+    }
+
+    function filterWithdraw(status, btn){
+      currentWdFilter = status;
+      document.querySelectorAll('#tab-withdraw .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderWithdrawList();
+    }
+
+    function renderWithdrawList(){
+      var all = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]').slice().reverse();
+      var filtered = currentWdFilter === 'all' ? all : all.filter(function(r){ return r.status === currentWdFilter; });
+      document.getElementById('wd_pendingCount').textContent  = all.filter(function(r){ return r.status === 'pending'; }).length;
+      document.getElementById('wd_approvedCount').textContent = all.filter(function(r){ return r.status === 'approved'; }).length;
+      var totalPaid = all.filter(function(r){ return r.status === 'approved'; }).reduce(function(s,r){ return s+(r.amount||0); }, 0);
+      document.getElementById('wd_totalAmt').textContent = '\u20b9' + totalPaid.toLocaleString('en-IN');
+      document.getElementById('wdCount').textContent = filtered.length + ' request(s)';
+      var el = document.getElementById('withdrawList');
+      if(!filtered.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-money-bill-wave" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No withdrawal requests yet.</div>';
         return;
       }
-      el.innerHTML = reqs.map(function(r){
-        var statusColor = r.status === 'approved' ? '#4caf50' : r.status === 'rejected' ? '#f44336' : '#ff9800';
-        var statusLabel = r.status === 'approved' ? 'Approved' : r.status === 'rejected' ? 'Rejected' : 'Pending';
+      var sc_map = { pending:'#ff9800', approved:'#4caf50', rejected:'#f44336' };
+      el.innerHTML = filtered.map(function(r){
+        var sc = sc_map[r.status] || '#ff9800';
         var actionBtns = r.status === 'pending'
-          ? '<button onclick="approvePayoutRequest(\'' + r.id + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Approve & Transfer</button>'
-            + '<button onclick="rejectPayoutRequest(\'' + r.id + '\')" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Reject</button>'
+          ? '<button onclick="approveWithdraw(\'' + r.id + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Approve & Transfer</button>'
+            + '<button onclick="rejectWithdraw(\'' + r.id + '\')" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.4rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Reject</button>'
           : '';
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
-          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
-          + '<div>'
-          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + r.staffName + '</div>'
-          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;">Bank: ' + (r.bankName || '—') + ' &nbsp;·&nbsp; A/C: ' + (r.accNo ? r.accNo.replace(/.(?=.{4})/g,'*') : '—') + ' &nbsp;·&nbsp; IFSC: ' + (r.ifsc || '—') + '</div>'
-          + (r.upi ? '<div style="font-size:0.72rem;color:#a08080;margin-top:0.1rem;">UPI: ' + r.upi + '</div>' : '')
-          + '<div style="font-size:0.68rem;color:#555;margin-top:0.2rem;">Requested: ' + r.requestedAt + '</div>'
-          + (r.processedAt ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
-          + '</div>'
-          + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;">'
-          + '<span style="font-size:1.1rem;font-weight:900;color:#4caf50;">₹' + r.amount.toLocaleString('en-IN') + '</span>'
-          + '<span style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + statusLabel + '</span>'
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:4px solid '+sc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;align-items:center;gap:0.85rem;">'
+          + '<div style="width:44px;height:44px;border-radius:12px;background:'+sc+'22;border:1px solid '+sc+'44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:'+sc+';flex-shrink:0;">' + r.staffName.charAt(0).toUpperCase() + '</div>'
+          + '<div><div style="font-size:0.95rem;font-weight:800;color:#fff;">' + r.staffName + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;margin-top:0.1rem;">Requested: ' + r.requestedAt + '</div>'
+          + (r.processedAt ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status==='approved'?'Approved':'Rejected') + ': ' + r.processedAt + '</div>' : '')
           + '</div></div>'
-          + (actionBtns ? '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">' + actionBtns + '</div>' : '')
+          + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;">'
+          + '<span style="font-size:1.3rem;font-weight:900;color:'+sc+';">\u20b9' + (r.amount||0).toLocaleString('en-IN') + '</span>'
+          + '<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">' + r.status.charAt(0).toUpperCase()+r.status.slice(1) + '</span>'
+          + '</div></div>'
+          + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
+          + '<div style="background:#1a0000;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#a08080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-university" style="color:#e53935;"></i> Bank</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.bankName||'\u2014') + '</div></div>'
+          + '<div style="background:#1a0000;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#a08080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-credit-card" style="color:#e53935;"></i> A/C No.</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.accNo ? r.accNo.replace(/.(?=.{4})/g,'*') : '\u2014') + '</div></div>'
+          + '<div style="background:#1a0000;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#a08080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-code-branch" style="color:#e53935;"></i> IFSC</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.ifsc||'\u2014') + '</div></div>'
+          + (r.upi ? '<div style="background:#1a0000;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#a08080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-mobile-alt" style="color:#e53935;"></i> UPI</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + r.upi + '</div></div>' : '')
+          + '</div>'
+          + (r.rejectReason ? '<div style="background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.2);border-radius:8px;padding:0.6rem 0.85rem;font-size:0.78rem;color:#ef9a9a;margin-bottom:0.75rem;"><i class="fas fa-times-circle"></i> Reason: ' + r.rejectReason + '</div>' : '')
+          + (actionBtns ? '<div style="display:flex;gap:0.65rem;flex-wrap:wrap;">' + actionBtns + '</div>' : '')
           + '</div>';
       }).join('');
     }
 
-    function approvePayoutRequest(reqId){
+    function approveWithdraw(reqId){
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
       var r = reqs.find(function(x){ return x.id === reqId; });
       if(!r) return;
-      if(!confirm('Approve payout of ₹' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
+      if(!confirm('Approve withdrawal of \u20b9' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
       r.status = 'approved';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      // Deduct from staff wallet balance
       var walletKey = 'hs_wallet_' + r.staffId;
       var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
-      wallet.balance = Math.max(0, (wallet.balance || 0) - r.amount);
-      wallet.withdrawn = (wallet.withdrawn || 0) + r.amount;
-      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Payout Transferred', note:'Bank: ' + r.bankName, date: new Date().toLocaleString() });
+      wallet.balance   = Math.max(0, (wallet.balance||0) - r.amount);
+      wallet.withdrawn = (wallet.withdrawn||0) + r.amount;
+      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Withdrawal Approved \u2714', note:'Bank: ' + r.bankName + ' | A/C: ' + r.accNo, date: new Date().toLocaleString() });
       localStorage.setItem(walletKey, JSON.stringify(wallet));
-      renderPayoutRequests();
-      showAssignToast('₹' + r.amount.toLocaleString('en-IN') + ' payout approved for ' + r.staffName, true);
+      renderWithdrawList();
+      updateWithdrawBadge();
+      showAssignToast('\u20b9' + r.amount.toLocaleString('en-IN') + ' withdrawal approved for ' + r.staffName, true);
     }
 
-    function rejectPayoutRequest(reqId){
-      var reason = prompt('Reason for rejection (shown to staff):');
+    function rejectWithdraw(reqId){
+      var reason = prompt('Reason for rejection (will be shown to staff):');
       if(reason === null) return;
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
       var r = reqs.find(function(x){ return x.id === reqId; });
       if(!r) return;
       r.status = 'rejected';
-      r.rejectReason = reason || 'Rejected by admin';
+      r.rejectReason = reason.trim() || 'Rejected by admin';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      // Refund back to wallet balance
-      var walletKey = 'hs_wallet_' + r.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
-      wallet.transactions.push({ type:'info', amount: r.amount, label:'Payout Rejected', note: r.rejectReason, date: new Date().toLocaleString() });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-      renderPayoutRequests();
-      showAssignToast('Payout rejected for ' + r.staffName, false);
+      renderWithdrawList();
+      updateWithdrawBadge();
+      showAssignToast('Withdrawal rejected for ' + r.staffName, false);
     }
 
-    function deleteAssignment(id){
-      if(!confirm('Remove this assignment?')) return;
-      saveAssignedShoots(getAssignedShoots().filter(function(a){ return a.id!==id; }));
-      renderAssignedList();
+    function updateWithdrawBadge(){
+      var pending = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]').filter(function(r){ return r.status === 'pending'; }).length;
+      var badge = document.getElementById('withdrawNotifBadge');
+      if(badge){ badge.textContent = pending; badge.style.display = pending > 0 ? 'inline' : 'none'; }
     }
 
-    // STAFF MANAGEMENT
-    function getStaff(){ return JSON.parse(localStorage.getItem('hs_staff')||'[]'); }
-    function saveStaff(list){ localStorage.setItem('hs_staff', JSON.stringify(list)); }
-
-    document.getElementById('sf_role').addEventListener('change', function(){
-      document.getElementById('sf_custom_role_wrap').style.display = this.value === 'custom' ? 'block' : 'none';
-    });
-
-    function toggleAllAccess(cb){
-      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(c => { if(c !== cb) c.checked = cb.checked; });
-    }
-
-    function getSelectedAccess(){
-      const all = document.getElementById('sf_access_all');
-      if(all.checked) return ['all'];
-      return Array.from(document.querySelectorAll('#sf_access_grid input[type=checkbox]:checked')).map(c=>c.value).filter(v=>v!=='all');
-    }
-
-    function showStaffToast(msg, ok){
-      const t = document.getElementById('sfToast');
-      t.textContent = (ok ? '✅ ' : '❌ ') + msg;
-      t.style.display = 'block';
-      t.style.background = ok ? 'rgba(76,175,80,0.15)' : 'rgba(244,67,54,0.15)';
-      t.style.borderColor = ok ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
-      t.style.color = ok ? '#4caf50' : '#f44336';
-      setTimeout(()=>t.style.display='none', 3000);
-    }
-
-    function createStaff(){
-      const name = document.getElementById('sf_name').value.trim();
-      const username = document.getElementById('sf_username').value.trim();
-      const password = document.getElementById('sf_password').value;
-      const roleVal = document.getElementById('sf_role').value;
-      const role = roleVal === 'custom' ? document.getElementById('sf_custom_role').value.trim() : roleVal;
-      const access = getSelectedAccess();
-
-      if(!name || !username || !password || !role){ showStaffToast('Please fill all required fields.', false); return; }
-      if(password.length < 4){ showStaffToast('Password must be at least 4 characters.', false); return; }
-
-      const list = getStaff();
-      if(list.find(s => s.username.toLowerCase() === username.toLowerCase())){
-        showStaffToast('Username already exists. Choose a different one.', false); return;
-      }
-
-      list.push({ id: Date.now(), name, username, password, role, access, createdAt: new Date().toLocaleDateString() });
-      saveStaff(list);
-
-      // Reset form
-      ['sf_name','sf_username','sf_password','sf_custom_role'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('sf_role').value = '';
-      document.getElementById('sf_custom_role_wrap').style.display = 'none';
-      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(c => c.checked = false);
-
-      showStaffToast('Staff account created for ' + name, true);
-      renderStaffList();
-    }
-
-    function renderStaffList(){
-      const list = getStaff();
-      document.getElementById('staffCount').textContent = list.length + ' account(s)';
-      const el = document.getElementById('staffList');
-      if(!list.length){
-        el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No staff accounts yet. Create one above.</p>';
-        return;
-      }
-      const roleColors = { creator:'#e53935', editor:'#2196f3', pr:'#ff9800', manager:'#9c27b0', support:'#4caf50' };
-      el.innerHTML = list.map(s => {
-        const color = roleColors[s.role] || '#e53935';
-        const accessBadges = (s.access||[]).map(a =>
-          `<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.68rem;color:#aaa;">${a}</span>`
-        ).join(' ');
-        return `<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-          <div style="display:flex;align-items:center;gap:1rem;">
-            <div style="width:42px;height:42px;border-radius:10px;background:${color}22;border:1px solid ${color}44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:${color};flex-shrink:0;">${s.name[0].toUpperCase()}</div>
-            <div>
-              <div style="font-size:0.92rem;font-weight:700;color:#fff;">${s.name}</div>
-              <div style="font-size:0.75rem;color:#a08080;margin-top:0.1rem;">@${s.username} &nbsp;·&nbsp; <span style="color:${color};">${s.role}</span> &nbsp;·&nbsp; Created ${s.createdAt}</div>
-              <div style="margin-top:0.35rem;display:flex;gap:0.3rem;flex-wrap:wrap;">${accessBadges}</div>
-            </div>
-          </div>
-          <div style="display:flex;gap:0.5rem;">
-            <button onclick="editStaff(${s.id})" style="background:rgba(33,150,243,0.12);border:none;color:#2196f3;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>
-            <button onclick="resetPassword(${s.id})" style="background:rgba(255,152,0,0.12);border:none;color:#ff9800;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-key"></i> Reset PW</button>
-            <button onclick="deleteStaff(${s.id})" style="background:rgba(244,67,54,0.12);border:none;color:#f44336;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    function editStaff(id){
-      const list = getStaff();
-      const s = list.find(x => x.id === id);
-      if(!s) return;
-      // Build inline modal
-      var existing = document.getElementById('staffEditModal');
-      if(existing) existing.remove();
-      var roles = ['creator','editor','pr','manager','support','custom'];
-      var roleOpts = roles.map(r => `<option value="${r}" ${s.role===r?'selected':''}>${r}</option>`).join('');
-      var accessList = ['bookings','about','vibe','customer','staff'];
-      var accessChecks = accessList.map(a =>
-        `<label style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:#ccc;background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.4rem 0.75rem;cursor:pointer;">
-          <input type="checkbox" value="${a}" ${(s.access||[]).includes(a)?'checked':''} style="accent-color:#e53935;"/> ${a}
-        </label>`).join('');
-      var modal = document.createElement('div');
-      modal.id = 'staffEditModal';
-      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-      modal.innerHTML = `
-        <div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-            <h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-edit" style="color:#e53935;"></i> Edit Staff — ${s.name}</h3>
-            <button onclick="document.getElementById('staffEditModal').remove()" style="background:none;border:none;color:#a08080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
-          </div>
-          <div style="display:grid;gap:1rem;">
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Full Name</label>
-              <input id="em_name" value="${s.name}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Username</label>
-              <input id="em_username" value="${s.username}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">New Password (leave blank to keep current)</label>
-              <input id="em_password" type="password" placeholder="New password" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Role</label>
-              <select id="em_role" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">${roleOpts}</select></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.5rem;">Page Access</label>
-              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;" id="em_access">${accessChecks}</div></div>
-          </div>
-          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-            <button onclick="saveEditStaff(${id})" style="flex:1;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
-            <button onclick="document.getElementById('staffEditModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
-          </div>
-        </div>`;
-      document.body.appendChild(modal);
-    }
-
-    function saveEditStaff(id){
-      const list = getStaff();
-      const s = list.find(x => x.id === id);
-      if(!s) return;
-      s.name = document.getElementById('em_name').value.trim() || s.name;
-      s.username = document.getElementById('em_username').value.trim() || s.username;
-      var newPass = document.getElementById('em_password').value;
-      if(newPass && newPass.length >= 4) s.password = newPass;
-      s.role = document.getElementById('em_role').value;
-      s.access = Array.from(document.querySelectorAll('#em_access input:checked')).map(function(c){ return c.value; });
-      saveStaff(list);
-      renderStaffList();
-      document.getElementById('staffEditModal').remove();
-      showStaffToast('Account updated for ' + s.name, true);
-    }
-
-    // Open staff videos DB (same DB staff uses)
-    var adminVideoDB = null;
-    function openAdminVideoDB(cb){
-      if(adminVideoDB){ cb(adminVideoDB); return; }
-      var req = indexedDB.open('hs_staff_videos_db', 1);
-      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
-      req.onsuccess = function(e){ adminVideoDB = e.target.result; cb(adminVideoDB); };
-      req.onerror = function(){ cb(null); };
-    }
-
-    // FEEDBACK ADMIN
-    var currentFbFilter = 'all';
-    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
-
-    function filterFeedback(type, btn){
-      currentFbFilter = type;
-      document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      renderFeedbackAdmin();
-    }
-
-    function renderFeedbackAdmin(){
-      var all = getFeedbacks().slice().reverse();
-      // stats
-      var shoots = all.filter(function(f){ return f.type === 'shoot'; });
-      var demos = all.filter(function(f){ return f.type === 'demo'; });
-      var avg = all.length ? (all.reduce(function(s,f){ return s + f.rating; }, 0) / all.length).toFixed(1) : '0.0';
-      document.getElementById('fb_totalCount').textContent = all.length;
-      document.getElementById('fb_avgRating').textContent = avg;
-      document.getElementById('fb_shootCount').textContent = shoots.length;
-      document.getElementById('fb_demoCount').textContent = demos.length;
-
-      // filter
-      var filtered = all;
-      if(currentFbFilter === 'shoot') filtered = shoots;
-      else if(currentFbFilter === 'demo') filtered = demos;
-      else if(currentFbFilter === '5') filtered = all.filter(function(f){ return f.rating === 5; });
-      else if(currentFbFilter === 'low') filtered = all.filter(function(f){ return f.rating <= 2; });
-
-      var el = document.getElementById('feedbackAdminList');
-      if(!filtered.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#a08080;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No feedback yet.</div>';
-      } else {
-      var starColors = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
-      el.innerHTML = filtered.map(function(f){
-        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
-        var color = starColors[f.rating] || '#f5a623';
-        var typeBadge = f.type === 'shoot'
-          ? '<span style="background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-camera"></i> Shoot</span>'
-          : '<span style="background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;"><i class="fas fa-chalkboard-teacher"></i> Demo</span>';
-        var title = f.type === 'shoot' ? (f.service + ' — ' + f.city) : f.title;
-        var sub = f.type === 'shoot'
-          ? (f.customerName ? 'By: ' + f.customerName + ' &nbsp;·&nbsp; ' : '') + (f.date && f.date !== 'N/A' ? f.date : '')
-          : 'Staff: ' + f.staffName + ' &nbsp;·&nbsp; ' + f.date;
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
-          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
-          + '<div style="display:flex;align-items:center;gap:0.75rem;">'
-          + '<div style="width:44px;height:44px;border-radius:12px;background:' + color + '22;border:1px solid ' + color + '44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:' + color + ';font-weight:900;flex-shrink:0;">' + f.rating + '</div>'
-          + '<div><div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">' + title + '</div>'
-          + '<div style="font-size:0.72rem;color:#a08080;">' + sub + '</div></div></div>'
-          + '<div style="display:flex;align-items:center;gap:0.6rem;">' + typeBadge
-          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span></div></div>'
-          + (f.comment ? '<div style="background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid ' + color + ';">&ldquo;' + f.comment + '&rdquo;</div>' : '')
-          + (f.description ? '<div style="margin-top:0.5rem;background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#b0a0a0;line-height:1.65;border-left:3px solid rgba(255,255,255,0.1);">' + f.description + '</div>' : '')
-          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;">'
-          + '<div style="font-size:0.68rem;color:#555;">' + f.submittedAt + '</div>'
-          + '<button onclick="deleteFeedback(' + f.id + ')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
-          + '</div></div>';
-      }).join('');}
-
-      // Render creator feedbacks
-      var cFeedbacks = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]').slice().reverse();
-      var cEl = document.getElementById('creatorFeedbackAdminList');
-      if(!cFeedbacks.length){
-        cEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#a08080;"><i class="fas fa-user-circle" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No creator feedback yet.</div>';
-        return;
-      }
-      var starColors2 = { 5:'#4caf50', 4:'#8bc34a', 3:'#f5a623', 2:'#ff9800', 1:'#f44336' };
-      cEl.innerHTML = cFeedbacks.map(function(f){
-        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
-        var color = starColors2[f.rating] || '#f5a623';
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ' + color + ';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
-          + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.4rem;">'
-          + '<div style="font-size:0.9rem;font-weight:800;color:#fff;">' + f.service + ' — ' + f.clientName + '</div>'
-          + '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>'
-          + '</div>'
-          + '<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.4rem;"><i class="fas fa-user-circle" style="color:#e53935;"></i> Creator: ' + f.staffName + ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + f.city + ' &nbsp;·&nbsp; ' + f.date + '</div>'
-          + (f.comment ? '<div style="font-size:0.8rem;color:#c8a0a0;font-style:italic;border-left:2px solid rgba(229,57,53,0.3);padding-left:0.65rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '')
-          + '<div style="font-size:0.62rem;color:#555;margin-top:0.5rem;">' + f.submittedAt + '</div>'
-          + '</div>';
-      }).join('');
-    }
-
-    function resetPassword(id){
-      var list = getStaff();
-      var s = list.find(function(x){ return x.id === id; });
-      if(!s) return;
-      var newPass = prompt('Set new password for ' + s.name + ':');
-      if(!newPass || newPass.length < 4){ alert('Password must be at least 4 characters.'); return; }
-      s.password = newPass;
-      saveStaff(list);
-      showStaffToast('Password reset for ' + s.name, true);
-    }
-
-    // DEMO SESSIONS
-    function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
-    function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
-
-    function populateDemoStaffSelect(){
-      const sel = document.getElementById('dm_staff');
-      const list = getStaff();
-      sel.innerHTML = '<option value="" disabled selected>Select staff member</option>';
-      list.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = s.name + ' (' + s.role + ')';
-        sel.appendChild(opt);
-      });
-    }
-
-    function showDemoToast(msg, ok){
-      const t = document.getElementById('dmToast');
-      t.textContent = (ok ? '✅ ' : '❌ ') + msg;
-      t.style.display = 'block';
-      t.style.background = ok ? 'rgba(76,175,80,0.15)' : 'rgba(244,67,54,0.15)';
-      t.style.borderColor = ok ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
-      t.style.color = ok ? '#4caf50' : '#f44336';
-      setTimeout(()=>t.style.display='none', 3000);
-    }
-
-    function createDemo(){
-      const title = document.getElementById('dm_title').value.trim();
-      const staffId = document.getElementById('dm_staff').value;
-      const date = document.getElementById('dm_date').value;
-      const time = document.getElementById('dm_time').value;
-      const place = document.getElementById('dm_place').value.trim();
-      const desc = document.getElementById('dm_desc').value.trim();
-      const headName = document.getElementById('dm_head_name').value.trim();
-      const headPhone = document.getElementById('dm_head_phone').value.trim();
-      const headEmail = document.getElementById('dm_head_email').value.trim();
-      if(!title || !staffId || !date || !time || !place || !headName || !headPhone || !headEmail){ showDemoToast('Please fill all required fields including head details.', false); return; }
-      const staffMember = getStaff().find(s => s.id == staffId);
-      const demos = getDemos();
-      demos.push({
-        id: Date.now(),
-        title, date, time, place, desc,
-        staffId: Number(staffId),
-        staffName: staffMember ? staffMember.name : 'Unknown',
-        headName, headPhone, headEmail,
-        status: 'pending',
-        reelUrl: null,
-        createdAt: new Date().toLocaleDateString()
-      });
-      saveDemos(demos);
-      ['dm_title','dm_desc','dm_place','dm_head_name','dm_head_phone','dm_head_email'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('dm_date').value = '';
-      document.getElementById('dm_time').value = '';
-      document.getElementById('dm_staff').value = '';
-      showDemoToast('Demo session created and assigned to ' + (staffMember ? staffMember.name : ''), true);
-      renderDemoAdminList();
-    }
-
-    function renderDemoAdminList(){
-      const demos = getDemos().slice().reverse();
-      document.getElementById('demoCount').textContent = demos.length + ' session(s)';
-      // stats
-      document.getElementById('dm_pendingCount').textContent = demos.filter(d=>d.status==='pending').length;
-      document.getElementById('dm_submittedCount').textContent = demos.filter(d=>d.status==='submitted').length;
-      document.getElementById('dm_approvedCount').textContent = demos.filter(d=>d.status==='approved').length;
-      document.getElementById('dm_rejectedCount').textContent = demos.filter(d=>d.status==='rejected').length;
-      const el = document.getElementById('demoAdminList');
-      if(!demos.length){
-        el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No demo sessions yet. Create one above.</p>';
-        return;
-      }
-      const statusColors = { pending:'#ff9800', submitted:'#4caf50', approved:'#2196f3', rejected:'#f44336' };
-      el.innerHTML = demos.map(d => {
-        const color = statusColors[d.status] || '#ff9800';
-        const reelSection = d.reelVideoId
-          ? `<div style="margin-top:0.75rem;padding:0.75rem;background:#1a0000;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">
-               <div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.4rem;"><i class="fas fa-check-circle"></i> Reel Submitted by Staff &nbsp;·&nbsp; <span style="color:#a08080;font-weight:400;">${d.submittedAt||''}</span></div>
-               ${d.shootDate||d.shootTime||d.shootPlace ? `<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.5rem;"><i class="fas fa-calendar" style="color:#e53935;"></i> ${d.shootDate||''} &nbsp;<i class="fas fa-clock" style="color:#e53935;"></i> ${d.shootTime||''}${d.shootPlace?' &nbsp;<i class="fas fa-map-marker-alt" style="color:#e53935;"></i> '+d.shootPlace:''}</div>` : ''}
-               <div id="adminReelPlayer_${d.id}" style="color:#a08080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>
-               ${d.status === 'submitted' ? `
-               <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-                 <button onclick="markDemoReviewed(${d.id},'approve')" style="flex:1;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.45rem 0.75rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#2196f3';this.style.color='#fff'" onmouseout="this.style.background='rgba(33,150,243,0.15)';this.style.color='#2196f3'"><i class="fas fa-check"></i> Approve</button>
-                 <button onclick="markDemoReviewed(${d.id},'reject')" style="flex:1;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.45rem 0.75rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f44336';this.style.color='#fff'" onmouseout="this.style.background='rgba(244,67,54,0.15)';this.style.color='#f44336'"><i class="fas fa-times"></i> Reject</button>
-               </div>` : ''}
-               ${d.status === 'approved' ? `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:6px;font-size:0.75rem;color:#90caf9;"><i class="fas fa-check-double"></i> Approved ${d.reviewedAt||''} ${d.adminNote?'&mdash; &ldquo;'+d.adminNote+'&rdquo;':''}</div>` : ''}
-               ${d.status === 'rejected' ? `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:6px;font-size:0.75rem;color:#ef9a9a;"><i class="fas fa-times-circle"></i> Rejected ${d.reviewedAt||''} &mdash; &ldquo;${d.adminNote||''}&rdquo;</div>` : ''}
-             </div>`
-          : `<div style="margin-top:0.6rem;font-size:0.72rem;color:#666;"><i class="fas fa-clock"></i> Awaiting reel submission from staff</div>`;
-        return `<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid ${color};border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
-            <div>
-              <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">${d.title}</div>
-              <div style="font-size:0.75rem;color:#a08080;"><i class="fas fa-user" style="color:#e53935;"></i> ${d.staffName} &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ${d.date} &nbsp;·&nbsp; <i class="fas fa-clock"></i> ${d.time}${d.place ? ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> ' + d.place : ''}</div>
-              ${d.headName ? `<div style="font-size:0.72rem;color:#a08080;margin-top:0.25rem;"><i class="fas fa-user-tie" style="color:#e53935;"></i> Head: <strong style="color:#fff;">${d.headName}</strong> &nbsp;·&nbsp; <i class="fas fa-phone"></i> ${d.headPhone} &nbsp;·&nbsp; <i class="fas fa-envelope"></i> ${d.headEmail}</div>` : ''}
-              ${d.desc ? `<div style="font-size:0.75rem;color:#666;margin-top:0.3rem;">${d.desc}</div>` : ''}
-            </div>
-            <div style="display:flex;align-items:center;gap:0.5rem;">
-              <span style="background:${color}22;border:1px solid ${color}44;color:${color};font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">${d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span>
-              <button onclick="deleteDemo(${d.id})" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-trash"></i></button>
-            </div>
-          </div>
-          ${reelSection}
-        </div>`;
-      }).join('');
-      // Load videos from shared IndexedDB
-      demos.forEach(function(d){
-        if(!d.reelVideoId) return;
-        var playerEl = document.getElementById('adminReelPlayer_' + d.id);
-        if(!playerEl) return;
-        openAdminVideoDB(function(db){
-          if(!db){ playerEl.textContent = 'Video unavailable.'; return; }
-          var req = db.transaction('videos','readonly').objectStore('videos').get(d.reelVideoId);
-          req.onsuccess = function(){
-            if(req.result && req.result.blob){
-              var url = URL.createObjectURL(req.result.blob);
-              playerEl.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:200px;border-radius:6px;margin-top:0.3rem;"></video>';
-            } else {
-              playerEl.textContent = 'Video not found in storage.';
-            }
-          };
-          req.onerror = function(){ playerEl.textContent = 'Error loading video.'; };
-        });
-      });
-    }
-
-    function markDemoReviewed(id, action){
-      var note = prompt((action === 'approve' ? 'Approval note for staff (optional):' : 'Rejection reason for staff *:')) || '';
-      if(action === 'reject' && !note.trim()){ alert('Please provide a rejection reason.'); return; }
-      const demos = getDemos();
-      const d = demos.find(x => x.id === id);
-      if(d){
-        d.status = action === 'approve' ? 'approved' : 'rejected';
-        d.adminNote = note;
-        d.reviewedAt = new Date().toLocaleString();
-      }
-      saveDemos(demos);
-      renderDemoAdminList();
-    }
-
-    function deleteDemo(id){
-      if(!confirm('Delete this demo session?')) return;
-      saveDemos(getDemos().filter(d => d.id !== id));
-      renderDemoAdminList();
-    }
-
-    function deleteStaff(id){
-      if(!confirm('Delete this staff account?')) return;
-      saveStaff(getStaff().filter(s => s.id !== id));
-      renderStaffList();
-    }
-
-    // CUSTOMER PAGE
-    function loadCustomerForm() {
-      const c = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
-      document.getElementById('cp_title').value = c.title || 'Book Your Shoot';
-      document.getElementById('cp_subtitle').value = c.subtitle || "Fill in the details and we'll assign a shooter for you.";
-      document.getElementById('cp_banner').value = c.banner || '';
-      document.getElementById('cp_bannerColor').value = c.bannerColor || '#e53935';
-      document.getElementById('cp_bannerTextColor').value = c.bannerTextColor || '#ffffff';
-      document.getElementById('cp_labelName').value = c.labelName || 'Full Name';
-      document.getElementById('cp_labelPhone').value = c.labelPhone || 'Phone Number';
-      document.getElementById('cp_labelCity').value = c.labelCity || 'City';
-      document.getElementById('cp_labelNotes').value = c.labelNotes || 'Additional Notes';
-      document.getElementById('cp_services').value = (c.services || ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography']).join('\n');
-      document.getElementById('cp_showDate').value = c.showDate !== undefined ? c.showDate : 'yes';
-      document.getElementById('cp_showTime').value = c.showTime !== undefined ? c.showTime : 'yes';
-      document.getElementById('cp_showNotes').value = c.showNotes !== undefined ? c.showNotes : 'yes';
-      document.getElementById('cp_requireNotes').value = c.requireNotes || 'no';
-      document.getElementById('cp_btnText').value = c.btnText || 'Confirm Booking';
-      document.getElementById('cp_btnIcon').value = c.btnIcon || 'fa-camera';
-      document.getElementById('cp_btnColor').value = c.btnColor || '#e53935';
-      document.getElementById('cp_btnTextColor').value = c.btnTextColor || '#ffffff';
-      document.getElementById('cp_successTitle').value = c.successTitle || 'Booking Confirmed!';
-      document.getElementById('cp_successMsg').value = c.successMsg || "Your booking has been sent to our team. We'll contact you shortly.";
-      document.getElementById('cp_note').value = c.note || '';
-      document.getElementById('cp_bgColor').value = c.bgColor || '#0d0000';
-      document.getElementById('cp_cardColor').value = c.cardColor || '#1c0000';
-      document.getElementById('cp_accentColor').value = c.accentColor || '#e53935';
-      document.getElementById('cp_showBookings').value = c.showBookings !== undefined ? c.showBookings : 'yes';
-      document.getElementById('cp_bookingsTitle').value = c.bookingsTitle || 'My Bookings';
-    }
-
-    function saveCustomerPage() {
-      const services = document.getElementById('cp_services').value.split('\n').map(s=>s.trim()).filter(Boolean);
-      const data = {
-        title: document.getElementById('cp_title').value,
-        subtitle: document.getElementById('cp_subtitle').value,
-        banner: document.getElementById('cp_banner').value,
-        bannerColor: document.getElementById('cp_bannerColor').value,
-        bannerTextColor: document.getElementById('cp_bannerTextColor').value,
-        labelName: document.getElementById('cp_labelName').value,
-        labelPhone: document.getElementById('cp_labelPhone').value,
-        labelCity: document.getElementById('cp_labelCity').value,
-        labelNotes: document.getElementById('cp_labelNotes').value,
-        services,
-        showDate: document.getElementById('cp_showDate').value,
-        showTime: document.getElementById('cp_showTime').value,
-        showNotes: document.getElementById('cp_showNotes').value,
-        requireNotes: document.getElementById('cp_requireNotes').value,
-        btnText: document.getElementById('cp_btnText').value,
-        btnIcon: document.getElementById('cp_btnIcon').value,
-        btnColor: document.getElementById('cp_btnColor').value,
-        btnTextColor: document.getElementById('cp_btnTextColor').value,
-        successTitle: document.getElementById('cp_successTitle').value,
-        successMsg: document.getElementById('cp_successMsg').value,
-        note: document.getElementById('cp_note').value,
-        bgColor: document.getElementById('cp_bgColor').value,
-        cardColor: document.getElementById('cp_cardColor').value,
-        accentColor: document.getElementById('cp_accentColor').value,
-        showBookings: document.getElementById('cp_showBookings').value,
-        bookingsTitle: document.getElementById('cp_bookingsTitle').value
-      };
-      localStorage.setItem('hs_customer_page', JSON.stringify(data));
-      const toast = document.getElementById('cpToast');
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 3000);
-    }
-
-    function renderCustomerAccounts(){
-      var el = document.getElementById('customerAccountsList');
-      if(!el) return;
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      var seen = {}; var customers = [];
-      bookings.forEach(function(b){
-        if(b.name && b.phone && !seen[b.phone]){
-          seen[b.phone] = true;
-          customers.push({ name: b.name, phone: b.phone });
-        }
-      });
-      if(!customers.length){ el.innerHTML = '<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;">No customers yet. They appear here after making a booking.</p>'; return; }
-      el.innerHTML = customers.map(function(cu){
-        var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-        var bal = localStorage.getItem('hs_cw_' + cu.phone) || '0';
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
-          + '<div style="display:flex;align-items:center;gap:1rem;">'
-          + '<div style="width:40px;height:40px;border-radius:10px;background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.3);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#e53935;flex-shrink:0;">' + cu.name[0].toUpperCase() + '</div>'
-          + '<div><div style="font-size:0.9rem;font-weight:700;color:#fff;">' + cu.name + '</div>'
-          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.1rem;">' + cu.phone + ' &nbsp;·&nbsp; Wallet: <span style="color:#4caf50;font-weight:700;">&#8377;' + bal + '</span></div></div></div>'
-          + '<button onclick="editCustomerAccount(\'' + cu.phone + '\',\'' + cu.name + '\')" style="background:rgba(33,150,243,0.12);border:none;color:#2196f3;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
-          + '</div>';
-      }).join('');
-    }
-
-    function editCustomerAccount(phone, name){
-      var existing = document.getElementById('custEditModal');
-      if(existing) existing.remove();
-      var bal = localStorage.getItem('hs_cw_' + phone) || '0';
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      var modal = document.createElement('div');
-      modal.id = 'custEditModal';
-      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-      modal.innerHTML = `
-        <div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;width:100%;max-width:440px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-            <h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-user-edit" style="color:#e53935;"></i> Edit Customer</h3>
-            <button onclick="document.getElementById('custEditModal').remove()" style="background:none;border:none;color:#a08080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
-          </div>
-          <div style="display:grid;gap:1rem;">
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Full Name</label>
-              <input id="ce_name" value="${name}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Phone</label>
-              <input id="ce_phone" value="${phone}" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Wallet Balance (&#8377;)</label>
-              <input id="ce_wallet" type="number" value="${bal}" min="0" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>
-            <div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Booking Status Override</label>
-              <select id="ce_status" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
-                <option value="">— Don't change —</option>
-                <option value="pending">Set all to Pending</option>
-                <option value="confirmed">Set all to Confirmed</option>
-                <option value="completed">Set all to Completed</option>
-                <option value="cancelled">Set all to Cancelled</option>
-              </select></div>
-          </div>
-          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-            <button onclick="saveEditCustomer('${phone}')" style="flex:1;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
-            <button onclick="document.getElementById('custEditModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
-          </div>
-        </div>`;
-      document.body.appendChild(modal);
-    }
-
-    function saveEditCustomer(oldPhone){
-      var newName = document.getElementById('ce_name').value.trim();
-      var newPhone = document.getElementById('ce_phone').value.trim();
-      var newWallet = document.getElementById('ce_wallet').value;
-      var statusOverride = document.getElementById('ce_status').value;
-      if(!newName || !newPhone){ alert('Name and phone are required.'); return; }
-      // Update bookings
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings = bookings.map(function(b){
-        if(b.phone === oldPhone){
-          b.name = newName;
-          b.phone = newPhone;
-          if(statusOverride) b.status = statusOverride;
-        }
-        return b;
-      });
-      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-      // Update wallet key
-      if(newPhone !== oldPhone){
-        localStorage.setItem('hs_cw_' + newPhone, newWallet);
-        localStorage.removeItem('hs_cw_' + oldPhone);
-      } else {
-        localStorage.setItem('hs_cw_' + newPhone, newWallet);
-      }
-      document.getElementById('custEditModal').remove();
-      renderCustomerAccounts();
-      renderCustWallets();
-    }
-    var vibeDB = null;
-    function openVibeDB(cb){
-      if(vibeDB){ cb(vibeDB); return; }
-      var req = indexedDB.open('hs_vibe_db', 1);
-      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
-      req.onsuccess = function(e){ vibeDB = e.target.result; cb(vibeDB); };
-      req.onerror = function(){ cb(null); };
-    }
-    function saveVideoDB(id, blob, cb){
-      openVibeDB(function(db){
-        if(!db){ cb(); return; }
-        var tx = db.transaction('videos','readwrite');
-        tx.objectStore('videos').put({id:id, blob:blob});
-        tx.oncomplete = cb;
-      });
-    }
-    function getVideoDB(id, cb){
-      openVibeDB(function(db){
-        if(!db){ cb(null); return; }
-        var req = db.transaction('videos','readonly').objectStore('videos').get(id);
-        req.onsuccess = function(){ cb(req.result ? req.result.blob : null); };
-        req.onerror = function(){ cb(null); };
-      });
-    }
-    function deleteVideoDB(id){
-      openVibeDB(function(db){
-        if(!db) return;
-        db.transaction('videos','readwrite').objectStore('videos').delete(id);
-      });
-    }
-
-    function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
-    function saveVibeItems(items){ localStorage.setItem('hs_vibe', JSON.stringify(items)); }
-
-    function setProgress(pct, label){
-      document.getElementById('vibe_progress_wrap').style.display = pct < 100 ? 'block' : 'none';
-      document.getElementById('vibe_progress_bar').style.width = pct + '%';
-      document.getElementById('vibe_progress_label').textContent = label;
-    }
-
-    function uploadVibeItem(){
-      var title = document.getElementById('vibe_title').value.trim();
-      var cat = document.getElementById('vibe_cat').value;
-      var thumbFile = document.getElementById('vibe_thumb').files[0];
-      var videoFile = document.getElementById('vibe_video').files[0];
-      if(!title || !cat){ alert('Please fill in title and category.'); return; }
-      if(!thumbFile){ alert('Please select a thumbnail image.'); return; }
-      if(!videoFile){ alert('Please select a video file.'); return; }
-
-      var btn = document.getElementById('vibe_upload_btn');
-      btn.disabled = true; btn.textContent = 'Uploading...';
-      setProgress(10, 'Reading thumbnail...');
-
-      var tr = new FileReader();
-      tr.onload = function(e){
-        var thumbData = e.target.result;
-        setProgress(40, 'Processing video...');
-        var id = Date.now();
-        saveVideoDB(id, videoFile, function(){
-          setProgress(90, 'Saving...');
-          var items = getVibeItems();
-          items.push({ id: id, title: title, category: cat, thumbnail: thumbData, type: 'video' });
-          saveVibeItems(items);
-          setProgress(100, 'Done');
-          btn.disabled = false; btn.innerHTML = '<i class="fas fa-upload"></i> Upload to Vibe';
-          document.getElementById('vibe_title').value='';
-          document.getElementById('vibe_cat').value='';
-          document.getElementById('vibe_thumb').value='';
-          document.getElementById('vibe_video').value='';
-          var toast = document.getElementById('vibeToast');
-          toast.style.display='block';
-          setTimeout(function(){ toast.style.display='none'; }, 2500);
-          renderVibeAdmin();
-        });
-      };
-      tr.readAsDataURL(thumbFile);
-    }
-
-    function renderVibeAdmin(){
-      var items = getVibeItems();
-      document.getElementById('vibeCount').textContent = items.length + ' item(s)';
-      var grid = document.getElementById('vibeAdminGrid');
-      if(!items.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;">No content uploaded yet.</p>'; return; }
-      grid.innerHTML = items.slice().reverse().map(function(item){
-        return '<div style="background:#2a0404;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">'
-          +'<div id="vibeThumb_'+item.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2rem;">'
-          +(item.thumbnail ? '<img src="'+item.thumbnail+'" style="width:100%;height:100%;object-fit:cover;display:block;"/>' : '<i class="fas fa-film"></i>')
-          +'</div>'
-          +'<div style="padding:0.65rem 0.75rem;">'
-          +'<div style="font-size:0.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.15rem;">'+item.title+'</div>'
-          +'<div style="font-size:0.7rem;color:#e53935;margin-bottom:0.5rem;">'+item.category+(item.staffVideoId ? ' &nbsp;• Staff Upload' : '')+'</div>'
-          +'<div style="display:flex;gap:0.35rem;flex-wrap:wrap;">'
-          +'<button onclick="editVibeItem('+item.id+')" style="flex:1;background:rgba(33,150,243,0.1);border:none;color:#2196f3;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.68rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
-          +'<button onclick="downloadVibeItem('+item.id+')" style="flex:1;background:rgba(76,175,80,0.1);border:none;color:#4caf50;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.68rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> DL</button>'
-          +'<button onclick="deleteVibeItem('+item.id+')" style="flex:1;background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.68rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
-          +'</div></div></div>';
-      }).join('');
-    }
-
-    function editVibeItem(id){
-      var items = getVibeItems();
-      var item = items.find(function(i){ return i.id === id; });
-      if(!item) return;
-      var existing = document.getElementById('editVibeModal');
-      if(existing) existing.remove();
-      var cats = ['Events & Weddings','Car Delivery','Celebrities','Outfit Shoots','Concerts','Collaborations','Decor & Interiors','Caterers'];
-      var catOpts = cats.map(function(c){ return '<option value="'+c+'"'+(item.category===c?' selected':'')+'>'+c+'</option>'; }).join('');
-      var modal = document.createElement('div');
-      modal.id = 'editVibeModal';
-      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-      modal.innerHTML = '<div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;padding:2rem;width:100%;max-width:420px;">'
-        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">'
-        +'<h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-edit" style="color:#e53935;"></i> Edit Vibe Item</h3>'
-        +'<button onclick="document.getElementById(\'editVibeModal\').remove()" style="background:none;border:none;color:#a08080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>'
-        +'</div>'
-        +'<div style="display:grid;gap:1rem;">'
-        +'<div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Title</label>'
-        +'<input id="ev_title" value="'+item.title+'" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>'
-        +'<div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Category</label>'
-        +'<select id="ev_cat" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">'+catOpts+'</select></div>'
-        +'<div><label style="font-size:0.75rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.35rem;">Replace Thumbnail (optional)</label>'
-        +'<input type="file" id="ev_thumb" accept="image/*" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/></div>'
-        +'</div>'
-        +'<div style="display:flex;gap:0.75rem;margin-top:1.5rem;">'
-        +'<button onclick="saveEditVibeItem('+id+')" style="flex:1;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save</button>'
-        +'<button onclick="document.getElementById(\'editVibeModal\').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'
-        +'</div></div>';
-      document.body.appendChild(modal);
-    }
-
-    function saveEditVibeItem(id){
-      var items = getVibeItems();
-      var item = items.find(function(i){ return i.id === id; });
-      if(!item) return;
-      item.title    = document.getElementById('ev_title').value.trim() || item.title;
-      item.category = document.getElementById('ev_cat').value || item.category;
-      var thumbFile = document.getElementById('ev_thumb').files[0];
-      function finish(){
-        saveVibeItems(items);
-        document.getElementById('editVibeModal').remove();
-        renderVibeAdmin();
-      }
-      if(thumbFile){
-        var r = new FileReader();
-        r.onload = function(e){ item.thumbnail = e.target.result; finish(); };
-        r.readAsDataURL(thumbFile);
-      } else { finish(); }
-    }
-
-    function downloadVibeItem(id){
-      getVideoDB(id, function(blob){
-        if(!blob){ alert('Video not found in storage.'); return; }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        var items = getVibeItems();
-        var item = items.find(function(i){ return i.id === id; });
-        a.href = url;
-        a.download = (item ? item.title.replace(/[^a-z0-9]/gi,'_') : 'vibe_video') + '.mp4';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-      });
-    }
-
-    function deleteVibeItem(id){
-      if(!confirm('Remove this item?')) return;
-      deleteVideoDB(id);
-      saveVibeItems(getVibeItems().filter(function(i){ return i.id!==id; }));
-      renderVibeAdmin();
-    }
-
-    // HOME PAGE EDITOR
-    function getHP(){ return JSON.parse(localStorage.getItem('hs_homepage')||'{}'); }
-    function saveHP(d){ localStorage.setItem('hs_homepage', JSON.stringify(d)); }
-
-    function loadHomePage(){
-      var h = getHP();
-      document.getElementById('hp_statReels').value    = h.statReels    || '50,000+';
-      document.getElementById('hp_statRating').value   = h.statRating   || '5.0/5';
-      document.getElementById('hp_statMakers').value   = h.statMakers   || '500+';
-      document.getElementById('hp_heroTag').value      = h.heroTag      || '';
-      document.getElementById('hp_heroSub').value      = h.heroSub      || '';
-      document.getElementById('hp_heroBig').value      = h.heroBig      || '';
-      document.getElementById('hp_btnBook').value      = h.btnBook      || 'Book Now';
-      document.getElementById('hp_servicesHeading').value = h.servicesHeading || '';
-      document.getElementById('hp_servicesSub').value     = h.servicesSub     || '';
-      document.getElementById('hp_plan1Name').value    = h.plan1Name    || 'Hourly Plan';
-      document.getElementById('hp_plan1Price').value   = h.plan1Price   || '₹1,699';
-      document.getElementById('hp_plan1Sub').value     = h.plan1Sub     || 'Quickest Content';
-      document.getElementById('hp_plan1Desc').value    = h.plan1Desc    || '';
-      document.getElementById('hp_plan2Name').value    = h.plan2Name    || 'Half-Day Plan';
-      document.getElementById('hp_plan2Price').value   = h.plan2Price   || '₹3,999';
-      document.getElementById('hp_plan2Sub').value     = h.plan2Sub     || 'Event Essential';
-      document.getElementById('hp_plan2Desc').value    = h.plan2Desc    || '';
-      document.getElementById('hp_email').value        = h.email        || 'hashshootsmedia@gmail.com';
-      document.getElementById('hp_instagram').value    = h.instagram    || '@wearehashoot';
-      document.getElementById('hp_location').value     = h.location     || 'Vijayawada, India';
-      document.getElementById('hp_copyright').value    = h.copyright    || '© 2025 Hash Shoots. All rights reserved.';
-      document.getElementById('hp_announcement').value = h.announcement || '';
-      document.getElementById('hp_announceBg').value   = h.announceBg   || '#e53935';
-      document.getElementById('hp_announceColor').value= h.announceColor|| '#ffffff';
-      var services = h.services || [
-        {name:'Reel Shoots',price:'Starting ₹999',desc:'Trendy, fast-paced reels for Instagram & YouTube. Delivered in 10 mins.',icon:'fa-film',featured:false},
-        {name:'Portrait Sessions',price:'Starting ₹1,499',desc:'Professional headshots, personal branding & lifestyle portraits.',icon:'fa-user-circle',featured:true},
-        {name:'Wedding Photography',price:'Starting ₹15,000',desc:'Capture every precious moment of your special day beautifully.',icon:'fa-heart',featured:false},
-        {name:'Product Shoots',price:'Starting ₹2,499',desc:'E-commerce & brand product photography that sells.',icon:'fa-box',featured:false},
-        {name:'Event Coverage',price:'Starting ₹5,999',desc:'Corporate events, parties, launches — full coverage guaranteed.',icon:'fa-calendar-alt',featured:false},
-        {name:'Food Photography',price:'Starting ₹1,999',desc:'Mouth-watering food shoots for restaurants, menus & delivery apps.',icon:'fa-utensils',featured:false}
-      ];
-      document.getElementById('hp_servicesList').innerHTML = '';
-      services.forEach(function(s){ addServiceRow(s.name, s.price, s.desc, s.icon, s.featured); });
-      var testis = h.testimonials || [
-        {name:'Srikari Galigari',text:'Hash Shoots made booking a reel maker super easy!'},
-        {name:'Lanka Pravallika',text:'Hash Shoots is a game-changer! Quick booking, talented reel makers.'},
-        {name:'Abhiram Kukunuri',text:'Seamless booking, professional shooters and stunning reels!'}
-      ];
-      document.getElementById('hp_testiList').innerHTML = '';
-      testis.forEach(function(t){ addTestiRow(t.name, t.text); });
-    }
-
-    function addServiceRow(name, price, desc, icon, featured){
-      name=name||''; price=price||''; desc=desc||''; icon=icon||'fa-camera'; featured=featured||false;
-      var div = document.createElement('div');
-      div.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;';
-      div.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:center;margin-bottom:0.5rem;">'
-        +'<input type="text" placeholder="Service Name" value="'+name+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<input type="text" placeholder="Price e.g. Starting \u20b9999" value="'+price+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<input type="text" placeholder="Icon e.g. fa-film" value="'+icon+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<button onclick="this.closest(\'div\').parentElement.remove()" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-times"></i></button>'
-        +'</div>'
-        +'<input type="text" placeholder="Description" value="'+desc+'" style="width:100%;background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;margin-bottom:0.5rem;"/>'
-        +'<label style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#a08080;cursor:pointer;text-transform:none;letter-spacing:0;">'
-        +'<input type="checkbox" '+(featured?'checked':'')+' style="accent-color:#e53935;"/> Mark as Most Popular</label>';
-      document.getElementById('hp_servicesList').appendChild(div);
-    }
-
-    function addTestiRow(name, text){
-      name=name||''; text=text||'';
-      var div = document.createElement('div');
-      div.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;display:grid;grid-template-columns:1fr 2fr auto;gap:0.6rem;align-items:center;';
-      div.innerHTML='<input type="text" placeholder="Customer Name" value="'+name+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<input type="text" placeholder="Testimonial text" value="'+text+'" style="background:#2a0404;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>'
-        +'<button onclick="this.parentElement.remove()" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-times"></i></button>';
-      document.getElementById('hp_testiList').appendChild(div);
-    }
-
-    function saveHomePage(){
-      var services = Array.from(document.querySelectorAll('#hp_servicesList > div')).map(function(row){
-        var inputs = row.querySelectorAll('input[type=text]');
-        var cb = row.querySelector('input[type=checkbox]');
-        return {name:inputs[0].value.trim(), price:inputs[1].value.trim(), icon:inputs[2].value.trim()||'fa-camera', desc:inputs[3].value.trim(), featured:cb?cb.checked:false};
-      }).filter(function(s){ return s.name; });
-      var testimonials = Array.from(document.querySelectorAll('#hp_testiList > div')).map(function(row){
-        var inputs = row.querySelectorAll('input');
-        return {name:inputs[0].value.trim(), text:inputs[1].value.trim()};
-      }).filter(function(t){ return t.name; });
-      var data = {
-        statReels:   document.getElementById('hp_statReels').value.trim(),
-        statRating:  document.getElementById('hp_statRating').value.trim(),
-        statMakers:  document.getElementById('hp_statMakers').value.trim(),
-        heroTag:     document.getElementById('hp_heroTag').value.trim(),
-        heroSub:     document.getElementById('hp_heroSub').value.trim(),
-        heroBig:     document.getElementById('hp_heroBig').value.trim(),
-        btnBook:     document.getElementById('hp_btnBook').value.trim(),
-        servicesHeading: document.getElementById('hp_servicesHeading').value.trim(),
-        servicesSub:     document.getElementById('hp_servicesSub').value.trim(),
-        plan1Name:   document.getElementById('hp_plan1Name').value.trim(),
-        plan1Price:  document.getElementById('hp_plan1Price').value.trim(),
-        plan1Sub:    document.getElementById('hp_plan1Sub').value.trim(),
-        plan1Desc:   document.getElementById('hp_plan1Desc').value.trim(),
-        plan2Name:   document.getElementById('hp_plan2Name').value.trim(),
-        plan2Price:  document.getElementById('hp_plan2Price').value.trim(),
-        plan2Sub:    document.getElementById('hp_plan2Sub').value.trim(),
-        plan2Desc:   document.getElementById('hp_plan2Desc').value.trim(),
-        email:       document.getElementById('hp_email').value.trim(),
-        instagram:   document.getElementById('hp_instagram').value.trim(),
-        location:    document.getElementById('hp_location').value.trim(),
-        copyright:   document.getElementById('hp_copyright').value.trim(),
-        announcement: document.getElementById('hp_announcement').value.trim(),
-        announceBg:   document.getElementById('hp_announceBg').value,
-        announceColor:document.getElementById('hp_announceColor').value,
-        services, testimonials
-      };
-      saveHP(data);
-      var toast = document.getElementById('hpToast');
-      toast.style.display='block';
-      setTimeout(function(){ toast.style.display='none'; }, 3000);
-    }
-
-    // STORE ADMIN
-    function getStore(){ return JSON.parse(localStorage.getItem('hs_store') || '{"tshirts":[],"idcard":{}}'); }
-    function saveStore(d){ localStorage.setItem('hs_store', JSON.stringify(d)); }
-
-    var tsImageData = null;
-    var idcImageData = null;
-
-    document.getElementById('ts_image').addEventListener('change', function(){
-      var file = this.files[0]; if(!file) return;
-      var r = new FileReader();
-      r.onload = function(e){
-        tsImageData = e.target.result;
-        document.getElementById('ts_img_tag').src = tsImageData;
-        document.getElementById('ts_img_preview').style.display = 'block';
-      };
-      r.readAsDataURL(file);
-    });
-
-    document.getElementById('idc_image').addEventListener('change', function(){
-      var file = this.files[0]; if(!file) return;
-      var r = new FileReader();
-      r.onload = function(e){
-        idcImageData = e.target.result;
-        document.getElementById('idc_img_tag').src = idcImageData;
-        document.getElementById('idc_img_preview').style.display = 'block';
-      };
-      r.readAsDataURL(file);
-    });
-
-    function loadStoreAdmin(){
-      var s = getStore();
-      document.getElementById('store_email').value = s.contactEmail || 'hashshootsmedia@gmail.com';
-      document.getElementById('store_discount_email').value = s.discountEmail || 'hashshootsmedia@gmail.com';
-      // ID card
-      var idc = s.idcard || {};
-      document.getElementById('idc_price').value = idc.price || '';
-      document.getElementById('idc_desc').value = idc.description || '';
-      if(idc.image){
-        idcImageData = idc.image;
-        document.getElementById('idc_img_tag').src = idc.image;
-        document.getElementById('idc_img_preview').style.display = 'block';
-      }
-      renderTshirtAdminList();
-    }
-
-    function saveStoreSettings(){
-      var s = getStore();
-      s.contactEmail = document.getElementById('store_email').value.trim() || 'hashshootsmedia@gmail.com';
-      s.discountEmail = document.getElementById('store_discount_email').value.trim() || s.contactEmail;
-      saveStore(s);
-      var t = document.getElementById('storeSettingsToast');
-      t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2500);
-    }
-
-    function addTshirt(){
-      var name  = document.getElementById('ts_name').value.trim();
-      var price = document.getElementById('ts_price').value;
-      var desc  = document.getElementById('ts_desc').value.trim();
-      var sizes = document.getElementById('ts_sizes').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-      if(!name || !price){ alert('Please enter product name and price.'); return; }
-      var s = getStore();
-      s.tshirts = s.tshirts || [];
-      s.tshirts.push({ id: Date.now(), name: name, price: Number(price), description: desc, sizes: sizes, image: tsImageData || '' });
-      saveStore(s);
-      // reset
-      document.getElementById('ts_name').value = '';
-      document.getElementById('ts_price').value = '';
-      document.getElementById('ts_desc').value = '';
-      document.getElementById('ts_sizes').value = '';
-      document.getElementById('ts_image').value = '';
-      document.getElementById('ts_img_preview').style.display = 'none';
-      tsImageData = null;
-      var t = document.getElementById('tsToast');
-      t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2500);
-      renderTshirtAdminList();
-    }
-
-    function renderTshirtAdminList(){
-      var s = getStore();
-      var list = s.tshirts || [];
-      document.getElementById('tsCount').textContent = list.length + ' product(s)';
-      var el = document.getElementById('tshirtAdminList');
-      if(!list.length){
-        el.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-tshirt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No T-shirts added yet.</div>';
-        return;
-      }
-      el.innerHTML = list.map(function(t){
-        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">'
-          + (t.image ? '<img src="'+t.image+'" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;"/>' : '<div style="width:60px;height:60px;background:#280404;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-tshirt" style="color:#e53935;font-size:1.4rem;"></i></div>')
-          + '<div style="flex:1;">'
-          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + t.name + '</div>'
-          + '<div style="font-size:0.78rem;color:#e53935;font-weight:700;margin-top:0.1rem;">₹' + Number(t.price).toLocaleString('en-IN') + '</div>'
-          + (t.sizes && t.sizes.length ? '<div style="font-size:0.7rem;color:#a08080;margin-top:0.15rem;">Sizes: ' + t.sizes.join(', ') + '</div>' : '')
-          + (t.description ? '<div style="font-size:0.72rem;color:#666;margin-top:0.1rem;">' + t.description + '</div>' : '')
-          + '</div>'
-          + '<button onclick="deleteTshirt('+t.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
-          + '</div>';
-      }).join('');
-    }
-
-    function deleteTshirt(id){
-      if(!confirm('Remove this T-shirt?')) return;
-      var s = getStore();
-      s.tshirts = (s.tshirts||[]).filter(function(t){ return t.id !== id; });
-      saveStore(s);
-      renderTshirtAdminList();
-    }
-
-    function saveIdCard(){
-      var price = document.getElementById('idc_price').value;
-      var desc  = document.getElementById('idc_desc').value.trim();
-      if(!price){ alert('Please enter the ID card price.'); return; }
-      var s = getStore();
-      s.idcard = { price: Number(price), description: desc, image: idcImageData || (s.idcard && s.idcard.image) || '' };
-      saveStore(s);
-      var t = document.getElementById('idcToast');
-      t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2500);
-    }
+    setInterval(updateWithdrawBadge, 4000);
+    updateWithdrawBadge();
 
     // RAZORPAY CONFIG
     function loadRazorpayTab(){
