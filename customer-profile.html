@@ -7,25 +7,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+
+  :root{
+    --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+    --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;
+    --card:#1a1a1a;--card2:#1e1e1e;
+    --border:rgba(201,168,76,0.12);
+    --text:#f0ece0;--muted:#9a9080;
+  }
+
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
     nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#c9a84c;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .nav-right{display:flex;align-items:center;gap:1rem;}
-    .nav-right span{color:#888070;font-size:0.875rem;}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
-    .btn:hover{border-color:#c9a84c;color:#c9a84c;}
-    .tab-bar{background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;overflow-x:auto;scrollbar-width:none;}
-    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:#888070;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:0.45rem;text-decoration:none;transition:all 0.2s;}
-    .ctab:hover{color:#fff;}
-    .ctab.active{color:#c9a84c;border-bottom-color:#c9a84c;}
+    .nav-right span{color:var(--muted);font-size:0.875rem;}
+    .btn{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .btn:hover{border-color:var(--gold);color:var(--gold);}
+    .tab-bar{background:var(--bg);border-bottom:1px solid rgba(201,168,76,0.06);display:flex;overflow-x:auto;scrollbar-width:none;}
+    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:0.45rem;text-decoration:none;transition:all 0.2s;}
+    .ctab:hover{color:var(--text);}
+    .ctab.active{color:var(--gold);border-bottom-color:var(--gold);}
     .container{max-width:600px;margin:3rem auto;padding:0 1.5rem;}
     .page-title{font-size:1.8rem;font-weight:900;margin-bottom:0.4rem;}
-    .page-title span{color:#c9a84c;}
-    .subtitle{color:#888070;margin-bottom:2rem;font-size:0.9rem;}
-    input{background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
-    input:focus{border-color:#c9a84c;}
-    label{font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;}
+    .page-title span{color:var(--gold);}
+    .subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.9rem;}
+    input{background:var(--bg2);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.8rem 1rem;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
+    input:focus{border-color:var(--gold);}
+    label{font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;}
   </style>
 </head>
 <body>
@@ -43,7 +52,7 @@
     <h1 class="page-title">My <span>Profile</span></h1>
     <p class="subtitle">Manage your account details</p>
 
-    <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;">
+    <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:18px;padding:2rem;">
       <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;">
         <div style="position:relative;flex-shrink:0;">
           <div id="profileAv" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fff;overflow:hidden;"></div>
@@ -55,7 +64,7 @@
         <div>
           <div id="profileName" style="font-size:1.15rem;font-weight:800;color:#fff;"></div>
           <div style="font-size:0.78rem;color:#c9a84c;font-weight:600;margin-top:0.2rem;">Customer Account</div>
-          <div style="font-size:0.72rem;color:#888070;margin-top:0.2rem;">Tap camera icon to change photo</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Tap camera icon to change photo</div>
         </div>
       </div>
 
@@ -70,7 +79,7 @@
         </div>
         <div style="grid-column:span 2;">
           <label><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</label>
-          <input type="text" id="profileEmail" readonly style="background:#180000;border-color:rgba(255,255,255,0.05);color:#888070;cursor:not-allowed;"/>
+          <input type="text" id="profileEmail" readonly style="background:#180000;border-color:rgba(201,168,76,0.05);color:#9a9080;cursor:not-allowed;"/>
         </div>
       </div>
 

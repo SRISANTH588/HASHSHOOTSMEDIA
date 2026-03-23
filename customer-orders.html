@@ -7,21 +7,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+
+  :root{
+    --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+    --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;
+    --card:#1a1a1a;--card2:#1e1e1e;
+    --border:rgba(201,168,76,0.12);
+    --text:#f0ece0;--muted:#9a9080;
+  }
+
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
     nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#c9a84c;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .nav-right{display:flex;align-items:center;gap:1rem;}
-    .nav-right span{color:#888070;font-size:0.875rem;}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
-    .btn:hover{border-color:#c9a84c;color:#c9a84c;}
+    .nav-right span{color:var(--muted);font-size:0.875rem;}
+    .btn{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .btn:hover{border-color:var(--gold);color:var(--gold);}
     .container{max-width:700px;margin:3rem auto;padding:0 1.5rem;}
     .page-title{font-size:1.8rem;font-weight:900;margin-bottom:0.4rem;}
-    .page-title span{color:#c9a84c;}
-    .subtitle{color:#888070;margin-bottom:2rem;font-size:0.9rem;}
-    .booking-item{background:#111111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;display:flex;flex-direction:column;gap:0;}
+    .page-title span{color:var(--gold);}
+    .subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.9rem;}
+    .booking-item{background:#111111;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;display:flex;flex-direction:column;gap:0;}
     .booking-info h4{font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;}
-    .booking-info p{font-size:0.8rem;color:#888070;}
+    .booking-info p{font-size:0.8rem;color:var(--muted);}
     .status{padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;white-space:nowrap;}
     .status.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
     .status.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
@@ -29,8 +38,8 @@
     .status.cancelled{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
     .cancel-notice{background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.25);border-left:3px solid #f44336;border-radius:10px;padding:0.85rem 1rem;margin-top:0.75rem;}
     .cancel-notice-title{font-size:0.82rem;font-weight:800;color:#f44336;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.4rem;}
-    .cancel-notice-body{font-size:0.78rem;color:#888070;line-height:1.65;}
-    .empty{color:#888070;font-size:0.875rem;text-align:center;padding:3rem;}
+    .cancel-notice-body{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+    .empty{color:var(--muted);font-size:0.875rem;text-align:center;padding:3rem;}
   </style>
 </head>
 <body>
@@ -97,20 +106,20 @@
           var mailBtn = (emailDisplay !== '—')
             ? '<a href="mailto:' + emailDisplay + '" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;border-radius:8px;padding:0.38rem 0.85rem;font-size:0.78rem;font-weight:700;text-decoration:none;"><i class="fas fa-envelope"></i> Email</a>' : '';
 
-          creatorCard = '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:1rem 1.1rem;">'
+          creatorCard = '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:1rem 1.1rem;">'
             + '<div style="font-size:0.68rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem;"><i class="fas fa-user-circle"></i> Your Assigned Creator</div>'
             + '<div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:0.85rem;">'
             + '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;color:#fff;flex-shrink:0;border:2px solid rgba(201,168,76,0.4);">' + assign.staffName.charAt(0).toUpperCase() + '</div>'
             + '<div style="flex:1;">'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + assign.staffName + '</div>'
-            + '<div style="font-size:0.72rem;color:#888070;margin-top:0.1rem;">Hash Shoots Creator</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">Hash Shoots Creator</div>'
             + '</div>'
             + arrivedBadge
             + '</div>'
             + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:0.75rem;">'
-            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-id-badge" style="color:#c9a84c;"></i> Staff ID</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + idDisplay + '</div></div>'
-            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Phone</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + phoneDisplay + '</div></div>'
-            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;grid-column:span 2;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</div><div style="font-size:0.82rem;font-weight:700;color:#fff;word-break:break-all;">' + emailDisplay + '</div></div>'
+            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-id-badge" style="color:#c9a84c;"></i> Staff ID</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + idDisplay + '</div></div>'
+            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Phone</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + phoneDisplay + '</div></div>'
+            + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;grid-column:span 2;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</div><div style="font-size:0.82rem;font-weight:700;color:#fff;word-break:break-all;">' + emailDisplay + '</div></div>'
             + '</div>'
             + (assign.arrivedAt ? '<div style="font-size:0.72rem;color:#4caf50;margin-bottom:0.65rem;"><i class="fas fa-check-circle"></i> Arrived at ' + assign.arrivedAt + '</div>' : '')
             + ((callBtn || mailBtn) ? '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">' + callBtn + mailBtn + '</div>' : '')
@@ -122,8 +131,8 @@
         if(vid){
           videoSection = '<div id="custVid_' + vid.id + '" style="margin-top:0.85rem;padding:1rem;background:#080808;border-radius:12px;border:1px solid rgba(201,168,76,0.25);">'
             + '<div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.4rem;"><i class="fas fa-film"></i> Your Edited Reel is Ready!</div>'
-            + '<div style="font-size:0.72rem;color:#888070;margin-bottom:0.65rem;">Your reel has been delivered. Watch it below and tap Download to save it.</div>'
-            + '<div style="color:#888070;font-size:0.82rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.65rem;">Your reel has been delivered. Watch it below and tap Download to save it.</div>'
+            + '<div style="color:#9a9080;font-size:0.82rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>'
             + '</div>';
         }
 
@@ -182,7 +191,7 @@
               + '<video src="'+url+'" controls style="width:100%;max-height:280px;border-radius:10px;margin-bottom:0.75rem;"></video>'
               + '<div style="display:flex;gap:0.65rem;align-items:center;flex-wrap:wrap;">'
               + '<a href="'+url+'" download="HashShoots_Reel.mp4" style="display:inline-flex;align-items:center;gap:0.5rem;background:#c9a84c;color:#fff;border-radius:9px;padding:0.6rem 1.4rem;font-size:0.85rem;font-weight:700;text-decoration:none;" onmouseover="this.style.background=\'#a07830\'" onmouseout="this.style.background=\'#c9a84c\'"><i class="fas fa-download"></i> Download Reel</a>'
-              + '<span style="font-size:0.7rem;color:#888070;display:flex;align-items:center;gap:0.3rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Delivered by Hash Shoots</span>'
+              + '<span style="font-size:0.7rem;color:#9a9080;display:flex;align-items:center;gap:0.3rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Delivered by Hash Shoots</span>'
               + '</div>';
           };
         });

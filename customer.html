@@ -7,40 +7,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+
+  :root{
+    --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+    --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;
+    --card:#1a1a1a;--card2:#1e1e1e;
+    --border:rgba(201,168,76,0.12);
+    --text:#f0ece0;--muted:#9a9080;
+  }
+
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
     nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#c9a84c;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .nav-right{display:flex;align-items:center;gap:1rem;}
-    .nav-right span{color:#888070;font-size:0.875rem;}
-    .btn-logout{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
-    .btn-logout:hover{border-color:#c9a84c;color:#c9a84c;}
+    .nav-right span{color:var(--muted);font-size:0.875rem;}
+    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
+    .btn-logout:hover{border-color:var(--gold);color:var(--gold);}
     .container{max-width:700px;margin:3rem auto;padding:0 1.5rem;}
     .page-title{font-size:2rem;font-weight:900;margin-bottom:0.5rem;}
     .page-title span{color:var(--accent,#c9a84c);}
-    .subtitle{color:#888070;margin-bottom:2.5rem;}
+    .subtitle{color:var(--muted);margin-bottom:2.5rem;}
     .banner-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-bottom:1.5rem;font-size:0.88rem;font-weight:600;text-align:center;}
     .booking-card{border-radius:20px;padding:2.5rem;}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
     .form-group{display:flex;flex-direction:column;gap:0.4rem;}
     .form-group.full{grid-column:span 2;}
-    label{font-size:0.8rem;font-weight:600;color:#ccc;}
-    input,select,textarea{background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
+    label{font-size:0.8rem;font-weight:600;color:#d4c9a8;}
+    input,select,textarea{background:var(--bg2);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.8rem 1rem;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s;width:100%;}
     input:focus,select:focus,textarea:focus{border-color:var(--accent,#c9a84c);}
-    select option{background:#280000;}
+    select option{background:#111111;}
     textarea{resize:vertical;min-height:80px;}
-    .note-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-top:1rem;color:#888070;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);}
-    .btn-submit{width:100%;color:#fff;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:1.5rem;transition:filter 0.2s,transform 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+    .note-bar{display:none;border-radius:10px;padding:0.75rem 1.25rem;margin-top:1rem;color:var(--muted);font-size:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);}
+    .btn-submit{width:100%;color:var(--text);border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:1.5rem;transition:filter 0.2s,transform 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
     .btn-submit:hover{filter:brightness(0.85);transform:translateY(-1px);}
     .success-msg{display:none;border-radius:12px;padding:1.5rem;text-align:center;margin-top:1.5rem;background:rgba(46,125,50,0.15);border:1px solid rgba(76,175,80,0.3);}
     .success-msg i{color:#4caf50;font-size:2rem;margin-bottom:0.75rem;display:block;}
     .success-msg h3{color:#4caf50;margin-bottom:0.4rem;}
-    .success-msg p{color:#888070;font-size:0.875rem;}
+    .success-msg p{color:var(--muted);font-size:0.875rem;}
     .my-bookings{margin-top:3rem;}
     .my-bookings h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
-    .booking-item{background:var(--card,#111111);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
+    .booking-item{background:var(--card,#111111);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
     .booking-info h4{font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;}
-    .booking-info p{font-size:0.8rem;color:#888070;}
+    .booking-info p{font-size:0.8rem;color:var(--muted);}
     .status{padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
     .status.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
     .status.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
@@ -48,112 +57,112 @@
     .status.cancelled{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
     .cancel-notice{background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.25);border-left:3px solid #f44336;border-radius:10px;padding:0.85rem 1rem;margin-top:0.65rem;}
     .cancel-notice-title{font-size:0.82rem;font-weight:800;color:#f44336;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.4rem;}
-    .cancel-notice-body{font-size:0.78rem;color:#888070;line-height:1.65;}
-    .empty{color:#888070;font-size:0.875rem;text-align:center;padding:2rem;}
+    .cancel-notice-body{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+    .empty{color:var(--muted);font-size:0.875rem;text-align:center;padding:2rem;}
     @media(max-width:540px){.form-grid{grid-template-columns:1fr;}.form-group.full{grid-column:1;}}
     .feedback-wrap{margin-top:3rem;}
     .feedback-wrap h2{font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;}
-    .fb-card{background:var(--card,#111111);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
+    .fb-card{background:var(--card,#111111);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
     .fb-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;}
     .fb-card-title{font-size:0.95rem;font-weight:700;}
-    .fb-card-meta{font-size:0.75rem;color:#888070;margin-top:0.15rem;}
+    .fb-card-meta{font-size:0.75rem;color:var(--muted);margin-top:0.15rem;}
     .fb-done-badge{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;white-space:nowrap;}
     .fb-pending-badge{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;white-space:nowrap;}
     .stars{display:flex;gap:0.35rem;margin-bottom:0.75rem;}
     .star{font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;line-height:1;}
     .star.active{color:#f5a623;}
-    .fb-textarea{width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
-    .fb-textarea:focus{border-color:#c9a84c;}
-    .btn-fb-submit{margin-top:0.65rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.55rem 1.4rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
-    .btn-fb-submit:hover{background:#a07830;transform:translateY(-1px);}
+    .fb-textarea{width:100%;background:var(--bg2);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
+    .fb-textarea:focus{border-color:var(--gold);}
+    .btn-fb-submit{margin-top:0.65rem;background:var(--gold);color:var(--text);border:none;border-radius:9px;padding:0.55rem 1.4rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+    .btn-fb-submit:hover{background:var(--gold-dark);transform:translateY(-1px);}
     .fb-stars-display{color:#f5a623;font-size:1.1rem;letter-spacing:2px;margin-bottom:0.3rem;}
-    .fb-comment-display{color:#888070;font-size:0.82rem;margin-top:0.25rem;font-style:italic;}
-    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:#888070;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.45rem;transition:all 0.2s;}
-    .ctab:hover{color:#fff;}
-    .ctab.active{color:#c9a84c;border-bottom-color:#c9a84c;}
+    .fb-comment-display{color:var(--muted);font-size:0.82rem;margin-top:0.25rem;font-style:italic;}
+    .ctab{padding:0.85rem 1.2rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.45rem;transition:all 0.2s;}
+    .ctab:hover{color:var(--text);}
+    .ctab.active{color:var(--gold);border-bottom-color:var(--gold);}
     .ctab i{font-size:0.8rem;}
     a.ctab{text-decoration:none;}
     .tab-section{display:none;}
     .tab-section.active{display:block;}
-    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
-    .cookie-banner p{font-size:0.82rem;color:#888070;margin:0;}
-    .cookie-banner a{color:#c9a84c;}
+    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid rgba(201,168,76,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
+    .cookie-banner p{font-size:0.82rem;color:var(--muted);margin:0;}
+    .cookie-banner a{color:var(--gold);}
     .cookie-btns{display:flex;gap:0.5rem;}
-    .btn-cookie-accept{background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
-    .btn-cookie-decline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#888070;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-accept{background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-decline{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--muted);border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
     .terms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
     .terms-overlay.open{display:flex;}
-    .terms-box{background:#0a0a0a;border:1px solid rgba(201,168,76,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
-    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
-    .terms-header h3{font-size:1rem;font-weight:800;color:#fff;}
-    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:#888070;line-height:1.7;}
-    .terms-body h4{color:#fff;font-size:0.88rem;margin:1rem 0 0.4rem;}
+    .terms-box{background:var(--bg);border:1px solid rgba(201,168,76,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
+    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;}
+    .terms-header h3{font-size:1rem;font-weight:800;color:var(--text);}
+    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:var(--muted);line-height:1.7;}
+    .terms-body h4{color:var(--text);font-size:0.88rem;margin:1rem 0 0.4rem;}
     .terms-body h4:first-child{margin-top:0;}
-    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;}
-    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#ccc;cursor:pointer;}
-    .terms-check input{accent-color:#c9a84c;width:16px;height:16px;cursor:pointer;}
-    .btn-terms-proceed{background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
+    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.75rem;}
+    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#d4c9a8;cursor:pointer;}
+    .terms-check input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;}
+    .btn-terms-proceed{background:var(--gold);color:var(--text);border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
-    .btn-terms-cancel{background:transparent;border:none;color:#888070;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     /* PLAN PREVIEW MODAL */
     .plan-preview-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
     .plan-preview-overlay.open{display:flex;}
-    .plan-preview-box{background:#080808;border:1px solid rgba(201,168,76,0.3);border-radius:20px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
-    .plan-preview-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
-    .plan-preview-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .plan-preview-box{background:var(--bg);border:1px solid rgba(201,168,76,0.3);border-radius:20px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+    .plan-preview-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;}
+    .plan-preview-header h3{font-size:1rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:0.6rem;}
     .plan-preview-body{padding:1.5rem;}
-    .plan-preview-name{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:0.3rem;}
-    .plan-preview-price{font-size:2.5rem;font-weight:900;background:linear-gradient(90deg,#c9a84c,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;}
-    .plan-preview-desc{font-size:0.85rem;color:#888070;line-height:1.7;margin-bottom:1.25rem;}
-    .plan-preview-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.6rem;}
-    .btn-plan-continue{background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);transition:all 0.2s;}
+    .plan-preview-name{font-size:1.5rem;font-weight:900;color:var(--text);margin-bottom:0.3rem;}
+    .plan-preview-price{font-size:2.5rem;font-weight:900;background:linear-gradient(90deg,#c9a84c,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;}
+    .plan-preview-desc{font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;}
+    .plan-preview-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.6rem;}
+    .btn-plan-continue{background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);transition:all 0.2s;}
     .btn-plan-continue:hover{transform:translateY(-1px);box-shadow:0 10px 35px rgba(201,168,76,0.5);}
-    .btn-plan-back{background:transparent;border:none;color:#888070;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    .btn-plan-back{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     /* PAYMENT T&C MODAL */
     .pay-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
     .pay-tnc-overlay.open{display:flex;}
-    .pay-tnc-box{background:#080808;border:1px solid rgba(229,57,53,0.35);border-radius:20px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
-    .pay-tnc-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-    .pay-tnc-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .pay-tnc-box{background:var(--bg);border:1px solid rgba(229,57,53,0.35);border-radius:20px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+    .pay-tnc-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .pay-tnc-header h3{font-size:1rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:0.6rem;}
     .pay-tnc-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;}
     .pay-tnc-body::-webkit-scrollbar{width:4px;}
     .pay-tnc-body::-webkit-scrollbar-track{background:transparent;}
     .pay-tnc-body::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:2px;}
-    .tnc-clause{display:flex;gap:0.85rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .tnc-clause{display:flex;gap:0.85rem;padding:0.85rem 0;border-bottom:1px solid rgba(201,168,76,0.05);}
     .tnc-clause:last-child{border-bottom:none;}
     .tnc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;margin-top:0.1rem;}
-    .tnc-text h5{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
-    .tnc-text p{font-size:0.78rem;color:#888070;line-height:1.65;}
-    .tnc-highlight{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.85rem 1rem;margin:1rem 0 0.5rem;}
+    .tnc-text h5{font-size:0.88rem;font-weight:800;color:var(--text);margin-bottom:0.25rem;}
+    .tnc-text p{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+    .tnc-highlight{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.85rem 1rem;margin:1rem 0 0.5rem;}
     .tnc-highlight p{font-size:0.8rem;color:#e08080;line-height:1.6;}
-    .pay-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;flex-shrink:0;}
-    .pay-tnc-check{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.83rem;color:#ccc;cursor:pointer;line-height:1.5;}
-    .pay-tnc-check input{accent-color:#c9a84c;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
-    .btn-pay-proceed{background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .pay-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.75rem;flex-shrink:0;}
+    .pay-tnc-check{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.83rem;color:#d4c9a8;cursor:pointer;line-height:1.5;}
+    .pay-tnc-check input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
+    .btn-pay-proceed{background:linear-gradient(135deg,#2196f3,#1565c0);color:var(--text);border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
     .btn-pay-proceed.enabled{opacity:1;pointer-events:all;box-shadow:0 8px 25px rgba(33,150,243,0.4);}
     .btn-pay-proceed.enabled:hover{transform:translateY(-1px);box-shadow:0 12px 35px rgba(33,150,243,0.5);}
-    .btn-pay-cancel{background:transparent;border:none;color:#888070;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;padding:0.25rem;}
-    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
-    .cookie-banner p{font-size:0.82rem;color:#888070;margin:0;}
-    .cookie-banner a{color:#c9a84c;text-decoration:underline;}
+    .btn-pay-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;padding:0.25rem;}
+    .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid rgba(201,168,76,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
+    .cookie-banner p{font-size:0.82rem;color:var(--muted);margin:0;}
+    .cookie-banner a{color:var(--gold);text-decoration:underline;}
     .cookie-btns{display:flex;gap:0.5rem;}
-    .btn-cookie-accept{background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
-    .btn-cookie-decline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#888070;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-accept{background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-cookie-decline{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--muted);border-radius:8px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
     /* TERMS MODAL */
     .terms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:10000;align-items:center;justify-content:center;padding:1rem;}
     .terms-overlay.open{display:flex;}
-    .terms-box{background:#0a0a0a;border:1px solid rgba(201,168,76,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
-    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
-    .terms-header h3{font-size:1rem;font-weight:800;color:#fff;}
-    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:#888070;line-height:1.7;}
-    .terms-body h4{color:#fff;font-size:0.88rem;margin:1rem 0 0.4rem;}
+    .terms-box{background:var(--bg);border:1px solid rgba(201,168,76,0.3);border-radius:18px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;}
+    .terms-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;}
+    .terms-header h3{font-size:1rem;font-weight:800;color:var(--text);}
+    .terms-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;font-size:0.85rem;color:var(--muted);line-height:1.7;}
+    .terms-body h4{color:var(--text);font-size:0.88rem;margin:1rem 0 0.4rem;}
     .terms-body h4:first-child{margin-top:0;}
-    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;}
-    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#ccc;cursor:pointer;}
-    .terms-check input{accent-color:#c9a84c;width:16px;height:16px;cursor:pointer;}
-    .btn-terms-proceed{background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
+    .terms-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.75rem;}
+    .terms-check{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;color:#d4c9a8;cursor:pointer;}
+    .terms-check input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;}
+    .btn-terms-proceed{background:var(--gold);color:var(--text);border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
-    .btn-terms-cancel{background:transparent;border:none;color:#888070;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
   </style>
 </head>
 <body>
@@ -165,7 +174,7 @@
     </div>
   </nav>
   <!-- TAB NAV -->
-  <div style="background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+  <div style="background:#0a0a0a;border-bottom:1px solid rgba(201,168,76,0.06);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
     <button class="ctab active" onclick="showTab('home',this)"><i class="fas fa-house"></i> Home</button>
     <button class="ctab" onclick="showTab('book',this)"><i class="fas fa-camera"></i> Book</button>
     <a class="ctab" href="customer-orders.html"><i class="fas fa-list"></i> My Orders</a>
@@ -192,20 +201,20 @@
         </div>
         <div style="display:flex;gap:1rem;flex-wrap:wrap;">
           <button onclick="showTab('book',document.querySelectorAll('.ctab')[1])" style="background:#c9a84c;color:#fff;border:none;border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-camera"></i> Book a Shoot</button>
-          <a href="customer-orders.html" style="background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><i class="fas fa-list"></i> My Orders</a>
+          <a href="customer-orders.html" style="background:rgba(201,168,76,0.06);color:#fff;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><i class="fas fa-list"></i> My Orders</a>
         </div>
         <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
-          <div style="background:#111111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="background:#111111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;text-align:center;">
             <div id="statTotal" style="font-size:1.8rem;font-weight:900;color:#c9a84c;">0</div>
-            <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Total Bookings</div>
+            <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Bookings</div>
           </div>
-          <div style="background:#111111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="background:#111111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;text-align:center;">
             <div id="statPending" style="font-size:1.8rem;font-weight:900;color:#ff9800;">0</div>
-            <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Pending</div>
+            <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Pending</div>
           </div>
-          <div style="background:#111111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="background:#111111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;text-align:center;">
             <div id="statDone" style="font-size:1.8rem;font-weight:900;color:#4caf50;">0</div>
-            <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Completed</div>
+            <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Completed</div>
           </div>
         </div>
       </div>
@@ -217,7 +226,7 @@
         <h1 class="page-title" id="pageTitle2">Book Your <span style="color:#c9a84c;">Shoot</span></h1>
         <p class="subtitle" id="pageSubtitle2">Fill in the details and we'll assign a shooter for you.</p>
 
-    <div class="booking-card" id="bookingCard" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);">
+    <div class="booking-card" id="bookingCard" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);">
       <div class="form-grid" id="formGrid">
         <div class="form-group"><label id="lbl_name">Full Name</label><input type="text" id="name" placeholder="Your name"/></div>
         <div class="form-group"><label id="lbl_phone">Phone Number</label><input type="tel" id="phone" placeholder="+91 XXXXX XXXXX"/></div>
@@ -229,7 +238,7 @@
         <div class="form-group" id="dateGroup"><label>Date</label><input type="date" id="date"/></div>
         <div class="form-group" id="timeGroup"><label>Time</label><input type="time" id="time"/></div>
         <div class="form-group full" id="creatorGroup">
-          <label>Preferred Creator <span style="color:#888070;font-weight:400;">(optional)</span></label>
+          <label>Preferred Creator <span style="color:#9a9080;font-weight:400;">(optional)</span></label>
           <select id="preferredCreator"><option value="">No preference — Admin will assign</option></select>
         </div>
         <div class="form-group full" id="notesGroup"><label id="lbl_notes">Additional Notes</label><textarea id="notes" placeholder="Any special requirements..."></textarea></div>
@@ -265,15 +274,15 @@
     <!-- WALLET -->
     <div id="wallet" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Wallet</h2>
-      <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:18px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
         <div>
-          <div style="font-size:0.78rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Available Balance</div>
+          <div style="font-size:0.78rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Available Balance</div>
           <div style="font-size:2.5rem;font-weight:900;color:#fff;">₹<span id="walletBal">0</span></div>
-          <div style="font-size:0.78rem;color:#484030;margin-top:0.3rem;">Use wallet balance on your next booking</div>
+          <div style="font-size:0.78rem;color:#6a5a40;margin-top:0.3rem;">Use wallet balance on your next booking</div>
         </div>
         <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.5rem;text-align:center;">
           <i class="fas fa-wallet" style="font-size:2rem;color:#c9a84c;display:block;margin-bottom:0.5rem;"></i>
-          <div style="font-size:0.78rem;color:#888070;">Cashback &amp; Rewards</div>
+          <div style="font-size:0.78rem;color:#9a9080;">Cashback &amp; Rewards</div>
         </div>
       </div>
     </div>
@@ -281,7 +290,7 @@
     <!-- PROFILE -->
     <div id="profile" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Profile</h2>
-      <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:2rem;">
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:18px;padding:2rem;">
 
         <!-- Avatar -->
         <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;">
@@ -295,23 +304,23 @@
           <div>
             <div id="profileName" style="font-size:1.15rem;font-weight:800;color:#fff;"></div>
             <div style="font-size:0.78rem;color:#c9a84c;font-weight:600;margin-top:0.2rem;">Customer Account</div>
-            <div style="font-size:0.72rem;color:#888070;margin-top:0.2rem;">Tap camera icon to change photo</div>
+            <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Tap camera icon to change photo</div>
           </div>
         </div>
 
         <!-- Editable fields -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div>
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Full Name</label>
-            <input type="text" id="editName" placeholder="Your name" style="background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Full Name</label>
+            <input type="text" id="editName" placeholder="Your name" style="background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
           </div>
           <div>
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Phone</label>
-            <input type="tel" id="editPhone" placeholder="+91 XXXXX XXXXX" style="background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Phone</label>
+            <input type="tel" id="editPhone" placeholder="+91 XXXXX XXXXX" style="background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;"/>
           </div>
           <div style="grid-column:span 2;">
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</label>
-            <input type="text" id="profileEmail" readonly style="background:#180000;border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:0.7rem 1rem;color:#888070;font-size:0.88rem;font-family:inherit;outline:none;width:100%;cursor:not-allowed;"/>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</label>
+            <input type="text" id="profileEmail" readonly style="background:#180000;border:1px solid rgba(201,168,76,0.05);border-radius:10px;padding:0.7rem 1rem;color:#9a9080;font-size:0.88rem;font-family:inherit;outline:none;width:100%;cursor:not-allowed;"/>
           </div>
         </div>
 
@@ -330,7 +339,7 @@
   <div class="tab-section" id="tab-testimonials" style="display:none;">
     <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem;">Client <span style="color:#c9a84c;">Testimonials</span></h2>
-      <p style="color:#888070;font-size:0.85rem;margin-bottom:1.75rem;">Real experiences from our clients.</p>
+      <p style="color:#9a9080;font-size:0.85rem;margin-bottom:1.75rem;">Real experiences from our clients.</p>
       <div id="testiVidCustomerGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
     </div>
   </div>
@@ -627,7 +636,7 @@
           <div class="booking-info">
             <h4>${b.service} — ${b.city}</h4>
             <p>${b.date !== 'N/A' ? b.date + ' at ' + b.time : ''} &nbsp;|&nbsp; ${b.name} &nbsp;|&nbsp; ${b.phone}</p>
-            ${b.preferredCreatorName ? `<p style="margin-top:4px;font-size:0.78rem;color:#c9a84c;"><i class="fas fa-user-circle"></i> Preferred: ${b.preferredCreatorName}</p>` : '<p style="margin-top:4px;font-size:0.78rem;color:#888070;"><i class="fas fa-user-circle"></i> Creator: Admin will assign</p>'}
+            ${b.preferredCreatorName ? `<p style="margin-top:4px;font-size:0.78rem;color:#c9a84c;"><i class="fas fa-user-circle"></i> Preferred: ${b.preferredCreatorName}</p>` : '<p style="margin-top:4px;font-size:0.78rem;color:#9a9080;"><i class="fas fa-user-circle"></i> Creator: Admin will assign</p>'}
             ${b.notes ? `<p style="margin-top:4px;font-style:italic">${b.notes}</p>` : ''}
             <p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Booked on ${b.createdAt}</p>
             ${payBtn}
@@ -849,13 +858,13 @@
       var grid = document.getElementById('testiVidCustomerGrid');
       if(!grid) return;
       if(!meta.length){
-        grid.innerHTML='<p style="color:#888070;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Check back soon!</p>';
+        grid.innerHTML='<p style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Check back soon!</p>';
         return;
       }
       grid.innerHTML='';
       meta.forEach(function(v){
         var card = document.createElement('div');
-        card.style.cssText='background:#111111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;';
+        card.style.cssText='background:#111111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;';
         card.innerHTML=
           '<div id="ctv_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
           +'<div style="padding:0.75rem;">'
@@ -916,14 +925,14 @@
     <div class="plan-preview-box">
       <div class="plan-preview-header">
         <h3><i class="fas fa-camera" style="color:#c9a84c;"></i> Plan Details</h3>
-        <button onclick="closePlanPreview()" style="background:none;border:none;color:#888070;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <button onclick="closePlanPreview()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
       </div>
       <div class="plan-preview-body">
         <div style="font-size:0.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">Selected Plan</div>
         <div class="plan-preview-name" id="ppName"></div>
         <div class="plan-preview-price" id="ppPrice"></div>
         <div class="plan-preview-desc" id="ppDesc"></div>
-        <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#888070;line-height:1.6;">
+        <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#9a9080;line-height:1.6;">
           <i class="fas fa-info-circle" style="color:#c9a84c;margin-right:0.4rem;"></i>
           Clicking <strong style="color:#fff;">Continue</strong> will submit your enquiry to our team. We'll confirm your booking shortly.
         </div>
@@ -940,7 +949,7 @@
     <div class="terms-box">
       <div class="terms-header">
         <h3><i class="fas fa-file-contract" style="color:#c9a84c;margin-right:0.5rem;"></i> Terms &amp; Conditions</h3>
-        <button onclick="closeTerms()" style="background:none;border:none;color:#888070;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <button onclick="closeTerms()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
       </div>
       <div class="terms-body">
         <h4>1. Booking Agreement</h4>
@@ -973,7 +982,7 @@
     <div class="pay-tnc-box">
       <div class="pay-tnc-header">
         <h3><i class="fas fa-file-invoice" style="color:#2196f3;"></i> Payment Terms &amp; Conditions</h3>
-        <button onclick="closePayTnc()" style="background:none;border:none;color:#888070;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <button onclick="closePayTnc()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
       </div>
       <div class="pay-tnc-body">
 

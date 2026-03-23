@@ -7,25 +7,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+
+  :root{
+    --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+    --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;
+    --card:#1a1a1a;--card2:#1e1e1e;
+    --border:rgba(201,168,76,0.12);
+    --text:#f0ece0;--muted:#9a9080;
+  }
+
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
 
     /* NAV */
     nav{background:rgba(10,10,10,0.95);backdrop-filter:blur(24px);border-bottom:1px solid rgba(201,168,76,0.18);padding:0.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#c9a84c;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .nav-center{display:flex;align-items:center;gap:0.5rem;}
-    .nav-clock{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.3rem 0.85rem;font-size:0.78rem;font-weight:700;color:#ccc;letter-spacing:1px;font-variant-numeric:tabular-nums;}
-    .nav-badge{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.25rem 0.85rem;border-radius:50px;display:flex;align-items:center;gap:0.4rem;}
+    .nav-clock{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.3rem 0.85rem;font-size:0.78rem;font-weight:700;color:#d4c9a8;letter-spacing:1px;font-variant-numeric:tabular-nums;}
+    .nav-badge{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-size:0.68rem;font-weight:700;padding:0.25rem 0.85rem;border-radius:50px;display:flex;align-items:center;gap:0.4rem;}
     .nav-dot{width:6px;height:6px;background:#4caf50;border-radius:50%;box-shadow:0 0 6px #4caf50;animation:navPulse 1.5s ease-in-out infinite;}
     @keyframes navPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
     /* TAB NAV */
-    .tab-nav{background:#0f0f0f;border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+    .tab-nav{background:var(--bg2);border-bottom:1px solid rgba(201,168,76,0.06);padding:0 2rem;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
     .tab-nav::-webkit-scrollbar{display:none;}
-    .tab-btn{padding:0.9rem 1.25rem;background:none;border:none;border-bottom:2px solid transparent;color:#888070;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
-    .tab-btn:hover{color:#fff;}
-    .tab-btn.active{color:#c9a84c;border-bottom-color:#c9a84c;}
-    .tab-btn .notif{background:#c9a84c;color:#fff;font-size:0.55rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;margin-left:0.2rem;}
+    .tab-btn{padding:0.9rem 1.25rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
+    .tab-btn:hover{color:var(--text);}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+    .tab-btn .notif{background:var(--gold);color:var(--text);font-size:0.55rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;margin-left:0.2rem;}
 
     /* LAYOUT */
     .page-wrap{max-width:1100px;margin:2rem auto;padding:0 1.5rem;}
@@ -37,152 +46,152 @@
     /* WELCOME */
     .welcome-bar{background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(100,0,0,0.2));border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:1.5rem 2rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;}
     .welcome-bar h2{font-size:1.4rem;font-weight:900;}
-    .welcome-bar h2 span{color:#c9a84c;}
-    .welcome-bar p{color:#888070;font-size:0.85rem;margin-top:0.25rem;}
+    .welcome-bar h2 span{color:var(--gold);}
+    .welcome-bar p{color:var(--muted);font-size:0.85rem;margin-top:0.25rem;}
     .welcome-icon{width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
 
     /* STATS */
     .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.75rem;}
-    .stat-box{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;}
-    .stat-box .num{font-size:1.8rem;font-weight:900;color:#c9a84c;}
-    .stat-box .lbl{font-size:0.72rem;color:#888070;margin-top:0.2rem;}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;text-align:center;}
+    .stat-box .num{font-size:1.8rem;font-weight:900;color:var(--gold);}
+    .stat-box .lbl{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
 
     /* SECTION TITLE */
     .sec-title{font-size:1.1rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;}
-    .sec-title i{color:#c9a84c;}
+    .sec-title i{color:var(--gold);}
 
     /* AI CLASSES */
     .classes-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;}
-    .class-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.25rem;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;position:relative;overflow:hidden;}
+    .class-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;position:relative;overflow:hidden;}
     .class-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
-    .class-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#c9a84c,#ff6b6b);}
-    .class-icon{width:42px;height:42px;border-radius:10px;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#c9a84c;margin-bottom:0.85rem;}
+    .class-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#c9a84c,#c9a84c);}
+    .class-icon{width:42px;height:42px;border-radius:10px;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--gold);margin-bottom:0.85rem;}
     .class-card h4{font-size:0.95rem;font-weight:800;margin-bottom:0.35rem;}
-    .class-card p{font-size:0.78rem;color:#888070;line-height:1.6;margin-bottom:1rem;}
+    .class-card p{font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
     .class-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;}
-    .class-tag{background:rgba(201,168,76,0.1);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid rgba(201,168,76,0.2);}
-    .class-duration{color:#666;font-size:0.7rem;display:flex;align-items:center;gap:0.3rem;}
-    .progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:0.85rem;}
-    .progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#ff6b6b);border-radius:2px;}
-    .btn-start{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.6rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .class-tag{background:rgba(201,168,76,0.1);color:var(--gold);font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid rgba(201,168,76,0.2);}
+    .class-duration{color:#777;font-size:0.7rem;display:flex;align-items:center;gap:0.3rem;}
+    .progress-bar{height:4px;background:rgba(201,168,76,0.06);border-radius:2px;overflow:hidden;margin-bottom:0.85rem;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#c9a84c);border-radius:2px;}
+    .btn-start{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:8px;padding:0.6rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .btn-start:hover{filter:brightness(1.1);}
-    .btn-continue{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;}
+    .btn-continue{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);}
     .btn-continue:hover{background:rgba(201,168,76,0.2);}
 
     /* AI BADGE */
     .ai-badge{display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,rgba(103,58,183,0.2),rgba(63,81,181,0.2));border:1px solid rgba(103,58,183,0.3);color:#ce93d8;font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;margin-bottom:0.6rem;}
 
     /* CERTIFICATION */
-    .cert-section{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
+    .cert-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
     .cert-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
     .cert-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.85rem;}
-    .cert-card{background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;text-align:center;transition:all 0.3s;cursor:pointer;}
+    .cert-card{background:var(--bg);border:1px solid rgba(201,168,76,0.06);border-radius:12px;padding:1rem;text-align:center;transition:all 0.3s;cursor:pointer;}
     .cert-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-2px);}
     .cert-card.locked{opacity:0.5;}
     .cert-icon{font-size:1.6rem;margin-bottom:0.5rem;}
     .cert-card h5{font-size:0.78rem;font-weight:700;margin-bottom:0.3rem;}
-    .cert-card p{font-size:0.65rem;color:#888070;}
+    .cert-card p{font-size:0.65rem;color:var(--muted);}
     .cert-status{display:inline-block;margin-top:0.5rem;font-size:0.6rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;}
     .cert-status.earned{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
-    .cert-status.available{background:rgba(201,168,76,0.1);color:#c9a84c;border:1px solid rgba(201,168,76,0.2);}
-    .cert-status.locked{background:rgba(255,255,255,0.05);color:#666;border:1px solid rgba(255,255,255,0.08);}
-    .btn-cert{background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.25rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .cert-status.available{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+    .cert-status.locked{background:rgba(201,168,76,0.07);color:#777;border:1px solid rgba(201,168,76,0.15);}
+    .btn-cert{background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:8px;padding:0.5rem 1.25rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
     .btn-cert:hover{filter:brightness(1.1);}
 
     /* DEMO SECTION */
-    .demo-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+    .demo-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden;}
     .demo-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#ff9800;}
     .demo-card.submitted::before{background:#4caf50;}
     .demo-card.approved::before{background:#2196f3;}
     .demo-card.rejected::before{background:#f44336;}
     .demo-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;gap:0.75rem;}
-    .demo-card-title{font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
-    .demo-card-meta{font-size:0.75rem;color:#888070;}
+    .demo-card-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;}
+    .demo-card-meta{font-size:0.75rem;color:var(--muted);}
     .demo-status-badge{font-size:0.68rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;white-space:nowrap;flex-shrink:0;}
     .demo-status-badge.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
     .demo-status-badge.submitted{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
     .demo-status-badge.approved{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
     .demo-status-badge.rejected{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
-    .demo-desc{font-size:0.82rem;color:#888070;line-height:1.6;margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:8px;border-left:2px solid rgba(201,168,76,0.3);}
+    .demo-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:8px;border-left:2px solid rgba(201,168,76,0.3);}
     .demo-timeline{display:flex;gap:0;margin-bottom:1.25rem;}
     .demo-step{flex:1;text-align:center;position:relative;}
-    .demo-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:rgba(255,255,255,0.06);z-index:0;}
+    .demo-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:rgba(201,168,76,0.06);z-index:0;}
     .demo-step:last-child::after{display:none;}
-    .demo-step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;margin:0 auto 0.4rem;position:relative;z-index:1;border:2px solid rgba(255,255,255,0.1);background:#0a0a0a;color:#555;}
-    .demo-step-dot.done{background:#c9a84c;border-color:#c9a84c;color:#fff;}
-    .demo-step-dot.active{background:#ff9800;border-color:#ff9800;color:#fff;animation:stepPulse 1.5s ease-in-out infinite;}
-    .demo-step-dot.approved{background:#2196f3;border-color:#2196f3;color:#fff;}
-    .demo-step-dot.rejected{background:#f44336;border-color:#f44336;color:#fff;}
+    .demo-step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;margin:0 auto 0.4rem;position:relative;z-index:1;border:2px solid rgba(201,168,76,0.1);background:var(--bg);color:#777;}
+    .demo-step-dot.done{background:var(--gold);border-color:var(--gold);color:var(--text);}
+    .demo-step-dot.active{background:#ff9800;border-color:#ff9800;color:var(--text);animation:stepPulse 1.5s ease-in-out infinite;}
+    .demo-step-dot.approved{background:#2196f3;border-color:#2196f3;color:var(--text);}
+    .demo-step-dot.rejected{background:#f44336;border-color:#f44336;color:var(--text);}
     @keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,0.4);}50%{box-shadow:0 0 0 6px rgba(255,152,0,0);}}
-    .demo-step-label{font-size:0.6rem;color:#666;font-weight:600;}
-    .demo-step-label.done,.demo-step-label.active{color:#ccc;}
+    .demo-step-label{font-size:0.6rem;color:#777;font-weight:600;}
+    .demo-step-label.done,.demo-step-label.active{color:#d4c9a8;}
     .demo-upload-zone{border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(229,57,53,0.02);position:relative;margin-top:0.75rem;}
-    .demo-upload-zone:hover{border-color:#c9a84c;background:rgba(201,168,76,0.06);}
+    .demo-upload-zone:hover{border-color:var(--gold);background:rgba(201,168,76,0.06);}
     .demo-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-    .demo-upload-zone p{font-size:0.8rem;color:#888070;margin-top:0.4rem;}
+    .demo-upload-zone p{font-size:0.8rem;color:var(--muted);margin-top:0.4rem;}
     .demo-progress{margin-top:0.75rem;display:none;}
-    .demo-progress-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
-    .demo-progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#ff6b6b);border-radius:3px;width:0%;transition:width 0.3s;}
-    .demo-progress-label{font-size:0.72rem;color:#888070;margin-bottom:0.3rem;}
-    .btn-submit-reel{width:100%;margin-top:0.65rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;}
-    .btn-submit-reel:hover{background:#a07830;transform:translateY(-1px);}
+    .demo-progress-bar{height:5px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;}
+    .demo-progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#c9a84c);border-radius:3px;width:0%;transition:width 0.3s;}
+    .demo-progress-label{font-size:0.72rem;color:var(--muted);margin-bottom:0.3rem;}
+    .btn-submit-reel{width:100%;margin-top:0.65rem;background:var(--gold);color:var(--text);border:none;border-radius:9px;padding:0.65rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;}
+    .btn-submit-reel:hover{background:var(--gold-dark);transform:translateY(-1px);}
     .btn-submit-reel:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
     .demo-admin-note{margin-top:0.75rem;padding:0.75rem 1rem;border-radius:8px;font-size:0.8rem;line-height:1.6;}
     .demo-admin-note.approved{background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);color:#90caf9;}
     .demo-admin-note.rejected{background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#ef9a9a;}
-    .demo-empty{text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;margin-bottom:1.75rem;}
-    .demo-empty i{font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;}
-    .demo-empty p{color:#484030;font-size:0.85rem;}
+    .demo-empty{text-align:center;padding:2.5rem;background:var(--card);border-radius:16px;margin-bottom:1.75rem;}
+    .demo-empty i{font-size:2rem;color:var(--gold);opacity:0.2;display:block;margin-bottom:0.75rem;}
+    .demo-empty p{color:#6a5a40;font-size:0.85rem;}
 
     /* UPLOAD SECTION */
-    .upload-section{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
+    .upload-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
     .upload-drop{border:2px dashed rgba(201,168,76,0.3);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(229,57,53,0.03);position:relative;}
-    .upload-drop:hover,.upload-drop.drag-over{border-color:#c9a84c;background:rgba(201,168,76,0.08);}
+    .upload-drop:hover,.upload-drop.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.1);}
     .upload-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-    .upload-drop-icon{font-size:2.2rem;color:#c9a84c;margin-bottom:0.6rem;opacity:0.7;}
-    .upload-drop p{font-size:0.82rem;color:#888070;margin-bottom:0.25rem;}
-    .upload-drop span{font-size:0.72rem;color:#555;}
+    .upload-drop-icon{font-size:2.2rem;color:var(--gold);margin-bottom:0.6rem;opacity:0.7;}
+    .upload-drop p{font-size:0.82rem;color:var(--muted);margin-bottom:0.25rem;}
+    .upload-drop span{font-size:0.72rem;color:#777;}
     .upload-meta{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem;}
-    .upload-input{background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;width:100%;transition:border-color 0.2s;}
-    .upload-input:focus{border-color:#c9a84c;}
+    .upload-input{background:var(--bg2);border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:var(--text);font-family:inherit;font-size:0.82rem;outline:none;width:100%;transition:border-color 0.2s;}
+    .upload-input:focus{border-color:var(--gold);}
     .upload-progress-wrap{margin-top:0.85rem;display:none;}
-    .upload-progress-label{font-size:0.75rem;color:#888070;margin-bottom:0.35rem;display:flex;justify-content:space-between;}
-    .upload-progress-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
-    .upload-progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#ff6b6b);border-radius:3px;width:0%;transition:width 0.3s;}
-    .btn-upload{width:100%;margin-top:0.85rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;}
+    .upload-progress-label{font-size:0.75rem;color:var(--muted);margin-bottom:0.35rem;display:flex;justify-content:space-between;}
+    .upload-progress-bar{height:6px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;}
+    .upload-progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#c9a84c);border-radius:3px;width:0%;transition:width 0.3s;}
+    .btn-upload{width:100%;margin-top:0.85rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;}
     .btn-upload:hover{filter:brightness(1.1);transform:translateY(-1px);}
     .btn-upload:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
     .upload-toast{display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;font-weight:600;text-align:center;}
     .videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem;margin-top:1.25rem;}
-    .video-thumb{background:#0a0a0a;border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;position:relative;}
+    .video-thumb{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;}
     .video-thumb video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;}
     .video-thumb-info{padding:0.5rem 0.6rem;}
-    .video-thumb-title{font-size:0.72rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .video-thumb-meta{font-size:0.62rem;color:#888070;margin-top:0.1rem;}
-    .video-thumb-del{position:absolute;top:0.35rem;right:0.35rem;width:22px;height:22px;background:rgba(244,67,54,0.85);border:none;border-radius:50%;color:#fff;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .video-thumb-title{font-size:0.72rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .video-thumb-meta{font-size:0.62rem;color:var(--muted);margin-top:0.1rem;}
+    .video-thumb-del{position:absolute;top:0.35rem;right:0.35rem;width:22px;height:22px;background:rgba(244,67,54,0.85);border:none;border-radius:50%;color:var(--text);font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
     /* STATS ROW */
     .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.75rem;}
-    .stat-box{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;text-align:center;}
-    .stat-box .num{font-size:1.8rem;font-weight:900;color:#c9a84c;}
-    .stat-box .lbl{font-size:0.72rem;color:#888070;margin-top:0.2rem;}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;text-align:center;}
+    .stat-box .num{font-size:1.8rem;font-weight:900;color:var(--gold);}
+    .stat-box .lbl{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
 
     /* PROFILE CARD */
-    .profile-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
+    .profile-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
     .profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#7f0000);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;margin:0 auto 0.85rem;border:3px solid rgba(201,168,76,0.4);box-shadow:0 0 25px rgba(201,168,76,0.3);}
     .profile-name{font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:0.2rem;}
-    .profile-role-badge{color:#c9a84c;font-size:0.75rem;font-weight:600;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:0.2rem 0.75rem;border-radius:50px;display:inline-block;}
-    .detail-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.78rem;}
+    .profile-role-badge{color:var(--gold);font-size:0.75rem;font-weight:600;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:0.2rem 0.75rem;border-radius:50px;display:inline-block;}
+    .detail-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(201,168,76,0.04);font-size:0.78rem;}
     .detail-row:last-child{border-bottom:none;}
-    .detail-label{color:#888070;}
-    .detail-val{color:#fff;font-weight:600;}
-    .btn-logout-full{width:100%;background:transparent;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:10px;padding:0.75rem;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;margin-top:1rem;}
-    .btn-logout-full:hover{background:rgba(201,168,76,0.1);border-color:#c9a84c;}
+    .detail-label{color:var(--muted);}
+    .detail-val{color:var(--text);font-weight:600;}
+    .btn-logout-full{width:100%;background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);border-radius:10px;padding:0.75rem;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;margin-top:1rem;}
+    .btn-logout-full:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);}
 
     /* ORDER ITEM */
-    .order-item{background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;}
+    .order-item{background:var(--bg);border:1px solid rgba(201,168,76,0.06);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;}
     .order-item h5{font-size:0.82rem;font-weight:700;margin-bottom:0.2rem;}
-    .order-item p{font-size:0.72rem;color:#888070;}
+    .order-item p{font-size:0.72rem;color:var(--muted);}
     .order-status{font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;float:right;}
     .os-done{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
     .os-pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
@@ -190,36 +199,36 @@
     /* STAFF T&C MODAL */
     .staff-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
     .staff-tnc-overlay.open{display:flex;}
-    .staff-tnc-box{background:#080808;border:1px solid rgba(201,168,76,0.4);border-radius:20px;width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
-    .staff-tnc-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-    .staff-tnc-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .staff-tnc-box{background:var(--bg);border:1px solid rgba(201,168,76,0.4);border-radius:20px;width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
+    .staff-tnc-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .staff-tnc-header h3{font-size:1rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:0.6rem;}
     .staff-tnc-body{padding:1.1rem 1.5rem;overflow-y:auto;flex:1;}
     .staff-tnc-body::-webkit-scrollbar{width:4px;}
     .staff-tnc-body::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:2px;}
-    .stnc-rule{display:flex;gap:0.85rem;padding:0.8rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .stnc-rule{display:flex;gap:0.85rem;padding:0.8rem 0;border-bottom:1px solid rgba(201,168,76,0.05);}
     .stnc-rule:last-child{border-bottom:none;}
     .stnc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-    .stnc-text h5{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
-    .stnc-text p{font-size:0.78rem;color:#888070;line-height:1.6;}
-    .stnc-mandatory{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.85rem 1rem;margin:0.75rem 0;}
+    .stnc-text h5{font-size:0.88rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;}
+    .stnc-text p{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+    .stnc-mandatory{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.85rem 1rem;margin:0.75rem 0;}
     .stnc-mandatory p{font-size:0.8rem;color:#e08080;line-height:1.6;}
-    .staff-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.65rem;flex-shrink:0;}
-    .stnc-check{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:#ccc;cursor:pointer;line-height:1.5;}
-    .stnc-check input{accent-color:#c9a84c;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
-    .btn-stnc-proceed{background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .staff-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.65rem;flex-shrink:0;}
+    .stnc-check{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:#d4c9a8;cursor:pointer;line-height:1.5;}
+    .stnc-check input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
+    .btn-stnc-proceed{background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
     .btn-stnc-proceed.enabled{opacity:1;pointer-events:all;box-shadow:0 8px 25px rgba(201,168,76,0.4);}
-    .btn-stnc-cancel{background:transparent;border:none;color:#888070;font-size:0.8rem;cursor:pointer;font-family:inherit;text-align:center;}
+    .btn-stnc-cancel{background:transparent;border:none;color:var(--muted);font-size:0.8rem;cursor:pointer;font-family:inherit;text-align:center;}
     /* EVENT FEEDBACK MODAL */
     .efb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:10002;align-items:center;justify-content:center;padding:1rem;}
     .efb-overlay.open{display:flex;}
-    .efb-box{background:#080808;border:1px solid rgba(245,166,35,0.35);border-radius:20px;width:100%;max-width:500px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
-    .efb-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-    .efb-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .efb-box{background:var(--bg);border:1px solid rgba(245,166,35,0.35);border-radius:20px;width:100%;max-width:500px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
+    .efb-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .efb-header h3{font-size:1rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:0.6rem;}
     .efb-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1rem;}
     .efb-body::-webkit-scrollbar{width:4px;}
     .efb-body::-webkit-scrollbar-thumb{background:rgba(245,166,35,0.3);border-radius:2px;}
-    .efb-label{font-size:0.75rem;font-weight:700;color:#888070;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem;display:block;}
-    .efb-input{background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;transition:border-color 0.2s;}
+    .efb-label{font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem;display:block;}
+    .efb-input{background:var(--bg);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;width:100%;transition:border-color 0.2s;}
     .efb-input:focus{border-color:#f5a623;}
     .efb-stars{display:flex;gap:0.4rem;}
     .efb-star{font-size:1.8rem;cursor:pointer;color:#333;transition:color 0.15s;line-height:1;}
@@ -228,8 +237,8 @@
     .efb-photo-zone:hover{border-color:#f5a623;background:rgba(245,166,35,0.06);}
     .efb-photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
     .efb-photo-preview{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:0.75rem;display:none;}
-    .efb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
-    .btn-efb-submit{width:100%;background:linear-gradient(135deg,#f5a623,#c8860a);color:#fff;border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.25s;}
+    .efb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);flex-shrink:0;}
+    .btn-efb-submit{width:100%;background:linear-gradient(135deg,#f5a623,#c8860a);color:var(--text);border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.25s;}
     .btn-efb-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
       .tab-btn{padding:0.75rem 0.85rem;font-size:0.75rem;}
       .stats-row{grid-template-columns:1fr 1fr;}
@@ -286,37 +295,37 @@
       </div>
       <!-- Quick links -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;">
-        <div onclick="switchTab('shoots',document.querySelector('[onclick*=shoots]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('shoots',document.querySelector('[onclick*=shoots]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-camera" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Assigned Shoots</div>
-          <div style="font-size:0.72rem;color:#888070;margin-top:0.2rem;"><span id="dashShootCount">0</span> pending</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;"><span id="dashShootCount">0</span> pending</div>
         </div>
-        <div onclick="switchTab('demos',document.querySelector('[onclick*=demos]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('demos',document.querySelector('[onclick*=demos]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-chalkboard-teacher" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Demo Sessions</div>
         </div>
-        <div onclick="switchTab('upload',document.querySelector('[onclick*=upload]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('upload',document.querySelector('[onclick*=upload]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-upload" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Upload Video</div>
         </div>
-        <div onclick="switchTab('videos',document.querySelector('[onclick*=videos]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('videos',document.querySelector('[onclick*=videos]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-film" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">My Videos</div>
         </div>
-        <div onclick="switchTab('classes',document.querySelector('[onclick*=classes]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('classes',document.querySelector('[onclick*=classes]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-robot" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">AI Classes</div>
         </div>
-        <div onclick="switchTab('wallet',document.querySelector('[onclick*=wallet]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('wallet',document.querySelector('[onclick*=wallet]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-wallet" style="font-size:1.6rem;color:#4caf50;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Wallet</div>
-          <div style="font-size:0.72rem;color:#888070;margin-top:0.2rem;">₹<span id="dashWalletBal">0</span></div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">₹<span id="dashWalletBal">0</span></div>
         </div>
-        <div onclick="switchTab('feedback',document.querySelector('[onclick*=feedback]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('feedback',document.querySelector('[onclick*=feedback]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-star" style="font-size:1.6rem;color:#f5a623;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Feedback</div>
         </div>
-        <div onclick="switchTab('profile',document.querySelector('[onclick*=profile]'))" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div onclick="switchTab('profile',document.querySelector('[onclick*=profile]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-user" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Profile</div>
         </div>
@@ -369,7 +378,7 @@
     <div class="section" id="sec-videos">
       <div class="sec-title"><i class="fas fa-photo-video"></i> My Uploaded Videos</div>
       <div id="myVideosGrid" class="videos-grid"></div>
-      <div id="myVideosEmpty" style="display:none;color:#484030;font-size:0.82rem;text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:12px;"><i class="fas fa-film" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No videos uploaded yet.</div>
+      <div id="myVideosEmpty" style="display:none;color:#6a5a40;font-size:0.82rem;text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:12px;"><i class="fas fa-film" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No videos uploaded yet.</div>
     </div>
 
     <!-- CLASSES -->
@@ -396,7 +405,7 @@
       <div class="sec-title"><i class="fas fa-star"></i> Shoot Feedback</div>
 
       <!-- SUB TABS -->
-      <div style="display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;">
+      <div style="display:flex;gap:0;border-bottom:1px solid rgba(201,168,76,0.08);margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;">
         <button class="tab-btn active" id="fbtab-mine" onclick="switchFbTab('mine',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-paper-plane" style="color:#c9a84c;"></i> My Shoot Ratings</button>
         <button class="tab-btn" id="fbtab-event" onclick="switchFbTab('event',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-clipboard-list" style="color:#f5a623;"></i> Event Feedback Collected <span class="notif" id="eventFbBadge" style="display:none;">0</span></button>
         <button class="tab-btn" id="fbtab-customer" onclick="switchFbTab('customer',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-comments" style="color:#4caf50;"></i> Customer Feedback</button>
@@ -427,11 +436,11 @@
         <h3 style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-upload" style="color:#c9a84c;margin-right:0.4rem;"></i> Upload New Testimonial Video</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.85rem;">
           <div>
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;display:block;margin-bottom:0.35rem;">Client Name *</label>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Client Name *</label>
             <input type="text" id="stv_name" class="upload-input" placeholder="e.g. Rahul Verma"/>
           </div>
           <div>
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;display:block;margin-bottom:0.35rem;">Service / Caption</label>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Service / Caption</label>
             <input type="text" id="stv_caption" class="upload-input" placeholder="e.g. Wedding Photography"/>
           </div>
         </div>
@@ -443,8 +452,8 @@
         </div>
         <div id="stv_fileInfo" style="display:none;margin-bottom:0.75rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.85rem;font-size:0.78rem;color:#c9a84c;font-weight:600;"></div>
         <div id="stv_progressWrap" style="display:none;margin-bottom:0.75rem;">
-          <div style="font-size:0.72rem;color:#888070;margin-bottom:0.3rem;" id="stv_progressLabel">Uploading...</div>
-          <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="stv_progressFill" style="height:100%;background:linear-gradient(90deg,#c9a84c,#ff6b6b);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;" id="stv_progressLabel">Uploading...</div>
+          <div style="height:5px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;"><div id="stv_progressFill" style="height:100%;background:linear-gradient(90deg,#c9a84c,#c9a84c);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>
         </div>
         <button class="btn-upload" id="stv_uploadBtn" onclick="uploadStvVideo()"><i class="fas fa-upload"></i> Upload Testimonial</button>
         <div id="stv_toast" class="upload-toast"><i class="fas fa-check-circle"></i> Uploaded successfully!</div>
@@ -489,7 +498,7 @@
       <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(100,0,0,0.25));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
           <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official Hash Shoots Merchandise</div>
-          <div style="font-size:0.82rem;color:#888070;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
+          <div style="font-size:0.82rem;color:#9a9080;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
         </div>
         <div style="font-size:2rem;">🛍️</div>
       </div>
@@ -510,38 +519,38 @@
       <!-- Balance card -->
       <div style="background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(100,0,0,0.3));border:1px solid rgba(201,168,76,0.3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
-          <div style="font-size:0.75rem;color:#888070;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">AVAILABLE BALANCE</div>
+          <div style="font-size:0.75rem;color:#9a9080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">AVAILABLE BALANCE</div>
           <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;">₹<span id="walletBalance">0</span></div>
-          <div style="font-size:0.78rem;color:#888070;margin-top:0.4rem;">Ready for withdrawal</div>
+          <div style="font-size:0.78rem;color:#9a9080;margin-top:0.4rem;">Ready for withdrawal</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:0.72rem;color:#ff9800;font-weight:700;margin-bottom:0.2rem;">PENDING PAYMENT</div>
           <div style="font-size:1.6rem;font-weight:900;color:#ff9800;">₹<span id="walletPendingTop">0</span></div>
-          <div style="font-size:0.68rem;color:#666;margin-top:0.15rem;">Awaiting admin release</div>
-          <div style="margin-top:0.5rem;font-size:0.72rem;color:#888070;">Credits per Shoot</div>
+          <div style="font-size:0.68rem;color:#777;margin-top:0.15rem;">Awaiting admin release</div>
+          <div style="margin-top:0.5rem;font-size:0.72rem;color:#9a9080;">Credits per Shoot</div>
           <div style="font-size:1.1rem;font-weight:900;color:#c9a84c;">₹<span id="walletPerShoot">0</span></div>
         </div>
       </div>
 
       <!-- Stats row -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="walletTotalEarned">₹0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Total Earned</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Earned</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#2196f3;" id="walletWithdrawn">₹0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Withdrawn</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Withdrawn</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="walletPending">₹0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Pending</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Pending</div>
         </div>
       </div>
 
       <!-- Transactions -->
       <div class="sec-title" style="font-size:0.95rem;"><i class="fas fa-list"></i> Transaction History</div>
-      <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
+      <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
     </div>
 
     <!-- PAYOUT -->
@@ -550,28 +559,28 @@
 
       <!-- Summary cards -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#c9a84c;" id="po_balance">&#8377;0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Available Balance</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Available Balance</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="po_pending">&#8377;0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Pending Payment</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Pending Payment</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;text-align:center;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
           <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="po_total">&#8377;0</div>
-          <div style="font-size:0.7rem;color:#888070;margin-top:0.2rem;">Total Earned</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Earned</div>
         </div>
       </div>
 
       <!-- Shoots eligible for payout -->
-      <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
         <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-camera" style="color:#c9a84c;margin-right:0.5rem;"></i>Completed Shoots</div>
         <div id="po_shootsList"></div>
       </div>
 
       <!-- Payout history -->
-      <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;">
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
         <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-history" style="color:#c9a84c;margin-right:0.5rem;"></i>Payout History</div>
         <div id="po_history"></div>
       </div>
@@ -580,34 +589,34 @@
     <!-- BANK -->
     <div class="section" id="sec-bank">
       <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
-      <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">Account Holder Name *</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Account Holder Name *</label>
             <input class="upload-input" type="text" id="bankName" placeholder="Full name as per bank"/>
           </div>
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">Bank Name *</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Bank Name *</label>
             <input class="upload-input" type="text" id="bankBankName" placeholder="e.g. State Bank of India"/>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">Account Number *</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Account Number *</label>
             <input class="upload-input" type="text" id="bankAccNo" placeholder="Enter account number"/>
           </div>
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">IFSC Code *</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">IFSC Code *</label>
             <input class="upload-input" type="text" id="bankIFSC" placeholder="e.g. SBIN0001234"/>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">UPI ID</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">UPI ID</label>
             <input class="upload-input" type="text" id="bankUPI" placeholder="e.g. name@upi"/>
           </div>
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#888070;display:block;margin-bottom:0.4rem;">Account Type</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Account Type</label>
             <select class="upload-input" id="bankType">
               <option value="savings">Savings</option>
               <option value="current">Current</option>
@@ -724,7 +733,7 @@
       var info = document.getElementById('selectedFileInfo');
       var sizeMB = (file.size / 1024 / 1024).toFixed(1);
       info.style.display = 'block';
-      info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#888070;font-weight:400;">(' + sizeMB + ' MB)</span>';
+      info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + sizeMB + ' MB)</span>';
     }
 
     // Drag & drop
@@ -740,7 +749,7 @@
         var info = document.getElementById('selectedFileInfo');
         var sizeMB = (file.size / 1024 / 1024).toFixed(1);
         info.style.display = 'block';
-        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#888070;font-weight:400;">(' + sizeMB + ' MB)</span>';
+        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + sizeMB + ' MB)</span>';
       }
     });
 
@@ -909,11 +918,11 @@
         var actionHTML = '';
         if(d.status === 'pending'){
           actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
             +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
             +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
             +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
             +'</div>'
             +'<div class="demo-upload-zone" id="dropZone_'+d.id+'" ondragover="event.preventDefault();this.style.borderColor=\'#c9a84c\'" ondragleave="this.style.borderColor=\'\'" ondrop="onDemoDrop(event,'+d.id+')" >'
@@ -945,11 +954,11 @@
             +(d.adminNote ? '<div>&ldquo;'+d.adminNote+'&rdquo;</div>' : '')
             +'</div>'
             +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
             +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
             +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
+            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
             +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
             +'</div>'
             +'<div class="demo-upload-zone" style="margin-top:0.75rem;" ondragover="event.preventDefault()" ondrop="onDemoDrop(event,'+d.id+')" >'
@@ -977,15 +986,15 @@
           +(d.desc ? '<div class="demo-desc">'+d.desc+'</div>' : '')
           +(d.headName ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:1rem;">'
             +'<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
-            +'<div style="font-size:0.62rem;color:#888070;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-user-tie" style="color:#c9a84c;"></i> DEMO HEAD</div>'
+            +'<div style="font-size:0.62rem;color:#9a9080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-user-tie" style="color:#c9a84c;"></i> DEMO HEAD</div>'
             +'<div style="font-size:0.82rem;font-weight:700;color:#fff;">'+d.headName+'</div>'
             +'</div>'
             +'<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
-            +'<div style="font-size:0.62rem;color:#888070;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> PHONE</div>'
+            +'<div style="font-size:0.62rem;color:#9a9080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> PHONE</div>'
             +'<div style="font-size:0.82rem;font-weight:700;color:#fff;">'+d.headPhone+'</div>'
             +'</div>'
             +'<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.85rem;">'
-            +'<div style="font-size:0.62rem;color:#888070;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> EMAIL</div>'
+            +'<div style="font-size:0.62rem;color:#9a9080;font-weight:600;margin-bottom:0.2rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> EMAIL</div>'
             +'<div style="font-size:0.78rem;font-weight:700;color:#fff;word-break:break-all;">'+d.headEmail+'</div>'
             +'</div>'
             +'</div>' : '')
@@ -1003,7 +1012,7 @@
       var info = document.getElementById('demoFileInfo_' + demoId);
       if(info){
         info.style.display = 'block';
-        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#888070;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
+        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
       }
       var btn = document.getElementById('demoSubmitBtn_' + demoId);
       if(btn) btn.disabled = false;
@@ -1017,7 +1026,7 @@
       var info = document.getElementById('demoFileInfo_' + demoId);
       if(info){
         info.style.display = 'block';
-        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#888070;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
+        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
       }
       var btn = document.getElementById('demoSubmitBtn_' + demoId);
       if(btn) btn.disabled = false;
@@ -1086,7 +1095,7 @@
 
       var el = document.getElementById('assignedShootsList');
       if(!shoots.length){
-        el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;"><i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i><p style="color:#484030;font-size:0.85rem;">No shoots assigned yet. Admin will assign shoots to you.</p></div>';
+        el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;"><i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i><p style="color:#6a5a40;font-size:0.85rem;">No shoots assigned yet. Admin will assign shoots to you.</p></div>';
         return;
       }
 
@@ -1105,14 +1114,14 @@
 
         var card = document.createElement('div');
         card.id  = 'shootCard_' + a.id;
-        card.style.cssText = 'background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-left:4px solid '+color+';border-radius:16px;padding:1.5rem;margin-bottom:1rem;';
+        card.style.cssText = 'background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+color+';border-radius:16px;padding:1.5rem;margin-bottom:1rem;';
 
         // Header row
         var headerHTML =
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">'
           +'<div>'
           +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+a.service+'</div>'
-          +'<div style="font-size:0.72rem;color:#888070;">Assigned on '+a.assignedAt+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">Assigned on '+a.assignedAt+'</div>'
           +'</div>'
           +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;">'+a.status.charAt(0).toUpperCase()+a.status.slice(1)+'</span>'
           +'</div>';
@@ -1155,16 +1164,16 @@
               ? '<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> Feedback Video Uploaded</div>'
               : '<div style="margin-bottom:0.75rem;background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.2);border-radius:10px;padding:0.85rem 1rem;">'
                 + '<div style="font-size:0.78rem;font-weight:800;color:#ce93d8;margin-bottom:0.4rem;"><i class="fas fa-video"></i> Upload Feedback Video — Required before marking Done</div>'
-                + '<div style="font-size:0.72rem;color:#888070;margin-bottom:0.65rem;">Record a short video at the event location showing the shoot is complete. This is mandatory before you can mark the shoot as done.</div>'
+                + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.65rem;">Record a short video at the event location showing the shoot is complete. This is mandatory before you can mark the shoot as done.</div>'
                 + '<div style="border:2px dashed rgba(156,39,176,0.3);border-radius:10px;padding:0.85rem;text-align:center;position:relative;background:rgba(156,39,176,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#ce93d8\'" onmouseout="this.style.borderColor=\'rgba(156,39,176,0.3)\'">'
                 + '<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onFeedbackVideoSelected(this,'+a.id+')" />'
                 + '<i class="fas fa-video" style="font-size:1.3rem;color:#ce93d8;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
-                + '<div style="font-size:0.75rem;color:#888070;">Tap to record or upload feedback video</div>'
+                + '<div style="font-size:0.75rem;color:#9a9080;">Tap to record or upload feedback video</div>'
                 + '</div>'
                 + '<div id="fbVidInfo_'+a.id+'" style="display:none;margin-top:0.5rem;background:#0a0a0a;border:1px solid rgba(156,39,176,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#ce93d8;font-weight:600;"></div>'
                 + '<div id="fbVidProgress_'+a.id+'" style="display:none;margin-top:0.5rem;">'
-                + '<div style="font-size:0.72rem;color:#888070;margin-bottom:0.3rem;" id="fbVidProgressLabel_'+a.id+'">Uploading...</div>'
-                + '<div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="fbVidProgressFill_'+a.id+'" style="height:100%;background:linear-gradient(90deg,#9c27b0,#ce93d8);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
+                + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;" id="fbVidProgressLabel_'+a.id+'">Uploading...</div>'
+                + '<div style="height:5px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;"><div id="fbVidProgressFill_'+a.id+'" style="height:100%;background:linear-gradient(90deg,#9c27b0,#ce93d8);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
                 + '</div>'
                 + '<button id="fbVidUploadBtn_'+a.id+'" onclick="uploadFeedbackVideo('+a.id+')" disabled style="margin-top:0.6rem;width:100%;background:#9c27b0;color:#fff;border:none;border-radius:9px;padding:0.55rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;opacity:0.5;"><i class="fas fa-upload"></i> Upload Feedback Video</button>'
                 + '</div>';
@@ -1178,7 +1187,7 @@
             uploadHTML = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:0.85rem 1rem;margin-top:0.5rem;">'
               +'<div style="font-size:0.78rem;font-weight:700;color:#4caf50;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> '+uploaded.length+' edited video'+(uploaded.length>1?'s':'')+' uploaded</div>'
               +'<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
-              +uploaded.map(function(v){ return '<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#ccc;"><i class="fas fa-film" style="color:#c9a84c;"></i> '+v.title+'</div>'; }).join('')
+              +uploaded.map(function(v){ return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-film" style="color:#c9a84c;"></i> '+v.title+'</div>'; }).join('')
               +'</div>'
               +shootUploadZone(a.id)
               +feedbackVideoZone
@@ -1204,8 +1213,8 @@
     }
 
     function detailBox(icon, label, value){
-      return '<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem 0.9rem;">'
-        +'<div style="font-size:0.62rem;color:#888070;font-weight:600;margin-bottom:0.25rem;"><i class="fas '+icon+'" style="color:#c9a84c;"></i> '+label.toUpperCase()+'</div>'
+      return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.06);border-radius:10px;padding:0.75rem 0.9rem;">'
+        +'<div style="font-size:0.62rem;color:#9a9080;font-weight:600;margin-bottom:0.25rem;"><i class="fas '+icon+'" style="color:#c9a84c;"></i> '+label.toUpperCase()+'</div>'
         +'<div style="font-size:0.85rem;font-weight:700;color:#fff;">'+value+'</div>'
         +'</div>';
     }
@@ -1214,12 +1223,12 @@
       return '<div style="border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1rem;text-align:center;position:relative;background:rgba(229,57,53,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.25)\'">'
         +'<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onShootFileSelected(this,'+assignId+')" />'
         +'<i class="fas fa-cloud-upload-alt" style="font-size:1.4rem;color:#c9a84c;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
-        +'<div style="font-size:0.75rem;color:#888070;">Click or drag to upload edited video</div>'
+        +'<div style="font-size:0.75rem;color:#9a9080;">Click or drag to upload edited video</div>'
         +'</div>'
         +'<div id="shootFileInfo_'+assignId+'" style="display:none;margin-top:0.5rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#c9a84c;font-weight:600;"></div>'
         +'<div id="shootUploadProgress_'+assignId+'" style="display:none;margin-top:0.5rem;">'
-        +'<div style="font-size:0.72rem;color:#888070;margin-bottom:0.3rem;" id="shootProgressLabel_'+assignId+'">Uploading...</div>'
-        +'<div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="shootProgressFill_'+assignId+'" style="height:100%;background:linear-gradient(90deg,#c9a84c,#ff6b6b);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
+        +'<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;" id="shootProgressLabel_'+assignId+'">Uploading...</div>'
+        +'<div style="height:5px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;"><div id="shootProgressFill_'+assignId+'" style="height:100%;background:linear-gradient(90deg,#c9a84c,#c9a84c);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
         +'</div>'
         +'<button id="shootUploadBtn_'+assignId+'" onclick="uploadShootVideo('+assignId+')" disabled style="margin-top:0.65rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;opacity:0.5;"><i class="fas fa-upload"></i> Upload Edited Video</button>';
     }
@@ -1229,7 +1238,7 @@
       if(!file) return;
       shootFileMap[String(assignId)] = file;
       var info = document.getElementById('shootFileInfo_' + assignId);
-      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-film"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#888070;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
+      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-film"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#9a9080;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
       var btn = document.getElementById('shootUploadBtn_' + assignId);
       if(btn){ btn.disabled=false; btn.style.opacity='1'; }
     }
@@ -1380,24 +1389,24 @@
       var badge = document.getElementById('eventFbBadge');
       if(badge){ badge.textContent = list.length; badge.style.display = list.length > 0 ? 'inline' : 'none'; }
       if(!list.length){
-        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-clipboard-list" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No event feedback collected yet.<br/>Use the &ldquo;Collect Event Feedback&rdquo; button after arriving at a shoot.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-clipboard-list" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No event feedback collected yet.<br/>Use the &ldquo;Collect Event Feedback&rdquo; button after arriving at a shoot.</div>';
         return;
       }
       var starColors = {5:'#4caf50',4:'#8bc34a',3:'#f5a623',2:'#ff9800',1:'#f44336'};
       el.innerHTML = list.map(function(f){
         var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
         var color = starColors[f.rating] || '#f5a623';
-        return '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+        return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
           + '<div>'
           + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + (f.service || 'Shoot') + ' — ' + f.clientName + '</div>'
-          + '<div style="font-size:0.72rem;color:#888070;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (f.city||'') + ' &nbsp;·&nbsp; ' + (f.date||'') + '</div>'
+          + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (f.city||'') + ' &nbsp;·&nbsp; ' + (f.date||'') + '</div>'
           + '</div>'
           + '<span style="color:'+color+';font-size:1.1rem;letter-spacing:2px;">' + stars + '</span>'
           + '</div>'
           + (f.comment ? '<div style="background:#0a0a0a;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid '+color+';margin-bottom:0.75rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '')
           + (f.dressPhoto ? '<div style="margin-bottom:0.5rem;"><div style="font-size:0.7rem;color:#f5a623;font-weight:700;margin-bottom:0.35rem;"><i class="fas fa-camera"></i> Dress Code Photo</div><img src="'+f.dressPhoto+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,166,35,0.2);"/></div>' : '')
-          + '<div style="font-size:0.65rem;color:#555;">' + (f.submittedAt||'') + '</div>'
+          + '<div style="font-size:0.65rem;color:#777;">' + (f.submittedAt||'') + '</div>'
           + '</div>';
       }).join('');
     }
@@ -1410,7 +1419,7 @@
       if(!file) return;
       feedbackVideoFileMap[String(assignId)] = file;
       var info = document.getElementById('fbVidInfo_' + assignId);
-      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-video"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#888070;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
+      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-video"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#9a9080;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
       var btn = document.getElementById('fbVidUploadBtn_' + assignId);
       if(btn){ btn.disabled=false; btn.style.opacity='1'; }
     }
@@ -1494,7 +1503,7 @@
         .filter(function(a){ return a.staffId === staffId && (a.status === 'completed' || a.status === 'paid'); });
       var el = document.getElementById('creatorShootFeedbackList');
       if(!assigned.length){
-        el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.82rem;"><i class="fas fa-camera" style="display:block;font-size:1.5rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.82rem;"><i class="fas fa-camera" style="display:block;font-size:1.5rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
         return;
       }
       var existing = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
@@ -1508,16 +1517,16 @@
             + '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:50px;"><i class="fas fa-check"></i> Feedback Given</span>'
             + '</div>'
             + '<div style="color:#f5a623;font-size:1rem;letter-spacing:2px;margin-bottom:0.25rem;">' + stars + '</div>'
-            + (done.comment ? '<div style="font-size:0.78rem;color:#888070;font-style:italic;">&ldquo;' + done.comment + '&rdquo;</div>' : '')
+            + (done.comment ? '<div style="font-size:0.78rem;color:#9a9080;font-style:italic;">&ldquo;' + done.comment + '&rdquo;</div>' : '')
             + '</div>';
         }
-        return '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+        return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">' + a.service + ' — ' + a.clientName + '</div>'
-          + '<div style="font-size:0.72rem;color:#888070;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
+          + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
           + '<div style="display:flex;gap:0.3rem;margin-bottom:0.65rem;">' + [1,2,3,4,5].map(function(v){
-              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#9733;</span>';
+              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#a078303;</span>';
             }).join('') + '</div>'
-          + '<textarea id="cfb_' + a.id + '" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:65px;" placeholder="How was the shoot? Any notes..."></textarea>'
+          + '<textarea id="cfb_' + a.id + '" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:65px;" placeholder="How was the shoot? Any notes..."></textarea>'
           + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
           + '</div>';
       }).join('');
@@ -1552,7 +1561,7 @@
       var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
       var el = document.getElementById('creatorFeedbackList');
       if(!feedbacks.length){
-        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-star" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer feedback yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-star" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer feedback yet.</div>';
         return;
       }
       var starColors = {5:'#4caf50',4:'#8bc34a',3:'#f5a623',2:'#ff9800',1:'#f44336'};
@@ -1560,15 +1569,15 @@
         var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
         var color = starColors[f.rating] || '#f5a623';
         var label = f.type === 'demo' ? (f.title || 'Demo Session') : ((f.service || 'Shoot') + (f.city ? ' — ' + f.city : ''));
-        return '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;border-left:3px solid ' + color + ';">' +
+        return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;border-left:3px solid ' + color + ';">' +
           '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">' +
           '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + label + '</div>' +
           '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>' +
           '</div>' +
-          (f.customerName ? '<div style="font-size:0.7rem;color:#888070;margin-bottom:0.4rem;"><i class="fas fa-user"></i> ' + f.customerName + '</div>' : '') +
+          (f.customerName ? '<div style="font-size:0.7rem;color:#9a9080;margin-bottom:0.4rem;"><i class="fas fa-user"></i> ' + f.customerName + '</div>' : '') +
           (f.comment ? '<div style="font-size:0.8rem;color:#e0b0b0;font-style:italic;margin-bottom:0.4rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '') +
           (f.description ? '<div style="font-size:0.8rem;color:#c8a0a0;line-height:1.65;border-left:2px solid rgba(201,168,76,0.3);padding-left:0.65rem;margin-top:0.3rem;">' + f.description + '</div>' : '') +
-          '<div style="font-size:0.62rem;color:#555;margin-top:0.5rem;">' + (f.submittedAt || '') + '</div>' +
+          '<div style="font-size:0.62rem;color:#777;margin-top:0.5rem;">' + (f.submittedAt || '') + '</div>' +
           '</div>';
       }).join('');
     }
@@ -1599,7 +1608,7 @@
 
       var el = document.getElementById('walletTxnList');
       if(!w.transactions || !w.transactions.length){
-        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div>';
         return;
       }
       el.innerHTML = w.transactions.slice().reverse().map(function(t){
@@ -1612,10 +1621,10 @@
           : isCredit
           ? '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.6rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;margin-left:0.5rem;">Credited</span>'
           : '';
-        return '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+        return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
           + '<div>'
           + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.15rem;">' + t.label + badge + '</div>'
-          + '<div style="font-size:0.7rem;color:#888070;">' + t.date + (t.note ? ' &nbsp;·&nbsp; ' + t.note : '') + '</div>'
+          + '<div style="font-size:0.7rem;color:#9a9080;">' + t.date + (t.note ? ' &nbsp;·&nbsp; ' + t.note : '') + '</div>'
           + '</div>'
           + '<div style="font-size:1.1rem;font-weight:900;color:' + color + ';">' + prefix + '\u20b9' + t.amount.toLocaleString('en-IN') + '</div>'
           + '</div>';
@@ -1638,16 +1647,16 @@
       var shootsEl = document.getElementById('po_shootsList');
       var eligible = assigns.filter(function(a){ return a.status === 'done' || a.status === 'completed' || a.status === 'paid'; });
       if(!eligible.length){
-        shootsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#484030;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+        shootsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
       } else {
         shootsEl.innerHTML = eligible.map(function(a){
           var statusColor = a.status==='paid' ? '#2196f3' : a.status==='done' ? '#9c27b0' : '#4caf50';
           var statusLabel = a.status==='paid' ? 'Payment Released' : a.status==='done' ? 'Done — Awaiting Admin Approval' : 'Completed';
-          return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'
             + '<div>'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">'+a.service+' — '+a.clientName+'</div>'
-            + '<div style="font-size:0.72rem;color:#888070;margin-top:0.2rem;"><i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' '+a.time+' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city)+'</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' '+a.time+' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city)+'</div>'
             + (a.doneAt ? '<div style="font-size:0.68rem;color:#9c27b0;margin-top:0.15rem;"><i class="fas fa-flag-checkered"></i> Done: '+a.doneAt+'</div>' : '')
             + '</div>'
             + '<span style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">'+statusLabel+'</span>'
@@ -1669,23 +1678,23 @@
       if(!bankData || !bankData.accNo){
         requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
           + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;margin-bottom:0.25rem;"><i class="fas fa-exclamation-triangle"></i> Bank Details Required</div>'
-          + '<div style="font-size:0.75rem;color:#888070;">Please add your bank account details in the <strong style="color:#fff;">Bank</strong> tab before requesting a payout.</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;">Please add your bank account details in the <strong style="color:#fff;">Bank</strong> tab before requesting a payout.</div>'
           + '</div>';
       } else if(pendingReq){
         requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
           + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-clock"></i> Payout Request Pending</div>'
-          + '<div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Your payout request of <strong style="color:#fff;">₹' + pendingReq.amount.toLocaleString('en-IN') + '</strong> is under review. Admin will process it shortly.</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Your payout request of <strong style="color:#fff;">₹' + pendingReq.amount.toLocaleString('en-IN') + '</strong> is under review. Admin will process it shortly.</div>'
           + '</div>';
       } else if(canRequest){
         requestSection = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;">'
           + '<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.75rem;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;"></i> Request Payout</div>'
-          + '<div style="font-size:0.78rem;color:#888070;margin-bottom:0.75rem;">Available balance: <strong style="color:#4caf50;font-size:1rem;">₹' + (w.balance||0).toLocaleString('en-IN') + '</strong></div>'
+          + '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;">Available balance: <strong style="color:#4caf50;font-size:1rem;">₹' + (w.balance||0).toLocaleString('en-IN') + '</strong></div>'
           + '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">'
-          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#888070;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) *</label>'
-          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="1" max="'+(w.balance||0)+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
+          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) *</label>'
+          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="1" max="'+(w.balance||0)+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
           + '<button onclick="submitPayoutRequest()" style="background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem 1.5rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-paper-plane"></i> Request Payout</button>'
           + '</div>'
-          + '<div style="font-size:0.72rem;color:#888070;margin-top:0.5rem;">Payout will be sent to: <strong style="color:#fff;">' + bankData.bankName + '</strong> &nbsp;·&nbsp; A/C: <strong style="color:#fff;">' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '</strong>' + (bankData.upi ? ' &nbsp;·&nbsp; UPI: <strong style="color:#fff;">' + bankData.upi + '</strong>' : '') + '</div>'
+          + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.5rem;">Payout will be sent to: <strong style="color:#fff;">' + bankData.bankName + '</strong> &nbsp;·&nbsp; A/C: <strong style="color:#fff;">' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '</strong>' + (bankData.upi ? ' &nbsp;·&nbsp; UPI: <strong style="color:#fff;">' + bankData.upi + '</strong>' : '') + '</div>'
           + '<div id="po_req_msg" style="display:none;margin-top:0.5rem;"></div>'
           + '</div>';
       }
@@ -1693,18 +1702,18 @@
       // History
       var histHTML = '';
       if(!myReqs.length){
-        histHTML = '<div style="text-align:center;padding:2rem;color:#484030;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
+        histHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
       } else {
         var statusColors2 = { pending:'#ff9800', approved:'#4caf50', rejected:'#f44336' };
         histHTML = myReqs.map(function(r){
           var sc = statusColors2[r.status] || '#ff9800';
-          return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+sc+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;">'
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+sc+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;">'
             + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
             + '<div>'
             + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">Payout Request — ₹' + r.amount.toLocaleString('en-IN') + '</div>'
-            + '<div style="font-size:0.7rem;color:#888070;margin-top:0.15rem;">' + r.requestedAt + '</div>'
+            + '<div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;">' + r.requestedAt + '</div>'
             + (r.rejectReason ? '<div style="font-size:0.72rem;color:#f44336;margin-top:0.2rem;"><i class="fas fa-times-circle"></i> ' + r.rejectReason + '</div>' : '')
-            + (r.processedAt && r.status !== 'pending' ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
+            + (r.processedAt && r.status !== 'pending' ? '<div style="font-size:0.68rem;color:#777;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
             + '</div>'
             + '<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">' + r.status.charAt(0).toUpperCase()+r.status.slice(1) + '</span>'
             + '</div></div>';
@@ -1762,24 +1771,24 @@
       // T-SHIRTS
       var tGrid = document.getElementById('storeTshirtGrid');
       if(!tshirts.length){
-        tGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-tshirt" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No T-shirts listed yet. Check back soon!</div>';
+        tGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-tshirt" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No T-shirts listed yet. Check back soon!</div>';
       } else {
         tGrid.innerHTML = tshirts.map(function(t, i){
           var sizes = (t.sizes || []).map(function(s){
-            return '<span style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#ccc;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.color=\'#ccc\'">' + s + '</span>';
+            return '<span style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#d4c9a8;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.1)\';this.style.color=\'#ccc\'">' + s + '</span>';
           }).join('');
           var imgHTML = t.image
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
           var mailSubject = encodeURIComponent('T-Shirt Order — ' + t.name + ' — ' + staffName);
           var mailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: ₹' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
-          return '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 16px 40px rgba(201,168,76,0.15)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+          return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 16px 40px rgba(201,168,76,0.15)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">' + t.name + '</div>'
-            + (t.description ? '<div style="font-size:0.78rem;color:#888070;margin-bottom:0.75rem;line-height:1.5;">' + t.description + '</div>' : '')
+            + (t.description ? '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;line-height:1.5;">' + t.description + '</div>' : '')
             + '<div style="font-size:1.3rem;font-weight:900;color:#c9a84c;margin-bottom:0.75rem;">₹' + Number(t.price).toLocaleString('en-IN') + '</div>'
-            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#888070;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Available Sizes</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
+            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Available Sizes</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
             + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#c9a84c;color:#fff;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#a07830\'" onmouseout="this.style.background=\'#c9a84c\'"><i class="fas fa-shopping-cart"></i> Order via Email</a>'
             + '</div></div>';
         }).join('');
@@ -1798,13 +1807,13 @@
         + (idcard.image ? '<img src="'+idcard.image+'" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid rgba(245,166,35,0.3);"/>' : '<div style="width:90px;height:90px;background:rgba(245,166,35,0.1);border:2px dashed rgba(245,166,35,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-id-badge" style="font-size:2rem;color:#f5a623;opacity:0.5;"></i></div>')
         + '<div style="flex:1;">'
         + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">Hash Shoots Official ID Card</div>'
-        + '<div style="font-size:0.82rem;color:#888070;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all Hash Shoots events and shoots.') + '</div>'
+        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all Hash Shoots events and shoots.') + '</div>'
         + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">₹' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
         + '</div></div>'
-        + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);">'
+        + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(201,168,76,0.06);">'
         + '<div style="background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
         + '<div style="font-size:0.82rem;font-weight:800;color:#f5a623;margin-bottom:0.3rem;"><i class="fas fa-tag"></i> Get a Discount on Your ID Card</div>'
-        + '<div style="font-size:0.78rem;color:#888070;line-height:1.6;">Write to us at <strong style="color:#f5a623;">' + discountEmail + '</strong> explaining why you deserve a discount. Our team will review and respond within 24–48 hours.</div>'
+        + '<div style="font-size:0.78rem;color:#9a9080;line-height:1.6;">Write to us at <strong style="color:#f5a623;">' + discountEmail + '</strong> explaining why you deserve a discount. Our team will review and respond within 24–48 hours.</div>'
         + '</div>'
         + '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">'
         + '<a href="mailto:' + contactEmail + '?subject=' + idMailSubject + '&body=' + idMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#f5a623;color:#000;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#c8860a\'" onmouseout="this.style.background=\'#f5a623\'"><i class="fas fa-id-card"></i> Request ID Card</a>'
@@ -1856,8 +1865,8 @@
         {l:'Type', v: data.type.charAt(0).toUpperCase()+data.type.slice(1)}
       ];
       grid.innerHTML = fields.map(function(f){
-        return '<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem 1rem;">'
-          + '<div style="font-size:0.65rem;color:#888070;font-weight:600;margin-bottom:0.2rem;">' + f.l + '</div>'
+        return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.06);border-radius:10px;padding:0.75rem 1rem;">'
+          + '<div style="font-size:0.65rem;color:#9a9080;font-weight:600;margin-bottom:0.2rem;">' + f.l + '</div>'
           + '<div style="font-size:0.85rem;font-weight:700;color:#fff;">' + f.v + '</div>'
           + '</div>';
       }).join('');
@@ -1970,7 +1979,7 @@
       _stvFile = file;
       var info = document.getElementById('stv_fileInfo');
       info.style.display = 'block';
-      info.innerHTML = '<i class="fas fa-video"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#888070;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
+      info.innerHTML = '<i class="fas fa-video"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
     }
 
     function uploadStvVideo(){
@@ -2011,13 +2020,13 @@
       var meta = getStvMeta().slice().reverse();
       var grid = document.getElementById('stvGrid');
       if(!meta.length){
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#484030;font-size:0.85rem;"><i class="fas fa-play-circle" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No testimonial videos yet.</div>';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-play-circle" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No testimonial videos yet.</div>';
         return;
       }
       grid.innerHTML = '';
       meta.forEach(function(v){
         var card = document.createElement('div');
-        card.style.cssText = 'background:#0a0a0a;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;';
+        card.style.cssText = 'background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
         card.innerHTML =
           '<div id="stvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-play-circle"></i></div>'
           +'<div style="padding:0.65rem;">'
@@ -2080,7 +2089,7 @@
     <div class="staff-tnc-box">
       <div class="staff-tnc-header">
         <h3><i class="fas fa-id-card" style="color:#c9a84c;"></i> Staff Terms &amp; Conditions</h3>
-        <button onclick="closeStaffTnc()" style="background:none;border:none;color:#888070;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <button onclick="closeStaffTnc()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
       </div>
       <div class="staff-tnc-body">
 
@@ -2163,7 +2172,7 @@
     <div class="efb-box">
       <div class="efb-header">
         <h3><i class="fas fa-clipboard-list" style="color:#f5a623;"></i> Collect Event Feedback</h3>
-        <button onclick="closeEfb()" style="background:none;border:none;color:#888070;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <button onclick="closeEfb()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
       </div>
       <div class="efb-body">
         <div>
@@ -2173,11 +2182,11 @@
         <div>
           <label class="efb-label">Client Rating *</label>
           <div class="efb-stars">
-            <span class="efb-star" data-val="1" onclick="setEfbStar(1)">&#9733;</span>
-            <span class="efb-star" data-val="2" onclick="setEfbStar(2)">&#9733;</span>
-            <span class="efb-star" data-val="3" onclick="setEfbStar(3)">&#9733;</span>
-            <span class="efb-star" data-val="4" onclick="setEfbStar(4)">&#9733;</span>
-            <span class="efb-star" data-val="5" onclick="setEfbStar(5)">&#9733;</span>
+            <span class="efb-star" data-val="1" onclick="setEfbStar(1)">&#a078303;</span>
+            <span class="efb-star" data-val="2" onclick="setEfbStar(2)">&#a078303;</span>
+            <span class="efb-star" data-val="3" onclick="setEfbStar(3)">&#a078303;</span>
+            <span class="efb-star" data-val="4" onclick="setEfbStar(4)">&#a078303;</span>
+            <span class="efb-star" data-val="5" onclick="setEfbStar(5)">&#a078303;</span>
           </div>
         </div>
         <div>
@@ -2186,11 +2195,11 @@
         </div>
         <div>
           <label class="efb-label"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.3rem;"></i> Dress Code Photo — Mandatory *</label>
-          <p style="font-size:0.75rem;color:#888070;margin-bottom:0.6rem;line-height:1.5;">Take a photo of yourself in full dress code (T-shirt + ID card visible + shoes). This is required for payment release.</p>
+          <p style="font-size:0.75rem;color:#9a9080;margin-bottom:0.6rem;line-height:1.5;">Take a photo of yourself in full dress code (T-shirt + ID card visible + shoes). This is required for payment release.</p>
           <div class="efb-photo-zone">
             <input type="file" accept="image/*" capture="environment" onchange="onEfbPhoto(this)"/>
             <i class="fas fa-camera" style="font-size:1.8rem;color:#f5a623;opacity:0.6;margin-bottom:0.4rem;display:block;"></i>
-            <div style="font-size:0.8rem;color:#888070;">Tap to take photo or upload from gallery</div>
+            <div style="font-size:0.8rem;color:#9a9080;">Tap to take photo or upload from gallery</div>
           </div>
           <img id="efbPhotoPreview" class="efb-photo-preview" alt="Dress code photo preview"/>
         </div>

@@ -7,38 +7,47 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a1a1a;border:1px solid rgba(201,168,76,0.4);border-left:4px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
+
+  :root{
+    --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+    --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;
+    --card:#1a1a1a;--card2:#1e1e1e;
+    --border:rgba(201,168,76,0.12);
+    --text:#f0ece0;--muted:#9a9080;
+  }
+
+    .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid rgba(201,168,76,0.4);border-left:4px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
     @keyframes slideIn{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
-    .notif-toast-title{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
-    .notif-toast-sub{font-size:0.75rem;color:#888070;}
-    .notif-toast-close{position:absolute;top:0.5rem;right:0.75rem;background:none;border:none;color:#555;cursor:pointer;font-size:0.85rem;}
-    .notif-toast-action{margin-top:0.65rem;background:#c9a84c;color:#fff;border:none;border-radius:7px;padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
-    .notif-toast-action:hover{background:#a07830;}
-    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;}
+    .notif-toast-title{font-size:0.88rem;font-weight:800;color:var(--text);margin-bottom:0.25rem;}
+    .notif-toast-sub{font-size:0.75rem;color:var(--muted);}
+    .notif-toast-close{position:absolute;top:0.5rem;right:0.75rem;background:none;border:none;color:#777;cursor:pointer;font-size:0.85rem;}
+    .notif-toast-action{margin-top:0.65rem;background:var(--gold);color:var(--text);border:none;border-radius:7px;padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .notif-toast-action:hover{background:var(--gold-dark);}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
     nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:#c9a84c;}
-    .admin-badge{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
+    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
+    .admin-badge{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
     .nav-right{display:flex;align-items:center;gap:1rem;}
-    .btn-logout{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
-    .btn-logout:hover{border-color:#c9a84c;color:#c9a84c;}
+    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
+    .btn-logout:hover{border-color:var(--gold);color:var(--gold);}
     .container{max-width:1100px;margin:2.5rem auto;padding:0 1.5rem;}
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-    h1{font-size:1.8rem;font-weight:900;}h1 span{color:#c9a84c;}
+    h1{font-size:1.8rem;font-weight:900;}h1 span{color:var(--gold);}
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
-    .stat-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;}
-    .stat-card .num{font-size:2rem;font-weight:900;color:#c9a84c;}
-    .stat-card .lbl{font-size:0.8rem;color:#888070;margin-top:0.2rem;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
+    .stat-card .num{font-size:2rem;font-weight:900;color:var(--gold);}
+    .stat-card .lbl{font-size:0.8rem;color:var(--muted);margin-top:0.2rem;}
     .filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;}
-    .filter-btn{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
-    .filter-btn.active,.filter-btn:hover{background:#c9a84c;color:#fff;border-color:transparent;}
-    .search-bar{flex:1;max-width:280px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.5rem 1rem;color:#fff;font-size:0.875rem;font-family:inherit;outline:none;}
-    .search-bar:focus{border-color:#c9a84c;}
-    .table-wrap{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;}
+    .filter-btn{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(201,168,76,0.15);background:transparent;color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .filter-btn.active,.filter-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
+    .search-bar{flex:1;max-width:280px;background:var(--card);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.5rem 1rem;color:var(--text);font-size:0.875rem;font-family:inherit;outline:none;}
+    .search-bar:focus{border-color:var(--gold);}
+    .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
     table{width:100%;border-collapse:collapse;}
-    thead{background:rgba(201,168,76,0.08);}
-    th{padding:1rem 1.25rem;text-align:left;font-size:0.78rem;font-weight:700;color:#888070;text-transform:uppercase;letter-spacing:0.5px;}
-    td{padding:1rem 1.25rem;font-size:0.875rem;border-top:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
-    tr:hover td{background:rgba(201,168,76,0.04);}
+    thead{background:rgba(201,168,76,0.1);}
+    th{padding:1rem 1.25rem;text-align:left;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+    td{padding:1rem 1.25rem;font-size:0.875rem;border-top:1px solid rgba(201,168,76,0.04);vertical-align:middle;}
+    tr:hover td{background:rgba(201,168,76,0.06);}
     .status-badge{padding:0.28rem 0.8rem;border-radius:50px;font-size:0.72rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;}
     .status-badge.pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
     .status-badge.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
@@ -47,37 +56,37 @@
     .action-btns{display:flex;gap:0.5rem;}
     .btn-action{padding:0.3rem 0.75rem;border-radius:7px;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .btn-confirm{background:rgba(76,175,80,0.15);color:#4caf50;}
-    .btn-confirm:hover{background:#4caf50;color:#fff;}
+    .btn-confirm:hover{background:#4caf50;color:var(--text);}
     .btn-complete{background:rgba(33,150,243,0.15);color:#2196f3;}
-    .btn-complete:hover{background:#2196f3;color:#fff;}
+    .btn-complete:hover{background:#2196f3;color:var(--text);}
     .btn-cancel{background:rgba(244,67,54,0.15);color:#f44336;}
-    .btn-cancel:hover{background:#f44336;color:#fff;}
-    .btn-delete{background:rgba(255,255,255,0.05);color:#888;}
-    .btn-delete:hover{background:#333;color:#fff;}
-    .empty{text-align:center;padding:3rem;color:#888070;}
+    .btn-cancel:hover{background:#f44336;color:var(--text);}
+    .btn-delete{background:rgba(201,168,76,0.07);color:#888;}
+    .btn-delete:hover{background:#2a2a2a;color:var(--text);}
+    .empty{text-align:center;padding:3rem;color:var(--muted);}
     .empty i{font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.3;}
-    .refresh-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;}
-    .refresh-btn:hover{background:#c9a84c;color:#fff;}
+    .refresh-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;}
+    .refresh-btn:hover{background:var(--gold);color:var(--text);}
     .tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
-    .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888070;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
-    .tab-btn.active,.tab-btn:hover{background:#c9a84c;color:#fff;border-color:transparent;}
+    .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(201,168,76,0.15);background:transparent;color:var(--muted);font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .tab-btn.active,.tab-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
     .tab-panel{display:none;}
     .tab-panel.active{display:block;}
-    .about-form{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:2rem;}
-    .about-form h2{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;}
+    .about-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;}
+    .about-form h2{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1.5rem;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
     .form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
-    .form-group label{font-size:0.78rem;font-weight:600;color:#888070;text-transform:uppercase;letter-spacing:0.5px;}
-    .form-group input,.form-group textarea{background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
-    .form-group input:focus,.form-group textarea:focus{border-color:#c9a84c;}
+    .form-group label{font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+    .form-group input,.form-group textarea{background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--gold);}
     .form-group textarea{resize:vertical;min-height:90px;}
     .team-row{display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
-    .btn-add-team{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;margin-bottom:1rem;transition:all 0.2s;}
-    .btn-add-team:hover{background:#c9a84c;color:#fff;}
+    .btn-add-team{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;margin-bottom:1rem;transition:all 0.2s;}
+    .btn-add-team:hover{background:var(--gold);color:var(--text);}
     .btn-remove{background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;}
-    .btn-remove:hover{background:#f44336;color:#fff;}
-    .btn-save-about{background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.8rem 2rem;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-top:0.5rem;}
-    .btn-save-about:hover{background:#a07830;}
+    .btn-remove:hover{background:#f44336;color:var(--text);}
+    .btn-save-about{background:var(--gold);color:var(--text);border:none;border-radius:10px;padding:0.8rem 2rem;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-top:0.5rem;}
+    .btn-save-about:hover{background:var(--gold-dark);}
     .save-toast{display:none;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin-top:1rem;}
   </style>
 </head>
@@ -88,7 +97,7 @@
       <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
     </div>
     <div class="nav-right">
-      <span style="color:#888070;font-size:0.85rem;" id="adminNameDisplay"></span>
+      <span style="color:#9a9080;font-size:0.85rem;" id="adminNameDisplay"></span>
       <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -97,7 +106,7 @@
   <div class="container">
     <div class="page-header">
       <h1>Admin <span>Dashboard</span></h1>
-      <span style="color:#888070;font-size:0.85rem;" id="lastUpdated"></span>
+      <span style="color:#9a9080;font-size:0.85rem;" id="lastUpdated"></span>
     </div>
 
     <div class="tabs">
@@ -143,7 +152,7 @@
           <div style="width:38px;height:38px;background:rgba(244,67,54,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#f44336;"></i></div>
           <div>
             <div style="font-size:0.92rem;font-weight:800;color:#fff;">Creator Payments Pending</div>
-            <div style="font-size:0.75rem;color:#888070;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
+            <div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
           </div>
         </div>
         <button onclick="switchTab('assign',document.querySelector('[onclick*=assign]'))" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
@@ -236,7 +245,7 @@
           </div>
           <div class="form-group">
             <label>Category *</label>
-            <select id="vibe_cat" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+            <select id="vibe_cat" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="" disabled selected>Select category</option>
               <option>Events &amp; Weddings</option>
               <option>Car Delivery</option>
@@ -250,16 +259,16 @@
         </div>
         <div class="form-group">
           <label>Thumbnail Image (required)</label>
-          <input type="file" id="vibe_thumb" accept="image/*" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <input type="file" id="vibe_thumb" accept="image/*" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
         </div>
         <div class="form-group">
           <label>Video File *</label>
-          <input type="file" id="vibe_video" accept="video/*" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
-          <span style="font-size:0.75rem;color:#888070;margin-top:0.3rem;">Supports MP4, MOV, WebM. Large files supported.</span>
+          <input type="file" id="vibe_video" accept="video/*" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <span style="font-size:0.75rem;color:#9a9080;margin-top:0.3rem;">Supports MP4, MOV, WebM. Large files supported.</span>
         </div>
         <div id="vibe_progress_wrap" style="display:none;margin-bottom:1rem;">
-          <div style="font-size:0.8rem;color:#888070;margin-bottom:0.4rem;" id="vibe_progress_label">Processing...</div>
-          <div style="background:#141414;border-radius:6px;height:8px;overflow:hidden;">
+          <div style="font-size:0.8rem;color:#9a9080;margin-bottom:0.4rem;" id="vibe_progress_label">Processing...</div>
+          <div style="background:#111;border-radius:6px;height:8px;overflow:hidden;">
             <div id="vibe_progress_bar" style="height:100%;background:#c9a84c;width:0%;transition:width 0.3s;"></div>
           </div>
         </div>
@@ -271,7 +280,7 @@
       <div style="margin-top:2rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
           <h3 style="font-size:1rem;font-weight:800;color:#fff;">Uploaded Content</h3>
-          <span style="font-size:0.8rem;color:#888070;" id="vibeCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="vibeCount"></span>
         </div>
         <div id="vibeAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
       </div>
@@ -341,7 +350,7 @@
         <div class="form-group">
           <label>Service Dropdown Options (one per line)</label>
           <textarea id="cp_services" style="min-height:130px;" placeholder="Reel Shoot|₹999|Quick 60-sec reel for social media&#10;Portrait Session|₹1,499|Professional portrait photography&#10;Event Coverage|₹15,000|Full event documentation&#10;Product Shoot|₹2,499|E-commerce & brand product shoots&#10;Wedding Photography|₹20,499|Complete wedding coverage&#10;Food Photography|₹1,999|Restaurant & food brand shoots"></textarea>
-          <div style="font-size:0.72rem;color:#888070;margin-top:0.4rem;"><i class="fas fa-info-circle" style="color:#c9a84c;"></i> Format: <strong style="color:#fff;">Service Name|Price|Description</strong> — one per line. Price and description are optional but shown to customer before booking.</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.4rem;"><i class="fas fa-info-circle" style="color:#c9a84c;"></i> Format: <strong style="color:#fff;">Service Name|Price|Description</strong> — one per line. Price and description are optional but shown to customer before booking.</div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -472,7 +481,7 @@
           </div>
           <div class="form-group">
             <label>Role *</label>
-            <select id="sf_role" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+            <select id="sf_role" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="" disabled selected>Select Role</option>
               <option value="creator">🎬 Creator</option>
               <option value="editor">✂️ Editor</option>
@@ -488,24 +497,24 @@
           <input type="text" id="sf_custom_role" placeholder="e.g. Videographer"/>
         </div>
         <div style="margin-bottom:1rem;">
-          <label style="font-size:0.78rem;font-weight:600;color:#888070;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:0.75rem;">Page Access</label>
+          <label style="font-size:0.78rem;font-weight:600;color:#9a9080;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:0.75rem;">Page Access</label>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;" id="sf_access_grid">
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="bookings" style="accent-color:#c9a84c;"/> Bookings
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="about" style="accent-color:#c9a84c;"/> About Us
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="vibe" style="accent-color:#c9a84c;"/> Vibe
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="customer" style="accent-color:#c9a84c;"/> Customer Page
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="staff" style="accent-color:#c9a84c;"/> Staff
             </label>
-            <label style="display:flex;align-items:center;gap:0.5rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#ccc;text-transform:none;letter-spacing:0;">
+            <label style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.82rem;color:#d4c9a8;text-transform:none;letter-spacing:0;">
               <input type="checkbox" value="all" style="accent-color:#c9a84c;" id="sf_access_all" onchange="toggleAllAccess(this)"/> Full Access
             </label>
           </div>
@@ -518,7 +527,7 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-users" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Accounts</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="staffCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="staffCount"></span>
         </div>
         <div id="staffList"></div>
       </div>
@@ -544,17 +553,17 @@
           </div>
           <div class="form-group">
             <label>Assign Staff *</label>
-            <select id="dm_staff" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+            <select id="dm_staff" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Demo Date *</label>
-            <input type="date" id="dm_date" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="date" id="dm_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Demo Time *</label>
-            <input type="time" id="dm_time" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="time" id="dm_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
         </div>
         <div class="form-group">
@@ -588,7 +597,7 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> All Demo Sessions</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="demoCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="demoCount"></span>
         </div>
         <div id="demoAdminList"></div>
       </div>
@@ -635,8 +644,8 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-photo-video" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Uploaded Videos</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
-            <select id="videoFilterStaff" onchange="renderStaffVideosAdmin()" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
-            <span style="font-size:0.8rem;color:#888070;" id="staffVideosCount"></span>
+            <select id="videoFilterStaff" onchange="renderStaffVideosAdmin()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
+            <span style="font-size:0.8rem;color:#9a9080;" id="staffVideosCount"></span>
           </div>
         </div>
         <div id="staffVideosAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;"></div>
@@ -660,31 +669,31 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Select Booking *</label>
-            <select id="as_booking" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
+            <select id="as_booking" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
           </div>
           <div class="form-group">
             <label>Assign To (Creator) *</label>
-            <select id="as_staff" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+            <select id="as_staff" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Shoot Date *</label>
-            <input type="date" id="as_date" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="date" id="as_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Shoot Time *</label>
-            <input type="time" id="as_time" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="time" id="as_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
             <label>Payout Amount (₹) * <span style="font-size:0.68rem;color:#ff9800;font-weight:600;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-eye-slash"></i> Hidden from Creator</span></label>
-            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
-            <span style="font-size:0.72rem;color:#888070;margin-top:0.25rem;">This amount is only visible to admin. Creator sees their wallet balance after you release payment.</span>
+            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <span style="font-size:0.72rem;color:#9a9080;margin-top:0.25rem;">This amount is only visible to admin. Creator sees their wallet balance after you release payment.</span>
           </div>
         </div>
         <div class="form-group">
           <label>Instructions / Notes</label>
-          <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
+          <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
         </div>
         <button class="btn-save-about" onclick="assignShoot()"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
         <div class="save-toast" id="asToast"></div>
@@ -694,7 +703,7 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> Assigned Shoots</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="assignedCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="assignedCount"></span>
         </div>
         <div id="assignedList"></div>
       </div>
@@ -882,8 +891,8 @@
         </div>
         <div class="form-group">
           <label>Product Image</label>
-          <input type="file" id="ts_image" accept="image/*" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
-          <div id="ts_img_preview" style="margin-top:0.5rem;display:none;"><img id="ts_img_tag" style="max-height:120px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);"/></div>
+          <input type="file" id="ts_image" accept="image/*" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <div id="ts_img_preview" style="margin-top:0.5rem;display:none;"><img id="ts_img_tag" style="max-height:120px;border-radius:8px;border:1px solid rgba(201,168,76,0.15);"/></div>
         </div>
         <button class="btn-save-about" onclick="addTshirt()"><i class="fas fa-plus"></i> Add T-Shirt</button>
         <div class="save-toast" id="tsToast"><i class="fas fa-check-circle"></i> T-shirt added!</div>
@@ -893,7 +902,7 @@
       <div class="about-form" style="margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#2196f3;margin-right:0.5rem;"></i> T-Shirt Products</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="tsCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="tsCount"></span>
         </div>
         <div id="tshirtAdminList"></div>
       </div>
@@ -913,8 +922,8 @@
         </div>
         <div class="form-group">
           <label>ID Card Sample Image</label>
-          <input type="file" id="idc_image" accept="image/*" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
-          <div id="idc_img_preview" style="margin-top:0.5rem;display:none;"><img id="idc_img_tag" style="max-height:120px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);"/></div>
+          <input type="file" id="idc_image" accept="image/*" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          <div id="idc_img_preview" style="margin-top:0.5rem;display:none;"><img id="idc_img_tag" style="max-height:120px;border-radius:8px;border:1px solid rgba(201,168,76,0.15);"/></div>
         </div>
         <button class="btn-save-about" style="background:#f5a623;" onclick="saveIdCard()"><i class="fas fa-save"></i> Save ID Card Settings</button>
         <div class="save-toast" id="idcToast"><i class="fas fa-check-circle"></i> ID Card settings saved!</div>
@@ -943,7 +952,7 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-money-bill-wave" style="color:#4caf50;margin-right:0.5rem;"></i> Staff Withdrawal Requests</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="wdCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="wdCount"></span>
         </div>
         <div id="withdrawList"></div>
       </div>
@@ -953,7 +962,7 @@
     <div class="tab-panel" id="tab-razorpay">
       <div class="about-form" style="margin-bottom:1rem;">
         <h2><i class="fas fa-credit-card" style="color:#2196f3;margin-right:0.5rem;"></i> Razorpay Payment Gateway</h2>
-        <p style="font-size:0.88rem;color:#888070;margin-bottom:2rem;line-height:1.7;">
+        <p style="font-size:0.88rem;color:#9a9080;margin-bottom:2rem;line-height:1.7;">
           Go to <a href="https://dashboard.razorpay.com" target="_blank" style="color:#2196f3;font-weight:600;">Razorpay Dashboard</a> &rarr; Settings &rarr; API Keys &rarr; Generate Key and paste below.<br/>
           <span style="color:#f44336;font-size:0.8rem;"><i class="fas fa-exclamation-triangle"></i> Never share your Key Secret publicly. This is stored locally on your device only.</span>
         </p>
@@ -966,7 +975,7 @@
           <div class="form-group">
             <label>Razorpay Key Secret *</label>
             <input type="password" id="rp_key_secret" placeholder="Your secret key"/>
-            <span style="font-size:0.72rem;color:#888070;margin-top:0.25rem;">Stored locally, never sent to any server.</span>
+            <span style="font-size:0.72rem;color:#9a9080;margin-top:0.25rem;">Stored locally, never sent to any server.</span>
           </div>
         </div>
 
@@ -988,7 +997,7 @@
           </div>
           <div class="form-group">
             <label>Currency</label>
-            <select id="rp_currency" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+            <select id="rp_currency" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="INR">INR — Indian Rupee</option>
               <option value="USD">USD — US Dollar</option>
             </select>
@@ -1001,8 +1010,8 @@
         </div>
 
         <!-- Enable/Disable toggle -->
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:12px;">
-          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.88rem;color:#ccc;text-transform:none;letter-spacing:0;font-weight:600;">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.88rem;color:#d4c9a8;text-transform:none;letter-spacing:0;font-weight:600;">
             <input type="checkbox" id="rp_enabled" style="accent-color:#2196f3;width:18px;height:18px;"/>
             Enable Razorpay payments on customer page (customers must pay after booking is confirmed)
           </label>
@@ -1015,15 +1024,15 @@
       <!-- PER-BOOKING AMOUNT OVERRIDE -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-rupee-sign" style="color:#2196f3;margin-right:0.5rem;"></i> Set Custom Amount per Booking</h2>
-        <p style="font-size:0.82rem;color:#888070;margin-bottom:1.25rem;">Override the payment amount for a specific booking. Leave blank to use the default amount above.</p>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.25rem;">Override the payment amount for a specific booking. Leave blank to use the default amount above.</p>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
           <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0;">
             <label>Select Booking</label>
-            <select id="rp_booking_sel" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="">Select a confirmed booking</option></select>
+            <select id="rp_booking_sel" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="">Select a confirmed booking</option></select>
           </div>
           <div class="form-group" style="width:160px;margin-bottom:0;">
             <label>Amount (₹)</label>
-            <input type="number" id="rp_booking_amount" placeholder="e.g. 1999" min="1" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <input type="number" id="rp_booking_amount" placeholder="e.g. 1999" min="1" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <button onclick="setBookingAmount()" style="background:#2196f3;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;height:44px;"><i class="fas fa-save"></i> Set</button>
         </div>
@@ -1035,7 +1044,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-history" style="color:#2196f3;margin-right:0.5rem;"></i> Payment History</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
-            <span style="font-size:0.8rem;color:#888070;" id="rpPayCount"></span>
+            <span style="font-size:0.8rem;color:#9a9080;" id="rpPayCount"></span>
             <button onclick="clearPaymentHistory()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear</button>
           </div>
         </div>
@@ -1047,9 +1056,9 @@
     <div class="tab-panel" id="tab-tawk">
       <div class="about-form">
         <h2><i class="fas fa-comments" style="color:#7c4dff;margin-right:0.5rem;"></i> Live Chat — Tawk.to Setup</h2>
-        <p style="font-size:0.88rem;color:#888070;margin-bottom:2rem;line-height:1.7;">
+        <p style="font-size:0.88rem;color:#9a9080;margin-bottom:2rem;line-height:1.7;">
           Go to <a href="https://tawk.to" target="_blank" style="color:#7c4dff;font-weight:600;">tawk.to</a> &rarr; Administration &rarr; Chat Widget &rarr; copy the embed script URL.<br/>
-          The URL looks like: <code style="background:#141414;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.82rem;color:#c9a84c;">https://embed.tawk.to/<strong>PROPERTY_ID</strong>/<strong>WIDGET_ID</strong></code>
+          The URL looks like: <code style="background:#111;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.82rem;color:#c9a84c;">https://embed.tawk.to/<strong>PROPERTY_ID</strong>/<strong>WIDGET_ID</strong></code>
         </p>
         <div class="form-row">
           <div class="form-group">
@@ -1067,7 +1076,7 @@
           <div style="width:10px;height:10px;border-radius:50%;background:#4caf50;flex-shrink:0;"></div>
           <div>
             <div style="font-size:0.85rem;font-weight:700;color:#4caf50;">Live Chat Active</div>
-            <div style="font-size:0.75rem;color:#888070;" id="tawk_status_detail"></div>
+            <div style="font-size:0.75rem;color:#9a9080;" id="tawk_status_detail"></div>
           </div>
           <button onclick="clearTawkConfig()" style="margin-left:auto;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.3rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Disable</button>
         </div>
@@ -1126,7 +1135,7 @@
       <!-- DANGER ZONE -->
       <div class="about-form" style="border-color:rgba(244,67,54,0.3);">
         <h2 style="font-size:1rem;font-weight:800;color:#f44336;margin-bottom:1.5rem;"><i class="fas fa-exclamation-triangle"></i> &nbsp;Danger Zone</h2>
-        <p style="font-size:0.85rem;color:#888070;margin-bottom:1.25rem;">These actions are irreversible. All data will be permanently deleted.</p>
+        <p style="font-size:0.85rem;color:#9a9080;margin-bottom:1.25rem;">These actions are irreversible. All data will be permanently deleted.</p>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
           <button onclick="clearAllStaff()" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-users-slash"></i> Delete All Staff</button>
           <button onclick="resetEverything()" style="background:#f44336;border:none;color:#fff;padding:0.55rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bomb"></i> Reset Everything</button>
@@ -1140,8 +1149,8 @@
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-wallet" style="color:#c9a84c;margin-right:0.5rem;"></i> Customer Wallet Management</h2>
         <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-          <input type="text" id="cwEmail" placeholder="Customer email / username" style="flex:1;min-width:200px;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
-          <input type="number" id="cwAmount" placeholder="Amount (₹)" min="0" style="width:150px;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <input type="text" id="cwEmail" placeholder="Customer email / username" style="flex:1;min-width:200px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <input type="number" id="cwAmount" placeholder="Amount (₹)" min="0" style="width:150px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
           <button onclick="setCustWallet()" style="background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Set Balance</button>
           <button onclick="addCustWallet()" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add to Balance</button>
         </div>
@@ -1156,7 +1165,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-envelope" style="color:#c9a84c;margin-right:0.5rem;"></i> Customer Enquiries</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
-            <span style="font-size:0.8rem;color:#888070;" id="enquiriesCount"></span>
+            <span style="font-size:0.8rem;color:#9a9080;" id="enquiriesCount"></span>
             <button onclick="clearAllEnquiries()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
           </div>
         </div>
@@ -1169,24 +1178,24 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-play-circle" style="color:#c9a84c;margin-right:0.5rem;"></i> Client Testimonial Videos</h2>
-          <span style="font-size:0.8rem;color:#888070;" id="testiVidCount"></span>
+          <span style="font-size:0.8rem;color:#9a9080;" id="testiVidCount"></span>
         </div>
         <!-- Upload Form -->
-        <div style="background:#141414;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
           <h3 style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-upload" style="color:#c9a84c;margin-right:0.5rem;"></i> Upload New Testimonial Video</h3>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:0.85rem;">
             <div>
-              <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
-              <input type="text" id="tv_clientName" placeholder="e.g. Rahul Verma" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+              <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
+              <input type="text" id="tv_clientName" placeholder="e.g. Rahul Verma" style="width:100%;background:#111111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
             </div>
             <div>
-              <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
-              <input type="text" id="tv_caption" placeholder="e.g. Wedding Photography" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+              <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
+              <input type="text" id="tv_caption" placeholder="e.g. Wedding Photography" style="width:100%;background:#111111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
             </div>
           </div>
           <div style="margin-bottom:0.85rem;">
-            <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Video File</label>
-            <input type="file" id="tv_file" accept="video/*" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#888070;font-size:0.85rem;font-family:inherit;outline:none;"/>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Video File</label>
+            <input type="file" id="tv_file" accept="video/*" style="width:100%;background:#111111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#9a9080;font-size:0.85rem;font-family:inherit;outline:none;"/>
           </div>
           <button onclick="uploadTestiVideo()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:10px;padding:0.75rem 1.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;">
             <i class="fas fa-upload"></i> Upload Video
@@ -1205,12 +1214,12 @@
         <h3 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-edit" style="color:#c9a84c;margin-right:0.5rem;"></i> Edit Testimonial</h3>
         <input type="hidden" id="tv_editId"/>
         <div style="margin-bottom:0.85rem;">
-          <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
-          <input type="text" id="tv_editName" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
+          <input type="text" id="tv_editName" style="width:100%;background:#111111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
         </div>
         <div style="margin-bottom:1.25rem;">
-          <label style="font-size:0.72rem;color:#888070;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
-          <input type="text" id="tv_editCaption" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
+          <input type="text" id="tv_editCaption" style="width:100%;background:#111111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
         </div>
         <button onclick="saveTestiVidEdit()" style="width:100%;background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.8rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
       </div>
@@ -1222,7 +1231,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-bell" style="color:#c9a84c;margin-right:0.5rem;"></i> All Notifications</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
-            <span style="font-size:0.8rem;color:#888070;" id="notifCount"></span>
+            <span style="font-size:0.8rem;color:#9a9080;" id="notifCount"></span>
             <button onclick="clearAllNotifications()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
           </div>
         </div>
@@ -1326,7 +1335,7 @@
         return '<div style="background:rgba(0,0,0,0.3);border:1px solid rgba(244,67,54,0.2);border-radius:10px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:center;">'
           + '<div>'
           + '<div style="font-size:0.82rem;font-weight:700;color:#fff;">' + c.name + '</div>'
-          + '<div style="font-size:0.65rem;color:#888070;">' + c.role + '</div>'
+          + '<div style="font-size:0.65rem;color:#9a9080;">' + c.role + '</div>'
           + '</div>'
           + '<div style="font-size:0.95rem;font-weight:900;color:#f44336;">\u20b9' + c.pending.toLocaleString('en-IN') + '</div>'
           + '</div>';
@@ -1354,20 +1363,20 @@
       }
       tbody.innerHTML = filtered.map((b,i)=>`
         <tr>
-          <td style="color:#888070;font-size:0.75rem">${i+1}</td>
+          <td style="color:#9a9080;font-size:0.75rem">${i+1}</td>
           <td>
             <div style="font-weight:700">${b.name}</div>
-            <div style="color:#888070;font-size:0.78rem">${b.phone}</div>
+            <div style="color:#9a9080;font-size:0.78rem">${b.phone}</div>
             ${b.preferredCreatorName ? `<div style="color:#c9a84c;font-size:0.72rem;margin-top:2px;"><i class="fas fa-user-circle"></i> Prefers: ${b.preferredCreatorName}</div>` : ''}
-            <div style="color:#555;font-size:0.7rem">${b.createdAt}</div>
+            <div style="color:#777;font-size:0.7rem">${b.createdAt}</div>
           </td>
           <td><span style="color:#c9a84c;font-weight:600">${b.service}</span></td>
           <td>${b.city}</td>
           <td>
             <div style="font-weight:600">${b.date}</div>
-            <div style="color:#888070;font-size:0.8rem">${b.time}</div>
+            <div style="color:#9a9080;font-size:0.8rem">${b.time}</div>
           </td>
-          <td style="color:#888070;font-size:0.8rem;max-width:150px">${b.notes||'—'}</td>
+          <td style="color:#9a9080;font-size:0.8rem;max-width:150px">${b.notes||'—'}</td>
           <td><span class="status-badge ${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span></td>
           <td>
             <div class="action-btns">
@@ -1584,8 +1593,8 @@
       var div = document.createElement('div');
       div.style.cssText = 'display:grid;grid-template-columns:1fr 2fr auto;gap:0.75rem;align-items:start;margin-bottom:0.6rem;';
       div.innerHTML =
-        '<input type="text" placeholder="Client Name" value="'+name.replace(/"/g,'&quot;')+'" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
-        +'<textarea placeholder="Testimonial text" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;">'+text+'</textarea>'
+        '<input type="text" placeholder="Client Name" value="'+name.replace(/"/g,'&quot;')+'" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
+        +'<textarea placeholder="Testimonial text" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;">'+text+'</textarea>'
         +'<button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
       document.getElementById('hp_testiList').appendChild(div);
     }
@@ -1595,7 +1604,7 @@
       var div = document.createElement('div');
       div.style.cssText = 'display:grid;grid-template-columns:1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;';
       div.innerHTML =
-        '<input type="text" placeholder="Service Name|Price|Description" value="'+String(val).replace(/"/g,'&quot;')+'" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
+        '<input type="text" placeholder="Service Name|Price|Description" value="'+String(val).replace(/"/g,'&quot;')+'" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
         +'<button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
       document.getElementById('hp_servicesList').appendChild(div);
     }
@@ -1659,23 +1668,23 @@
       if(curVal) videos = videos.filter(function(v){ return v.staffId == curVal; });
       document.getElementById('staffVideosCount').textContent = videos.length + ' video(s)';
       var grid = document.getElementById('staffVideosAdminGrid');
-      if(!videos.length){ grid.innerHTML='<p style="color:#484030;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
+      if(!videos.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
       grid.innerHTML = '';
       videos.forEach(function(v){
         var assign = assigns.find(function(a){ return a.id == v.assignId; });
         var alreadyInVibe = getVibeItems().some(function(vi){ return vi.staffVideoId == v.id; });
         var card = document.createElement('div');
-        card.style.cssText = 'background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;';
+        card.style.cssText = 'background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
         card.innerHTML = '<div id="svp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>'
           +'<div style="padding:0.75rem;">'
           +'<div style="font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">'+v.staffName+'</div>'
           +(assign ? '<div style="font-size:0.7rem;color:#c9a84c;font-weight:600;margin-bottom:0.15rem;">'+assign.service+'</div>'
-            +'<div style="font-size:0.68rem;color:#888070;margin-bottom:0.1rem;"><i class="fas fa-user-circle"></i> '+assign.clientName+(assign.clientPhone?' &nbsp;·&nbsp; <i class="fas fa-phone"></i> '+assign.clientPhone:'')+'</div>'
-            +'<div style="font-size:0.68rem;color:#888070;margin-bottom:0.1rem;"><i class="fas fa-map-marker-alt"></i> '+(assign.location||assign.city)+'</div>'
-            +'<div style="font-size:0.68rem;color:#888070;margin-bottom:0.1rem;"><i class="fas fa-calendar"></i> '+assign.date+' '+assign.time+'</div>'
+            +'<div style="font-size:0.68rem;color:#9a9080;margin-bottom:0.1rem;"><i class="fas fa-user-circle"></i> '+assign.clientName+(assign.clientPhone?' &nbsp;·&nbsp; <i class="fas fa-phone"></i> '+assign.clientPhone:'')+'</div>'
+            +'<div style="font-size:0.68rem;color:#9a9080;margin-bottom:0.1rem;"><i class="fas fa-map-marker-alt"></i> '+(assign.location||assign.city)+'</div>'
+            +'<div style="font-size:0.68rem;color:#9a9080;margin-bottom:0.1rem;"><i class="fas fa-calendar"></i> '+assign.date+' '+assign.time+'</div>'
             +(assign.arrivedAt?'<div style="font-size:0.65rem;color:#4caf50;margin-bottom:0.1rem;"><i class="fas fa-check-circle"></i> Arrived: '+assign.arrivedAt+'</div>':'')
-           : '<div style="font-size:0.68rem;color:#888070;margin-bottom:0.3rem;">'+v.sizeMB+' MB</div>')
-          +'<div style="font-size:0.65rem;color:#555;margin-bottom:0.5rem;">'+(v.uploadedAt||'')+'</div>'
+           : '<div style="font-size:0.68rem;color:#9a9080;margin-bottom:0.3rem;">'+v.sizeMB+' MB</div>')
+          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.5rem;">'+(v.uploadedAt||'')+'</div>'
           +'<div style="display:flex;flex-direction:column;gap:0.4rem;">'
           +(alreadyInVibe
             ? '<div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:6px;padding:0.35rem 0.6rem;font-size:0.72rem;font-weight:700;text-align:center;"><i class="fas fa-check-circle"></i> Added to Vibe</div>'
@@ -1714,20 +1723,20 @@
       modal.innerHTML = '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.3);border-radius:18px;padding:2rem;width:100%;max-width:440px;">'
         +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">'
         +'<h3 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-fire" style="color:#c9a84c;"></i> Push to Discover with Vibe</h3>'
-        +'<button onclick="document.getElementById(\'pushVibeModal\').remove()" style="background:none;border:none;color:#888070;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>'
+        +'<button onclick="document.getElementById(\'pushVibeModal\').remove()" style="background:none;border:none;color:#9a9080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>'
         +'</div>'
         +'<div style="display:grid;gap:1rem;">'
-        +'<div><label style="font-size:0.75rem;color:#888070;font-weight:600;display:block;margin-bottom:0.35rem;">Title *</label>'
-        +'<input id="pv_title" value="'+(v.title||v.staffName+' — '+v.category)+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>'
-        +'<div><label style="font-size:0.75rem;color:#888070;font-weight:600;display:block;margin-bottom:0.35rem;">Category *</label>'
-        +'<select id="pv_cat" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">'+catOpts+'</select></div>'
-        +'<div><label style="font-size:0.75rem;color:#888070;font-weight:600;display:block;margin-bottom:0.35rem;">Thumbnail Image (optional — auto-generated if blank)</label>'
-        +'<input type="file" id="pv_thumb" accept="image/*" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>'
+        +'<div><label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Title *</label>'
+        +'<input id="pv_title" value="'+(v.title||v.staffName+' — '+v.category)+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/></div>'
+        +'<div><label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Category *</label>'
+        +'<select id="pv_cat" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">'+catOpts+'</select></div>'
+        +'<div><label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Thumbnail Image (optional — auto-generated if blank)</label>'
+        +'<input type="file" id="pv_thumb" accept="image/*" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>'
         +'<div id="pv_thumb_preview" style="display:none;margin-top:0.5rem;"><img id="pv_thumb_img" style="max-height:100px;border-radius:8px;"/></div></div>'
         +'</div>'
         +'<div style="display:flex;gap:0.75rem;margin-top:1.5rem;">'
         +'<button onclick="confirmPushToVibe('+staffVideoId+')" style="flex:1;background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-fire"></i> Push to Vibe</button>'
-        +'<button onclick="document.getElementById(\'pushVibeModal\').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'
+        +'<button onclick="document.getElementById(\'pushVibeModal\').remove()" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:#fff;border-radius:10px;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'
         +'</div></div>';
       document.body.appendChild(modal);
 
@@ -1855,17 +1864,17 @@
       var grid = document.getElementById('testiVidGrid');
       var countEl = document.getElementById('testiVidCount');
       if(countEl) countEl.textContent = meta.length + ' video(s)';
-      if(!meta.length){ grid.innerHTML='<p style="color:#484030;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Upload one above.</p>'; return; }
+      if(!meta.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Upload one above.</p>'; return; }
       grid.innerHTML='';
       meta.forEach(function(v){
         var card = document.createElement('div');
-        card.style.cssText='background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;';
+        card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;';
         card.innerHTML=
           '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
           +'<div style="padding:0.85rem;">'
           +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+v.clientName+'</div>'
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
-          +'<div style="font-size:0.65rem;color:#555;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
           +'<button onclick="openTestiVidEdit('+v.id+')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
           +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
@@ -1984,23 +1993,23 @@
           customers.push({ name: b.name, phone: b.phone });
         }
       });
-      if(!customers.length){ list.innerHTML = '<div style="color:#888070;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
+      if(!customers.length){ list.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
       list.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
-        + '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.08);">'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#888070;">Name</th>'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#888070;">Phone</th>'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#888070;">Balance</th>'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#888070;">Actions</th>'
+        + '<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.1);">'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Name</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Phone</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Balance</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Actions</th>'
         + '</tr></thead><tbody>'
         + customers.map(function(cu){
             var key = 'hs_cw_' + cu.phone;
             var bal = parseInt(localStorage.getItem(key) || '0');
-            return '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+            return '<tr style="border-bottom:1px solid rgba(201,168,76,0.05);">'
               + '<td style="padding:0.65rem 0.75rem;font-size:0.88rem;font-weight:600;">' + cu.name + '</td>'
-              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#888070;">' + cu.phone + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#9a9080;">' + cu.phone + '</td>'
               + '<td style="padding:0.65rem 0.75rem;font-size:1rem;font-weight:800;color:#4caf50;">₹' + bal + '</td>'
               + '<td style="padding:0.65rem 0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
-              + '<input type="number" id="cw_inp_' + cu.phone + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
+              + '<input type="number" id="cw_inp_' + cu.phone + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
               + '<button onclick="setCustWalletRow(\'' + cu.phone + '\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
               + '<button onclick="addCustWalletRow(\'' + cu.phone + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
               + '</td></tr>';
@@ -2217,7 +2226,7 @@
       document.getElementById('as_statPaid').textContent = list.filter(function(a){ return a.status==='paid'; }).length;
       var el = document.getElementById('assignedList');
       if(!list.length){
-        el.innerHTML = '<p style="color:#484030;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
+        el.innerHTML = '<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
         return;
       }
       var statusColors = { assigned:'#ff9800', done:'#9c27b0', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
@@ -2244,22 +2253,22 @@
         // Credit edit input for done status
         var creditEdit = (a.status === 'done')
           ? '<div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">'
-            + '<span style="font-size:0.72rem;color:#888070;">Payment Amount:</span>'
-            + '<input type="number" id="creditEdit_'+a.id+'" value="'+a.credit+'" min="0" style="width:90px;background:#0f0f0f;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.3rem 0.5rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
-            + '<span style="font-size:0.72rem;color:#888070;">&#8377;</span>'
+            + '<span style="font-size:0.72rem;color:#9a9080;">Payment Amount:</span>'
+            + '<input type="number" id="creditEdit_'+a.id+'" value="'+a.credit+'" min="0" style="width:90px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.3rem 0.5rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
+            + '<span style="font-size:0.72rem;color:#9a9080;">&#8377;</span>'
             + '</div>'
           : '';
 
-        return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
           + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
-          + '<div style="font-size:0.75rem;color:#888070;margin-top:0.15rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + '</div>'
-          + '<div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> Customer: ' + a.clientName + (a.clientPhone ? ' &nbsp;·&nbsp; <i class="fas fa-phone" style="color:#c9a84c;"></i> ' + a.clientPhone : '') + '</div>'
-          + '<div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (a.location || a.city) + '</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + '</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> Customer: ' + a.clientName + (a.clientPhone ? ' &nbsp;·&nbsp; <i class="fas fa-phone" style="color:#c9a84c;"></i> ' + a.clientPhone : '') + '</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (a.location || a.city) + '</div>'
           + (a.arrivedAt ? '<div style="font-size:0.72rem;color:#4caf50;margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Arrived: ' + a.arrivedAt + '</div>' : '')
           + (a.doneAt ? '<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.2rem;"><i class="fas fa-flag-checkered"></i> Marked Done: ' + a.doneAt + '</div>' : '')
-          + (a.notes ? '<div style="font-size:0.72rem;color:#666;margin-top:0.2rem;">' + a.notes + '</div>' : '')
+          + (a.notes ? '<div style="font-size:0.72rem;color:#777;margin-top:0.2rem;">' + a.notes + '</div>' : '')
           + creditEdit
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
@@ -2270,18 +2279,18 @@
           + '<button onclick="deleteAssignment('+a.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
           + adminVideoSection(a)
-          + '<div style="font-size:0.65rem;color:#555;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
+          + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
           + '</div>';
       }).join('');
     }
 
     function adminVideoSection(a){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.assignId == a.id; });
-      if(!videos.length) return '<div style="font-size:0.72rem;color:#555;margin-top:0.5rem;"><i class="fas fa-clock"></i> No edited video uploaded yet.</div>';
+      if(!videos.length) return '<div style="font-size:0.72rem;color:#777;margin-top:0.5rem;"><i class="fas fa-clock"></i> No edited video uploaded yet.</div>';
       var html = '<div style="margin-top:0.75rem;padding:0.75rem;background:#0a0a0a;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">';
       html += '<div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-film"></i> Edited Video Uploaded by Staff</div>';
       videos.forEach(function(v){
-        html += '<div id="adminVidPlayer_'+v.id+'" style="color:#888070;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        html += '<div id="adminVidPlayer_'+v.id+'" style="color:#9a9080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
         openAdminVideoDB(function(db){
           if(!db) return;
           var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
@@ -2291,7 +2300,7 @@
             if(req.result && req.result.blob){
               var url = URL.createObjectURL(req.result.blob);
               el.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:220px;border-radius:8px;margin-top:0.3rem;"></video>'
-                + '<div style="font-size:0.68rem;color:#888070;margin-top:0.3rem;">' + v.staffName + ' &nbsp;·&nbsp; ' + v.sizeMB + ' MB &nbsp;·&nbsp; ' + (v.uploadedAt||'') + '</div>';
+                + '<div style="font-size:0.68rem;color:#9a9080;margin-top:0.3rem;">' + v.staffName + ' &nbsp;·&nbsp; ' + v.sizeMB + ' MB &nbsp;·&nbsp; ' + (v.uploadedAt||'') + '</div>';
             } else { el.textContent = 'Video not found.'; }
           };
         });
@@ -2402,7 +2411,7 @@
       document.getElementById('wdCount').textContent = filtered.length + ' request(s)';
       var el = document.getElementById('withdrawList');
       if(!filtered.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#888070;"><i class="fas fa-money-bill-wave" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No withdrawal requests yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a9080;"><i class="fas fa-money-bill-wave" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No withdrawal requests yet.</div>';
         return;
       }
       var sc_map = { pending:'#ff9800', approved:'#4caf50', rejected:'#f44336' };
@@ -2412,23 +2421,23 @@
           ? '<button onclick="approveWithdraw(\'' + r.id + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Approve & Transfer</button>'
             + '<button onclick="rejectWithdraw(\'' + r.id + '\')" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.4rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Reject</button>'
           : '';
-        return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:4px solid '+sc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+sc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.85rem;">'
           + '<div style="display:flex;align-items:center;gap:0.85rem;">'
           + '<div style="width:44px;height:44px;border-radius:12px;background:'+sc+'22;border:1px solid '+sc+'44;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:'+sc+';flex-shrink:0;">' + r.staffName.charAt(0).toUpperCase() + '</div>'
           + '<div><div style="font-size:0.95rem;font-weight:800;color:#fff;">' + r.staffName + '</div>'
-          + '<div style="font-size:0.72rem;color:#888070;margin-top:0.1rem;">Requested: ' + r.requestedAt + '</div>'
-          + (r.processedAt ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status==='approved'?'Approved':'Rejected') + ': ' + r.processedAt + '</div>' : '')
+          + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">Requested: ' + r.requestedAt + '</div>'
+          + (r.processedAt ? '<div style="font-size:0.68rem;color:#777;margin-top:0.1rem;">' + (r.status==='approved'?'Approved':'Rejected') + ': ' + r.processedAt + '</div>' : '')
           + '</div></div>'
           + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;">'
           + '<span style="font-size:1.3rem;font-weight:900;color:'+sc+';">\u20b9' + (r.amount||0).toLocaleString('en-IN') + '</span>'
           + '<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">' + r.status.charAt(0).toUpperCase()+r.status.slice(1) + '</span>'
           + '</div></div>'
           + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
-          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-university" style="color:#c9a84c;"></i> Bank</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.bankName||'\u2014') + '</div></div>'
-          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-credit-card" style="color:#c9a84c;"></i> A/C No.</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.accNo ? r.accNo.replace(/.(?=.{4})/g,'*') : '\u2014') + '</div></div>'
-          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-code-branch" style="color:#c9a84c;"></i> IFSC</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.ifsc||'\u2014') + '</div></div>'
-          + (r.upi ? '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#888070;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-mobile-alt" style="color:#c9a84c;"></i> UPI</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + r.upi + '</div></div>' : '')
+          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-university" style="color:#c9a84c;"></i> Bank</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.bankName||'\u2014') + '</div></div>'
+          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-credit-card" style="color:#c9a84c;"></i> A/C No.</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.accNo ? r.accNo.replace(/.(?=.{4})/g,'*') : '\u2014') + '</div></div>'
+          + '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-code-branch" style="color:#c9a84c;"></i> IFSC</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + (r.ifsc||'\u2014') + '</div></div>'
+          + (r.upi ? '<div style="background:#0a0a0a;border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;"><i class="fas fa-mobile-alt" style="color:#c9a84c;"></i> UPI</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">' + r.upi + '</div></div>' : '')
           + '</div>'
           + (r.rejectReason ? '<div style="background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.2);border-radius:8px;padding:0.6rem 0.85rem;font-size:0.78rem;color:#ef9a9a;margin-bottom:0.75rem;"><i class="fas fa-times-circle"></i> Reason: ' + r.rejectReason + '</div>' : '')
           + (actionBtns ? '<div style="display:flex;gap:0.65rem;flex-wrap:wrap;">' + actionBtns + '</div>' : '')
@@ -2543,19 +2552,19 @@
       document.getElementById('rpPayCount').textContent = payments.length + ' payment(s)';
       var el = document.getElementById('rpPayList');
       if(!payments.length){
-        el.innerHTML = '<div style="text-align:center;padding:2.5rem;color:#888070;"><i class="fas fa-receipt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No payments yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:2.5rem;color:#9a9080;"><i class="fas fa-receipt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No payments yet.</div>';
         return;
       }
       var total = payments.reduce(function(s,p){ return s + (p.amount || 0); }, 0);
       el.innerHTML = '<div style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:10px;padding:0.85rem 1.25rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;">'
-        + '<span style="font-size:0.85rem;color:#888070;">Total Collected</span>'
+        + '<span style="font-size:0.85rem;color:#9a9080;">Total Collected</span>'
         + '<span style="font-size:1.2rem;font-weight:900;color:#2196f3;">₹' + total.toLocaleString('en-IN') + '</span>'
         + '</div>'
         + payments.map(function(p){
-          return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:3px solid #2196f3;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid #2196f3;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
             + '<div>'
             + '<div style="font-size:0.9rem;font-weight:700;color:#fff;">' + (p.customerName || 'Customer') + ' — ' + (p.service || '') + '</div>'
-            + '<div style="font-size:0.72rem;color:#888070;margin-top:0.15rem;">Payment ID: ' + (p.paymentId || 'N/A') + ' &nbsp;·&nbsp; ' + (p.paidAt || '') + '</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.15rem;">Payment ID: ' + (p.paymentId || 'N/A') + ' &nbsp;·&nbsp; ' + (p.paidAt || '') + '</div>'
             + '</div>'
             + '<span style="font-size:1rem;font-weight:900;color:#2196f3;">₹' + (p.amount || 0).toLocaleString('en-IN') + '</span>'
             + '</div>';
@@ -2616,7 +2625,7 @@
     function addTeamRow(name='', role='') {
       const div = document.createElement('div');
       div.className = 'team-row';
-      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
       document.getElementById('teamRows').appendChild(div);
     }
 
@@ -2648,24 +2657,24 @@
       document.getElementById('enquiriesCount').textContent = list.length + ' enquir' + (list.length===1?'y':'ies');
       var el = document.getElementById('enquiriesList');
       if(!list.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#888070;"><i class="fas fa-envelope" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No enquiries yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a9080;"><i class="fas fa-envelope" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No enquiries yet.</div>';
         return;
       }
       el.innerHTML = list.map(function(q){
-        return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
           +'<div style="display:flex;align-items:center;gap:0.85rem;">'
           +'<div style="width:42px;height:42px;border-radius:12px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#c9a84c;flex-shrink:0;">'+(q.name?q.name[0].toUpperCase():'?')+'</div>'
           +'<div>'
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;">'+q.name+'</div>'
-          +'<div style="font-size:0.72rem;color:#888070;margin-top:0.1rem;">'+q.email+' &nbsp;·&nbsp; '+q.phone+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">'+q.email+' &nbsp;·&nbsp; '+q.phone+'</div>'
           +'</div></div>'
           +'<div style="display:flex;align-items:center;gap:0.6rem;">'
           +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-envelope"></i> Enquiry</span>'
           +'<button onclick="deleteEnquiry('+q.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
           +'</div></div>'
           +'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);">'+q.message+'</div>'
-          +'<div style="font-size:0.68rem;color:#555;margin-top:0.6rem;">'+q.submittedAt+'</div>'
+          +'<div style="font-size:0.68rem;color:#777;margin-top:0.6rem;">'+q.submittedAt+'</div>'
           +'</div>';
       }).join('');
     }
@@ -2730,7 +2739,7 @@
       document.getElementById('notifCount').textContent = notifs.length + ' notification' + (notifs.length===1?'':'s');
       var el = document.getElementById('notificationsList');
       if(!notifs.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#888070;"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No notifications yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a9080;"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No notifications yet.</div>';
         return;
       }
       var icons = { payout:'fa-hand-holding-usd', done:'fa-flag-checkered', booking:'fa-calendar-alt', enquiry:'fa-envelope', feedback:'fa-star', reel:'fa-film' };
@@ -2738,17 +2747,17 @@
       el.innerHTML = notifs.map(function(n){
         var icon  = icons[n.type]  || 'fa-bell';
         var color = colors[n.type] || '#c9a84c';
-        return '<div style="background:#141414;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
           + '<div style="display:flex;align-items:flex-start;gap:0.85rem;">'
           + '<div style="width:40px;height:40px;border-radius:10px;background:'+color+'22;border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas '+icon+'" style="color:'+color+';"></i></div>'
           + '<div>'
           + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">'+n.title+'</div>'
-          + '<div style="font-size:0.75rem;color:#888070;">'+n.sub+'</div>'
-          + '<div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">'+n.time+'</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;">'+n.sub+'</div>'
+          + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+n.time+'</div>'
           + '</div></div>'
           + '<div style="display:flex;gap:0.5rem;align-items:center;">'
           + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif('+n.id+')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
-          + '<button onclick="deleteNotif('+n.id+')" style="background:rgba(255,255,255,0.04);border:none;color:#555;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + '<button onclick="deleteNotif('+n.id+')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
           + '</div></div>';
       }).join('');
     }
