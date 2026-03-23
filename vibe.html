@@ -53,6 +53,7 @@
 
     <div class="vibe-cats">
       <button class="vibe-cat active" data-cat="all">All</button>
+      <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star"></i> Testimonials</button>
       <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
       <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
       <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
@@ -64,6 +65,7 @@
     </div>
 
     <div class="vibe-grid" id="vibeGrid"></div>
+    <div id="testiPanel" style="display:none;"></div>
   </div>
 
   <!-- Lightbox -->
@@ -118,9 +120,54 @@
         document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
         btn.classList.add('active');
         currentCat = btn.dataset.cat;
-        renderVibe();
+        if(currentCat === 'Testimonials'){
+          document.getElementById('vibeGrid').style.display = 'none';
+          var panel = document.getElementById('testiPanel');
+          panel.style.display = 'block';
+          renderTestimonials(panel);
+        } else {
+          document.getElementById('vibeGrid').style.display = 'grid';
+          document.getElementById('testiPanel').style.display = 'none';
+          renderVibe();
+        }
       });
     });
+
+    function renderTestimonials(panel){
+      var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
+      if(!meta.length){
+        panel.innerHTML = '<div class="vibe-empty"><i class="fas fa-play-circle"></i><p>No testimonial videos yet. Check back soon!</p></div>';
+        return;
+      }
+      panel.innerHTML = '<div class="vibe-grid" id="testiInner"></div>';
+      var inner = document.getElementById('testiInner');
+      var _db = null;
+      function openTDB(cb){
+        if(_db){ cb(_db); return; }
+        var r = indexedDB.open('hs_testi_videos_db',1);
+        r.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+        r.onsuccess = function(e){ _db=e.target.result; cb(_db); };
+        r.onerror = function(){ cb(null); };
+      }
+      meta.forEach(function(v){
+        var card = document.createElement('div');
+        card.className = 'vibe-card';
+        card.innerHTML =
+          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+          +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>';
+        openTDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            if(!req.result) return;
+            var url = URL.createObjectURL(req.result.blob);
+            var ph = document.getElementById('tvp_'+v.id);
+            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+          };
+        });
+        inner.appendChild(card);
+      });
+    }
 
     function openLb(idx){
       var items = getVibeItems();

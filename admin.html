@@ -1533,7 +1533,113 @@
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
     }
 
-    function deleteFeedback(id){
+    function loadHomePage(){
+      var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+      document.getElementById('hp_statReels').value  = hp.statReels  || '';
+      document.getElementById('hp_statRating').value = hp.statRating || '';
+      document.getElementById('hp_statMakers').value = hp.statMakers || '';
+      document.getElementById('hp_heroTag').value    = hp.heroTag    || '';
+      document.getElementById('hp_heroSub').value    = hp.heroSub    || '';
+      document.getElementById('hp_heroBig').value    = hp.heroBig    || '';
+      document.getElementById('hp_btnBook').value    = hp.btnBook    || '';
+      document.getElementById('hp_servicesHeading').value = hp.servicesHeading || '';
+      document.getElementById('hp_servicesSub').value     = hp.servicesSub     || '';
+      document.getElementById('hp_plan1Name').value  = hp.plan1Name  || '';
+      document.getElementById('hp_plan1Price').value = hp.plan1Price || '';
+      document.getElementById('hp_plan1Sub').value   = hp.plan1Sub   || '';
+      document.getElementById('hp_plan1Desc').value  = hp.plan1Desc  || '';
+      document.getElementById('hp_plan2Name').value  = hp.plan2Name  || '';
+      document.getElementById('hp_plan2Price').value = hp.plan2Price || '';
+      document.getElementById('hp_plan2Sub').value   = hp.plan2Sub   || '';
+      document.getElementById('hp_plan2Desc').value  = hp.plan2Desc  || '';
+      document.getElementById('hp_email').value      = hp.email      || '';
+      document.getElementById('hp_instagram').value  = hp.instagram  || '';
+      document.getElementById('hp_location').value   = hp.location   || '';
+      document.getElementById('hp_copyright').value  = hp.copyright  || '';
+      document.getElementById('hp_announcement').value = hp.announcement || '';
+      document.getElementById('hp_announceBg').value    = hp.announceBg    || '#e53935';
+      document.getElementById('hp_announceColor').value = hp.announceColor || '#ffffff';
+      // Services
+      var sList = document.getElementById('hp_servicesList');
+      sList.innerHTML = '';
+      (hp.services || []).forEach(function(s){ addServiceRow(s); });
+      // Testimonials
+      var tList = document.getElementById('hp_testiList');
+      tList.innerHTML = '';
+      var testis = hp.testimonials && hp.testimonials.length ? hp.testimonials : [
+        {name:'Srikari Galigari', text:'Hash Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!'},
+        {name:'Lanka Pravallika', text:'Hash Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!'},
+        {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! Hash Shoots made capturing memories effortlessly beautiful.'},
+        {name:'Rahul Verma', text:'The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.'},
+        {name:'Ananya Reddy', text:'Used Hash Shoots for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!'},
+        {name:'Priya Sharma', text:'My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.'},
+        {name:'Nikhil Kumar', text:'Amazing experience from start to finish. The reel maker was on time, creative, and delivered edited content within minutes!'},
+        {name:'Sneha Mehta', text:'Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!'},
+        {name:'Vikram Rao', text:'I was skeptical at first but Hash Shoots blew me away. Professional, fast, and the reels went viral. 10/10 service!'}
+      ];
+      testis.forEach(function(t){ addTestiRow(t.name, t.text); });
+    }
+
+    function addTestiRow(name, text){
+      name = name || ''; text = text || '';
+      var div = document.createElement('div');
+      div.style.cssText = 'display:grid;grid-template-columns:1fr 2fr auto;gap:0.75rem;align-items:start;margin-bottom:0.6rem;';
+      div.innerHTML =
+        '<input type="text" placeholder="Client Name" value="'+name.replace(/"/g,'&quot;')+'" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
+        +'<textarea placeholder="Testimonial text" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;">'+text+'</textarea>'
+        +'<button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+      document.getElementById('hp_testiList').appendChild(div);
+    }
+
+    function addServiceRow(val){
+      val = val || '';
+      var div = document.createElement('div');
+      div.style.cssText = 'display:grid;grid-template-columns:1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;';
+      div.innerHTML =
+        '<input type="text" placeholder="Service Name|Price|Description" value="'+String(val).replace(/"/g,'&quot;')+'" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/>'
+        +'<button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+      document.getElementById('hp_servicesList').appendChild(div);
+    }
+
+    function saveHomePage(){
+      var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+      hp.statReels   = document.getElementById('hp_statReels').value.trim();
+      hp.statRating  = document.getElementById('hp_statRating').value.trim();
+      hp.statMakers  = document.getElementById('hp_statMakers').value.trim();
+      hp.heroTag     = document.getElementById('hp_heroTag').value.trim();
+      hp.heroSub     = document.getElementById('hp_heroSub').value.trim();
+      hp.heroBig     = document.getElementById('hp_heroBig').value.trim();
+      hp.btnBook     = document.getElementById('hp_btnBook').value.trim();
+      hp.servicesHeading = document.getElementById('hp_servicesHeading').value.trim();
+      hp.servicesSub     = document.getElementById('hp_servicesSub').value.trim();
+      hp.plan1Name   = document.getElementById('hp_plan1Name').value.trim();
+      hp.plan1Price  = document.getElementById('hp_plan1Price').value.trim();
+      hp.plan1Sub    = document.getElementById('hp_plan1Sub').value.trim();
+      hp.plan1Desc   = document.getElementById('hp_plan1Desc').value.trim();
+      hp.plan2Name   = document.getElementById('hp_plan2Name').value.trim();
+      hp.plan2Price  = document.getElementById('hp_plan2Price').value.trim();
+      hp.plan2Sub    = document.getElementById('hp_plan2Sub').value.trim();
+      hp.plan2Desc   = document.getElementById('hp_plan2Desc').value.trim();
+      hp.email       = document.getElementById('hp_email').value.trim();
+      hp.instagram   = document.getElementById('hp_instagram').value.trim();
+      hp.location    = document.getElementById('hp_location').value.trim();
+      hp.copyright   = document.getElementById('hp_copyright').value.trim();
+      hp.announcement  = document.getElementById('hp_announcement').value.trim();
+      hp.announceBg    = document.getElementById('hp_announceBg').value;
+      hp.announceColor = document.getElementById('hp_announceColor').value;
+      // Services
+      hp.services = Array.from(document.querySelectorAll('#hp_servicesList input')).map(function(i){ return i.value.trim(); }).filter(Boolean);
+      // Testimonials
+      var rows = document.querySelectorAll('#hp_testiList > div');
+      hp.testimonials = Array.from(rows).map(function(row){
+        var inputs = row.querySelectorAll('input,textarea');
+        return { name: inputs[0].value.trim(), text: inputs[1].value.trim() };
+      }).filter(function(t){ return t.name && t.text; });
+      localStorage.setItem('hs_homepage', JSON.stringify(hp));
+      var toast = document.getElementById('hpToast');
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display='none'; }, 2500);
+    }
       if(!confirm('Delete this feedback?')) return;
       localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){ return f.id !== id; })));
       renderFeedbackAdmin();

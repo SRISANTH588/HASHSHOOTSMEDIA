@@ -51,6 +51,7 @@
     </div>
     <div class="vibe-cats">
       <button class="vibe-cat active" data-cat="all">All</button>
+      <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star"></i> Testimonials</button>
       <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
       <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
       <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
@@ -61,6 +62,7 @@
       <button class="vibe-cat" data-cat="Caterers">Caterers</button>
     </div>
     <div class="vibe-grid" id="vibeGrid"></div>
+    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
     <!-- Lightbox -->
     <div class="vibe-lightbox" id="vibeLightbox">
       <div class="vibe-lb-inner">
@@ -93,9 +95,80 @@
           document.querySelectorAll('.vibe-cat').forEach(function(b){b.classList.remove('active');});
           btn.classList.add('active');
           currentCat = btn.dataset.cat;
-          renderVibe();
+          if(currentCat === 'Testimonials'){
+            document.getElementById('vibeGrid').style.display = 'none';
+            var panel = document.getElementById('vibeTestiPanel');
+            panel.style.display = 'block';
+            renderVibeTestimonials(panel);
+          } else {
+            document.getElementById('vibeGrid').style.display = 'grid';
+            document.getElementById('vibeTestiPanel').style.display = 'none';
+            renderVibe();
+          }
         });
       });
+
+      function renderVibeTestimonials(panel){
+        var staticTestis = [
+          {name:'Srikari Galigari', text:'Hash Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!', service:'Reel Shoot'},
+          {name:'Lanka Pravallika', text:'Hash Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!', service:'Event Coverage'},
+          {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! Hash Shoots made capturing memories effortlessly beautiful.', service:'Portrait Session'},
+          {name:'Rahul Verma', text:'The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.', service:'Reel Shoot'},
+          {name:'Ananya Reddy', text:'Used Hash Shoots for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!', service:'Event Coverage'},
+          {name:'Priya Sharma', text:'My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.', service:'Product Shoot'},
+          {name:'Nikhil Kumar', text:'Amazing experience from start to finish. The reel maker was on time, creative, and delivered edited content within minutes!', service:'Reel Shoot'},
+          {name:'Sneha Mehta', text:'Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!', service:'Portrait Session'},
+          {name:'Vikram Rao', text:'I was skeptical at first but Hash Shoots blew me away. Professional, fast, and the reels went viral. 10/10 service!', service:'Reel Shoot'}
+        ];
+        var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
+        // Show static text testimonials always
+        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;">';
+        staticTestis.forEach(function(t){
+          var initials = t.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          html += '<div class="vibe-card" style="padding:1.5rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">'
+            +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e53935,#7f0000);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#fff;flex-shrink:0;">'+initials+'</div>'
+            +'<div><div style="font-size:0.92rem;font-weight:700;color:#fff;">'+t.name+'</div>'
+            +'<div style="color:#f5a623;font-size:0.8rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>'
+            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;margin-bottom:0.75rem;">&ldquo;'+t.text+'&rdquo;</div>'
+            +'<div style="font-size:0.72rem;color:#e53935;font-weight:600;"><i class="fas fa-camera"></i> '+t.service+'</div>'
+            +'</div>';
+        });
+        // Also show uploaded video testimonials if any
+        if(meta.length){
+          meta.forEach(function(v){
+            html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
+              +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+              +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
+              +'</div>';
+          });
+        }
+        html += '</div>';
+        panel.innerHTML = html;
+        // Load videos from IndexedDB
+        if(meta.length){
+          var _db = null;
+          function openDB(cb){
+            if(_db){ cb(_db); return; }
+            var r = indexedDB.open('hs_testi_videos_db',1);
+            r.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+            r.onsuccess = function(e){ _db=e.target.result; cb(_db); };
+            r.onerror = function(){ cb(null); };
+          }
+          meta.forEach(function(v){
+            openDB(function(db){
+              if(!db) return;
+              var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+              req.onsuccess = function(){
+                if(!req.result) return;
+                var url = URL.createObjectURL(req.result.blob);
+                var ph = document.getElementById('vtpi_'+v.id);
+                if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+              };
+            });
+          });
+        }
+      }
       window.openVibeLb = function(idx){
         var items = getVibeItems();
         var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
@@ -119,7 +192,11 @@
         if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
       });
       renderVibe();
-      // Re-render when admin updates
+      // If no vibe content, auto-show Testimonials
+      if(!getVibeItems().length){
+        var testiBtn = document.querySelector('.vibe-cat[data-cat="Testimonials"]');
+        if(testiBtn) testiBtn.click();
+      }
       window.addEventListener('storage',function(e){ if(e.key==='hs_vibe') renderVibe(); });
     })();
   </script>
@@ -791,6 +868,7 @@
 
 
 
+
   <!-- TESTIMONIALS -->
   <section class="testimonials" id="testimonials">
     <style>
@@ -945,6 +1023,36 @@
       }
       buildDots();
       setInterval(function(){idx=(idx+1)%pages();go();buildDots();go();},4000);
+
+      // Inject real client testimonials from localStorage
+      (function injectRealTestimonials(){
+        var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks')||'[]')
+          .filter(function(f){ return f.rating >= 4 && f.comment; })
+          .slice(-6).reverse();
+        if(!feedbacks.length) return;
+        feedbacks.forEach(function(f){
+          var initials = (f.customerName||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          var stars = '★'.repeat(f.rating) + '☆'.repeat(5-f.rating);
+          var card = document.createElement('div');
+          card.className = 'testi-card';
+          card.innerHTML =
+            '<div>'
+            +'<div class="testi-quote-icon"><i class="fas fa-quote-right"></i></div>'
+            +'<div class="testi-text">'+f.comment+'</div>'
+            +'</div>'
+            +'<div class="testi-author">'
+            +'<div class="testi-avatar">'+initials+'</div>'
+            +'<div>'
+            +'<div class="testi-name">'+f.customerName+'</div>'
+            +'<div style="color:#f5a623;font-size:0.78rem;letter-spacing:1px;">'+stars+'</div>'
+            +(f.service?'<div style="font-size:0.72rem;color:#e53935;margin-top:0.15rem;">'+f.service+'</div>':'')
+            +'</div>'
+            +'</div>';
+          track.appendChild(card);
+        });
+        // Rebuild dots after adding new cards
+        buildDots();
+      })();
     })();
   </script>
 

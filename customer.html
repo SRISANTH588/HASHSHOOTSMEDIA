@@ -171,6 +171,7 @@
     <a class="ctab" href="customer-orders.html"><i class="fas fa-list"></i> My Orders</a>
     <a class="ctab" href="customer-support.html"><i class="fas fa-headset"></i> Support</a>
     <a class="ctab" href="customer-wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+    <a class="ctab" id="testiTab" onclick="showTab('testimonials',this);return false;" href="#"><i class="fas fa-play-circle"></i> Testimonials</a>
     <a class="ctab" href="customer-profile.html"><i class="fas fa-user"></i> Profile</a>
   </div>
 
@@ -325,15 +326,25 @@
 
   </div>
 
+  <!-- TESTIMONIALS TAB -->
+  <div class="tab-section" id="tab-testimonials" style="display:none;">
+    <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem;">Client <span style="color:#e53935;">Testimonials</span></h2>
+      <p style="color:#a08080;font-size:0.85rem;margin-bottom:1.75rem;">Real experiences from our clients.</p>
+      <div id="testiVidCustomerGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
+    </div>
+  </div>
+
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
 
     function showTab(name, btn){
-      document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); });
+      document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); s.style.display='none'; });
       document.querySelectorAll('.ctab').forEach(function(b){ b.classList.remove('active'); });
       var sec = document.getElementById('tab-' + name);
-      if(sec) sec.classList.add('active');
+      if(sec){ sec.classList.add('active'); sec.style.display='block'; }
       if(btn) btn.classList.add('active');
+      if(name === 'testimonials') renderTestiVideosCustomer();
     }
 
     var _pendingBookBtn = null;
@@ -824,6 +835,46 @@
     renderShootFeedback();
     renderDemoFeedback();
     setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 3000);
+
+    // TESTIMONIAL VIDEOS
+    function openTestiVideoDB(cb){
+      var req = indexedDB.open('hs_testi_videos_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
+      req.onsuccess = function(e){ cb(e.target.result); };
+      req.onerror = function(){ cb(null); };
+    }
+
+    function renderTestiVideosCustomer(){
+      var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
+      var grid = document.getElementById('testiVidCustomerGrid');
+      if(!grid) return;
+      if(!meta.length){
+        grid.innerHTML='<p style="color:#a08080;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Check back soon!</p>';
+        return;
+      }
+      grid.innerHTML='';
+      meta.forEach(function(v){
+        var card = document.createElement('div');
+        card.style.cssText='background:#1c0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;';
+        card.innerHTML=
+          '<div id="ctv_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+          +'<div style="padding:0.75rem;">'
+          +'<div style="font-size:0.85rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">'+v.clientName+'</div>'
+          +(v.caption?'<div style="font-size:0.72rem;color:#e53935;font-weight:600;">'+v.caption+'</div>':'')
+          +'</div>';
+        openTestiVideoDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            if(!req.result) return;
+            var url = URL.createObjectURL(req.result.blob);
+            var ph = document.getElementById('ctv_'+v.id);
+            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+          };
+        });
+        grid.appendChild(card);
+      });
+    }
   </script>
 
   <!-- Razorpay SDK -->
