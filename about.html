@@ -302,7 +302,7 @@
     if (about.heroDesc) document.getElementById('heroDesc').textContent = about.heroDesc;
     if (about.storyText) document.getElementById('storyText').textContent = about.storyText;
     if (about.missionText) document.getElementById('missionText').textContent = about.missionText;
-    if (about.team && about.team.length) {
+    if (about.team && about.team.length && about.team.some(m => m.photo)) {
       const grid = document.getElementById('teamGrid');
       grid.innerHTML = about.team.map(m => {
         const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
