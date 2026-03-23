@@ -69,6 +69,8 @@
     .team-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem 1.75rem; }
     .team-name { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.6rem; }
     .team-role-pill { display: inline-flex; align-items: center; background: rgba(15,0,0,0.8); border: 1px solid rgba(255,255,255,0.12); color: #ccc; font-size: 0.78rem; font-weight: 500; padding: 0.35rem 1rem; border-radius: 50px; backdrop-filter: blur(8px); }
+    .team-insta { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.6rem; color: rgba(201,168,76,0.7); font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .team-insta:hover { color: #c9a84c; }
 
     /* STORY + MISSION */
     .story-section { padding: 6rem 1.5rem; background: #0f0f0f; }
@@ -146,6 +148,7 @@
         <div class="team-info">
           <div class="team-name">Boddu Srisanth</div>
           <span class="team-role-pill">Founder &amp; CEO</span>
+          <div><a href="https://instagram.com/srisanth588" target="_blank" class="team-insta" id="insta_srisanth"><i class="fab fa-instagram"></i> @srisanth588</a></div>
         </div>
       </div>
       <div class="team-card">
@@ -155,6 +158,7 @@
         <div class="team-info">
           <div class="team-name">Gulimi Sumanth</div>
           <span class="team-role-pill">Managing Director</span>
+          <div><a href="https://instagram.com/gulimi_sumanth" target="_blank" class="team-insta" id="insta_sumanth"><i class="fab fa-instagram"></i> @gulimi_sumanth</a></div>
         </div>
       </div>
     </div>
@@ -291,6 +295,30 @@
     if (about.heroDesc) document.getElementById('heroDesc').textContent = about.heroDesc;
     if (about.storyText) document.getElementById('storyText').textContent = about.storyText;
     if (about.missionText) document.getElementById('missionText').textContent = about.missionText;
+    if (about.team && about.team.length) {
+      const grid = document.getElementById('teamGrid');
+      grid.innerHTML = about.team.map(m => {
+        const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
+        return `<div class="team-card"><div class="team-photo-bg">${initials}</div><div class="team-overlay"></div><div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
+      }).join('');
+    }
+    if (about.team && about.team.length) {
+      const grid = document.getElementById('teamGrid');
+      grid.innerHTML = about.team.map(m => {
+        const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
+        return `<div class="team-card">
+          <div class="team-photo-bg">${initials}</div>
+          <div class="team-overlay"></div>
+          <div class="team-info">
+            <div class="team-name">${m.name}</div>
+            <span class="team-role-pill">${m.role}</span>
+            ${instaHtml}
+          </div>
+        </div>`;
+      }).join('');
+    }
 
     window.addEventListener('scroll', () => {
       const nav = document.getElementById('hsNav');

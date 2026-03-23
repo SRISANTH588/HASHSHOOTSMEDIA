@@ -80,7 +80,7 @@
     .form-group input,.form-group textarea{background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
     .form-group input:focus,.form-group textarea:focus{border-color:var(--gold);}
     .form-group textarea{resize:vertical;min-height:90px;}
-    .team-row{display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
+    .team-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.75rem;align-items:center;margin-bottom:0.6rem;}
     .btn-add-team{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;margin-bottom:1rem;transition:all 0.2s;}
     .btn-add-team:hover{background:var(--gold);color:var(--text);}
     .btn-remove{background:rgba(244,67,54,0.1);border:none;color:#f44336;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;}
@@ -2619,20 +2619,21 @@
       document.getElementById('ab_statCities').value = a.statCities || '';
       const team = a.team || [{name:'Srisanth S',role:'Founder & CEO'},{name:'Kiran M',role:'Head of Operations'},{name:'Priya R',role:'Lead Content Maker'}];
       document.getElementById('teamRows').innerHTML = '';
-      team.forEach(m => addTeamRow(m.name, m.role));
+      team.forEach(m => addTeamRow(m.name, m.role, m.insta||''));
     }
 
-    function addTeamRow(name='', role='') {
+    function addTeamRow(name='', role='', insta='') {
       const div = document.createElement('div');
       div.className = 'team-row';
-      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+      div.innerHTML = `<input type="text" placeholder="Name" value="${name}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Role" value="${role}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><input type="text" placeholder="Instagram @username" value="${insta}" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
       document.getElementById('teamRows').appendChild(div);
     }
 
     function saveAbout() {
       const team = Array.from(document.querySelectorAll('#teamRows .team-row')).map(row => ({
         name: row.querySelectorAll('input')[0].value,
-        role: row.querySelectorAll('input')[1].value
+        role: row.querySelectorAll('input')[1].value,
+        insta: row.querySelectorAll('input')[2].value
       })).filter(m => m.name);
       const data = {
         heroTitle: document.getElementById('ab_heroTitle').value,
