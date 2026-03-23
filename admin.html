@@ -118,6 +118,7 @@
       <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
       <button class="tab-btn" onclick="switchTab('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
       <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('testimonial-videos',this)"><i class="fas fa-play-circle"></i> Testimonial Videos</button>
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#e53935;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
     </div>
 
@@ -1164,6 +1165,58 @@
       </div>
     </div><!-- end tab-enquiries -->
 
+    <!-- TESTIMONIAL VIDEOS TAB -->
+    <div class="tab-panel" id="tab-testimonial-videos">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-play-circle" style="color:#e53935;margin-right:0.5rem;"></i> Client Testimonial Videos</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="testiVidCount"></span>
+        </div>
+        <!-- Upload Form -->
+        <div style="background:#1f0000;border:1px solid rgba(229,57,53,0.2);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-upload" style="color:#e53935;margin-right:0.5rem;"></i> Upload New Testimonial Video</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:0.85rem;">
+            <div>
+              <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
+              <input type="text" id="tv_clientName" placeholder="e.g. Rahul Verma" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+            </div>
+            <div>
+              <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
+              <input type="text" id="tv_caption" placeholder="e.g. Wedding Photography" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+            </div>
+          </div>
+          <div style="margin-bottom:0.85rem;">
+            <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Video File</label>
+            <input type="file" id="tv_file" accept="video/*" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#a08080;font-size:0.85rem;font-family:inherit;outline:none;"/>
+          </div>
+          <button onclick="uploadTestiVideo()" style="background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:10px;padding:0.75rem 1.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;">
+            <i class="fas fa-upload"></i> Upload Video
+          </button>
+          <div id="tv_uploadMsg" style="display:none;margin-top:0.75rem;font-size:0.82rem;font-weight:600;border-radius:8px;padding:0.5rem 1rem;"></div>
+        </div>
+        <!-- Video Grid -->
+        <div id="testiVidGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;"></div>
+      </div>
+    </div>
+
+    <!-- EDIT TESTIMONIAL VIDEO MODAL -->
+    <div id="testiVidEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+      <div style="background:#1a0000;border:1px solid rgba(229,57,53,0.3);border-radius:18px;width:100%;max-width:420px;padding:1.75rem;position:relative;">
+        <button onclick="closeTestiVidEdit()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <h3 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-edit" style="color:#e53935;margin-right:0.5rem;"></i> Edit Testimonial</h3>
+        <input type="hidden" id="tv_editId"/>
+        <div style="margin-bottom:0.85rem;">
+          <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Client Name</label>
+          <input type="text" id="tv_editName" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label style="font-size:0.72rem;color:#a08080;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.4rem;">Service / Caption</label>
+          <input type="text" id="tv_editCaption" style="width:100%;background:#280000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+        </div>
+        <button onclick="saveTestiVidEdit()" style="width:100%;background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.8rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Changes</button>
+      </div>
+    </div>
+
     <!-- NOTIFICATIONS TAB -->
     <div class="tab-panel" id="tab-notifications">
       <div class="about-form">
@@ -1463,6 +1516,7 @@
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
       if (tab === 'homepage') loadHomePage();
       if (tab === 'withdraw') loadWithdrawTab();
+      if (tab === 'testimonial-videos') renderTestiVideos();
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
       if (tab === 'razorpay') loadRazorpayTab();
@@ -1646,6 +1700,139 @@
         JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.id !== id; })
       ));
       renderStaffVideosAdmin();
+    }
+
+    // TESTIMONIAL VIDEOS
+    var _testiVideoDB = null;
+    function openTestiVideoDB(cb){
+      if(_testiVideoDB){ cb(_testiVideoDB); return; }
+      var req = indexedDB.open('hs_testi_videos_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
+      req.onsuccess = function(e){ _testiVideoDB = e.target.result; cb(_testiVideoDB); };
+      req.onerror = function(){ cb(null); };
+    }
+
+    function getTestiVideosMeta(){ return JSON.parse(localStorage.getItem('hs_testi_videos')||'[]'); }
+    function saveTestiVideosMeta(list){ localStorage.setItem('hs_testi_videos', JSON.stringify(list)); }
+
+    function uploadTestiVideo(){
+      var name = document.getElementById('tv_clientName').value.trim();
+      var caption = document.getElementById('tv_caption').value.trim();
+      var file = document.getElementById('tv_file').files[0];
+      var msg = document.getElementById('tv_uploadMsg');
+      if(!name || !file){ msg.textContent='Please enter client name and select a video.'; msg.style.background='rgba(244,67,54,0.12)'; msg.style.color='#f44336'; msg.style.border='1px solid rgba(244,67,54,0.3)'; msg.style.display='block'; return; }
+      msg.textContent='Uploading...'; msg.style.background='rgba(255,152,0,0.1)'; msg.style.color='#ff9800'; msg.style.border='1px solid rgba(255,152,0,0.3)'; msg.style.display='block';
+      var id = Date.now();
+      var sizeMB = (file.size / 1024 / 1024).toFixed(2);
+      openTestiVideoDB(function(db){
+        if(!db){ msg.textContent='Storage error.'; return; }
+        var tx = db.transaction('videos','readwrite');
+        tx.objectStore('videos').put({id: id, blob: file});
+        tx.oncomplete = function(){
+          var meta = getTestiVideosMeta();
+          meta.push({ id: id, clientName: name, caption: caption, sizeMB: sizeMB, uploadedBy: adminName, uploadedAt: new Date().toLocaleString() });
+          saveTestiVideosMeta(meta);
+          document.getElementById('tv_clientName').value='';
+          document.getElementById('tv_caption').value='';
+          document.getElementById('tv_file').value='';
+          msg.textContent='\u2705 Uploaded successfully!';
+          msg.style.background='rgba(76,175,80,0.12)'; msg.style.color='#4caf50'; msg.style.border='1px solid rgba(76,175,80,0.3)';
+          setTimeout(function(){ msg.style.display='none'; }, 2500);
+          renderTestiVideos();
+        };
+      });
+    }
+
+    function renderTestiVideos(){
+      var meta = getTestiVideosMeta().slice().reverse();
+      var grid = document.getElementById('testiVidGrid');
+      var countEl = document.getElementById('testiVidCount');
+      if(countEl) countEl.textContent = meta.length + ' video(s)';
+      if(!meta.length){ grid.innerHTML='<p style="color:#5a3535;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No testimonial videos yet. Upload one above.</p>'; return; }
+      grid.innerHTML='';
+      meta.forEach(function(v){
+        var card = document.createElement('div');
+        card.style.cssText='background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;';
+        card.innerHTML=
+          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#1a0000;display:flex;align-items:center;justify-content:center;color:#e53935;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+          +'<div style="padding:0.85rem;">'
+          +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+v.clientName+'</div>'
+          +(v.caption?'<div style="font-size:0.72rem;color:#e53935;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
+          +'<div style="font-size:0.65rem;color:#555;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
+          +'<div style="display:flex;gap:0.4rem;">'
+          +'<button onclick="openTestiVidEdit('+v.id+')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
+          +'<button onclick="deleteTestiVideo('+v.id+')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'</div></div>';
+        openTestiVideoDB(function(db){
+          if(!db) return;
+          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+          req.onsuccess = function(){
+            if(!req.result) return;
+            var url = URL.createObjectURL(req.result.blob);
+            var ph = document.getElementById('tvp_'+v.id);
+            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+          };
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function openTestiVidEdit(id){
+      var v = getTestiVideosMeta().find(function(x){ return x.id===id; });
+      if(!v) return;
+      document.getElementById('tv_editId').value = id;
+      document.getElementById('tv_editName').value = v.clientName;
+      document.getElementById('tv_editCaption').value = v.caption||'';
+      var modal = document.getElementById('testiVidEditModal');
+      modal.style.display='flex';
+    }
+
+    function closeTestiVidEdit(){
+      document.getElementById('testiVidEditModal').style.display='none';
+    }
+
+    function saveTestiVidEdit(){
+      var id = Number(document.getElementById('tv_editId').value);
+      var name = document.getElementById('tv_editName').value.trim();
+      var caption = document.getElementById('tv_editCaption').value.trim();
+      if(!name){ alert('Client name is required.'); return; }
+      var meta = getTestiVideosMeta();
+      var idx = meta.findIndex(function(x){ return x.id===id; });
+      if(idx>-1){ meta[idx].clientName=name; meta[idx].caption=caption; saveTestiVideosMeta(meta); }
+      closeTestiVidEdit();
+      renderTestiVideos();
+    }
+
+    function downloadTestiVideo(id, name){
+      openTestiVideoDB(function(db){
+        if(!db) return;
+        var req = db.transaction('videos','readonly').objectStore('videos').get(id);
+        req.onsuccess = function(){
+          if(!req.result) return;
+          var url = URL.createObjectURL(req.result.blob);
+          var a = document.createElement('a');
+          a.href=url; a.download=(name||'testimonial')+'_video.mp4'; a.click();
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+        };
+      });
+    }
+
+    function deleteTestiVideo(id){
+      if(!confirm('Delete this testimonial video?')) return;
+      openTestiVideoDB(function(db){
+        if(db) db.transaction('videos','readwrite').objectStore('videos').delete(id);
+      });
+      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return v.id!==id; }));
+      renderTestiVideos();
+    }
+
+    // Also define openAdminVideoDB (used by staff videos section)
+    function openAdminVideoDB(cb){
+      var req = indexedDB.open('hs_staff_videos_db', 1);
+      req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos', {keyPath:'id'}); };
+      req.onsuccess = function(e){ cb(e.target.result); };
+      req.onerror = function(){ cb(null); };
     }
 
     // SETTINGS
