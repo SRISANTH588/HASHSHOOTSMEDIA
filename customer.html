@@ -46,6 +46,9 @@
     .status.confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
     .status.completed{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
     .status.cancelled{background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);}
+    .cancel-notice{background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.25);border-left:3px solid #f44336;border-radius:10px;padding:0.85rem 1rem;margin-top:0.65rem;}
+    .cancel-notice-title{font-size:0.82rem;font-weight:800;color:#f44336;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.4rem;}
+    .cancel-notice-body{font-size:0.78rem;color:#a08080;line-height:1.65;}
     .empty{color:#a08080;font-size:0.875rem;text-align:center;padding:2rem;}
     @media(max-width:540px){.form-grid{grid-template-columns:1fr;}.form-group.full{grid-column:1;}}
     .feedback-wrap{margin-top:3rem;}
@@ -92,7 +95,30 @@
     .btn-terms-proceed{background:#e53935;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
-    /* COOKIE BANNER */
+    /* PAYMENT T&C MODAL */
+    .pay-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
+    .pay-tnc-overlay.open{display:flex;}
+    .pay-tnc-box{background:#0d0000;border:1px solid rgba(229,57,53,0.35);border-radius:20px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+    .pay-tnc-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .pay-tnc-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .pay-tnc-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;}
+    .pay-tnc-body::-webkit-scrollbar{width:4px;}
+    .pay-tnc-body::-webkit-scrollbar-track{background:transparent;}
+    .pay-tnc-body::-webkit-scrollbar-thumb{background:rgba(229,57,53,0.3);border-radius:2px;}
+    .tnc-clause{display:flex;gap:0.85rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .tnc-clause:last-child{border-bottom:none;}
+    .tnc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;margin-top:0.1rem;}
+    .tnc-text h5{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
+    .tnc-text p{font-size:0.78rem;color:#a08080;line-height:1.65;}
+    .tnc-highlight{background:rgba(229,57,53,0.08);border:1px solid rgba(229,57,53,0.2);border-radius:10px;padding:0.85rem 1rem;margin:1rem 0 0.5rem;}
+    .tnc-highlight p{font-size:0.8rem;color:#e08080;line-height:1.6;}
+    .pay-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.75rem;flex-shrink:0;}
+    .pay-tnc-check{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.83rem;color:#ccc;cursor:pointer;line-height:1.5;}
+    .pay-tnc-check input{accent-color:#e53935;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
+    .btn-pay-proceed{background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .btn-pay-proceed.enabled{opacity:1;pointer-events:all;box-shadow:0 8px 25px rgba(33,150,243,0.4);}
+    .btn-pay-proceed.enabled:hover{transform:translateY(-1px);box-shadow:0 12px 35px rgba(33,150,243,0.5);}
+    .btn-pay-cancel{background:transparent;border:none;color:#a08080;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;padding:0.25rem;}
     .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a0000;border-top:1px solid rgba(229,57,53,0.25);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;z-index:9999;}
     .cookie-banner p{font-size:0.82rem;color:#a08080;margin:0;}
     .cookie-banner a{color:#e53935;text-decoration:underline;}
@@ -524,19 +550,98 @@
     function loadBookings() {
       if(c.showBookings === 'no') return;
       const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       const list = document.getElementById('bookingsList');
       if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
-      list.innerHTML = bookings.slice().reverse().map(b => `
-        <div class="booking-item">
+      list.innerHTML = bookings.slice().reverse().map(b => {
+        const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
+        const paid = payments.find(function(p){ return p.bookingId === b.id; });
+        let payBtn = '';
+        if(b.status === 'confirmed' && rp.enabled && rp.keyId && !paid){
+          const amt = b.payAmount || rp.defaultAmount || 0;
+          payBtn = `<button onclick="payNow(${b.id})" style="margin-top:0.5rem;background:#2196f3;color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-credit-card"></i> Pay ₹${amt.toLocaleString('en-IN')}</button>`;
+        }
+        if(paid){
+          payBtn = `<div style="margin-top:0.5rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Paid ₹${(paid.amount||0).toLocaleString('en-IN')}</div>`;
+        }
+        return `<div class="booking-item" style="flex-direction:column;align-items:flex-start;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;flex-wrap:wrap;gap:0.5rem;">
           <div class="booking-info">
             <h4>${b.service} — ${b.city}</h4>
             <p>${b.date !== 'N/A' ? b.date + ' at ' + b.time : ''} &nbsp;|&nbsp; ${b.name} &nbsp;|&nbsp; ${b.phone}</p>
             ${b.preferredCreatorName ? `<p style="margin-top:4px;font-size:0.78rem;color:#e53935;"><i class="fas fa-user-circle"></i> Preferred: ${b.preferredCreatorName}</p>` : '<p style="margin-top:4px;font-size:0.78rem;color:#a08080;"><i class="fas fa-user-circle"></i> Creator: Admin will assign</p>'}
             ${b.notes ? `<p style="margin-top:4px;font-style:italic">${b.notes}</p>` : ''}
             <p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Booked on ${b.createdAt}</p>
+            ${payBtn}
           </div>
           <span class="status ${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span>
-        </div>`).join('');
+          </div>
+          ${b.status === 'cancelled' ? `<div class="cancel-notice">
+            <div class="cancel-notice-title"><i class="fas fa-times-circle"></i> Order Cancelled</div>
+            <div class="cancel-notice-body">We're sorry for the inconvenience caused. Your booking has been cancelled by our team.${paid ? ' A refund of <strong style="color:#fff;">₹' + (paid.amount||0).toLocaleString('en-IN') + '</strong> will be initiated to your wallet within 24–48 hours.' : ''} If you need any assistance, please feel free to <a href="customer-support.html" style="color:#e53935;font-weight:600;">contact us</a>. Thank you for your understanding. 🙏</div>
+          </div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function payNow(bookingId){
+      // Show T&C modal first, then open Razorpay on acceptance
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      if(!rp.enabled || !rp.keyId){ alert('Payment is not configured yet.'); return; }
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var b = bookings.find(function(x){ return x.id === bookingId; });
+      if(!b){ alert('Booking not found.'); return; }
+      var amount = (b.payAmount || rp.defaultAmount || 0) * 100;
+      if(!amount){ alert('Payment amount not set. Please contact support.'); return; }
+      // Store pending payment context and open T&C
+      window._pendingPayBookingId = bookingId;
+      document.getElementById('payTncCheck').checked = false;
+      document.getElementById('btnPayProceed').classList.remove('enabled');
+      document.getElementById('payTncOverlay').classList.add('open');
+    }
+
+    function closePayTnc(){
+      document.getElementById('payTncOverlay').classList.remove('open');
+    }
+
+    function togglePayProceed(cb){
+      document.getElementById('btnPayProceed').classList.toggle('enabled', cb.checked);
+    }
+
+    function proceedPayment(){
+      closePayTnc();
+      var bookingId = window._pendingPayBookingId;
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var b = bookings.find(function(x){ return x.id === bookingId; });
+      var amount = (b.payAmount || rp.defaultAmount || 0) * 100;
+      var options = {
+        key: rp.keyId,
+        amount: amount,
+        currency: rp.currency || 'INR',
+        name: rp.businessName || 'Hash Shoots',
+        description: rp.description || (b.service + ' — ' + b.city),
+        image: rp.logo || '',
+        prefill: { name: b.name, contact: b.phone },
+        theme: { color: '#e53935' },
+        handler: function(response){
+          var payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
+          payments.push({
+            id: Date.now(), bookingId: bookingId,
+            paymentId: response.razorpay_payment_id,
+            customerName: b.name, service: b.service,
+            amount: amount / 100, paidAt: new Date().toLocaleString()
+          });
+          localStorage.setItem('hs_payments', JSON.stringify(payments));
+          b.paymentStatus = 'paid';
+          b.paymentId = response.razorpay_payment_id;
+          localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+          loadBookings();
+          alert('\u2705 Payment successful! Payment ID: ' + response.razorpay_payment_id);
+        },
+        modal: { ondismiss: function(){ } }
+      };
+      new Razorpay(options).open();
     }
     loadBookings();
     setInterval(loadBookings, 3000);
@@ -674,7 +779,22 @@
     setInterval(function(){ renderShootFeedback(); renderDemoFeedback(); }, 3000);
   </script>
 
-  <!-- TAWK.TO LIVE CHAT - PASTE YOUR SCRIPT BELOW -->
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    // Tawk.to — loaded from admin config
+    (function(){
+      var cfg = JSON.parse(localStorage.getItem('hs_tawk_config') || '{}');
+      if(cfg.propertyId && cfg.widgetId){
+        var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/' + cfg.propertyId + '/' + cfg.widgetId;
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+      }
+    })();
+  </script>
   <script>
     // Go to tawk.to > Administration > Chat Widget > copy embed script and paste here
     // var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -726,5 +846,96 @@
       </div>
     </div>
   </div>
+  <!-- PAYMENT TERMS & CONDITIONS MODAL -->
+  <div class="pay-tnc-overlay" id="payTncOverlay">
+    <div class="pay-tnc-box">
+      <div class="pay-tnc-header">
+        <h3><i class="fas fa-file-invoice" style="color:#2196f3;"></i> Payment Terms &amp; Conditions</h3>
+        <button onclick="closePayTnc()" style="background:none;border:none;color:#a08080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="pay-tnc-body">
+
+        <div class="tnc-highlight">
+          <p><i class="fas fa-exclamation-circle" style="color:#e53935;margin-right:0.4rem;"></i> Please read all terms carefully before proceeding with payment. By paying, you agree to all conditions listed below.</p>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.25);"><i class="fas fa-utensils" style="color:#ff9800;"></i></div>
+          <div class="tnc-text">
+            <h5>Food &amp; Refreshments for Creator</h5>
+            <p>For shoots lasting <strong style="color:#fff;">3 hours or more</strong> (Half-Day, Full-Day, Events &amp; Weddings), the client is responsible for providing meals and refreshments to the assigned reel creator. This is a basic courtesy and a mandatory requirement for long-duration shoots.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.25);"><i class="fas fa-ban" style="color:#e53935;"></i></div>
+          <div class="tnc-text">
+            <h5>No Refund After Shoot Begins</h5>
+            <p>Once the creator has arrived at the location and the shoot has commenced, no refund will be issued. Cancellations must be made at least <strong style="color:#fff;">24 hours before</strong> the scheduled shoot time to be eligible for a refund.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-handshake" style="color:#2196f3;"></i></div>
+          <div class="tnc-text">
+            <h5>Professional Conduct</h5>
+            <p>Both the client and the creator are expected to maintain respectful and professional behaviour throughout the shoot. Hash Shoots reserves the right to terminate a session without refund in case of misconduct, harassment, or unsafe conditions.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);"><i class="fas fa-map-marker-alt" style="color:#4caf50;"></i></div>
+          <div class="tnc-text">
+            <h5>Location &amp; Access</h5>
+            <p>The client must ensure the shoot location is accessible and safe for the creator. Any entry fees, permits, or access charges for the venue are the client's responsibility and are not included in the booking amount.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.25);"><i class="fas fa-film" style="color:#ce93d8;"></i></div>
+          <div class="tnc-text">
+            <h5>Content &amp; Delivery</h5>
+            <p>Edited reels will be delivered within <strong style="color:#fff;">10 minutes</strong> post-shoot for standard bookings. For events and weddings, delivery timelines will be communicated separately. Hash Shoots may use delivered content for portfolio and promotional purposes unless a written opt-out is submitted before the shoot.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.25);"><i class="fas fa-clock" style="color:#f5a623;"></i></div>
+          <div class="tnc-text">
+            <h5>Punctuality &amp; Delays</h5>
+            <p>The client must be ready at the agreed time. A grace period of <strong style="color:#fff;">15 minutes</strong> is allowed. Delays beyond this may result in a reduced shoot duration without any price adjustment. Hash Shoots is not liable for delays caused by traffic, weather, or other unforeseen circumstances.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-shield-alt" style="color:#2196f3;"></i></div>
+          <div class="tnc-text">
+            <h5>Payment &amp; Security</h5>
+            <p>All payments are processed securely via Razorpay. Hash Shoots does not store your card or banking details. In case of a technical payment failure, please contact support before attempting again to avoid duplicate charges.</p>
+          </div>
+        </div>
+
+        <div class="tnc-clause">
+          <div class="tnc-icon" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.25);"><i class="fas fa-wallet" style="color:#f44336;"></i></div>
+          <div class="tnc-text">
+            <h5>Refund Policy</h5>
+            <p>If a booking is cancelled by Hash Shoots, a full refund will be credited to your wallet within <strong style="color:#fff;">24&ndash;48 hours</strong>. For client-initiated cancellations made 24+ hours in advance, a refund (minus processing fees) will be issued to your wallet.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="pay-tnc-footer">
+        <label class="pay-tnc-check">
+          <input type="checkbox" id="payTncCheck" onchange="togglePayProceed(this)"/>
+          I have read, understood, and agree to all the Payment Terms &amp; Conditions above, including the food &amp; refreshment responsibility for long-duration shoots.
+        </label>
+        <button class="btn-pay-proceed" id="btnPayProceed" onclick="proceedPayment()">
+          <i class="fas fa-lock"></i> Accept &amp; Proceed to Payment
+        </button>
+        <button class="btn-pay-cancel" onclick="closePayTnc()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

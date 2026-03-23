@@ -187,7 +187,50 @@
     .os-done{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
     .os-pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
 
-    @media(max-width:600px){
+    /* STAFF T&C MODAL */
+    .staff-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
+    .staff-tnc-overlay.open{display:flex;}
+    .staff-tnc-box{background:#0d0000;border:1px solid rgba(229,57,53,0.4);border-radius:20px;width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
+    .staff-tnc-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .staff-tnc-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .staff-tnc-body{padding:1.1rem 1.5rem;overflow-y:auto;flex:1;}
+    .staff-tnc-body::-webkit-scrollbar{width:4px;}
+    .staff-tnc-body::-webkit-scrollbar-thumb{background:rgba(229,57,53,0.3);border-radius:2px;}
+    .stnc-rule{display:flex;gap:0.85rem;padding:0.8rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .stnc-rule:last-child{border-bottom:none;}
+    .stnc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .stnc-text h5{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+    .stnc-text p{font-size:0.78rem;color:#a08080;line-height:1.6;}
+    .stnc-mandatory{background:rgba(229,57,53,0.08);border:1px solid rgba(229,57,53,0.2);border-radius:10px;padding:0.85rem 1rem;margin:0.75rem 0;}
+    .stnc-mandatory p{font-size:0.8rem;color:#e08080;line-height:1.6;}
+    .staff-tnc-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:0.65rem;flex-shrink:0;}
+    .stnc-check{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:#ccc;cursor:pointer;line-height:1.5;}
+    .stnc-check input{accent-color:#e53935;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px;}
+    .btn-stnc-proceed{background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.35;pointer-events:none;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .btn-stnc-proceed.enabled{opacity:1;pointer-events:all;box-shadow:0 8px 25px rgba(229,57,53,0.4);}
+    .btn-stnc-cancel{background:transparent;border:none;color:#a08080;font-size:0.8rem;cursor:pointer;font-family:inherit;text-align:center;}
+    /* EVENT FEEDBACK MODAL */
+    .efb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:10002;align-items:center;justify-content:center;padding:1rem;}
+    .efb-overlay.open{display:flex;}
+    .efb-box{background:#0d0000;border:1px solid rgba(245,166,35,0.35);border-radius:20px;width:100%;max-width:500px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);}
+    .efb-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+    .efb-header h3{font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;}
+    .efb-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1rem;}
+    .efb-body::-webkit-scrollbar{width:4px;}
+    .efb-body::-webkit-scrollbar-thumb{background:rgba(245,166,35,0.3);border-radius:2px;}
+    .efb-label{font-size:0.75rem;font-weight:700;color:#a08080;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem;display:block;}
+    .efb-input{background:#1a0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;transition:border-color 0.2s;}
+    .efb-input:focus{border-color:#f5a623;}
+    .efb-stars{display:flex;gap:0.4rem;}
+    .efb-star{font-size:1.8rem;cursor:pointer;color:#333;transition:color 0.15s;line-height:1;}
+    .efb-star.active{color:#f5a623;}
+    .efb-photo-zone{border:2px dashed rgba(245,166,35,0.3);border-radius:12px;padding:1.25rem;text-align:center;cursor:pointer;position:relative;background:rgba(245,166,35,0.02);transition:all 0.2s;}
+    .efb-photo-zone:hover{border-color:#f5a623;background:rgba(245,166,35,0.06);}
+    .efb-photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .efb-photo-preview{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:0.75rem;display:none;}
+    .efb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+    .btn-efb-submit{width:100%;background:linear-gradient(135deg,#f5a623,#c8860a);color:#fff;border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.25s;}
+    .btn-efb-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
       .tab-btn{padding:0.75rem 0.85rem;font-size:0.75rem;}
       .stats-row{grid-template-columns:1fr 1fr;}
     }
@@ -216,7 +259,8 @@
     <button class="tab-btn" onclick="switchTab('upload',this)"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
     <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> My Videos</button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
-    <button class="tab-btn" onclick="switchTab('feedback',this)"><i class="fas fa-star"></i> Feedback</button>
+    <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Shoot Feedback <span class="notif" id="feedbackNotifBadge" style="display:none;">!</span></button>
+    <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
     <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
     <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-hand-holding-usd"></i> Payout <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('bank',this)"><i class="fas fa-university"></i> Bank</button>
@@ -348,17 +392,29 @@
 
     <!-- FEEDBACK -->
     <div class="section" id="sec-feedback">
-      <div class="sec-title"><i class="fas fa-star"></i> Feedback</div>
+      <div class="sec-title"><i class="fas fa-star"></i> Shoot Feedback</div>
 
-      <!-- CREATOR SUBMITS FEEDBACK ABOUT THEIR SHOOTS -->
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-paper-plane" style="color:#e53935;margin-right:0.5rem;"></i>Rate Your Completed Shoots</div>
+      <!-- SUB TABS -->
+      <div style="display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;">
+        <button class="tab-btn active" id="fbtab-mine" onclick="switchFbTab('mine',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-paper-plane" style="color:#e53935;"></i> My Shoot Ratings</button>
+        <button class="tab-btn" id="fbtab-event" onclick="switchFbTab('event',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-clipboard-list" style="color:#f5a623;"></i> Event Feedback Collected <span class="notif" id="eventFbBadge" style="display:none;">0</span></button>
+        <button class="tab-btn" id="fbtab-customer" onclick="switchFbTab('customer',this)" style="border-radius:0;padding:0.7rem 1.1rem;font-size:0.8rem;"><i class="fas fa-comments" style="color:#4caf50;"></i> Customer Feedback</button>
+      </div>
+
+      <!-- MY SHOOT RATINGS -->
+      <div id="fbpanel-mine">
         <div id="creatorShootFeedbackList"></div>
       </div>
 
+      <!-- EVENT FEEDBACK COLLECTED -->
+      <div id="fbpanel-event" style="display:none;">
+        <div id="eventFeedbackCollectedList"></div>
+      </div>
+
       <!-- CUSTOMER FEEDBACK RECEIVED -->
-      <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-comments" style="color:#f5a623;margin-right:0.5rem;"></i>Customer Feedback Received</div>
-      <div id="creatorFeedbackList"></div>
+      <div id="fbpanel-customer" style="display:none;">
+        <div id="creatorFeedbackList"></div>
+      </div>
     </div>
 
     <!-- PROFILE -->
@@ -386,6 +442,28 @@
         <div class="order-item"><span class="order-status os-pending">Pending</span><h5>Reel Shoot — Vijayawada</h5><p>Today, 4:00 PM &nbsp;|&nbsp; Client: Rahul V</p></div>
         <div class="order-item"><span class="order-status os-done">Done</span><h5>Portrait Session — Hyderabad</h5><p>Yesterday &nbsp;|&nbsp; Client: Priya S</p></div>
       </div>
+    </div>
+
+    <!-- STORE -->
+    <div class="section" id="sec-store">
+      <div class="sec-title"><i class="fas fa-store" style="color:#e53935;"></i> Hash Shoots Store</div>
+
+      <!-- BANNER -->
+      <div style="background:linear-gradient(135deg,rgba(229,57,53,0.15),rgba(100,0,0,0.25));border:1px solid rgba(229,57,53,0.25);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official Hash Shoots Merchandise</div>
+          <div style="font-size:0.82rem;color:#a08080;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
+        </div>
+        <div style="font-size:2rem;">🛍️</div>
+      </div>
+
+      <!-- T-SHIRTS -->
+      <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-tshirt" style="color:#2196f3;"></i> T-Shirts</div>
+      <div id="storeTshirtGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;margin-bottom:2rem;"></div>
+
+      <!-- ID CARD -->
+      <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-id-badge" style="color:#f5a623;"></i> Official ID Card</div>
+      <div id="storeIdCard"></div>
     </div>
 
     <!-- WALLET -->
@@ -527,7 +605,8 @@
       btn.classList.add('active');
       if(name === 'shoots') renderAssignedShoots();
       if(name === 'videos') renderMyVideos();
-      if(name === 'feedback') renderCreatorFeedback();
+      if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); }
+      if(name === 'store') renderStore();
       if(name === 'wallet') renderWallet();
       if(name === 'payout') renderPayout();
       if(name === 'bank') loadBankDetails();
@@ -1015,7 +1094,11 @@
         var arrivedHTML = '';
         if(a.status === 'assigned'){
           arrivedHTML = arrived
-            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:700;margin-bottom:1rem;"><i class="fas fa-check-circle"></i> Arrived at Location</div>'
+            ? '<div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;margin-bottom:1rem;">'
+              + '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:700;"><i class="fas fa-check-circle"></i> Arrived at Location</div>'
+              + (a.dressPhotoSaved ? '<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);color:#f5a623;border-radius:10px;padding:0.45rem 0.85rem;font-size:0.75rem;font-weight:700;"><i class="fas fa-camera"></i> Dress Code Photo Saved</div>' : '<button onclick="openDressPhotoUpload('+a.id+')" style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#f5a623;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-camera"></i> Upload Dress Code Photo</button>')
+              + '<button onclick="openEventFeedback('+a.id+')" style="background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-clipboard-list"></i> Collect Event Feedback</button>'
+              + '</div>'
             : '<button onclick="markArrived('+a.id+')" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,152,0,0.22)\'" onmouseout="this.style.background=\'rgba(255,152,0,0.12)\'"><i class="fas fa-map-marker-alt"></i> Mark Arrived at Location</button>';
         }
 
@@ -1025,8 +1108,33 @@
           var uploaded = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
             .filter(function(v){ return v.assignId == a.id; });
           if(uploaded.length){
+            // Check if feedback video uploaded
+            var fbVideos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
+              .filter(function(v){ return v.assignId == a.id && v.isFeedback; });
+            var fbVideoUploaded = fbVideos.length > 0;
+
+            var feedbackVideoZone = fbVideoUploaded
+              ? '<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> Feedback Video Uploaded</div>'
+              : '<div style="margin-bottom:0.75rem;background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.2);border-radius:10px;padding:0.85rem 1rem;">'
+                + '<div style="font-size:0.78rem;font-weight:800;color:#ce93d8;margin-bottom:0.4rem;"><i class="fas fa-video"></i> Upload Feedback Video — Required before marking Done</div>'
+                + '<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.65rem;">Record a short video at the event location showing the shoot is complete. This is mandatory before you can mark the shoot as done.</div>'
+                + '<div style="border:2px dashed rgba(156,39,176,0.3);border-radius:10px;padding:0.85rem;text-align:center;position:relative;background:rgba(156,39,176,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#ce93d8\'" onmouseout="this.style.borderColor=\'rgba(156,39,176,0.3)\'">'
+                + '<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onFeedbackVideoSelected(this,'+a.id+')" />'
+                + '<i class="fas fa-video" style="font-size:1.3rem;color:#ce93d8;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
+                + '<div style="font-size:0.75rem;color:#a08080;">Tap to record or upload feedback video</div>'
+                + '</div>'
+                + '<div id="fbVidInfo_'+a.id+'" style="display:none;margin-top:0.5rem;background:#1a0000;border:1px solid rgba(156,39,176,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#ce93d8;font-weight:600;"></div>'
+                + '<div id="fbVidProgress_'+a.id+'" style="display:none;margin-top:0.5rem;">'
+                + '<div style="font-size:0.72rem;color:#a08080;margin-bottom:0.3rem;" id="fbVidProgressLabel_'+a.id+'">Uploading...</div>'
+                + '<div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="fbVidProgressFill_'+a.id+'" style="height:100%;background:linear-gradient(90deg,#9c27b0,#ce93d8);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
+                + '</div>'
+                + '<button id="fbVidUploadBtn_'+a.id+'" onclick="uploadFeedbackVideo('+a.id+')" disabled style="margin-top:0.6rem;width:100%;background:#9c27b0;color:#fff;border:none;border-radius:9px;padding:0.55rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;opacity:0.5;"><i class="fas fa-upload"></i> Upload Feedback Video</button>'
+                + '</div>';
+
             var doneBtn = a.status !== 'done'
-              ? '<button onclick="markShootDone('+a.id+')" style="margin-top:0.75rem;width:100%;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-check-double"></i> Mark as Done — Notify Admin</button>'
+              ? (fbVideoUploaded
+                  ? '<button onclick="markShootDone('+a.id+')" style="margin-top:0.75rem;width:100%;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-check-double"></i> Mark as Done — Notify Admin</button>'
+                  : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-lock"></i> Upload feedback video above to unlock Mark as Done</div>')
               : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
             var payoutBtn = '';
             uploadHTML = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:0.85rem 1rem;margin-top:0.5rem;">'
@@ -1035,6 +1143,7 @@
               +uploaded.map(function(v){ return '<div style="background:#1a0000;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#ccc;"><i class="fas fa-film" style="color:#e53935;"></i> '+v.title+'</div>'; }).join('')
               +'</div>'
               +shootUploadZone(a.id)
+              +feedbackVideoZone
               +doneBtn
               +payoutBtn
               +'</div>';
@@ -1175,6 +1284,29 @@
     }
 
     function markArrived(assignId){
+      // Show T&C modal first
+      window._pendingArrivedId = assignId;
+      document.getElementById('stncCheck1').checked = false;
+      document.getElementById('stncCheck2').checked = false;
+      document.getElementById('stncCheck3').checked = false;
+      document.getElementById('btnStncProceed').classList.remove('enabled');
+      document.getElementById('staffTncOverlay').classList.add('open');
+    }
+
+    function checkStncProceed(){
+      var c1 = document.getElementById('stncCheck1').checked;
+      var c2 = document.getElementById('stncCheck2').checked;
+      var c3 = document.getElementById('stncCheck3').checked;
+      document.getElementById('btnStncProceed').classList.toggle('enabled', c1 && c2 && c3);
+    }
+
+    function closeStaffTnc(){
+      document.getElementById('staffTncOverlay').classList.remove('open');
+    }
+
+    function confirmArrived(){
+      closeStaffTnc();
+      var assignId = window._pendingArrivedId;
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var s = shoots.find(function(a){ return a.id === assignId; });
       if(s && !s.arrivedAt){ s.arrivedAt = new Date().toLocaleString(); localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
@@ -1189,6 +1321,118 @@
 
     initCreatorDemo();
     setInterval(renderCreatorDemos, 5000);
+
+    // FEEDBACK SUB-TABS
+    function switchFbTab(name, btn){
+      ['mine','event','customer'].forEach(function(t){
+        document.getElementById('fbpanel-' + t).style.display = t === name ? 'block' : 'none';
+        document.getElementById('fbtab-' + t).classList.toggle('active', t === name);
+      });
+      if(name === 'mine') renderCreatorShootFeedback();
+      if(name === 'event') renderEventFeedbackCollected();
+      if(name === 'customer') renderCreatorFeedback();
+    }
+
+    function renderEventFeedbackCollected(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var list = JSON.parse(localStorage.getItem('hs_event_feedbacks') || '[]')
+        .filter(function(f){ return String(f.staffId) === String(staffId); })
+        .slice().reverse();
+      var el = document.getElementById('eventFeedbackCollectedList');
+      var badge = document.getElementById('eventFbBadge');
+      if(badge){ badge.textContent = list.length; badge.style.display = list.length > 0 ? 'inline' : 'none'; }
+      if(!list.length){
+        el.innerHTML = '<div style="text-align:center;padding:2rem;background:#280404;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-clipboard-list" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No event feedback collected yet.<br/>Use the &ldquo;Collect Event Feedback&rdquo; button after arriving at a shoot.</div>';
+        return;
+      }
+      var starColors = {5:'#4caf50',4:'#8bc34a',3:'#f5a623',2:'#ff9800',1:'#f44336'};
+      el.innerHTML = list.map(function(f){
+        var stars = '\u2605'.repeat(f.rating) + '\u2606'.repeat(5 - f.rating);
+        var color = starColors[f.rating] || '#f5a623';
+        return '<div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+color+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+          + '<div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + (f.service || 'Shoot') + ' — ' + f.clientName + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#e53935;"></i> ' + (f.city||'') + ' &nbsp;·&nbsp; ' + (f.date||'') + '</div>'
+          + '</div>'
+          + '<span style="color:'+color+';font-size:1.1rem;letter-spacing:2px;">' + stars + '</span>'
+          + '</div>'
+          + (f.comment ? '<div style="background:#1a0000;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;font-style:italic;border-left:3px solid '+color+';margin-bottom:0.75rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '')
+          + (f.dressPhoto ? '<div style="margin-bottom:0.5rem;"><div style="font-size:0.7rem;color:#f5a623;font-weight:700;margin-bottom:0.35rem;"><i class="fas fa-camera"></i> Dress Code Photo</div><img src="'+f.dressPhoto+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,166,35,0.2);"/></div>' : '')
+          + '<div style="font-size:0.65rem;color:#555;">' + (f.submittedAt||'') + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    // FEEDBACK VIDEO UPLOAD
+    var feedbackVideoFileMap = {};
+
+    function onFeedbackVideoSelected(input, assignId){
+      var file = input.files[0];
+      if(!file) return;
+      feedbackVideoFileMap[String(assignId)] = file;
+      var info = document.getElementById('fbVidInfo_' + assignId);
+      if(info){ info.style.display='block'; info.innerHTML='<i class="fas fa-video"></i> &nbsp;'+file.name+' &nbsp;<span style="color:#a08080;font-weight:400;">('+( file.size/1024/1024).toFixed(1)+' MB)</span>'; }
+      var btn = document.getElementById('fbVidUploadBtn_' + assignId);
+      if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+    }
+
+    function uploadFeedbackVideo(assignId){
+      var file = feedbackVideoFileMap[String(assignId)];
+      if(!file){ alert('Please select a feedback video first.'); return; }
+      var btn   = document.getElementById('fbVidUploadBtn_' + assignId);
+      var prog  = document.getElementById('fbVidProgress_' + assignId);
+      var fill  = document.getElementById('fbVidProgressFill_' + assignId);
+      var label = document.getElementById('fbVidProgressLabel_' + assignId);
+      if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
+      if(prog) prog.style.display='block';
+      if(label) label.textContent='Saving...';
+      if(fill) fill.style.width='20%';
+
+      var videoId   = Date.now();
+      var staffId   = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
+
+      var reader = new FileReader();
+      reader.onload = function(e){
+        if(fill) fill.style.width='60%';
+        if(label) label.textContent='Storing...';
+        var blob = new Blob([e.target.result], {type: file.type});
+        openStaffDB(function(db){
+          if(!db){ alert('Storage unavailable.'); if(btn){ btn.disabled=false; btn.style.opacity='1'; } return; }
+          var tx = db.transaction('videos','readwrite');
+          tx.objectStore('videos').put({id: videoId, blob: blob});
+          tx.oncomplete = function(){
+            if(fill) fill.style.width='90%';
+            if(label) label.textContent='Finalising...';
+            var videos = getStaffVideos();
+            videos.push({
+              id: videoId,
+              assignId: Number(assignId),
+              isFeedback: true,
+              title: 'Feedback — ' + (shoot ? shoot.service : 'Shoot'),
+              category: 'Shoot Feedback',
+              shootDate: shoot ? shoot.date : '',
+              staffId: staffId,
+              staffName: staffName,
+              fileName: file.name,
+              sizeMB: (file.size/1024/1024).toFixed(1),
+              uploadedAt: new Date().toLocaleString()
+            });
+            saveStaffVideos(videos);
+            if(fill) fill.style.width='100%';
+            if(label) label.textContent='Uploaded!';
+            delete feedbackVideoFileMap[String(assignId)];
+            setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
+          };
+          tx.onerror = function(){ alert('Upload failed.'); if(btn){ btn.disabled=false; btn.style.opacity='1'; } };
+        });
+      };
+      reader.onerror = function(){ alert('Could not read file.'); };
+      reader.readAsArrayBuffer(file);
+    }
 
     // CREATOR FEEDBACK SECTION
     function initCreatorFeedback(){
@@ -1406,6 +1650,67 @@
       if(badge){ badge.textContent = needsAction; badge.style.display = needsAction > 0 ? 'inline' : 'none'; }
     }
 
+    // STORE
+    function renderStore(){
+      var store = JSON.parse(localStorage.getItem('hs_store') || '{"tshirts":[],"idcard":{}}');
+      var tshirts = store.tshirts || [];
+      var idcard  = store.idcard  || {};
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var contactEmail = store.contactEmail || 'hashshootsmedia@gmail.com';
+
+      // T-SHIRTS
+      var tGrid = document.getElementById('storeTshirtGrid');
+      if(!tshirts.length){
+        tGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2.5rem;background:#280404;border-radius:14px;color:#5a3535;font-size:0.85rem;"><i class="fas fa-tshirt" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No T-shirts listed yet. Check back soon!</div>';
+      } else {
+        tGrid.innerHTML = tshirts.map(function(t, i){
+          var sizes = (t.sizes || []).map(function(s){
+            return '<span style="background:#1a0000;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#ccc;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor=\'#e53935\';this.style.color=\'#e53935\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.color=\'#ccc\'">' + s + '</span>';
+          }).join('');
+          var imgHTML = t.image
+            ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
+            : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#280404,#1a0000);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#e53935;opacity:0.3;"></i></div>';
+          var mailSubject = encodeURIComponent('T-Shirt Order — ' + t.name + ' — ' + staffName);
+          var mailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: ₹' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
+          return '<div style="background:#280404;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 16px 40px rgba(229,57,53,0.15)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+            + imgHTML
+            + '<div style="padding:1.1rem 1.25rem;">'
+            + '<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">' + t.name + '</div>'
+            + (t.description ? '<div style="font-size:0.78rem;color:#a08080;margin-bottom:0.75rem;line-height:1.5;">' + t.description + '</div>' : '')
+            + '<div style="font-size:1.3rem;font-weight:900;color:#e53935;margin-bottom:0.75rem;">₹' + Number(t.price).toLocaleString('en-IN') + '</div>'
+            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#a08080;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Available Sizes</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
+            + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#e53935;color:#fff;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#b71c1c\'" onmouseout="this.style.background=\'#e53935\'"><i class="fas fa-shopping-cart"></i> Order via Email</a>'
+            + '</div></div>';
+        }).join('');
+      }
+
+      // ID CARD
+      var idEl = document.getElementById('storeIdCard');
+      var discountEmail = store.discountEmail || contactEmail;
+      var idMailSubject = encodeURIComponent('ID Card Request — ' + staffName);
+      var idMailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI would like to request my official Hash Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
+      var discountMailSubject = encodeURIComponent('ID Card Discount Request — ' + staffName);
+      var discountMailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI am writing to request a discount on my official Hash Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
+
+      idEl.innerHTML = '<div style="background:#280404;border:1px solid rgba(245,166,35,0.2);border-radius:16px;overflow:hidden;">'
+        + '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(100,60,0,0.2));padding:1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">'
+        + (idcard.image ? '<img src="'+idcard.image+'" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid rgba(245,166,35,0.3);"/>' : '<div style="width:90px;height:90px;background:rgba(245,166,35,0.1);border:2px dashed rgba(245,166,35,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-id-badge" style="font-size:2rem;color:#f5a623;opacity:0.5;"></i></div>')
+        + '<div style="flex:1;">'
+        + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">Hash Shoots Official ID Card</div>'
+        + '<div style="font-size:0.82rem;color:#a08080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all Hash Shoots events and shoots.') + '</div>'
+        + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">₹' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
+        + '</div></div>'
+        + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);">'
+        + '<div style="background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
+        + '<div style="font-size:0.82rem;font-weight:800;color:#f5a623;margin-bottom:0.3rem;"><i class="fas fa-tag"></i> Get a Discount on Your ID Card</div>'
+        + '<div style="font-size:0.78rem;color:#a08080;line-height:1.6;">Write to us at <strong style="color:#f5a623;">' + discountEmail + '</strong> explaining why you deserve a discount. Our team will review and respond within 24–48 hours.</div>'
+        + '</div>'
+        + '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">'
+        + '<a href="mailto:' + contactEmail + '?subject=' + idMailSubject + '&body=' + idMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#f5a623;color:#000;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#c8860a\'" onmouseout="this.style.background=\'#f5a623\'"><i class="fas fa-id-card"></i> Request ID Card</a>'
+        + '<a href="mailto:' + discountEmail + '?subject=' + discountMailSubject + '&body=' + discountMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(245,166,35,0.1);color:#f5a623;border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(245,166,35,0.2)\'" onmouseout="this.style.background=\'rgba(245,166,35,0.1)\'"><i class="fas fa-envelope"></i> Write for Discount</a>'
+        + '</div></div></div>';
+    }
+
     // BANK
     function saveBankDetails(){      var staffId = localStorage.getItem('hs_staff_id');
       var data = {
@@ -1462,6 +1767,90 @@
       alert('Starting: ' + name + '\n\nAI class content coming soon!');
     }
 
+    // EVENT FEEDBACK
+    var efbStars = 0;
+    var efbDressPhotoData = null;
+    var efbAssignId = null;
+
+    function openEventFeedback(assignId){
+      efbAssignId = assignId;
+      efbStars = 0;
+      efbDressPhotoData = null;
+      document.getElementById('efbClientName').value = '';
+      document.getElementById('efbComment').value = '';
+      document.getElementById('efbPhotoPreview').style.display = 'none';
+      document.querySelectorAll('.efb-star').forEach(function(s){ s.classList.remove('active'); });
+      document.getElementById('efbOverlay').classList.add('open');
+    }
+
+    function closeEfb(){ document.getElementById('efbOverlay').classList.remove('open'); }
+
+    function setEfbStar(val){
+      efbStars = val;
+      document.querySelectorAll('.efb-star').forEach(function(s){
+        s.classList.toggle('active', Number(s.dataset.val) <= val);
+      });
+    }
+
+    function onEfbPhoto(input){
+      var file = input.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        efbDressPhotoData = e.target.result;
+        var img = document.getElementById('efbPhotoPreview');
+        img.src = efbDressPhotoData;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitEventFeedback(){
+      var clientName = document.getElementById('efbClientName').value.trim();
+      if(!clientName){ alert('Please enter the client / event name.'); return; }
+      if(!efbStars){ alert('Please select a star rating.'); return; }
+      if(!efbDressPhotoData){ alert('Please upload your dress code photo before submitting.'); return; }
+      var comment = document.getElementById('efbComment').value.trim();
+      var staffId = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+      var a = shoots.find(function(x){ return x.id === efbAssignId; });
+      // Save event feedback
+      var list = JSON.parse(localStorage.getItem('hs_event_feedbacks') || '[]');
+      list.push({
+        id: Date.now(),
+        assignId: efbAssignId,
+        staffId: staffId,
+        staffName: staffName,
+        service: a ? a.service : '',
+        clientName: clientName,
+        city: a ? (a.location || a.city) : '',
+        date: a ? a.date : '',
+        rating: efbStars,
+        comment: comment,
+        dressPhoto: efbDressPhotoData,
+        submittedAt: new Date().toLocaleString()
+      });
+      localStorage.setItem('hs_event_feedbacks', JSON.stringify(list));
+      // Mark dress photo saved on shoot
+      var s = shoots.find(function(x){ return x.id === efbAssignId; });
+      if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
+      closeEfb();
+      renderAssignedShoots();
+      alert('\u2705 Event feedback and dress code photo submitted successfully!');
+    }
+
+    // DRESS PHOTO UPLOAD (standalone button)
+    function openDressPhotoUpload(assignId){
+      efbAssignId = assignId;
+      efbDressPhotoData = null;
+      document.getElementById('efbPhotoPreview').style.display = 'none';
+      document.getElementById('efbClientName').value = 'Dress Code Photo';
+      efbStars = 5;
+      document.querySelectorAll('.efb-star').forEach(function(s){ s.classList.add('active'); });
+      document.getElementById('efbOverlay').classList.add('open');
+    }
+
     // Logout
     function logout() {
       ['hs_role','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
@@ -1478,6 +1867,134 @@
     // s1.charset='UTF-8';s1.setAttribute('crossorigin','*');
     // s0.parentNode.insertBefore(s1,s0);})();
   </script>
+  <!-- STAFF T&C MODAL -->
+  <div class="staff-tnc-overlay" id="staffTncOverlay">
+    <div class="staff-tnc-box">
+      <div class="staff-tnc-header">
+        <h3><i class="fas fa-id-card" style="color:#e53935;"></i> Staff Terms &amp; Conditions</h3>
+        <button onclick="closeStaffTnc()" style="background:none;border:none;color:#a08080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="staff-tnc-body">
+
+        <div class="stnc-mandatory">
+          <p><i class="fas fa-exclamation-triangle" style="color:#e53935;margin-right:0.4rem;"></i> You must comply with all the following requirements before marking yourself as arrived. Non-compliance may result in shoot cancellation and loss of payment.</p>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.25);"><i class="fas fa-id-badge" style="color:#e53935;"></i></div>
+          <div class="stnc-text">
+            <h5>ID Card — Mandatory</h5>
+            <p>You must carry your official Hash Shoots ID card at all times during the shoot. The client has the right to verify your identity before the session begins. Shooting without an ID card is strictly prohibited.</p>
+          </div>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-tshirt" style="color:#2196f3;"></i></div>
+          <div class="stnc-text">
+            <h5>Hash Shoots T-Shirt — Mandatory</h5>
+            <p>You must wear the official Hash Shoots branded T-shirt during every shoot. This represents our brand and builds client trust. Arriving without the T-shirt may result in the shoot being cancelled.</p>
+          </div>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);"><i class="fas fa-shoe-prints" style="color:#4caf50;"></i></div>
+          <div class="stnc-text">
+            <h5>Proper Footwear — Mandatory</h5>
+            <p>You must wear clean, formal or smart-casual shoes. Slippers, flip-flops, or torn footwear are not allowed. Proper footwear is part of the professional dress code required at all Hash Shoots events.</p>
+          </div>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.25);"><i class="fas fa-camera" style="color:#f5a623;"></i></div>
+          <div class="stnc-text">
+            <h5>Dress Code Photo — Required After Event</h5>
+            <p>After attending the event, you must upload a photo of yourself in full dress code (ID card visible, T-shirt, and shoes). This photo is submitted as proof of compliance and is reviewed by the admin before payment is released.</p>
+          </div>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.25);"><i class="fas fa-clipboard-list" style="color:#ce93d8;"></i></div>
+          <div class="stnc-text">
+            <h5>Collect Event Feedback — Required</h5>
+            <p>You must collect feedback from the client at the event location before leaving. Use the &ldquo;Collect Event Feedback&rdquo; button after marking arrived. This feedback is submitted to the admin and affects your performance rating.</p>
+          </div>
+        </div>
+
+        <div class="stnc-rule">
+          <div class="stnc-icon" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.25);"><i class="fas fa-handshake" style="color:#ff9800;"></i></div>
+          <div class="stnc-text">
+            <h5>Professional Conduct</h5>
+            <p>Maintain respectful, professional behaviour at all times. Do not discuss pricing, personal matters, or Hash Shoots internal operations with clients. Any misconduct will result in immediate termination and forfeiture of payment.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="staff-tnc-footer">
+        <label class="stnc-check">
+          <input type="checkbox" id="stncCheck1" onchange="checkStncProceed()"/>
+          I am wearing my official Hash Shoots <strong>T-shirt</strong> and carrying my <strong>ID card</strong> right now.
+        </label>
+        <label class="stnc-check">
+          <input type="checkbox" id="stncCheck2" onchange="checkStncProceed()"/>
+          I am wearing proper <strong>shoes</strong> as per the Hash Shoots dress code.
+        </label>
+        <label class="stnc-check">
+          <input type="checkbox" id="stncCheck3" onchange="checkStncProceed()"/>
+          I understand I must collect <strong>event feedback</strong> and upload a <strong>dress code photo</strong> after the event.
+        </label>
+        <button class="btn-stnc-proceed" id="btnStncProceed" onclick="confirmArrived()">
+          <i class="fas fa-check-circle"></i> I Agree — Mark as Arrived
+        </button>
+        <button class="btn-stnc-cancel" onclick="closeStaffTnc()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT FEEDBACK MODAL -->
+  <div class="efb-overlay" id="efbOverlay">
+    <div class="efb-box">
+      <div class="efb-header">
+        <h3><i class="fas fa-clipboard-list" style="color:#f5a623;"></i> Collect Event Feedback</h3>
+        <button onclick="closeEfb()" style="background:none;border:none;color:#a08080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="efb-body">
+        <div>
+          <label class="efb-label">Client / Event Name *</label>
+          <input type="text" id="efbClientName" class="efb-input" placeholder="e.g. Rahul Verma — Wedding Event"/>
+        </div>
+        <div>
+          <label class="efb-label">Client Rating *</label>
+          <div class="efb-stars">
+            <span class="efb-star" data-val="1" onclick="setEfbStar(1)">&#9733;</span>
+            <span class="efb-star" data-val="2" onclick="setEfbStar(2)">&#9733;</span>
+            <span class="efb-star" data-val="3" onclick="setEfbStar(3)">&#9733;</span>
+            <span class="efb-star" data-val="4" onclick="setEfbStar(4)">&#9733;</span>
+            <span class="efb-star" data-val="5" onclick="setEfbStar(5)">&#9733;</span>
+          </div>
+        </div>
+        <div>
+          <label class="efb-label">Client Comments / Remarks</label>
+          <textarea id="efbComment" class="efb-input" style="min-height:80px;resize:vertical;" placeholder="What did the client say about the shoot? Any special remarks..."></textarea>
+        </div>
+        <div>
+          <label class="efb-label"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.3rem;"></i> Dress Code Photo — Mandatory *</label>
+          <p style="font-size:0.75rem;color:#a08080;margin-bottom:0.6rem;line-height:1.5;">Take a photo of yourself in full dress code (T-shirt + ID card visible + shoes). This is required for payment release.</p>
+          <div class="efb-photo-zone">
+            <input type="file" accept="image/*" capture="environment" onchange="onEfbPhoto(this)"/>
+            <i class="fas fa-camera" style="font-size:1.8rem;color:#f5a623;opacity:0.6;margin-bottom:0.4rem;display:block;"></i>
+            <div style="font-size:0.8rem;color:#a08080;">Tap to take photo or upload from gallery</div>
+          </div>
+          <img id="efbPhotoPreview" class="efb-photo-preview" alt="Dress code photo preview"/>
+        </div>
+      </div>
+      <div class="efb-footer">
+        <button class="btn-efb-submit" onclick="submitEventFeedback()">
+          <i class="fas fa-paper-plane"></i> Submit Feedback &amp; Photo
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
 
