@@ -310,8 +310,10 @@
         const imgHtml = imgSrc
           ? `<img src="${imgSrc}" alt="${m.name}" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="team-photo-bg" style="display:none;">${initials}</div>`
           : `<div class="team-photo-bg">${initials}</div>`;
-        const instaHtml = m.insta ? `<div><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${m.insta.startsWith('@')?m.insta:'@'+m.insta}</a></div>` : '';
-        const instaHover = m.insta ? `<div class="team-insta-hover"><a href="https://instagram.com/${m.insta.replace('@','')}" target="_blank"><i class="fab fa-instagram"></i></a></div>` : '';
+        const instaHandle = m.insta ? (m.insta.startsWith('@') ? m.insta : '@'+m.insta) : '';
+        const instaUrl = instaHandle ? `https://instagram.com/${instaHandle.replace('@','')}` : '';
+        const instaHtml = instaHandle ? `<div><a href="${instaUrl}" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> ${instaHandle}</a></div>` : '';
+        const instaHover = instaHandle ? `<div class="team-insta-hover"><a href="${instaUrl}" target="_blank"><i class="fab fa-instagram"></i></a></div>` : '';
         return `<div class="team-card">${imgHtml}<div class="team-overlay"></div>${instaHover}<div class="team-info"><div class="team-name">${m.name}</div><span class="team-role-pill">${m.role}</span>${instaHtml}</div></div>`;
       }).join('');
     }

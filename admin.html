@@ -2621,7 +2621,7 @@
       document.getElementById('ab_statReels').value = a.statReels || '';
       document.getElementById('ab_statMakers').value = a.statMakers || '';
       document.getElementById('ab_statCities').value = a.statCities || '';
-      const team = a.team || [{name:'Srisanth S',role:'Founder & CEO'},{name:'Kiran M',role:'Head of Operations'},{name:'Priya R',role:'Lead Content Maker'}];
+      const team = a.team || [{name:'Boddu Srisanth',role:'Founder & CEO',insta:'@srisanth.18',photo:'srisanth.jpeg'},{name:'Gulimi Sumanth',role:'Managing Director',insta:'@sumanthh_lazy',photo:'sumanth.jpeg'}];
       document.getElementById('teamRows').innerHTML = '';
       team.forEach(m => addTeamRow(m.name, m.role, m.insta||'', m.photo||''));
     }
