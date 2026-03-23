@@ -675,8 +675,9 @@
             <input type="time" id="as_time" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
-            <label>Credit Amount (₹) *</label>
+            <label>Payout Amount (₹) * <span style="font-size:0.68rem;color:#ff9800;font-weight:600;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-eye-slash"></i> Hidden from Creator</span></label>
             <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#1f0000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <span style="font-size:0.72rem;color:#a08080;margin-top:0.25rem;">This amount is only visible to admin. Creator sees their wallet balance after you release payment.</span>
           </div>
         </div>
         <div class="form-group">
@@ -694,6 +695,15 @@
           <span style="font-size:0.8rem;color:#a08080;" id="assignedCount"></span>
         </div>
         <div id="assignedList"></div>
+      </div>
+
+      <!-- PAYOUT REQUESTS FROM STAFF -->
+      <div class="about-form" style="margin-top:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;margin-right:0.5rem;"></i> Staff Payout Requests</h2>
+          <span style="font-size:0.8rem;color:#a08080;" id="payoutReqCount"></span>
+        </div>
+        <div id="payoutRequestsList"></div>
       </div>
 
     </div><!-- end tab-assign -->
@@ -1445,7 +1455,7 @@
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
-      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
+      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); renderPayoutRequests(); }
     }
 
     function deleteFeedback(id){
@@ -1936,7 +1946,7 @@
           + creditEdit
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
-          + '<span style="font-size:0.95rem;font-weight:900;color:#4caf50;">&#8377;' + a.credit.toLocaleString('en-IN') + '</span>'
+          + '<span style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;"><i class="fas fa-eye-slash"></i> Payout: ₹' + a.credit.toLocaleString('en-IN') + '</span>'
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
@@ -2044,6 +2054,79 @@
       saveAssignedShoots(list);
       renderAssignedList();
       showAssignToast('Payment of ₹' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+    }
+
+    function renderPayoutRequests(){
+      var staffList = getStaff();
+      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]').slice().reverse();
+      var el = document.getElementById('payoutRequestsList');
+      var countEl = document.getElementById('payoutReqCount');
+      if(countEl) countEl.textContent = reqs.length + ' request(s)';
+      if(!reqs.length){
+        el.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-hand-holding-usd" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
+        return;
+      }
+      el.innerHTML = reqs.map(function(r){
+        var statusColor = r.status === 'approved' ? '#4caf50' : r.status === 'rejected' ? '#f44336' : '#ff9800';
+        var statusLabel = r.status === 'approved' ? 'Approved' : r.status === 'rejected' ? 'Rejected' : 'Pending';
+        var actionBtns = r.status === 'pending'
+          ? '<button onclick="approvePayoutRequest(\'' + r.id + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Approve & Transfer</button>'
+            + '<button onclick="rejectPayoutRequest(\'' + r.id + '\')" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Reject</button>'
+          : '';
+        return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          + '<div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + r.staffName + '</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.15rem;">Bank: ' + (r.bankName || '—') + ' &nbsp;·&nbsp; A/C: ' + (r.accNo ? r.accNo.replace(/.(?=.{4})/g,'*') : '—') + ' &nbsp;·&nbsp; IFSC: ' + (r.ifsc || '—') + '</div>'
+          + (r.upi ? '<div style="font-size:0.72rem;color:#a08080;margin-top:0.1rem;">UPI: ' + r.upi + '</div>' : '')
+          + '<div style="font-size:0.68rem;color:#555;margin-top:0.2rem;">Requested: ' + r.requestedAt + '</div>'
+          + (r.processedAt ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
+          + '</div>'
+          + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;">'
+          + '<span style="font-size:1.1rem;font-weight:900;color:#4caf50;">₹' + r.amount.toLocaleString('en-IN') + '</span>'
+          + '<span style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + statusLabel + '</span>'
+          + '</div></div>'
+          + (actionBtns ? '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">' + actionBtns + '</div>' : '')
+          + '</div>';
+      }).join('');
+    }
+
+    function approvePayoutRequest(reqId){
+      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
+      var r = reqs.find(function(x){ return x.id === reqId; });
+      if(!r) return;
+      if(!confirm('Approve payout of ₹' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
+      r.status = 'approved';
+      r.processedAt = new Date().toLocaleString();
+      localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      // Deduct from staff wallet balance
+      var walletKey = 'hs_wallet_' + r.staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
+      wallet.balance = Math.max(0, (wallet.balance || 0) - r.amount);
+      wallet.withdrawn = (wallet.withdrawn || 0) + r.amount;
+      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Payout Transferred', note:'Bank: ' + r.bankName, date: new Date().toLocaleString() });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+      renderPayoutRequests();
+      showAssignToast('₹' + r.amount.toLocaleString('en-IN') + ' payout approved for ' + r.staffName, true);
+    }
+
+    function rejectPayoutRequest(reqId){
+      var reason = prompt('Reason for rejection (shown to staff):');
+      if(reason === null) return;
+      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
+      var r = reqs.find(function(x){ return x.id === reqId; });
+      if(!r) return;
+      r.status = 'rejected';
+      r.rejectReason = reason || 'Rejected by admin';
+      r.processedAt = new Date().toLocaleString();
+      localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      // Refund back to wallet balance
+      var walletKey = 'hs_wallet_' + r.staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
+      wallet.transactions.push({ type:'info', amount: r.amount, label:'Payout Rejected', note: r.rejectReason, date: new Date().toLocaleString() });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+      renderPayoutRequests();
+      showAssignToast('Payout rejected for ' + r.staffName, false);
     }
 
     function deleteAssignment(id){

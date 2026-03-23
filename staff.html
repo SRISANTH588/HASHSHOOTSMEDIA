@@ -1549,10 +1549,10 @@
       var staffId = localStorage.getItem('hs_staff_id');
       var staffList = JSON.parse(localStorage.getItem('hs_staff') || '[]');
       var me = staffList.find(function(s){ return s.id == staffId; });
-      var perShoot = me && me.shootCredit ? me.shootCredit : 0;
 
+      // Show balance — DO NOT show payout amount set by admin
       document.getElementById('walletBalance').textContent = (w.balance||0).toLocaleString('en-IN');
-      document.getElementById('walletPerShoot').textContent = perShoot.toLocaleString('en-IN');
+      document.getElementById('walletPerShoot').textContent = '—'; // hidden from creator
       document.getElementById('walletTotalEarned').textContent = '\u20b9' + (w.totalEarned||0).toLocaleString('en-IN');
       document.getElementById('walletWithdrawn').textContent = '\u20b9' + (w.withdrawn||0).toLocaleString('en-IN');
       document.getElementById('walletPending').textContent = '\u20b9' + (w.pending||0).toLocaleString('en-IN');
@@ -1596,7 +1596,7 @@
         .filter(function(a){ return String(a.staffId) === String(staffId); })
         .slice().reverse();
 
-      // Shoots list
+      // Shoots list — only show service/client/date, NOT the payout amount
       var shootsEl = document.getElementById('po_shootsList');
       var eligible = assigns.filter(function(a){ return a.status === 'done' || a.status === 'completed' || a.status === 'paid'; });
       if(!eligible.length){
@@ -1604,13 +1604,7 @@
       } else {
         shootsEl.innerHTML = eligible.map(function(a){
           var statusColor = a.status==='paid' ? '#2196f3' : a.status==='done' ? '#9c27b0' : '#4caf50';
-          var statusLabel = a.status==='paid' ? 'Paid' : a.status==='done' ? 'Done — Awaiting Admin Payment' : 'Completed';
-          var payoutSection = '';
-          if(a.status === 'done'){
-            payoutSection = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(156,39,176,0.08);border:1px solid rgba(156,39,176,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#ce93d8;"><i class="fas fa-clock"></i> Shoot marked done — Admin will review and release payment</div>';
-          } else if(a.status === 'paid'){
-            payoutSection = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#2196f3;"><i class="fas fa-check-double"></i> &#8377;'+a.credit.toLocaleString('en-IN')+' Released on '+a.paidAt+'</div>';
-          }
+          var statusLabel = a.status==='paid' ? 'Payment Released' : a.status==='done' ? 'Done — Awaiting Admin Approval' : 'Completed';
           return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+statusColor+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'
             + '<div>'
@@ -1618,36 +1612,105 @@
             + '<div style="font-size:0.72rem;color:#a08080;margin-top:0.2rem;"><i class="fas fa-calendar" style="color:#e53935;"></i> '+a.date+' '+a.time+' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt" style="color:#e53935;"></i> '+(a.location||a.city)+'</div>'
             + (a.doneAt ? '<div style="font-size:0.68rem;color:#9c27b0;margin-top:0.15rem;"><i class="fas fa-flag-checkered"></i> Done: '+a.doneAt+'</div>' : '')
             + '</div>'
-            + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">'
-            + '<span style="font-size:1rem;font-weight:900;color:#4caf50;">&#8377;'+a.credit.toLocaleString('en-IN')+'</span>'
             + '<span style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">'+statusLabel+'</span>'
-            + '</div></div>'
-            + payoutSection
-            + '</div>';
+            + '</div></div>';
         }).join('');
       }
 
-      // Payout history from wallet transactions
+      // Payout request section
       var histEl = document.getElementById('po_history');
-      var paid = (w.transactions||[]).filter(function(t){ return t.type==='credit'; }).slice().reverse();
-      if(!paid.length){
-        histEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payouts received yet.</div>';
+      var myReqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]')
+        .filter(function(r){ return String(r.staffId) === String(staffId); })
+        .slice().reverse();
+
+      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      var canRequest = (w.balance || 0) > 0 && bankData && bankData.accNo;
+      var pendingReq = myReqs.find(function(r){ return r.status === 'pending'; });
+
+      var requestSection = '';
+      if(!bankData || !bankData.accNo){
+        requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
+          + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;margin-bottom:0.25rem;"><i class="fas fa-exclamation-triangle"></i> Bank Details Required</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;">Please add your bank account details in the <strong style="color:#fff;">Bank</strong> tab before requesting a payout.</div>'
+          + '</div>';
+      } else if(pendingReq){
+        requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
+          + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-clock"></i> Payout Request Pending</div>'
+          + '<div style="font-size:0.75rem;color:#a08080;margin-top:0.2rem;">Your payout request of <strong style="color:#fff;">₹' + pendingReq.amount.toLocaleString('en-IN') + '</strong> is under review. Admin will process it shortly.</div>'
+          + '</div>';
+      } else if(canRequest){
+        requestSection = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;">'
+          + '<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.75rem;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;"></i> Request Payout</div>'
+          + '<div style="font-size:0.78rem;color:#a08080;margin-bottom:0.75rem;">Available balance: <strong style="color:#4caf50;font-size:1rem;">₹' + (w.balance||0).toLocaleString('en-IN') + '</strong></div>'
+          + '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">'
+          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#a08080;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) *</label>'
+          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="1" max="'+(w.balance||0)+'" style="width:100%;background:#200000;border:1px solid rgba(255,255,255,0.08);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
+          + '<button onclick="submitPayoutRequest()" style="background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem 1.5rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-paper-plane"></i> Request Payout</button>'
+          + '</div>'
+          + '<div style="font-size:0.72rem;color:#a08080;margin-top:0.5rem;">Payout will be sent to: <strong style="color:#fff;">' + bankData.bankName + '</strong> &nbsp;·&nbsp; A/C: <strong style="color:#fff;">' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '</strong>' + (bankData.upi ? ' &nbsp;·&nbsp; UPI: <strong style="color:#fff;">' + bankData.upi + '</strong>' : '') + '</div>'
+          + '<div id="po_req_msg" style="display:none;margin-top:0.5rem;"></div>'
+          + '</div>';
+      }
+
+      // History
+      var histHTML = '';
+      if(!myReqs.length){
+        histHTML = '<div style="text-align:center;padding:2rem;color:#5a3535;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
       } else {
-        histEl.innerHTML = paid.map(function(t){
-          return '<div style="background:#1f0000;border:1px solid rgba(76,175,80,0.15);border-left:3px solid #4caf50;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+        var statusColors2 = { pending:'#ff9800', approved:'#4caf50', rejected:'#f44336' };
+        histHTML = myReqs.map(function(r){
+          var sc = statusColors2[r.status] || '#ff9800';
+          return '<div style="background:#1f0000;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+sc+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;">'
+            + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
             + '<div>'
-            + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">'+t.label+'</div>'
-            + '<div style="font-size:0.7rem;color:#a08080;margin-top:0.15rem;">'+t.date+(t.note?' &nbsp;·&nbsp; '+t.note:'')+'</div>'
+            + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">Payout Request — ₹' + r.amount.toLocaleString('en-IN') + '</div>'
+            + '<div style="font-size:0.7rem;color:#a08080;margin-top:0.15rem;">' + r.requestedAt + '</div>'
+            + (r.rejectReason ? '<div style="font-size:0.72rem;color:#f44336;margin-top:0.2rem;"><i class="fas fa-times-circle"></i> ' + r.rejectReason + '</div>' : '')
+            + (r.processedAt && r.status !== 'pending' ? '<div style="font-size:0.68rem;color:#555;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
             + '</div>'
-            + '<div style="font-size:1.1rem;font-weight:900;color:#4caf50;">+&#8377;'+t.amount.toLocaleString('en-IN')+'</div>'
-            + '</div>';
+            + '<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">' + r.status.charAt(0).toUpperCase()+r.status.slice(1) + '</span>'
+            + '</div></div>';
         }).join('');
       }
 
-      // Update notif badge — show if any done shoot awaiting payment
+      histEl.innerHTML = requestSection + histHTML;
+
+      // Update notif badge
       var needsAction = assigns.filter(function(a){ return a.status==='done'; }).length;
       var badge = document.getElementById('payoutNotifBadge');
       if(badge){ badge.textContent = needsAction; badge.style.display = needsAction > 0 ? 'inline' : 'none'; }
+    }
+
+    function submitPayoutRequest(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var w = getWallet();
+      var amt = parseInt(document.getElementById('po_req_amount').value);
+      if(!amt || amt < 1){ alert('Please enter a valid amount.'); return; }
+      if(amt > (w.balance || 0)){ alert('Amount exceeds your available balance of ₹' + (w.balance||0).toLocaleString('en-IN')); return; }
+      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      if(!bankData || !bankData.accNo){ alert('Please add your bank details first.'); return; }
+      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
+      reqs.push({
+        id: 'pr_' + Date.now(),
+        staffId: staffId,
+        staffName: staffName,
+        amount: amt,
+        bankName: bankData.bankName,
+        accNo: bankData.accNo,
+        ifsc: bankData.ifsc,
+        upi: bankData.upi || '',
+        status: 'pending',
+        requestedAt: new Date().toLocaleString()
+      });
+      localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      var msg = document.getElementById('po_req_msg');
+      if(msg){
+        msg.style.display = 'block';
+        msg.style.cssText = 'display:block;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.8rem;font-weight:600;margin-top:0.5rem;';
+        msg.innerHTML = '<i class="fas fa-check-circle"></i> Payout request of ₹' + amt.toLocaleString('en-IN') + ' submitted! Admin will process it shortly.';
+      }
+      setTimeout(function(){ renderPayout(); }, 1500);
     }
 
     // STORE
