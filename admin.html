@@ -1706,16 +1706,24 @@
         </tr>`).join('');
     }
 
+    async function _fbAdmin(){
+      try{
+        var m=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var s=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var app=m.getApps().find(a=>a.name==='admin-app')||m.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'admin-app');
+        return {db:s.getFirestore(app),s};
+      }catch(e){return null;}
+    }
+
     function updateStatus(id, status) {
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       const idx = bookings.findIndex(b=>String(b.id)===String(id));
       if(idx>-1) { bookings[idx].status=status; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); }
-      // Update live stats
       const completed = bookings.filter(b=>b.status==='completed').length;
-      const baseReels = 50000;
-      const baseMakers = 500;
-      localStorage.setItem('hs_reels_delivered', baseReels + completed);
-      localStorage.setItem('hs_reel_makers', baseMakers + Math.floor(completed / 2));
+      localStorage.setItem('hs_reels_delivered', 50000+completed);
+      localStorage.setItem('hs_reel_makers', 500+Math.floor(completed/2));
+      // Sync to Firebase
+      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status},{ merge:true }); }catch(e){} })();
       loadAll();
     }
 
@@ -1723,12 +1731,14 @@
       if(!confirm('Delete this booking?')) return;
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>String(b.id)!==String(id));
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
+      // Sync to Firebase
+      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.deleteDoc(f.s.doc(f.db,'bookings',String(id))); }catch(e){} })();
       loadAll();
     }
 
     function editBooking(id){
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      const b = bookings.find(x=>x.id===id);
+      const b = bookings.find(x=>String(x.id)===String(id));
       if(!b) return;
       const name = prompt('Customer Name:', b.name); if(name===null) return;
       const phone = prompt('Phone:', b.phone); if(phone===null) return;
@@ -1741,6 +1751,8 @@
       b.service=service.trim()||b.service; b.city=city.trim()||b.city;
       b.date=date.trim()||b.date; b.time=time.trim()||b.time; b.notes=notes.trim();
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
+      // Sync to Firebase
+      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{name:b.name,phone:b.phone,service:b.service,city:b.city,date:b.date,time:b.time,notes:b.notes},{merge:true}); }catch(e){} })();
       loadAll();
     }
 
@@ -2528,7 +2540,19 @@
 
     // ASSIGN SHOOTS
     function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
-    function saveAssignedShoots(list){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); }
+    function saveAssignedShoots(list){
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+      // Sync each new shoot to Firebase
+      (async()=>{
+        var f=await _fbAdmin(); if(!f) return;
+        try{
+          for(var i=0;i<list.length;i++){
+            var a=list[i];
+            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)), a, {merge:true});
+          }
+        }catch(e){ console.error('saveAssignedShoots Firebase error:',e); }
+      })();
+    }
 
     async function populateAssignSelects(autoBookingId){
       // bookings dropdown — fetch from Firestore first
@@ -2957,21 +2981,26 @@
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
       var r = reqs.find(function(x){ return x.id === reqId; });
       if(!r) return;
-      if(!confirm('Approve withdrawal of \u20b9' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
+      if(!confirm('Approve withdrawal of ₹' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
       r.status = 'approved';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      if(window.fbUpdate) fbUpdate('payout_requests', String(r.id), {status:'approved', processedAt:r.processedAt});
-      if(window.fbUpdate) fbUpdate('wallets', String(r.staffId), {balance:wallet.balance, withdrawn:wallet.withdrawn, lastUpdated:new Date().toLocaleString()});
       var walletKey = 'hs_wallet_' + r.staffId;
       var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
       wallet.balance   = Math.max(0, (wallet.balance||0) - r.amount);
       wallet.withdrawn = (wallet.withdrawn||0) + r.amount;
-      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Withdrawal Approved \u2714', note:'Bank: ' + r.bankName + ' | A/C: ' + r.accNo, date: new Date().toLocaleString() });
+      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Withdrawal Approved ✔', note:'Bank: ' + r.bankName + ' | A/C: ' + r.accNo, date: new Date().toLocaleString() });
       localStorage.setItem(walletKey, JSON.stringify(wallet));
+      (async()=>{
+        var f=await _fbAdmin(); if(!f) return;
+        try{
+          await f.s.setDoc(f.s.doc(f.db,'payout_requests',String(r.id)),{status:'approved',processedAt:r.processedAt},{merge:true});
+          await f.s.setDoc(f.s.doc(f.db,'wallets',String(r.staffId)),{balance:wallet.balance,withdrawn:wallet.withdrawn,lastUpdated:new Date().toLocaleString()},{merge:true});
+        }catch(e){}
+      })();
       renderWithdrawList();
       updateWithdrawBadge();
-      showAssignToast('\u20b9' + r.amount.toLocaleString('en-IN') + ' withdrawal approved for ' + r.staffName, true);
+      showAssignToast('₹' + r.amount.toLocaleString('en-IN') + ' withdrawal approved for ' + r.staffName, true);
     }
 
     function rejectWithdraw(reqId){
@@ -2984,6 +3013,10 @@
       r.rejectReason = reason.trim() || 'Rejected by admin';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      (async()=>{
+        var f=await _fbAdmin(); if(!f) return;
+        try{ await f.s.setDoc(f.s.doc(f.db,'payout_requests',String(r.id)),{status:'rejected',rejectReason:r.rejectReason,processedAt:r.processedAt},{merge:true}); }catch(e){}
+      })();
       renderWithdrawList();
       updateWithdrawBadge();
       showAssignToast('Withdrawal rejected for ' + r.staffName, false);
@@ -3784,6 +3817,31 @@
           localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
           if(currentTab==='enquiries') renderEnquiries();
           updateEnquiriesNotifBadge();
+        });
+
+
+        // Real-time assigned_shoots listener
+        onSnapshot(collection(fbDb,'assigned_shoots'), function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(d.data()); });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+          if(currentTab==='assign') renderAssignedList();
+        });
+
+        // Real-time payout_requests listener
+        onSnapshot(query(collection(fbDb,'payout_requests'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_payout_requests')||'[]');
+          var fbIds = [];
+          snap.forEach(function(d){ fbIds.push(d.id); });
+          snap.forEach(function(d){
+            var data = d.data();
+            var idx = local.findIndex(function(x){ return String(x.id)===d.id; });
+            if(idx>-1){ local[idx] = Object.assign(local[idx], data); }
+            else { local.push(Object.assign({id:d.id},data)); }
+          });
+          localStorage.setItem('hs_payout_requests', JSON.stringify(local));
+          updateWithdrawBadge();
+          if(currentTab==='withdraw') renderWithdrawList();
         });
 
       } catch(e){ console.log('Firebase admin error:',e); }
