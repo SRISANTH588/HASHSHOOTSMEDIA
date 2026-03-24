@@ -408,14 +408,37 @@
       var now = new Date().toLocaleString();
       var id  = Date.now();
       var d   = pendingData;
+      var planInfo = (selectedPlanKey && planData[selectedPlanKey]) ? planData[selectedPlanKey].name + ' ' + planData[selectedPlanKey].price : d.service;
 
+      // Save locally (for same-device admin)
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', status:'pending', createdAt:now });
+      bookings.push({ id:id, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', status:'pending', createdAt:now });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
-      enquiries.push({ id:id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time+' | Plan: '+(selectedPlanKey && planData[selectedPlanKey] ? planData[selectedPlanKey].name+' '+planData[selectedPlanKey].price : ''), submittedAt:now });
+      enquiries.push({ id:id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time+' | Plan: '+planInfo, submittedAt:now });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
+
+      // Send to email via Formspree (works from ANY device)
+      var formData = new FormData();
+      formData.append('name', d.name);
+      formData.append('phone', d.phone);
+      formData.append('email', d.email);
+      formData.append('service', d.service);
+      formData.append('plan', planInfo);
+      formData.append('city', d.city);
+      formData.append('location', d.location);
+      formData.append('date', d.date);
+      formData.append('time', d.time);
+      formData.append('submitted_at', now);
+      formData.append('_subject', 'New Booking Enquiry — ' + d.name + ' | ' + d.service);
+      formData.append('_replyto', d.email);
+
+      fetch('https://formspree.io/f/xpwzgvkd', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).catch(function(){});
 
       closeReview();
       document.getElementById('bk_success').style.display = 'block';
