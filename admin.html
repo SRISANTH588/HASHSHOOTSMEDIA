@@ -93,6 +93,7 @@
     .btn-save-about:hover{background:var(--gold-dark);}
     .save-toast{display:none;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin-top:1rem;}
   </style>
+<script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
   <nav>
@@ -1761,6 +1762,7 @@
         return { name: inputs[0].value.trim(), text: inputs[1].value.trim() };
       }).filter(function(t){ return t.name && t.text; });
       localStorage.setItem('hs_homepage', JSON.stringify(hp));
+      if(window.fbUpdate) fbUpdate('settings', 'homepage', hp);
       var toast = document.getElementById('hpToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display='none'; }, 2500);
@@ -2342,6 +2344,8 @@
       });
 
       saveAssignedShoots(assigned);
+      // Push to Firebase so staff sees on any device
+      if(window.fbSave) fbSave('assigned_shoots', assigned[assigned.length-1]);
 
       document.getElementById('as_booking').value='';
       document.getElementById('as_date').value='';
@@ -2458,6 +2462,7 @@
       a.status = 'done';
       a.doneAt = new Date().toLocaleString();
       saveAssignedShoots(list);
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'done', doneAt:a.doneAt});
       renderAssignedList();
       showAssignToast('Shoot marked as done. You can now approve and release payment.', true);
     }
@@ -2481,6 +2486,9 @@
       a.paidAt = new Date().toLocaleString();
       a.payoutRequested = false;
       saveAssignedShoots(list);
+      // Push payment release to Firebase so staff wallet updates on any device
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'paid', paidAt:a.paidAt, credit:a.credit});
+      if(window.fbUpdate) fbUpdate('wallets', String(a.staffId), {balance:wallet.balance, totalEarned:wallet.totalEarned, pending:wallet.pending, lastUpdated:new Date().toLocaleString()});
       renderAssignedList();
       updateCreatorPendingPayments();
       showAssignToast('\u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
@@ -2595,6 +2603,8 @@
       r.status = 'approved';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      if(window.fbUpdate) fbUpdate('payout_requests', String(r.id), {status:'approved', processedAt:r.processedAt});
+      if(window.fbUpdate) fbUpdate('wallets', String(r.staffId), {balance:wallet.balance, withdrawn:wallet.withdrawn, lastUpdated:new Date().toLocaleString()});
       var walletKey = 'hs_wallet_' + r.staffId;
       var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
       wallet.balance   = Math.max(0, (wallet.balance||0) - r.amount);
@@ -2833,6 +2843,7 @@
       };
       try {
         localStorage.setItem('hs_about', JSON.stringify(data));
+        if(window.fbUpdate) fbUpdate('settings', 'about', data);
         const toast = document.getElementById('saveToast');
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 2500);

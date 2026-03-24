@@ -1,5 +1,4 @@
-// hs-firebase.js — Shared Firebase helper for Hash Shoots
-// Usage: <script type="module" src="hs-firebase.js"></script>
+// hs-firebase.js — Full Two-Way Real-Time Sync Engine for Hash Shoots
 
 const FB_CFG = {
   apiKey: 'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
@@ -10,9 +9,7 @@ const FB_CFG = {
   appId: '1:1093054616221:web:55bdebafc895acfd04fa74'
 };
 
-let _db = null;
-let _fbMod = null;
-let _fbStore = null;
+let _db = null, _fbMod = null, _fbStore = null;
 
 async function getDB() {
   if (_db) return _db;
@@ -24,46 +21,47 @@ async function getDB() {
   return _db;
 }
 
-// Save a document to a collection
-window.fbSave = async function(collectionName, data) {
+// Save a document
+window.fbSave = async function(col, data) {
   try {
     const db = await getDB();
-    await _fbStore.addDoc(_fbStore.collection(db, collectionName), {
-      ...data,
-      createdAt: _fbStore.serverTimestamp()
-    });
-    return true;
-  } catch(e) {
-    console.error('fbSave error:', e);
-    return false;
-  }
+    const ref = await _fbStore.addDoc(_fbStore.collection(db, col), { ...data, createdAt: _fbStore.serverTimestamp() });
+    return ref.id;
+  } catch(e) { console.error('fbSave error:', e); return null; }
 };
 
-// Update a document
-window.fbUpdate = async function(collectionName, docId, data) {
+// Update a document by ID
+window.fbUpdate = async function(col, docId, data) {
   try {
     const db = await getDB();
-    await _fbStore.updateDoc(_fbStore.doc(db, collectionName, docId), data);
+    await _fbStore.setDoc(_fbStore.doc(db, col, String(docId)), data, { merge: true });
     return true;
-  } catch(e) {
-    console.error('fbUpdate error:', e);
-    return false;
-  }
+  } catch(e) { console.error('fbUpdate error:', e); return false; }
 };
 
 // Listen to a collection in real time
-window.fbListen = async function(collectionName, callback) {
+window.fbListen = async function(col, callback, orderField) {
   try {
     const db = await getDB();
-    const q  = _fbStore.query(_fbStore.collection(db, collectionName), _fbStore.orderBy('createdAt', 'desc'));
-    return _fbStore.onSnapshot(q, snapshot => {
+    const q = orderField
+      ? _fbStore.query(_fbStore.collection(db, col), _fbStore.orderBy(orderField, 'desc'))
+      : _fbStore.collection(db, col);
+    return _fbStore.onSnapshot(q, snap => {
       const docs = [];
-      snapshot.forEach(d => docs.push({ _id: d.id, ...d.data() }));
+      snap.forEach(d => docs.push({ _fbId: d.id, ...d.data() }));
       callback(docs);
     });
-  } catch(e) {
-    console.error('fbListen error:', e);
-  }
+  } catch(e) { console.error('fbListen error:', e); }
 };
 
-console.log('hs-firebase.js loaded');
+// Listen to a single document
+window.fbListenDoc = async function(col, docId, callback) {
+  try {
+    const db = await getDB();
+    return _fbStore.onSnapshot(_fbStore.doc(db, col, String(docId)), snap => {
+      if (snap.exists()) callback({ _fbId: snap.id, ...snap.data() });
+    });
+  } catch(e) { console.error('fbListenDoc error:', e); }
+};
+
+console.log('[HashShoots] Firebase two-way sync ready');
