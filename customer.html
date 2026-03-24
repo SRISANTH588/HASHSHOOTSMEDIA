@@ -685,20 +685,31 @@
       list.innerHTML = bookings.slice().reverse().map(b => {
         const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
         const paid = payments.find(function(p){ return String(p.bookingId) === String(b.id); });
+    function _renderBookings() {
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      const list = document.getElementById('bookingsList');
+      if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
+      list.innerHTML = bookings.slice().reverse().map(b => {
+        const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
+        const paid = payments.find(function(p){ return String(p.bookingId) === String(b.id); });
+        const alreadyPaid = paid || b.paymentStatus === 'paid';
         let payBtn = '';
-        if(b.status === 'confirmed' && rp.enabled && rp.keyId && !paid && b.paymentStatus !== 'paid'){
-          const amt = b.payAmount || rp.defaultAmount || 0;
-          payBtn = `<button onclick="payNow('${b.id}')" style="margin-top:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;box-shadow:0 4px 15px rgba(33,150,243,0.4);"><i class="fas fa-credit-card"></i> Pay Now ₹${amt.toLocaleString('en-IN')}</button>`;
-        }
-        if(b.paymentStatus === 'failed'){
-          const amt = b.payAmount || rp.defaultAmount || 0;
-          payBtn = `<div style="margin-top:0.5rem;">
-            <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;margin-bottom:0.4rem;"><i class="fas fa-times-circle"></i> Payment Failed</div>
-            <button onclick="payNow('${b.id}')" style="display:block;margin-top:0.35rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:8px;padding:0.45rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-redo"></i> Try Again</button>
-          </div>`;
-        }
-        if(paid || b.paymentStatus === 'paid'){
+
+        if(alreadyPaid){
           payBtn = `<div style="margin-top:0.5rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Payment Confirmed</div>`;
+        } else if(b.status === 'confirmed'){
+          const amt = b.payAmount || rp.defaultAmount || 0;
+          if(b.paymentStatus === 'failed'){
+            payBtn = `<div style="margin-top:0.5rem;">
+              <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;margin-bottom:0.4rem;"><i class="fas fa-times-circle"></i> Payment Failed — Please try again</div><br/>
+              ${amt ? `<button onclick="payNow('${b.id}')" style="margin-top:0.35rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-redo"></i> Try Again &#8377;${amt.toLocaleString('en-IN')}</button>` : '<div style="font-size:0.78rem;color:#9a9080;margin-top:0.35rem;">Payment amount not set yet. Admin will update shortly.</div>'}
+            </div>`;
+          } else if(rp.enabled && rp.keyId && amt){
+            payBtn = `<button onclick="payNow('${b.id}')" style="margin-top:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;box-shadow:0 4px 15px rgba(33,150,243,0.4);"><i class="fas fa-credit-card"></i> Pay Now &#8377;${amt.toLocaleString('en-IN')}</button>`;
+          } else {
+            payBtn = `<div style="margin-top:0.5rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-clock"></i> Booking Confirmed — Payment link coming soon</div>`;
+          }
         }
         return `<div class="booking-item" style="flex-direction:column;align-items:flex-start;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;flex-wrap:wrap;gap:0.5rem;">
@@ -830,7 +841,38 @@
       new Razorpay(options).open();
     }
     loadBookings();
-    setInterval(loadBookings, 3000);
+    // Real-time listener — update booking status instantly when admin confirms
+    (async function(){
+      try{
+        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var fbApp = fbMod.getApps().find(a=>a.name==='cust')||fbMod.initializeApp(fbCfg,'cust');
+        var fbDb = fbStore.getFirestore(fbApp);
+        var userEmail = localStorage.getItem('hs_customer_email')||localStorage.getItem('hs_user')||'';
+        // Fetch Razorpay config once
+        var rpSnap = await fbStore.getDocs(fbStore.collection(fbDb,'razorpay_config'));
+        rpSnap.forEach(function(d){ localStorage.setItem('hs_razorpay', JSON.stringify(d.data())); });
+        // Listen for booking status changes in real-time
+        fbStore.onSnapshot(
+          fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')),
+          function(snap){
+            var fbBookings = [];
+            snap.forEach(function(d){
+              var data = d.data();
+              if(userEmail && data.email === userEmail) fbBookings.push(Object.assign({id:d.id},data));
+            });
+            if(fbBookings.length){
+              var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+              var fbIds = fbBookings.map(b=>String(b.id));
+              local.forEach(function(b){ if(!fbIds.includes(String(b.id))) fbBookings.push(b); });
+              localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+              _renderBookings();
+            }
+          }
+        );
+      }catch(e){ console.log('realtime listener error:',e); }
+    })();
     function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
     function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); if(window.fbSave && list.length) fbSave('feedbacks', list[list.length-1]); }
     var selectedStars = {};
