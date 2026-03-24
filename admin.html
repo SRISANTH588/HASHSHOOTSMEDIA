@@ -1954,7 +1954,26 @@
     }
 
     function getTestiVideosMeta(){ return JSON.parse(localStorage.getItem('hs_testi_videos')||'[]'); }
-    function saveTestiVideosMeta(list){ localStorage.setItem('hs_testi_videos', JSON.stringify(list)); }
+    function saveTestiVideosMeta(list){
+      localStorage.setItem('hs_testi_videos', JSON.stringify(list));
+      // Sync to Firebase so all devices see testimonials
+      if(window.fbSave && list.length){
+        var last = list[list.length-1];
+        if(last && last.id) {
+          (async function(){
+            try {
+              var fbMod3   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+              var fbStore3 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+              var fbCfg3 = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+              var apps3 = fbMod3.getApps();
+              var app3  = apps3.find(function(a){return a.name==='testi-save';}) || fbMod3.initializeApp(fbCfg3,'testi-save');
+              var db3   = fbStore3.getFirestore(app3);
+              await fbStore3.setDoc(fbStore3.doc(db3,'testimonial_videos',String(last.id)), Object.assign({},last,{updatedAt:fbStore3.serverTimestamp()}),{merge:true});
+            } catch(e){ console.error('Testi Firebase sync:',e); }
+          })();
+        }
+      }
+    }
 
     function uploadTestiVideo(){
       var name = document.getElementById('tv_clientName').value.trim();

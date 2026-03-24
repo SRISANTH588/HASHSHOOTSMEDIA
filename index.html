@@ -143,44 +143,34 @@
         html += '</div>';
         panel.innerHTML = html;
 
-        // Load videos from IndexedDB
-        if(videoMeta.length){
-          var _tdb = null;
-          function openTDB(cb){
-            if(_tdb){ cb(_tdb); return; }
-            var r = indexedDB.open('hs_testi_videos_db',1);
-            r.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
-            r.onsuccess = function(e){ _tdb=e.target.result; cb(_tdb); };
-            r.onerror = function(){ cb(null); };
+        // Load testimonial videos using Cloudinary URLs
+        videoMeta.forEach(function(v){
+          var videoUrl = v.cloudUrl || v.url || '';
+          var ph = document.getElementById('vtpi_'+v.id);
+          if(!ph) return;
+          if(videoUrl){
+            var vid = document.createElement('video');
+            vid.src = videoUrl; vid.controls = true; vid.preload = 'metadata';
+            vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;';
+            ph.replaceWith(vid);
           }
-          videoMeta.forEach(function(v){
-            openTDB(function(db){
-              if(!db) return;
-              var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-              req.onsuccess = function(){
-                if(!req.result) return;
-                var url = URL.createObjectURL(req.result.blob);
-                var ph = document.getElementById('vtpi_'+v.id);
-                if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;'; ph.replaceWith(vid); }
-              };
-            });
-          });
-        }
+        });
       }
 
       window.openVibeLb = function(idx){
         var items = getVibeItems();
         var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
         var item = filtered[idx];
-        var content = '';
-        if(item.type==='video' && (item.url||item.cloudUrl)){
-          content = '<video class="vibe-lb-video" src="'+(item.cloudUrl||item.url)+'" controls autoplay></video>';
+        var videoUrl = item.url || item.cloudUrl || '';
+        var html = '';
+        if(videoUrl){
+          html = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
         } else if(item.thumbnail){
-          content = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
+          html = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
         } else {
-          content = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
+          html = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
         }
-        document.getElementById('vibeLbContent').innerHTML = content;
+        document.getElementById('vibeLbContent').innerHTML = html;
         document.getElementById('vibeLightbox').classList.add('open');
       };
       document.getElementById('vibeLbClose').addEventListener('click',function(){

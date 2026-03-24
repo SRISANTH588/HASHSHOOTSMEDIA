@@ -152,19 +152,16 @@
       meta.forEach(function(v){
         var card = document.createElement('div');
         card.className = 'vibe-card';
-        card.innerHTML =
-          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
-          +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>';
-        openTDB(function(db){
-          if(!db) return;
-          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-          req.onsuccess = function(){
-            if(!req.result) return;
-            var url = URL.createObjectURL(req.result.blob);
-            var ph = document.getElementById('tvp_'+v.id);
-            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
-          };
-        });
+        var videoUrl = v.cloudUrl || v.url || '';
+        if(videoUrl){
+          card.innerHTML =
+            '<video src="'+videoUrl+'" controls preload="metadata" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"></video>'
+            +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>';
+        } else {
+          card.innerHTML =
+            '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+            +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>';
+        }
         inner.appendChild(card);
       });
     }
@@ -174,17 +171,16 @@
       var filtered = currentCat === 'all' ? items : items.filter(function(i){ return i.category === currentCat; });
       var item = filtered[idx];
       var lb = document.getElementById('vibeLightbox');
-      var content = document.getElementById('vibeLbContent');
-      content.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#c9a84c;"></i><p style="margin-top:0.75rem;font-size:0.85rem;color:#888070;">Loading video...</p></div>';
+      var lbContent = document.getElementById('vibeLbContent');
       lb.classList.add('open');
-      getVideoDB(item.id, function(blob){
-        if(blob){
-          var url = URL.createObjectURL(blob);
-          content.innerHTML = '<video class="vibe-lb-video" src="'+url+'" controls autoplay playsinline></video>';
-        } else {
-          content.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-exclamation-circle" style="font-size:2.5rem;color:#c9a84c;"></i><p style="margin-top:1rem;">Video not found.</p></div>';
-        }
-      });
+      var videoUrl = item.url || item.cloudUrl || '';
+      if(videoUrl){
+        lbContent.innerHTML = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
+      } else if(item.thumbnail){
+        lbContent.innerHTML = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
+      } else {
+        lbContent.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-exclamation-circle" style="font-size:2.5rem;color:#c9a84c;"></i><p style="margin-top:1rem;">Video not available.</p></div>';
+      }
     }
 
     function closeLb(){
