@@ -244,6 +244,7 @@
       .stats-row{grid-template-columns:1fr 1fr;}
     }
   </style>
+<script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
 
@@ -1316,6 +1317,7 @@
       s.status = 'done';
       s.doneAt = new Date().toLocaleString();
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      if(window.fbSave) fbSave('shoot_updates', {type:'done', assignId:assignId, staffId:localStorage.getItem('hs_staff_id'), staffName:localStorage.getItem('hs_staff_name'), doneAt:s.doneAt});
       renderAssignedShoots();
     }
 
@@ -1358,6 +1360,7 @@
       var s = shoots.find(function(a){ return a.id === assignId; });
       if(s && !s.arrivedAt){ s.arrivedAt = new Date().toLocaleString(); localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
       localStorage.setItem('hs_arrived_' + assignId, '1');
+      if(window.fbSave) fbSave('shoot_updates', {type:'arrived', assignId:assignId, staffId:localStorage.getItem('hs_staff_id'), staffName:localStorage.getItem('hs_staff_name'), arrivedAt:new Date().toLocaleString()});
       renderAssignedShoots();
     }
 
@@ -1554,6 +1557,7 @@
         submittedAt: new Date().toLocaleString()
       });
       localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
+      if(window.fbSave) fbSave('creator_feedbacks', list[list.length-1]);
       renderCreatorShootFeedback();
     }
 
@@ -1751,6 +1755,7 @@
         requestedAt: new Date().toLocaleString()
       });
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
+      if(window.fbSave) fbSave('payout_requests', reqs[reqs.length-1]);
       var msg = document.getElementById('po_req_msg');
       if(msg){
         msg.style.display = 'block';
@@ -1942,6 +1947,7 @@
         submittedAt: new Date().toLocaleString()
       });
       localStorage.setItem('hs_event_feedbacks', JSON.stringify(list));
+      if(window.fbSave) fbSave('event_feedbacks', list[list.length-1]);
       // Mark dress photo saved on shoot
       var s = shoots.find(function(x){ return x.id === efbAssignId; });
       if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }

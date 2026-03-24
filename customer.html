@@ -164,6 +164,7 @@
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
   </style>
+<script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
   <nav>
@@ -604,6 +605,8 @@
       const bkId = Date.now();
       bookings.push({ id: bkId, name, phone, service, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+      if(window.fbSave) fbSave('bookings', {name:name,phone:phone,email:email||'',service:service,city:city,location:location||'',date:date,time:time,status:'pending'});
+      if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,email:email||'',service:service,city:city,location:location||'',date:date,time:time,status:'pending'});
 
       // Also save enquiry to localStorage
       const enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
@@ -734,7 +737,7 @@
     loadBookings();
     setInterval(loadBookings, 3000);
     function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
-    function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); }
+    function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); if(window.fbSave && list.length) fbSave('feedbacks', list[list.length-1]); }
     var selectedStars = {};
 
     function setStars(id, val){
