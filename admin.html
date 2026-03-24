@@ -3075,7 +3075,7 @@
           +'</div></div>'
           +'<div style="display:flex;align-items:center;gap:0.6rem;">'
           +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-envelope"></i> Enquiry</span>'
-          +'<button onclick="deleteEnquiry('+q.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deleteEnquiry("'+q.id+'")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
           +'</div></div>'
           +'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);">'+q.message+'</div>'
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.6rem;">'+q.submittedAt+'</div>'
@@ -3085,7 +3085,7 @@
 
     function deleteEnquiry(id){
       if(!confirm('Delete this enquiry?')) return;
-      localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return q.id!==id; })));
+      localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return String(q.id)!==String(id); })));
       renderEnquiries();
     }
 
@@ -6711,7 +6711,7 @@
           +'</div></div>'
           +'<div style="display:flex;align-items:center;gap:0.6rem;">'
           +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-envelope"></i> Enquiry</span>'
-          +'<button onclick="deleteEnquiry('+q.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deleteEnquiry("'+q.id+'")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
           +'</div></div>'
           +'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);">'+q.message+'</div>'
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.6rem;">'+q.submittedAt+'</div>'
@@ -6721,7 +6721,7 @@
 
     function deleteEnquiry(id){
       if(!confirm('Delete this enquiry?')) return;
-      localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return q.id!==id; })));
+      localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return String(q.id)!==String(id); })));
       renderEnquiries();
     }
 

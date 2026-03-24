@@ -604,8 +604,8 @@
       const bkId = Date.now();
       bookings.push({ id: bkId, name, phone, service, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-      if(window.fbSave) fbSave('bookings', {name:name,phone:phone,email:email||'',service:service,city:city,location:location||'',date:date,time:time,status:'pending'});
-      if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,email:email||'',service:service,city:city,location:location||'',date:date,time:time,status:'pending'});
+      if(window.fbSave) fbSave('bookings', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
+      if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
 
       // Also save enquiry to localStorage
       const enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
@@ -621,7 +621,8 @@
           var apps = fbMod.getApps();
           var fbApp = apps.find(function(a){ return a.name==='cust'; }) || fbMod.initializeApp(fbCfg,'cust');
           var fbDb = fbStore.getFirestore(fbApp);
-          var data = { name, phone, email: localStorage.getItem('hs_user')||'', service, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
+          var userEmail = localStorage.getItem('hs_user')||'';
+          var data = { name, phone, email: userEmail, service, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
           await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
           await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
         } catch(e){ console.error('Firebase error:',e); }
