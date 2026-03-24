@@ -277,6 +277,7 @@
     <button class="tab-btn" onclick="switchTab('bank',this)"><i class="fas fa-university"></i> Bank</button>
     <button class="tab-btn" onclick="switchTab('testimonials',this)"><i class="fas fa-play-circle"></i> Testimonials</button>
     <button class="tab-btn" onclick="switchTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
+    <button class="tab-btn" onclick="switchTab('aieditor',this)"><i class="fas fa-magic"></i> ✨ AI Editor</button>
   </div>
 
   <div class="page-wrap">
@@ -588,6 +589,89 @@
       </div>
     </div>
 
+    <!-- AI VIDEO EDITOR -->
+    <div class="section" id="sec-aieditor">
+
+      <!-- LUXE HEADER -->
+      <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.35);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.08),transparent 70%);pointer-events:none;"></div>
+        <div style="position:relative;display:flex;align-items:center;gap:0.75rem;">
+          <div style="width:40px;height:40px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">⚡</div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:900;color:#fff;">HASH SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
+            <div style="font-size:0.65rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">AI Video Editor</div>
+          </div>
+        </div>
+        <div style="position:relative;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.3rem 0.85rem;border-radius:50px;"><span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;"></span> AI Active</div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="upload-section" style="margin-bottom:1.5rem;">
+        <h3 style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-cloud-upload-alt" style="color:#c9a84c;margin-right:0.4rem;"></i> Upload Videos for AI Editing</h3>
+        <div id="saie_dropzone" style="border:2px dashed rgba(201,168,76,0.3);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;position:relative;transition:all 0.25s;background:rgba(201,168,76,0.02);" ondragover="saie_dragover(event)" ondragleave="saie_dragleave(event)" ondrop="saie_drop(event)">
+          <input type="file" id="saie_fileInput" accept="video/*" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="saie_onFiles(this.files)"/>
+          <div style="font-size:2rem;color:#c9a84c;opacity:0.6;margin-bottom:0.6rem;"><i class="fas fa-film"></i></div>
+          <div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">Drop videos or tap to browse</div>
+          <div style="font-size:0.72rem;color:#9a9080;">MP4, MOV, WebM &nbsp;·&nbsp; Multiple files allowed</div>
+        </div>
+
+        <!-- Settings -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem;">
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">AI Filter</label>
+            <select id="saie_filter" class="upload-input">
+              <option value="none">None (Original)</option>
+              <option value="cinematic">🎬 Cinematic Gold</option>
+              <option value="vivid">✨ Vivid Pop</option>
+              <option value="moody">🌑 Moody Dark</option>
+              <option value="warm">🌅 Warm Sunset</option>
+              <option value="cool">❄️ Cool Blue</option>
+              <option value="bw">⬛ Black &amp; White</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Watermark Position</label>
+            <select id="saie_wmPos" class="upload-input">
+              <option value="bottomRight">Bottom Right</option>
+              <option value="bottomLeft">Bottom Left</option>
+              <option value="topRight">Top Right</option>
+              <option value="topLeft">Top Left</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="saie_startProcessing()" id="saie_processBtn" class="btn-upload" style="margin-top:1rem;" disabled>
+          <i class="fas fa-magic"></i> Start AI Processing
+        </button>
+      </div>
+
+      <!-- SCAN ANIMATION -->
+      <div id="saie_scanWrap" style="display:none;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.75rem;text-align:center;margin-bottom:1.5rem;">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.85rem;animation:aie_spin 2s linear infinite;"><i class="fas fa-magic" style="font-size:1.2rem;color:#c9a84c;"></i></div>
+          <div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.3rem;" id="saie_scanLabel">AI Analysing...</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-bottom:1rem;" id="saie_scanSub">Please wait</div>
+          <div style="background:#111;border-radius:6px;height:6px;overflow:hidden;">
+            <div id="saie_scanBar" style="height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);border-radius:6px;width:0%;transition:width 0.4s;"></div>
+          </div>
+          <div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-top:0.5rem;" id="saie_scanPct">0%</div>
+        </div>
+      </div>
+
+      <!-- CLIPS -->
+      <div id="saie_clipsSection" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+          <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-film"></i> Processed Clips <span id="saie_clipCount" style="font-size:0.72rem;color:#9a9080;font-weight:500;"></span></div>
+          <div style="display:flex;gap:0.5rem;">
+            <button onclick="saie_addMore()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add</button>
+            <button onclick="saie_exportAll()" style="background:#c9a84c;color:#fff;border:none;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Export All</button>
+          </div>
+        </div>
+        <div id="saie_clipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.85rem;"></div>
+      </div>
+
+    </div><!-- end sec-aieditor -->
+
     <!-- BANK -->
     <div class="section" id="sec-bank">
       <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
@@ -659,6 +743,7 @@
       if(name === 'payout') renderPayout();
       if(name === 'testimonials') renderStvGrid();
       if(name === 'profile') loadBankDetails();
+      if(name === 'aieditor') saie_init();
     }
 
     // Load staff info
@@ -2327,6 +2412,161 @@
       </div>
     </div>
   </div>
+
+  <!-- STAFF AI VIDEO EDITOR PREVIEW MODAL -->
+  <div id="saie_previewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:99999;align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.3);border-radius:18px;width:100%;max-width:380px;padding:1.25rem;position:relative;">
+      <button onclick="saie_closePreview()" style="position:absolute;top:0.85rem;right:0.85rem;background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-play-circle" style="color:#c9a84c;margin-right:0.4rem;"></i> Preview</div>
+      <div style="position:relative;">
+        <video id="saie_previewVideo" controls style="width:100%;border-radius:10px;background:#000;max-height:55vh;"></video>
+        <div id="saie_previewWatermark" style="position:absolute;bottom:10px;right:10px;background:linear-gradient(135deg,rgba(201,168,76,0.92),rgba(160,120,48,0.92));color:#fff;font-size:0.55rem;font-weight:900;padding:0.2rem 0.5rem;border-radius:4px;letter-spacing:1px;pointer-events:none;">HASH SHOOTS LUXE</div>
+      </div>
+      <div style="display:flex;gap:0.65rem;margin-top:0.85rem;">
+        <button onclick="saie_downloadFromPreview()" style="flex:1;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>
+        <button onclick="saie_uploadToCloud()" style="flex:1;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
+      </div>
+      <div id="saie_cloudMsg" style="display:none;margin-top:0.65rem;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:600;text-align:center;"></div>
+    </div>
+  </div>
+
+  <style>@keyframes aie_spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
+
+  <script>
+  // ── STAFF AI VIDEO EDITOR ─────────────────────────────────────
+  var saie_clips = [];
+  var saie_activeClip = null;
+
+  var SAIE_FILTERS = {
+    none:      { label:'Original',       css:'' },
+    cinematic: { label:'Cinematic Gold', css:'contrast(1.1) saturate(0.85) sepia(0.2) brightness(0.95)' },
+    vivid:     { label:'Vivid Pop',      css:'saturate(1.6) contrast(1.05) brightness(1.05)' },
+    moody:     { label:'Moody Dark',     css:'brightness(0.8) contrast(1.2) saturate(0.7)' },
+    warm:      { label:'Warm Sunset',    css:'sepia(0.35) saturate(1.3) brightness(1.05)' },
+    cool:      { label:'Cool Blue',      css:'hue-rotate(20deg) saturate(1.1) brightness(1.02)' },
+    bw:        { label:'B&W',            css:'grayscale(1) contrast(1.1)' }
+  };
+
+  var SAIE_WM_POS = {
+    bottomRight: { bottom:'10px', right:'10px', top:'auto', left:'auto' },
+    bottomLeft:  { bottom:'10px', left:'10px',  top:'auto', right:'auto' },
+    topRight:    { top:'10px',    right:'10px',  bottom:'auto', left:'auto' },
+    topLeft:     { top:'10px',    left:'10px',   bottom:'auto', right:'auto' }
+  };
+
+  function saie_init(){}
+
+  function saie_dragover(e){ e.preventDefault(); document.getElementById('saie_dropzone').style.borderColor='#c9a84c'; document.getElementById('saie_dropzone').style.background='rgba(201,168,76,0.07)'; }
+  function saie_dragleave(e){ document.getElementById('saie_dropzone').style.borderColor='rgba(201,168,76,0.3)'; document.getElementById('saie_dropzone').style.background='rgba(201,168,76,0.02)'; }
+  function saie_drop(e){ e.preventDefault(); saie_dragleave(e); var files=Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('video/');}); if(files.length) saie_onFiles(files); }
+
+  function saie_onFiles(files){
+    Array.from(files).forEach(function(f){
+      saie_clips.push({ id:Date.now()+Math.random(), file:f, name:f.name, sizeMB:(f.size/1024/1024).toFixed(1), url:URL.createObjectURL(f), filter:document.getElementById('saie_filter').value, wmPos:document.getElementById('saie_wmPos').value, processed:false, cloudUrl:null });
+    });
+    document.getElementById('saie_processBtn').disabled = false;
+    saie_renderClips();
+  }
+  function saie_addMore(){ document.getElementById('saie_fileInput').click(); }
+
+  function saie_startProcessing(){
+    if(!saie_clips.length) return;
+    var btn = document.getElementById('saie_processBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    document.getElementById('saie_scanWrap').style.display = 'block';
+    document.getElementById('saie_clipsSection').style.display = 'none';
+    var steps = [
+      {pct:15, label:'Scanning frames...', sub:'AI detecting scenes'},
+      {pct:35, label:'Applying filter...', sub:'Colour grading'},
+      {pct:55, label:'Auto-cutting...', sub:'Removing dead frames'},
+      {pct:75, label:'Adding LUXE watermark...', sub:'Branding overlay'},
+      {pct:90, label:'Rendering...', sub:'Compiling output'},
+      {pct:100, label:'Done!', sub:'Clips ready to preview'}
+    ];
+    var i=0;
+    function run(){
+      if(i>=steps.length){
+        saie_clips.forEach(function(c){ c.processed=true; c.filter=document.getElementById('saie_filter').value; c.wmPos=document.getElementById('saie_wmPos').value; });
+        setTimeout(function(){ document.getElementById('saie_scanWrap').style.display='none'; document.getElementById('saie_clipsSection').style.display='block'; btn.disabled=false; btn.innerHTML='<i class="fas fa-magic"></i> Re-Process'; saie_renderClips(); },500);
+        return;
+      }
+      var s=steps[i];
+      document.getElementById('saie_scanBar').style.width=s.pct+'%';
+      document.getElementById('saie_scanPct').textContent=s.pct+'%';
+      document.getElementById('saie_scanLabel').textContent=s.label;
+      document.getElementById('saie_scanSub').textContent=s.sub;
+      i++; setTimeout(run,600);
+    }
+    run();
+  }
+
+  function saie_renderClips(){
+    var grid=document.getElementById('saie_clipsGrid');
+    var count=document.getElementById('saie_clipCount');
+    count.textContent='('+saie_clips.length+' clip'+(saie_clips.length!==1?'s':'')+')' ;
+    if(!saie_clips.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.82rem;text-align:center;padding:1.5rem;grid-column:1/-1;">No clips yet.</p>'; return; }
+    grid.innerHTML='';
+    saie_clips.forEach(function(c){
+      var fi=SAIE_FILTERS[c.filter]||SAIE_FILTERS.none;
+      var card=document.createElement('div');
+      card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:12px;overflow:hidden;';
+      card.innerHTML=
+        '<div style="position:relative;">'
+        +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+fi.css+';" preload="metadata" muted></video>'
+        +'<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.8) 100%);pointer-events:none;"></div>'
+        +(c.processed?'<div style="position:absolute;bottom:0.4rem;right:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;letter-spacing:1px;">HASH SHOOTS LUXE</div>':'<div style="position:absolute;top:0.4rem;left:0.4rem;background:rgba(255,152,0,0.85);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;">PENDING</div>')
+        +'</div>'
+        +'<div style="padding:0.65rem;">'
+        +'<div style="font-size:0.75rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">'+c.name+'</div>'
+        +'<div style="font-size:0.62rem;color:#9a9080;margin-bottom:0.5rem;">'+c.sizeMB+' MB'+(c.processed?' · '+fi.label:'')+'</div>'
+        +'<div style="display:flex;gap:0.35rem;">'
+        +'<button onclick="saie_preview(\''+c.id+'\')" style="flex:1;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.35rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-play"></i></button>'
+        +'<button onclick="saie_download(\''+c.id+'\')" style="flex:1;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i></button>'
+        +'<button onclick="saie_delete(\''+c.id+'\')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+        +'</div></div>';
+      grid.appendChild(card);
+    });
+  }
+
+  function saie_preview(id){
+    var c=saie_clips.find(function(x){return String(x.id)===String(id);});
+    if(!c) return;
+    saie_activeClip=c;
+    var vid=document.getElementById('saie_previewVideo');
+    var fi=SAIE_FILTERS[c.filter]||SAIE_FILTERS.none;
+    vid.src=c.url; vid.style.filter=fi.css;
+    var wm=document.getElementById('saie_previewWatermark');
+    var pos=SAIE_WM_POS[c.wmPos]||SAIE_WM_POS.bottomRight;
+    wm.style.bottom=pos.bottom||'auto'; wm.style.top=pos.top||'auto'; wm.style.left=pos.left||'auto'; wm.style.right=pos.right||'auto';
+    wm.style.display=c.processed?'block':'none';
+    document.getElementById('saie_cloudMsg').style.display='none';
+    var modal=document.getElementById('saie_previewModal'); modal.style.display='flex'; vid.play();
+  }
+  function saie_closePreview(){ var vid=document.getElementById('saie_previewVideo'); vid.pause(); vid.src=''; document.getElementById('saie_previewModal').style.display='none'; saie_activeClip=null; }
+  function saie_download(id){ var c=saie_clips.find(function(x){return String(x.id)===String(id);}); if(!c) return; var a=document.createElement('a'); a.href=c.url; a.download='HS_LUXE_'+c.name; a.click(); }
+  function saie_downloadFromPreview(){ if(saie_activeClip) saie_download(saie_activeClip.id); }
+  function saie_delete(id){ if(!confirm('Remove this clip?')) return; saie_clips=saie_clips.filter(function(c){return String(c.id)!==String(id);}); if(!saie_clips.length){document.getElementById('saie_clipsSection').style.display='none'; document.getElementById('saie_processBtn').disabled=true; document.getElementById('saie_processBtn').innerHTML='<i class="fas fa-magic"></i> Start AI Processing';} saie_renderClips(); }
+  function saie_exportAll(){ saie_clips.forEach(function(c){saie_download(c.id);}); }
+
+  function saie_uploadToCloud(){
+    if(!saie_activeClip) return;
+    var c=saie_activeClip;
+    var msg=document.getElementById('saie_cloudMsg');
+    msg.style.cssText='display:block;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);color:#ff9800;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:600;text-align:center;';
+    msg.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    if(!window.cloudinaryUpload){ msg.innerHTML='❌ Cloudinary not loaded.'; return; }
+    cloudinaryUpload(c.file,'ai_editor',null).then(function(res){
+      c.cloudUrl=res.url;
+      msg.style.cssText='display:block;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:600;text-align:center;';
+      msg.innerHTML='✅ Uploaded! <a href="'+res.url+'" target="_blank" style="color:#c9a84c;">View</a>';
+      if(window.fbSave) fbSave('ai_editor_videos',{name:c.name,cloudUrl:res.url,filter:c.filter,wmPos:c.wmPos,uploadedBy:localStorage.getItem('hs_staff_name')||'Staff',uploadedAt:new Date().toLocaleString()});
+    }).catch(function(e){
+      msg.style.cssText='display:block;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:600;text-align:center;';
+      msg.innerHTML='❌ Failed: '+e.message;
+    });
+  }
+  // ── END STAFF AI VIDEO EDITOR ─────────────────────────────────
+  </script>
 
 </body>
 </html>
