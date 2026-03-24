@@ -618,19 +618,15 @@
         <!-- Settings -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem;">
           <div>
-            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">AI Filter</label>
-            <select id="saie_filter" class="upload-input">
-              <option value="none">None (Original)</option>
-              <option value="cinematic">🎬 Cinematic Gold</option>
-              <option value="vivid">✨ Vivid Pop</option>
-              <option value="moody">🌑 Moody Dark</option>
-              <option value="warm">🌅 Warm Sunset</option>
-              <option value="cool">❄️ Cool Blue</option>
-              <option value="bw">⬛ Black &amp; White</option>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Output Format</label>
+            <select id="saie_format" class="upload-input">
+              <option value="reel">📱 Reel (9:16)</option>
+              <option value="square">⬛ Square (1:1)</option>
+              <option value="landscape">🖥️ Landscape (16:9)</option>
             </select>
           </div>
           <div>
-            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Watermark Position</label>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Logo Position</label>
             <select id="saie_wmPos" class="upload-input">
               <option value="bottomRight">Bottom Right</option>
               <option value="bottomLeft">Bottom Left</option>
@@ -640,7 +636,24 @@
           </div>
         </div>
 
-        <button onclick="saie_startProcessing()" id="saie_processBtn" class="btn-upload" style="margin-top:1rem;" disabled>
+        <!-- Logo Toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.9rem;margin-top:0.75rem;">
+          <div>
+            <div style="font-size:0.8rem;font-weight:800;color:#fff;">💎 Hash Shoots Luxe Logo</div>
+            <div style="font-size:0.65rem;color:#9a9080;margin-top:0.1rem;">Burn logo onto every reel</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="saie_logoToggle" checked style="opacity:0;width:0;height:0;">
+            <span onclick="this.previousElementSibling.click()" style="position:absolute;cursor:pointer;inset:0;background:#333;border-radius:24px;transition:0.3s;" id="saie_logoSlider"></span>
+          </label>
+        </div>
+        <style>
+          #saie_logoToggle:checked + #saie_logoSlider { background: linear-gradient(135deg,#c9a84c,#a07830); }
+          #saie_logoSlider:before { content:''; position:absolute; width:18px; height:18px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
+          #saie_logoToggle:checked + #saie_logoSlider:before { transform:translateX(20px); }
+        </style>
+
+        <button onclick="saie_startProcessing()" id="saie_processBtn" class="btn-upload" style="margin-top:0.75rem;" disabled>
           <i class="fas fa-magic"></i> Start AI Processing
         </button>
       </div>
@@ -2508,7 +2521,18 @@
     };
   }
 
-  // Real canvas+MediaRecorder renderer — burns filter, vignette, grain, watermark into actual video
+  // Preload logo image once
+  var saie_logoImg = null;
+  function saie_getLogoImg(cb){
+    if(saie_logoImg !== null){ cb(saie_logoImg); return; }
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload  = function(){ saie_logoImg = img; cb(img); };
+    img.onerror = function(){ saie_logoImg = false; cb(false); };
+    img.src = 'logo.png';
+  }
+
+  // Real canvas+MediaRecorder renderer — burns filter, vignette, grain, logo into actual video
   function saie_renderClipToBlob(clip, onProgress, onDone){
     var video=document.createElement('video');
     video.src=clip.url; video.muted=true; video.crossOrigin='anonymous'; video.preload='auto';
@@ -2559,8 +2583,31 @@
         ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(0,0,outW,60); ctx.fillRect(0,outH-60,outW,60);
         // 6. Text overlay
         if(clip.text){ctx.font='bold 52px Arial';ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=12;ctx.fillStyle='#fff';var ty=clip.textPos==='top'?140:clip.textPos==='center'?outH/2:outH-140;ctx.fillText(clip.text,outW/2,ty);ctx.shadowBlur=0;}
-        // 7. HASH SHOOTS LUXE watermark
-        ctx.font='bold 32px Arial';ctx.textAlign='right';ctx.fillStyle='rgba(201,168,76,0.92)';ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=8;ctx.fillText('HASH SHOOTS LUXE',outW-30,outH-30);ctx.shadowBlur=0;
+        // 7. HASH SHOOTS LUXE logo (image or premium text fallback)
+        if(clip.showLogo!==false){
+          var wmPos=clip.wmPos||'bottomRight';
+          var logoW=280,logoH=68,lx,ly;
+          if(wmPos==='bottomRight'){lx=outW-logoW-24;ly=outH-logoH-24;}
+          else if(wmPos==='bottomLeft'){lx=24;ly=outH-logoH-24;}
+          else if(wmPos==='topRight'){lx=outW-logoW-24;ly=24;}
+          else if(wmPos==='topLeft'){lx=24;ly=24;}
+          else{lx=(outW-logoW)/2;ly=(outH-logoH)/2;}
+          ctx.save();
+          if(saie_logoImg){
+            ctx.globalAlpha=0.92;ctx.drawImage(saie_logoImg,lx,ly,logoW,logoH);ctx.globalAlpha=1;
+          } else {
+            ctx.fillStyle='rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            if(ctx.roundRect)ctx.roundRect(lx-8,ly-8,logoW+16,logoH+16,8);else ctx.rect(lx-8,ly-8,logoW+16,logoH+16);
+            ctx.fill();
+            ctx.font='bold 28px Arial';ctx.textAlign='left';
+            ctx.fillStyle='rgba(201,168,76,0.95)';ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=8;
+            ctx.fillText('HASH SHOOTS',lx+8,ly+32);
+            ctx.font='900 22px Arial';ctx.fillStyle='#fff';
+            ctx.fillText('L U X E',lx+8,ly+58);ctx.shadowBlur=0;
+          }
+          ctx.restore();
+        }
         // 8. Gold glow
         var gl=ctx.createRadialGradient(outW/2,outH/2,0,outW/2,outH/2,outW*0.6);
         gl.addColorStop(0,'rgba(201,168,76,0.07)');gl.addColorStop(1,'rgba(0,0,0,0)');
@@ -2617,19 +2664,23 @@
         setStatus('🧠 AI choosing premium style...','Sampling frames for colour analysis',base+3);
         saie_analyseAndPickFilter(probe,function(pickedFilter){
           clip.filter=pickedFilter; clip.speed=1; clip.grain=true; clip.vignette=true; clip.glow=true;
+          clip.showLogo=document.getElementById('saie_logoToggle').checked;
+          clip.wmPos=document.getElementById('saie_wmPos').value;
           setStatus('✂️ Smart trimming & beat sync...','Removing dead frames, syncing to rhythm',base+8);
           setTimeout(function(){
             setStatus('🎨 Applying '+SAIE_FILTERS[pickedFilter].label+' grade...','Rendering premium colour grade to canvas',base+15);
             setTimeout(function(){
               setStatus('🚀 Rendering reel to video...','Canvas → MediaRecorder encoding at 8Mbps',base+20);
+              saie_getLogoImg(function(){
               saie_renderClipToBlob(clip,
                 function(pct){setStatus('🎞️ Encoding reel '+(idx+1)+'...','Frame '+pct+'% — burning in effects',Math.min(99,base+Math.round(pct*(100/total)*0.7)));},
                 function(blobUrl,blob){
                   clip.url=blobUrl; clip.renderedBlob=blob; clip.processed=true;
-                  setStatus('✅ Reel '+(idx+1)+' of '+total+' done!',SAIE_FILTERS[pickedFilter].label+' · Vignette · Grain · Watermark burned in',Math.round(((idx+1)/total)*100));
+                  var logoTxt=clip.showLogo?' · Logo ✓':' · No Logo';
+                  setStatus('✅ Reel '+(idx+1)+' of '+total+' done!',SAIE_FILTERS[pickedFilter].label+' · Vignette · Grain'+logoTxt,Math.round(((idx+1)/total)*100));
                   setTimeout(function(){processNext(idx+1);},600);
                 }
-              );
+              ); }); // close saie_getLogoImg
             },600);
           },500);
         });
