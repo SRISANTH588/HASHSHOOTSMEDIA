@@ -135,6 +135,8 @@
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('blog',this)"><i class="fas fa-pen-nib"></i> Blog</button>
       <button class="tab-btn" onclick="switchTab('press',this)"><i class="fas fa-newspaper"></i> Press</button>
+      <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
+      <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -1253,6 +1255,28 @@
       </div>
     </div><!-- end tab-notifications -->
 
+    <!-- CAREERS TAB -->
+    <div class="tab-panel" id="tab-careers">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-briefcase" style="color:#c9a84c;margin-right:0.5rem;"></i> Career Applications</h2>
+          <span style="font-size:0.8rem;color:#9a9080;" id="careerAppsCount"></span>
+        </div>
+        <div id="careerAppsList"></div>
+      </div>
+    </div>
+
+    <!-- AFFILIATES TAB -->
+    <div class="tab-panel" id="tab-affiliates">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-rupee-sign" style="color:#c9a84c;margin-right:0.5rem;"></i> Affiliate Applications</h2>
+          <span style="font-size:0.8rem;color:#9a9080;" id="affiliateAppsCount"></span>
+        </div>
+        <div id="affiliateAppsList"></div>
+      </div>
+    </div>
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -1626,6 +1650,8 @@
       if (tab === 'notifications') renderNotifications();
       if (tab === 'blog') { renderBlogList(); }
       if (tab === 'press') { renderPressList(); loadPressStats(); }
+      if (tab === 'careers') renderCareerApps();
+      if (tab === 'affiliates') renderAffiliateApps();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -3023,6 +3049,42 @@
 
     setInterval(pollNotifications, 4000);
 
+    // CAREER APPS
+    function renderCareerApps(){
+      var list = JSON.parse(localStorage.getItem('hs_career_applications')||'[]').slice().reverse();
+      var countEl = document.getElementById('careerAppsCount');
+      if(countEl) countEl.textContent = list.length+' application(s)';
+      var el = document.getElementById('careerAppsList');
+      if(!el) return;
+      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No career applications yet.</p>'; return; }
+      el.innerHTML = list.map(function(a){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+' &nbsp;<span style="color:#c9a84c;font-size:0.78rem;">'+a.role+'</span></div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+'</div>'
+          +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    // AFFILIATE APPS
+    function renderAffiliateApps(){
+      var list = JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]').slice().reverse();
+      var countEl = document.getElementById('affiliateAppsCount');
+      if(countEl) countEl.textContent = list.length+' application(s)';
+      var el = document.getElementById('affiliateAppsList');
+      if(!el) return;
+      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No affiliate applications yet.</p>'; return; }
+      el.innerHTML = list.map(function(a){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+' &nbsp;·&nbsp; '+a.channel+'</div>'
+          +(a.profile?'<div style="font-size:0.72rem;margin-top:0.2rem;"><a href="'+a.profile+'" target="_blank" style="color:#c9a84c;">'+a.profile+'</a></div>':'')
+          +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
     function saveBlogs(list){ localStorage.setItem('hs_blogs', JSON.stringify(list)); }
@@ -3170,6 +3232,32 @@
           });
           localStorage.setItem('hs_bookings', JSON.stringify(local));
           if(currentTab==='bookings') loadAll();
+        });
+
+        // Real-time career applications listener
+        onSnapshot(query(collection(fbDb,'career_applications'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_career_applications')||'[]');
+          var localIds = local.map(function(e){ return String(e.id); });
+          snap.forEach(function(d){
+            if(localIds.includes(d.id)) return;
+            var data = d.data();
+            local.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', role:data.role||'', type:'career_application', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          });
+          localStorage.setItem('hs_career_applications', JSON.stringify(local));
+          if(currentTab==='careers') renderCareerApps();
+        });
+
+        // Real-time affiliate applications listener
+        onSnapshot(query(collection(fbDb,'affiliate_applications'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]');
+          var localIds = local.map(function(e){ return String(e.id); });
+          snap.forEach(function(d){
+            if(localIds.includes(d.id)) return;
+            var data = d.data();
+            local.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', channel:data.channel||'', profile:data.profile||'', type:'affiliate_application', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          });
+          localStorage.setItem('hs_affiliate_applications', JSON.stringify(local));
+          if(currentTab==='affiliates') renderAffiliateApps();
         });
 
         // Real-time enquiries listener

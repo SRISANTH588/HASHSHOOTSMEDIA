@@ -394,8 +394,30 @@
         document.getElementById('modalOverlay').classList.remove('open');
       }
     }
-    document.getElementById('careerForm').addEventListener('submit', function(e) {
+    document.getElementById('careerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      var inputs = this.querySelectorAll('input, textarea');
+      var data = {
+        name: document.getElementById('careerForm').querySelector('input[type=text]').value.trim(),
+        phone: document.getElementById('careerForm').querySelector('input[type=tel]').value.trim(),
+        email: document.getElementById('careerForm').querySelector('input[type=email]').value.trim(),
+        role: document.getElementById('roleLabel').textContent,
+        type: 'career_application',
+        submittedAt: new Date().toLocaleString()
+      };
+      // Save to localStorage
+      var apps = JSON.parse(localStorage.getItem('hs_career_applications')||'[]');
+      apps.push(data); localStorage.setItem('hs_career_applications', JSON.stringify(apps));
+      // Save to Firebase
+      try {
+        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var apps2 = fbMod.getApps();
+        var fbApp = apps2.find(function(a){return a.name==='career';}) || fbMod.initializeApp(fbCfg,'career');
+        var fbDb = fbStore.getFirestore(fbApp);
+        await fbStore.addDoc(fbStore.collection(fbDb,'career_applications'), Object.assign({},data,{createdAt:fbStore.serverTimestamp()}));
+      } catch(err){ console.error('Firebase career error:',err); }
       this.style.display = 'none';
       document.getElementById('careerSuccess').style.display = 'block';
     });
