@@ -173,8 +173,8 @@
         var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
         var item = filtered[idx];
         var content = '';
-        if(item.type==='video' && item.url){
-          content = '<video class="vibe-lb-video" src="'+item.url+'" controls autoplay></video>';
+        if(item.type==='video' && (item.url||item.cloudUrl)){
+          content = '<video class="vibe-lb-video" src="'+(item.cloudUrl||item.url)+'" controls autoplay></video>';
         } else if(item.thumbnail){
           content = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
         } else {
