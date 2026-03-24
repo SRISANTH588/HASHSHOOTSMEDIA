@@ -1648,7 +1648,7 @@
 
     function updateStatus(id, status) {
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      const idx = bookings.findIndex(b=>b.id===id);
+      const idx = bookings.findIndex(b=>String(b.id)===String(id));
       if(idx>-1) { bookings[idx].status=status; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); }
       // Update live stats
       const completed = bookings.filter(b=>b.status==='completed').length;
@@ -1661,7 +1661,7 @@
 
     function deleteBooking(id) {
       if(!confirm('Delete this booking?')) return;
-      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>b.id!==id);
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>String(b.id)!==String(id));
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
       loadAll();
     }
@@ -5284,7 +5284,7 @@
 
     function updateStatus(id, status) {
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      const idx = bookings.findIndex(b=>b.id===id);
+      const idx = bookings.findIndex(b=>String(b.id)===String(id));
       if(idx>-1) { bookings[idx].status=status; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); }
       // Update live stats
       const completed = bookings.filter(b=>b.status==='completed').length;
@@ -5297,7 +5297,7 @@
 
     function deleteBooking(id) {
       if(!confirm('Delete this booking?')) return;
-      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>b.id!==id);
+      const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>String(b.id)!==String(id));
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
       loadAll();
     }
