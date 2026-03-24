@@ -3987,7 +3987,10 @@
       card.innerHTML=
         '<div style="font-size:0.78rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.name+'</div>'
         +'<div style="font-size:0.65rem;color:#9a9080;">'+r.filterLabel+' · '+(r.showLogo?'💎 Logo':'No Logo')+' · '+r.sizeMB+' MB</div>'
-        +'<div style="font-size:0.65rem;color:#9a9080;">By: <b style="color:#c9a84c;">'+r.uploadedBy+'</b> · '+r.source+'</div>'
+        +'<div style="font-size:0.65rem;color:#9a9080;">'
+        +(r.transition&&r.transition!=='none'?'🎬 '+r.transition+' · ':'')
+        +(r.musicTrack?'🎵 '+r.musicTrack+(r.beatSync?' (⚡ beat-sync '+r.beatsDetected+' beats)':'')+' · ':'')
+        +'By: <b style="color:#c9a84c;">'+r.uploadedBy+'</b> · '+r.source+'</div>'
         +'<div style="font-size:0.65rem;color:#9a9080;">'+r.createdAt+'</div>'
         +'<div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.2rem;">'
         +'<span style="width:7px;height:7px;border-radius:50%;background:'+statusColor+';display:inline-block;"></span>'
@@ -4133,9 +4136,15 @@
                     name: clip.name,
                     filter: pickedFilter,
                     filterLabel: AIE_FILTERS[pickedFilter].label,
+                    filterOverride: clip._extraFilter ? aie_filterOverride : 'ai_auto',
                     wmPos: clip.wmPos,
                     showLogo: clip.showLogo,
                     sizeMB: clip.sizeMB,
+                    transition: clip._transition || 'none',
+                    musicTrack: aie_musicFile ? aie_musicFile.name : null,
+                    musicVol: clip._musicVol || null,
+                    beatSync: clip._beatSync || false,
+                    beatsDetected: (clip._beatTimes||[]).length,
                     source: 'admin',
                     uploadedBy: localStorage.getItem('hs_admin_name') || 'Admin',
                     status: 'rendered',
