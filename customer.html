@@ -762,7 +762,6 @@
         var fbDb = fbStore.getFirestore(fbApp);
         // Update booking payment status in Firestore
         await fbStore.setDoc(fbStore.doc(fbDb,'bookings',String(bookingId)), {paymentStatus:status, paymentId:paymentId||''}, {merge:true});
-        // Write to payments collection
         if(status === 'paid'){
           await fbStore.addDoc(fbStore.collection(fbDb,'payments'), {
             bookingId: String(bookingId), paymentId: paymentId,
@@ -770,11 +769,19 @@
             amount: amount, status: 'paid',
             paidAt: fbStore.serverTimestamp()
           });
-          // Admin notification
           await fbStore.addDoc(fbStore.collection(fbDb,'admin_notifications'), {
             type: 'payment',
-            title: '💰 Payment Received',
-            message: name + ' paid ₹' + amount.toLocaleString('en-IN') + ' for ' + service,
+            title: 'Payment Received',
+            message: name + ' paid Rs.' + amount.toLocaleString('en-IN') + ' for ' + service,
+            bookingId: String(bookingId),
+            createdAt: fbStore.serverTimestamp(),
+            read: false
+          });
+        } else if(status === 'failed'){
+          await fbStore.addDoc(fbStore.collection(fbDb,'admin_notifications'), {
+            type: 'payment_failed',
+            title: 'Payment Failed',
+            message: name + ' payment failed for ' + service + ' (Rs.' + amount.toLocaleString('en-IN') + ')',
             bookingId: String(bookingId),
             createdAt: fbStore.serverTimestamp(),
             read: false
@@ -801,11 +808,11 @@
         theme: { color: '#c9a84c' },
         handler: function(response){
           // PAYMENT SUCCESS
+          window._payAttempted = true;
           var payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
           payments.push({ id: Date.now(), bookingId: bookingId, paymentId: response.razorpay_payment_id, customerName: b.name, service: b.service, amount: amount/100, paidAt: new Date().toLocaleString() });
           localStorage.setItem('hs_payments', JSON.stringify(payments));
           b.paymentStatus = 'paid';
-          b.status = 'confirmed';
           b.paymentId = response.razorpay_payment_id;
           localStorage.setItem('hs_bookings', JSON.stringify(bookings));
           _syncPayment(bookingId, 'paid', response.razorpay_payment_id, amount/100, b.name, b.service);
@@ -830,7 +837,8 @@
         },
         modal: {
           ondismiss: function(){
-            // PAYMENT FAILED / DISMISSED
+            // Only mark failed if payment was actually attempted (not just closed)
+            if(window._payAttempted) return;
             b.paymentStatus = 'failed';
             localStorage.setItem('hs_bookings', JSON.stringify(bookings));
             _syncPayment(bookingId, 'failed', null, amount/100, b.name, b.service);
@@ -838,6 +846,7 @@
           }
         }
       };
+      window._payAttempted = false;
       new Razorpay(options).open();
     }
     loadBookings();
@@ -862,11 +871,18 @@
               var data = d.data();
               if(userEmail && data.email === userEmail) fbBookings.push(Object.assign({id:d.id},data));
             });
-            if(fbBookings.length){
-              var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-              var fbIds = fbBookings.map(b=>String(b.id));
-              local.forEach(function(b){ if(!fbIds.includes(String(b.id))) fbBookings.push(b); });
-              localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+            // Always merge with local bookings
+            var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            var fbIds = fbBookings.map(b=>String(b.id));
+            // Update status of local bookings from Firestore
+            local = local.map(function(b){
+              var fb = fbBookings.find(function(f){ return String(f.id)===String(b.id); });
+              return fb ? Object.assign({},b,fb) : b;
+            });
+            // Add Firestore bookings not in local
+            fbBookings.forEach(function(b){ if(!fbIds.includes(String(b.id))&&!local.find(function(l){return String(l.id)===String(b.id);})) local.push(b); });
+            if(local.length){
+              localStorage.setItem('hs_bookings', JSON.stringify(local));
               _renderBookings();
             }
           }
