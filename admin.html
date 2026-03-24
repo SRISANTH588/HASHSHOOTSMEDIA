@@ -1789,7 +1789,7 @@
       if (tab === 'about') loadAboutForm();
       if (tab === 'vibe') renderVibeAdmin();
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
-      if (tab === 'staff') renderStaffList();
+      if (tab === 'staff') fetchAndRenderStaff();
       if (tab === 'cwallets') renderCustWallets();
       if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
@@ -2338,9 +2338,24 @@
           +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">@'+s.username+' &nbsp;·&nbsp; '+s.role+'</div>'
           +'<div style="font-size:0.72rem;color:#6a6050;margin-top:0.2rem;">Access: '+(s.access&&s.access.length?s.access.join(', '):'none')+'</div>'
           +'</div>'
-          +'<button onclick="deleteStaff('+s.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Remove</button>'
+          +'<button onclick="deleteStaff(\''+String(s.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Remove</button>'
           +'</div>';
       }).join('');
+    }
+
+    async function fetchAndRenderStaff(){
+      try {
+        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
+        var fbDb = fbStore.getFirestore(fbApp);
+        var snap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
+        var fbStaff = [];
+        snap.forEach(function(d){ fbStaff.push(d.data()); });
+        localStorage.setItem('hs_staff', JSON.stringify(fbStaff));
+      } catch(e){ console.log('fetchAndRenderStaff error:',e); }
+      renderStaffList();
     }
 
     function deleteStaff(id){
