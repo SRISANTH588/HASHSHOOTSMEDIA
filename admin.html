@@ -1555,7 +1555,8 @@
     let currentSearch = '';
 
     function loadAll() {
-      allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      if(stored.length > allBookings.length) allBookings = stored;
       updateStats();
       renderTable();
       updateCreatorPendingPayments();
@@ -1789,6 +1790,7 @@
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') renderStaffList();
       if (tab === 'cwallets') renderCustWallets();
+      if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'notifications') renderNotifications();
       if (tab === 'blog') { renderBlogList(); }
@@ -5188,7 +5190,8 @@
     let currentSearch = '';
 
     function loadAll() {
-      allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      if(stored.length > allBookings.length) allBookings = stored;
       updateStats();
       renderTable();
       updateCreatorPendingPayments();
@@ -5422,6 +5425,7 @@
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') renderStaffList();
       if (tab === 'cwallets') renderCustWallets();
+      if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'notifications') renderNotifications();
       if (tab === 'blog') { renderBlogList(); }
