@@ -2472,70 +2472,95 @@
     function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
     function saveAssignedShoots(list){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); }
 
-    function populateAssignSelects(autoBookingId){
-      // bookings dropdown — only pending/confirmed
+    async function populateAssignSelects(autoBookingId){
+      // bookings dropdown — fetch from Firestore first
       var bSel = document.getElementById('as_booking');
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
+      // Also try Firestore for fresh bookings
+      try {
+        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
+        var fbDb = fbStore.getFirestore(fbApp);
+        var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')));
+        var fbBookings = [];
+        bSnap.forEach(function(d){ var data=d.data(); fbBookings.push(Object.assign({id:d.id},data)); });
+        if(fbBookings.length){ bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }); }
+        // Fetch staff from Firestore
+        var sSnap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
+        var staffList = [];
+        sSnap.forEach(function(d){ staffList.push(d.data()); });
+        localStorage.setItem('hs_staff', JSON.stringify(staffList));
+        // Populate staff checkboxes
+        var sList = document.getElementById('as_staff_list');
+        if(!staffList.length){
+          sList.innerHTML = '<div style="color:#9a9080;font-size:0.82rem;">No staff accounts yet. Create staff first.</div>';
+        } else {
+          sList.innerHTML = staffList.map(function(s){
+            return '<label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;padding:0.35rem 0.5rem;border-radius:7px;transition:background 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.08)\'" onmouseout="this.style.background=\'\'">'
+              +'<input type="checkbox" value="'+s.id+'" data-name="'+s.name+'" data-role="'+s.role+'" style="accent-color:#c9a84c;width:15px;height:15px;"/>'
+              +'<span style="font-size:0.85rem;color:#f0ece0;font-weight:600;">'+s.name+'</span>'
+              +'<span style="font-size:0.72rem;color:#9a9080;">('+s.role+')</span>'
+              +'</label>';
+          }).join('');
+          // Wire checkboxes to update payout preview
+          sList.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+            cb.addEventListener('change', updatePayoutPreview);
+          });
+        }
+      } catch(e){
+        console.log('populateAssignSelects Firestore error:',e);
+        // Fallback to localStorage staff
+        var staffList = getStaff();
+        var sList = document.getElementById('as_staff_list');
+        if(!staffList.length){
+          sList.innerHTML = '<div style="color:#9a9080;font-size:0.82rem;">No staff accounts yet.</div>';
+        } else {
+          sList.innerHTML = staffList.map(function(s){
+            return '<label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;padding:0.35rem 0.5rem;border-radius:7px;">'
+              +'<input type="checkbox" value="'+s.id+'" data-name="'+s.name+'" data-role="'+s.role+'" style="accent-color:#c9a84c;width:15px;height:15px;"/>'
+              +'<span style="font-size:0.85rem;color:#f0ece0;font-weight:600;">'+s.name+'</span>'
+              +'<span style="font-size:0.72rem;color:#9a9080;">('+s.role+')</span>'
+              +'</label>';
+          }).join('');
+        }
+      }
+      // Populate bookings dropdown
       bSel.innerHTML = '<option value="" disabled selected>Select a booking</option>';
       bookings.forEach(function(b){
         var o = document.createElement('option');
         o.value = b.id;
-        o.textContent = b.service + ' — ' + b.name + ' (' + b.city + ') · ' + b.date + (b.preferredCreatorName ? ' ⭐ Prefers: ' + b.preferredCreatorName : '');
+        o.textContent = (b.service||'Shoot') + ' — ' + (b.name||'') + ' (' + (b.city||'') + ') · ' + (b.date||'') + (b.preferredCreatorName ? ' ⭐ Prefers: ' + b.preferredCreatorName : '');
         bSel.appendChild(o);
       });
       if(autoBookingId) bSel.value = autoBookingId;
-
-      // staff dropdown — all staff, highlight preferred
-      var sSel = document.getElementById('as_staff');
-      sSel.innerHTML = '<option value="" disabled selected>Select staff member</option>';
-      var staffList = getStaff();
-      if(!staffList.length){
-        var empty = document.createElement('option');
-        empty.disabled = true;
-        empty.textContent = '— No staff accounts created yet —';
-        sSel.appendChild(empty);
-        return;
-      }
-      staffList.forEach(function(s){
-        var o = document.createElement('option');
-        o.value = s.id;
-        o.textContent = s.name + ' (' + s.role + ')';
-        sSel.appendChild(o);
-      });
-
-      // auto-select preferred creator and fill fields if booking is pre-selected
+      // Auto-fill fields if booking pre-selected
       if(autoBookingId){
-        var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-        var bk = allBookings.find(function(b){ return b.id == autoBookingId; });
+        var bk = bookings.find(function(b){ return String(b.id)===String(autoBookingId); });
         if(bk){
-          if(bk.preferredCreatorId) sSel.value = bk.preferredCreatorId;
           if(bk.date) document.getElementById('as_date').value = bk.date;
           if(bk.time) document.getElementById('as_time').value = bk.time;
-          if((bk.location || bk.city) && !document.getElementById('as_notes').value)
-            document.getElementById('as_notes').value = 'Location: ' + (bk.location || bk.city);
+          if((bk.location||bk.city) && !document.getElementById('as_notes').value)
+            document.getElementById('as_notes').value = 'Location: '+(bk.location||bk.city);
         }
       }
     }
 
-    // When booking dropdown changes, auto-fill date/time/location and preferred creator
+    // When booking dropdown changes, auto-fill date/time/location
     document.addEventListener('DOMContentLoaded', function(){
       var bSel = document.getElementById('as_booking');
       if(bSel){
         bSel.addEventListener('change', function(){
           var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var bk = allBookings.find(function(b){ return b.id == bSel.value; });
+          var bk = allBookings.find(function(b){ return String(b.id)===String(bSel.value); });
           if(!bk) return;
-          // Auto-fill date, time, location from booking
           if(bk.date) document.getElementById('as_date').value = bk.date;
           if(bk.time) document.getElementById('as_time').value = bk.time;
           if(bk.location || bk.city){
             var notesEl = document.getElementById('as_notes');
-            var loc = bk.location || bk.city;
-            if(notesEl && !notesEl.value) notesEl.value = 'Location: ' + loc;
+            if(notesEl && !notesEl.value) notesEl.value = 'Location: '+(bk.location||bk.city);
           }
-          // Auto-select preferred creator
-          var sSel = document.getElementById('as_staff');
-          if(bk.preferredCreatorId && sSel) sSel.value = bk.preferredCreatorId;
         });
       }
     });
@@ -2565,7 +2590,7 @@
     }
 
     function assignShoot(){
-      var bookingId   = Number(document.getElementById('as_booking').value);
+      var bookingId   = document.getElementById('as_booking').value;
       var selectedIds = getSelectedCreators();
       var date        = document.getElementById('as_date').value;
       var time        = document.getElementById('as_time').value;
@@ -2577,20 +2602,19 @@
       }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      var booking  = bookings.find(function(b){ return b.id===bookingId; });
+      var booking  = bookings.find(function(b){ return String(b.id)===String(bookingId); });
       var allStaff = getStaff();
-      var splitCredit = Math.floor(totalCredit / selectedIds.length);
+      var splitCredit = selectedIds.length ? Math.floor(totalCredit / selectedIds.length) : 0;
       var assigned = getAssignedShoots();
       var names = [];
 
       selectedIds.forEach(function(staffId, idx){
-        var staffMember = allStaff.find(function(s){ return s.id == staffId; });
+        var staffMember = allStaff.find(function(s){ return String(s.id)===String(staffId); });
         names.push(staffMember ? staffMember.name : 'Unknown');
-
         assigned.push({
           id: Date.now() + idx,
           bookingId: bookingId,
-          staffId: Number(staffId),
+          staffId: staffId,
           staffName: staffMember ? staffMember.name : 'Unknown',
           staffPhone: staffMember ? (staffMember.phone || '') : '',
           staffEmail: staffMember ? (staffMember.email || '') : '',
@@ -2604,20 +2628,18 @@
           status: 'assigned',
           assignedAt: new Date().toLocaleString()
         });
-
         var walletKey = 'hs_wallet_' + staffId;
         var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
         wallet.pending = (wallet.pending || 0) + splitCredit;
         wallet.transactions.push({
           type: 'pending', amount: splitCredit,
           label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
-          note: (booking ? booking.name + ' \u2014 ' + booking.city : '') + (selectedIds.length > 1 ? ' (Split \u20b9'+totalCredit+' \u00f7 '+selectedIds.length+')' : ''),
+          note: (booking ? booking.name + ' — ' + booking.city : '') + (selectedIds.length > 1 ? ' (Split ₹'+totalCredit+' ÷ '+selectedIds.length+')' : ''),
           date: new Date().toLocaleString()
         });
         localStorage.setItem(walletKey, JSON.stringify(wallet));
-
         var staffList = getStaff();
-        var sm = staffList.find(function(s){ return s.id == staffId; });
+        var sm = staffList.find(function(s){ return String(s.id)===String(staffId); });
         if(sm){ sm.shootCredit = splitCredit; saveStaff(staffList); }
       });
 
