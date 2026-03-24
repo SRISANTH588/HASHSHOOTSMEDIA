@@ -2626,32 +2626,44 @@
 
     // Auto-fill date+time display labels from booking data
     function autoFillDateTime(date, time, notes, location){
-      // Fill date
       if(date){
-        pickDate(date);
+        if(!_calYear){ var n=new Date(); _calYear=n.getFullYear(); _calMonth=n.getMonth(); }
+        // Normalize date to YYYY-MM-DD
+        var iso = date;
+        if(date && !/^\d{4}-\d{2}-\d{2}$/.test(date)){
+          var d = new Date(date);
+          if(!isNaN(d)) iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        }
+        if(/^\d{4}-\d{2}-\d{2}$/.test(iso)) pickDate(iso);
       }
-      // Fill time — parse HH:MM 24h into picker state
       if(time){
-        setQuickTime(time);
+        // Normalize time to HH:MM 24h
+        var t = time;
+        if(/^\d{1,2}:\d{2}\s*(AM|PM)$/i.test(time)){
+          var parts=time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+          var h=parseInt(parts[1]), m=parseInt(parts[2]), ampm=parts[3].toUpperCase();
+          if(ampm==='PM'&&h!==12) h+=12;
+          if(ampm==='AM'&&h===12) h=0;
+          t=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+        }
+        if(/^\d{2}:\d{2}$/.test(t)) setQuickTime(t);
       }
-      // Fill notes
-      if((location) && !document.getElementById('as_notes').value)
-        document.getElementById('as_notes').value = 'Location: '+location;
-      if(notes && !document.getElementById('as_notes').value)
-        document.getElementById('as_notes').value = notes;
+      var notesEl = document.getElementById('as_notes');
+      if(notesEl && !notesEl.value){
+        if(location) notesEl.value = 'Location: '+location;
+        else if(notes) notesEl.value = notes;
+      }
     }
 
     // When booking dropdown changes, auto-fill date/time/location
-    document.addEventListener('DOMContentLoaded', function(){
-      var bSel = document.getElementById('as_booking');
-      if(bSel){
-        bSel.addEventListener('change', function(){
-          var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var bk = allBookings.find(function(b){ return String(b.id)===String(bSel.value); });
-          if(!bk) return;
-          document.getElementById('as_notes').value = '';
-          autoFillDateTime(bk.date, bk.time, bk.notes, bk.location||bk.city);
-        });
+    // NOTE: listener is also attached inside populateAssignSelects after dropdown rebuild
+    document.addEventListener('change', function(e){
+      if(e.target && e.target.id === 'as_booking'){
+        var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var bk = allBookings.find(function(b){ return String(b.id)===String(e.target.value); });
+        if(!bk) return;
+        document.getElementById('as_notes').value = '';
+        autoFillDateTime(bk.date, bk.time, bk.notes, bk.location||bk.city);
       }
     });
 
