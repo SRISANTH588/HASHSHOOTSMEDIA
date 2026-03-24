@@ -1452,6 +1452,31 @@
           <button onclick="aie_exportAll()" id="aie_exportBtn" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;padding:0.45rem 1.1rem;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Export All</button>
         </div>
       </div>
+      <!-- PREMIUM CONTROLS PANEL -->
+      <div id="aie_controls" style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="font-size:0.82rem;font-weight:800;color:#c9a84c;margin-bottom:1rem;letter-spacing:1px;">⚙️ PREMIUM CONTROLS — Apply to All Clips</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Brightness <span id="aie_vBright">100%</span></label><input type="range" id="aie_bright" min="50" max="150" value="100" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Contrast <span id="aie_vContrast">100%</span></label><input type="range" id="aie_contrast" min="50" max="200" value="100" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Saturation <span id="aie_vSat">100%</span></label><input type="range" id="aie_sat" min="0" max="250" value="100" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Sharpness <span id="aie_vSharp">0</span></label><input type="range" id="aie_sharp" min="0" max="5" value="0" step="0.5" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Speed <span id="aie_vSpeed">1x</span></label><input type="range" id="aie_speed" min="0.5" max="2" value="1" step="0.25" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Warmth <span id="aie_vWarm">0°</span></label><input type="range" id="aie_warm" min="-60" max="60" value="0" oninput="aie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.65rem;margin-top:1rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_vignette" onchange="aie_livePreview()" style="accent-color:#c9a84c;"> 🌑 Vignette</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_grain" onchange="aie_livePreview()" style="accent-color:#c9a84c;"> 🎞️ Film Grain</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_glow" onchange="aie_livePreview()" style="accent-color:#c9a84c;"> ✨ Glow</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_fadein" onchange="aie_livePreview()" style="accent-color:#c9a84c;"> 🌅 Fade In</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_zoomin" onchange="aie_livePreview()" style="accent-color:#c9a84c;"> 🔍 Ken Burns Zoom</label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;margin-top:1rem;align-items:end;">
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">📝 Text Overlay</label><input type="text" id="aie_textOverlay" placeholder="e.g. Hash Shoots Luxe" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;box-sizing:border-box;"></div>
+          <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Text Position</label><select id="aie_textPos" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"><option value="bottom">Bottom</option><option value="top">Top</option><option value="center">Center</option></select></div>
+          <button onclick="aie_applyControls()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.55rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ Apply All</button>
+        </div>
+      </div>
+
       <div id="aie_clipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;"></div>
     </div>
 
@@ -3766,19 +3791,30 @@
     grid.innerHTML = '';
     aie_clips.forEach(function(c){
       var filterInfo = AIE_FILTERS[c.filter] || AIE_FILTERS.none;
+      var builtCss = aie_buildFilter(filterInfo.css);
       var card = document.createElement('div');
       card.className = 'aie-clip-card';
       card.style.position = 'relative';
+      var effects = [];
+      if(c.grain)  effects.push('🎞️ Grain');
+      if(c.vignette) effects.push('🌑 Vignette');
+      if(c.glow)   effects.push('✨ Glow');
+      if(c.fadein) effects.push('🌅 Fade');
+      if(c.zoomin) effects.push('🔍 Zoom');
+      if(c.speed && c.speed!==1) effects.push('⏱️ '+c.speed+'x');
       card.innerHTML =
         '<div style="position:relative;">'
-        +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+filterInfo.css+';" preload="metadata" muted></video>'
+        +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+builtCss+';" preload="metadata" muted></video>'
         +'<div class="aie-clip-overlay"></div>'
         +(c.processed ? '<div class="aie-luxe-badge">HASH SHOOTS LUXE</div>' : '<div style="position:absolute;top:0.5rem;left:0.5rem;background:rgba(255,152,0,0.85);color:#fff;font-size:0.55rem;font-weight:900;padding:0.2rem 0.5rem;border-radius:4px;">PENDING</div>')
+        +(c.text?'<div style="position:absolute;'+(c.textPos==='top'?'top:0.5rem':'c.textPos'==='center'?'top:50%;transform:translateY(-50%)':'bottom:2rem')+';left:0;right:0;text-align:center;color:#fff;font-size:0.65rem;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);padding:0 0.4rem;">'+c.text+'</div>':'')
+        +(c.vignette?'<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>':'')
         +'</div>'
         +'<div class="aie-clip-info">'
         +'<div class="aie-clip-name">'+c.name+'</div>'
         +'<div class="aie-clip-meta">'+c.sizeMB+' MB &nbsp;·&nbsp; '+aie_formatLabel(c.format)+'</div>'
         +(c.processed ? '<div class="aie-filter-tag"><i class="fas fa-magic"></i> '+filterInfo.label+'</div>' : '')
+        +(effects.length?'<div style="font-size:0.58rem;color:#c9a84c;margin-top:0.2rem;">'+effects.join(' · ')+'</div>':'')
         +'<div class="aie-clip-actions">'
         +'<button class="aie-btn aie-btn-preview" onclick="aie_preview(\'' + c.id + '\')" title="Preview"><i class="fas fa-play"></i> Preview</button>'
         +'<button class="aie-btn aie-btn-download" onclick="aie_download(\'' + c.id + '\')" title="Download"><i class="fas fa-download"></i></button>'
@@ -3799,8 +3835,8 @@
     var vid = document.getElementById('aie_previewVideo');
     var filterInfo = AIE_FILTERS[c.filter] || AIE_FILTERS.none;
     vid.src = c.url;
-    vid.style.filter = filterInfo.css;
-    // Position watermark
+    vid.style.filter = aie_buildFilter(filterInfo.css);
+    vid.playbackRate = c.speed || 1;
     var wm = document.getElementById('aie_previewWatermark');
     var pos = AIE_WM_POS[c.wmPos] || AIE_WM_POS.bottomRight;
     wm.style.bottom    = pos.bottom    || 'auto';
@@ -3875,6 +3911,66 @@
     if(!aie_clips.length) return;
     aie_clips.forEach(function(c){ aie_download(c.id); });
   }
+  // ── PREMIUM CONTROLS ──────────────────────────────────────────
+  function aie_buildFilter(base){
+    var b  = document.getElementById('aie_bright').value;
+    var c  = document.getElementById('aie_contrast').value;
+    var s  = document.getElementById('aie_sat').value;
+    var sh = document.getElementById('aie_sharp').value;
+    var w  = parseInt(document.getElementById('aie_warm').value);
+    var glow = document.getElementById('aie_glow').checked;
+    var css = (base||'') +
+      ' brightness('+b/100+')' +
+      ' contrast('+c/100+')' +
+      ' saturate('+s/100+')' +
+      (sh>0?' blur(0px) drop-shadow(0 0 '+sh+'px rgba(255,255,255,0.3))':'') +
+      (w!==0?' hue-rotate('+w+'deg)':'') +
+      (glow?' drop-shadow(0 0 8px rgba(201,168,76,0.6))':'');
+    return css.trim();
+  }
+
+  function aie_livePreview(){
+    document.getElementById('aie_vBright').textContent   = document.getElementById('aie_bright').value+'%';
+    document.getElementById('aie_vContrast').textContent = document.getElementById('aie_contrast').value+'%';
+    document.getElementById('aie_vSat').textContent      = document.getElementById('aie_sat').value+'%';
+    document.getElementById('aie_vSharp').textContent    = document.getElementById('aie_sharp').value;
+    document.getElementById('aie_vSpeed').textContent    = document.getElementById('aie_speed').value+'x';
+    document.getElementById('aie_vWarm').textContent     = document.getElementById('aie_warm').value+'°';
+    // Live update preview video if open
+    var vid = document.getElementById('aie_previewVideo');
+    if(vid && vid.src && aie_activeClip){
+      var fi = AIE_FILTERS[aie_activeClip.filter]||AIE_FILTERS.none;
+      vid.style.filter = aie_buildFilter(fi.css);
+      vid.playbackRate = parseFloat(document.getElementById('aie_speed').value);
+    }
+    // Live update clip cards
+    aie_renderClips();
+  }
+
+  function aie_applyControls(){
+    var speed = parseFloat(document.getElementById('aie_speed').value);
+    var text  = document.getElementById('aie_textOverlay').value.trim();
+    var tpos  = document.getElementById('aie_textPos').value;
+    var grain = document.getElementById('aie_grain').checked;
+    var fadein= document.getElementById('aie_fadein').checked;
+    var zoomin= document.getElementById('aie_zoomin').checked;
+    var vign  = document.getElementById('aie_vignette').checked;
+    aie_clips.forEach(function(c){
+      c.speed  = speed;
+      c.text   = text;
+      c.textPos= tpos;
+      c.grain  = grain;
+      c.fadein = fadein;
+      c.zoomin = zoomin;
+      c.vignette = vign;
+    });
+    aie_renderClips();
+    // Flash confirm
+    var btn = event.target;
+    btn.innerHTML = '✅ Applied!';
+    setTimeout(function(){ btn.innerHTML = '✅ Apply All'; }, 1500);
+  }
+
   // ── END AI VIDEO EDITOR ─────────────────────────────────────────
   </script>
 

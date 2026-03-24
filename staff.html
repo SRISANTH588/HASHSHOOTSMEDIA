@@ -667,6 +667,30 @@
             <button onclick="saie_exportAll()" style="background:#c9a84c;color:#fff;border:none;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Export All</button>
           </div>
         </div>
+        <!-- PREMIUM CONTROLS PANEL -->
+        <div id="saie_controls" style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+          <div style="font-size:0.75rem;font-weight:800;color:#c9a84c;margin-bottom:0.85rem;letter-spacing:1px;">⚙️ PREMIUM CONTROLS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Brightness <span id="saie_vBright">100%</span></label><input type="range" id="saie_bright" min="50" max="150" value="100" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Contrast <span id="saie_vContrast">100%</span></label><input type="range" id="saie_contrast" min="50" max="200" value="100" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Saturation <span id="saie_vSat">100%</span></label><input type="range" id="saie_sat" min="0" max="250" value="100" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Warmth <span id="saie_vWarm">0°</span></label><input type="range" id="saie_warm" min="-60" max="60" value="0" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Speed <span id="saie_vSpeed">1x</span></label><input type="range" id="saie_speed" min="0.5" max="2" value="1" step="0.25" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Sharpness <span id="saie_vSharp">0</span></label><input type="range" id="saie_sharp" min="0" max="5" value="0" step="0.5" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;">
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="saie_vignette" onchange="saie_livePreview()" style="accent-color:#c9a84c;"> 🌑 Vignette</label>
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="saie_grain" onchange="saie_livePreview()" style="accent-color:#c9a84c;"> 🎞️ Film Grain</label>
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="saie_glow" onchange="saie_livePreview()" style="accent-color:#c9a84c;"> ✨ Glow</label>
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="saie_fadein" onchange="saie_livePreview()" style="accent-color:#c9a84c;"> 🌅 Fade In</label>
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="saie_zoomin" onchange="saie_livePreview()" style="accent-color:#c9a84c;"> 🔍 Ken Burns</label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:0.65rem;margin-top:0.75rem;align-items:end;">
+            <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">📝 Text Overlay</label><input type="text" id="saie_textOverlay" placeholder="Caption text..." style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.45rem 0.65rem;color:#fff;font-family:inherit;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+            <button onclick="saie_applyControls()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.45rem 0.85rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ Apply</button>
+          </div>
+        </div>
+
         <div id="saie_clipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.85rem;"></div>
       </div>
 
@@ -2513,17 +2537,28 @@
     grid.innerHTML='';
     saie_clips.forEach(function(c){
       var fi=SAIE_FILTERS[c.filter]||SAIE_FILTERS.none;
+      var builtCss = saie_buildFilter(fi.css);
       var card=document.createElement('div');
       card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:12px;overflow:hidden;';
+      var effects=[];
+      if(c.grain)   effects.push('🎞️');
+      if(c.vignette)effects.push('🌑');
+      if(c.glow)    effects.push('✨');
+      if(c.fadein)  effects.push('🌅');
+      if(c.zoomin)  effects.push('🔍');
+      if(c.speed && c.speed!==1) effects.push(c.speed+'x');
       card.innerHTML=
         '<div style="position:relative;">'
-        +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+fi.css+';" preload="metadata" muted></video>'
+        +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+builtCss+';" preload="metadata" muted></video>'
         +'<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.8) 100%);pointer-events:none;"></div>'
+        +(c.vignette?'<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>':'')
         +(c.processed?'<div style="position:absolute;bottom:0.4rem;right:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;letter-spacing:1px;">HASH SHOOTS LUXE</div>':'<div style="position:absolute;top:0.4rem;left:0.4rem;background:rgba(255,152,0,0.85);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;">PENDING</div>')
+        +(c.text?'<div style="position:absolute;bottom:1.5rem;left:0;right:0;text-align:center;color:#fff;font-size:0.6rem;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);">'+c.text+'</div>':'')
         +'</div>'
         +'<div style="padding:0.65rem;">'
         +'<div style="font-size:0.75rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">'+c.name+'</div>'
-        +'<div style="font-size:0.62rem;color:#9a9080;margin-bottom:0.5rem;">'+c.sizeMB+' MB'+(c.processed?' · '+fi.label:'')+'</div>'
+        +'<div style="font-size:0.62rem;color:#9a9080;margin-bottom:0.3rem;">'+c.sizeMB+' MB'+(c.processed?' · '+fi.label:'')+'</div>'
+        +(effects.length?'<div style="font-size:0.6rem;color:#c9a84c;margin-bottom:0.4rem;">'+effects.join(' ')+'</div>':'')
         +'<div style="display:flex;gap:0.35rem;">'
         +'<button onclick="saie_preview(\''+c.id+'\')" style="flex:1;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.35rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-play"></i></button>'
         +'<button onclick="saie_download(\''+c.id+'\')" style="flex:1;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i></button>'
@@ -2539,7 +2574,9 @@
     saie_activeClip=c;
     var vid=document.getElementById('saie_previewVideo');
     var fi=SAIE_FILTERS[c.filter]||SAIE_FILTERS.none;
-    vid.src=c.url; vid.style.filter=fi.css;
+    vid.src=c.url;
+    vid.style.filter=saie_buildFilter(fi.css);
+    vid.playbackRate=c.speed||1;
     var wm=document.getElementById('saie_previewWatermark');
     var pos=SAIE_WM_POS[c.wmPos]||SAIE_WM_POS.bottomRight;
     wm.style.bottom=pos.bottom||'auto'; wm.style.top=pos.top||'auto'; wm.style.left=pos.left||'auto'; wm.style.right=pos.right||'auto';
@@ -2570,6 +2607,61 @@
       msg.innerHTML='❌ Failed: '+e.message;
     });
   }
+  // ── PREMIUM CONTROLS ──────────────────────────────────────────
+  function saie_buildFilter(base){
+    var b  = document.getElementById('saie_bright').value;
+    var c  = document.getElementById('saie_contrast').value;
+    var s  = document.getElementById('saie_sat').value;
+    var sh = document.getElementById('saie_sharp').value;
+    var w  = parseInt(document.getElementById('saie_warm').value);
+    var glow = document.getElementById('saie_glow').checked;
+    var css = (base||'') +
+      ' brightness('+b/100+')' +
+      ' contrast('+c/100+')' +
+      ' saturate('+s/100+')' +
+      (sh>0?' drop-shadow(0 0 '+sh+'px rgba(255,255,255,0.3))':'') +
+      (w!==0?' hue-rotate('+w+'deg)':'') +
+      (glow?' drop-shadow(0 0 8px rgba(201,168,76,0.6))':'');
+    return css.trim();
+  }
+
+  function saie_livePreview(){
+    document.getElementById('saie_vBright').textContent   = document.getElementById('saie_bright').value+'%';
+    document.getElementById('saie_vContrast').textContent = document.getElementById('saie_contrast').value+'%';
+    document.getElementById('saie_vSat').textContent      = document.getElementById('saie_sat').value+'%';
+    document.getElementById('saie_vSharp').textContent    = document.getElementById('saie_sharp').value;
+    document.getElementById('saie_vSpeed').textContent    = document.getElementById('saie_speed').value+'x';
+    document.getElementById('saie_vWarm').textContent     = document.getElementById('saie_warm').value+'°';
+    var vid = document.getElementById('saie_previewVideo');
+    if(vid && vid.src && saie_activeClip){
+      var fi = SAIE_FILTERS[saie_activeClip.filter]||SAIE_FILTERS.none;
+      vid.style.filter = saie_buildFilter(fi.css);
+      vid.playbackRate = parseFloat(document.getElementById('saie_speed').value);
+    }
+    saie_renderClips();
+  }
+
+  function saie_applyControls(){
+    var speed = parseFloat(document.getElementById('saie_speed').value);
+    var text  = document.getElementById('saie_textOverlay').value.trim();
+    var grain = document.getElementById('saie_grain').checked;
+    var fadein= document.getElementById('saie_fadein').checked;
+    var zoomin= document.getElementById('saie_zoomin').checked;
+    var vign  = document.getElementById('saie_vignette').checked;
+    saie_clips.forEach(function(c){
+      c.speed  = speed;
+      c.text   = text;
+      c.grain  = grain;
+      c.fadein = fadein;
+      c.zoomin = zoomin;
+      c.vignette = vign;
+    });
+    saie_renderClips();
+    var btn = event.target;
+    btn.innerHTML = '✅ Applied!';
+    setTimeout(function(){ btn.innerHTML = '✅ Apply'; }, 1500);
+  }
+
   // ── END STAFF AI VIDEO EDITOR ─────────────────────────────────
   </script>
 
