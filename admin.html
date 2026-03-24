@@ -1488,6 +1488,17 @@
     <!-- WATERMARK PREVIEW CANVAS (hidden) -->
     <canvas id="aie_canvas" style="display:none;"></canvas>
 
+    <!-- FIREBASE REELS FEED -->
+    <div style="margin-top:1.5rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;">
+        <h3 style="font-size:0.95rem;font-weight:800;color:#fff;"><i class="fas fa-database" style="color:#c9a84c;margin-right:0.5rem;"></i> All Reels — Firebase Live Feed</h3>
+        <span style="font-size:0.65rem;color:#4caf50;font-weight:700;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);padding:0.2rem 0.65rem;border-radius:50px;"><span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;margin-right:4px;"></span>Real-time</span>
+      </div>
+      <div id="aie_fbReelsWrap" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.85rem;">
+        <p style="color:#6a5a40;font-size:0.82rem;text-align:center;padding:1.5rem;grid-column:1/-1;">Loading reels from Firebase...</p>
+      </div>
+    </div>
+
   </div><!-- end tab-aieditor -->
 
   <!-- FEEDBACK NOTIFICATION TOAST -->
@@ -3893,7 +3904,41 @@
     video.onerror = function(){ onDone(clip.url, null); };
   }
 
-  function aie_init(){}
+  var aie_fbUnsubscribe = null;
+  function aie_init(){
+    // Start real-time listener for all reels from Firebase
+    if(aie_fbUnsubscribe) return; // already listening
+    if(!window.fbListen) return;
+    fbListen('ai_editor_reels', function(docs){
+      aie_fbReels = docs;
+      aie_renderFbReels();
+    }, 'createdAt');
+    aie_fbUnsubscribe = true;
+  }
+
+  var aie_fbReels = [];
+  function aie_renderFbReels(){
+    var wrap = document.getElementById('aie_fbReelsWrap');
+    if(!wrap) return;
+    if(!aie_fbReels.length){ wrap.innerHTML='<p style="color:#6a5a40;font-size:0.82rem;text-align:center;padding:1.5rem;">No reels saved yet.</p>'; return; }
+    wrap.innerHTML='';
+    aie_fbReels.forEach(function(r){
+      var card=document.createElement('div');
+      card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;display:flex;flex-direction:column;gap:0.4rem;';
+      var statusColor=r.status==='uploaded'?'#4caf50':r.status==='rendered'?'#ff9800':'#9a9080';
+      card.innerHTML=
+        '<div style="font-size:0.78rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.name+'</div>'
+        +'<div style="font-size:0.65rem;color:#9a9080;">'+r.filterLabel+' · '+(r.showLogo?'💎 Logo':'No Logo')+' · '+r.sizeMB+' MB</div>'
+        +'<div style="font-size:0.65rem;color:#9a9080;">By: <b style="color:#c9a84c;">'+r.uploadedBy+'</b> · '+r.source+'</div>'
+        +'<div style="font-size:0.65rem;color:#9a9080;">'+r.createdAt+'</div>'
+        +'<div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.2rem;">'
+        +'<span style="width:7px;height:7px;border-radius:50%;background:'+statusColor+';display:inline-block;"></span>'
+        +'<span style="font-size:0.65rem;color:'+statusColor+';font-weight:700;">'+r.status+'</span>'
+        +(r.cloudUrl?'<a href="'+r.cloudUrl+'" target="_blank" style="margin-left:auto;font-size:0.65rem;color:#c9a84c;font-weight:700;text-decoration:none;"><i class="fas fa-cloud"></i> View</a>':'')
+        +'</div>';
+      wrap.appendChild(card);
+    });
+  }
 
   function aie_dragover(e){
     e.preventDefault();
@@ -4025,6 +4070,32 @@
                   done++;
                   var logoTxt = clip.showLogo ? ' · Logo ✓' : ' · No Logo';
                   setStatus('✅ Reel '+(idx+1)+' of '+total+' done!', AIE_FILTERS[pickedFilter].label+' · Vignette · Grain'+logoTxt, Math.round(((idx+1)/total)*100));
+                  // Auto-save metadata to Firebase immediately
+                  var reelMeta = {
+                    name: clip.name,
+                    filter: pickedFilter,
+                    filterLabel: AIE_FILTERS[pickedFilter].label,
+                    wmPos: clip.wmPos,
+                    showLogo: clip.showLogo,
+                    sizeMB: clip.sizeMB,
+                    source: 'admin',
+                    uploadedBy: localStorage.getItem('hs_admin_name') || 'Admin',
+                    status: 'rendered',
+                    cloudUrl: null,
+                    createdAt: new Date().toLocaleString()
+                  };
+                  if(window.fbSave) fbSave('ai_editor_reels', reelMeta).then(function(docId){
+                    clip._fbId = docId;
+                    // Auto-upload rendered blob to Cloudinary
+                    if(blob && window.cloudinaryUpload){
+                      setStatus('☁️ Uploading reel '+(idx+1)+' to cloud...', 'Saving to Cloudinary for sharing', Math.round(((idx+1)/total)*100));
+                      cloudinaryUpload(new File([blob], 'HS_LUXE_'+clip.name.replace(/\.[^.]+$/,'.webm'), {type:'video/webm'}), 'ai_reels', null)
+                        .then(function(res){
+                          clip.cloudUrl = res.url;
+                          if(docId && window.fbUpdate) fbUpdate('ai_editor_reels', docId, {cloudUrl: res.url, status: 'uploaded'});
+                        }).catch(function(){});
+                    }
+                  });
                   setTimeout(function(){ processNext(idx+1); }, 600);
                 }
               ); }); // close aie_getLogoImg
@@ -4145,7 +4216,8 @@
       msg.style.borderColor = 'rgba(76,175,80,0.3)';
       msg.innerHTML = '✅ Uploaded! <a href="'+res.url+'" target="_blank" style="color:#c9a84c;font-weight:700;">View on Cloud</a>';
       // Save to Firebase
-      if(window.fbSave) fbSave('ai_editor_videos', { name: c.name, cloudUrl: res.url, filter: c.filter, wmPos: c.wmPos, format: c.format, uploadedAt: new Date().toLocaleString() });
+      if(window.fbSave) fbSave('ai_editor_reels', { name: c.name, cloudUrl: res.url, filter: c.filter, filterLabel: AIE_FILTERS[c.filter]?AIE_FILTERS[c.filter].label:'', wmPos: c.wmPos, showLogo: c.showLogo, sizeMB: c.sizeMB, source: 'admin', uploadedBy: localStorage.getItem('hs_admin_name')||'Admin', status: 'uploaded', createdAt: new Date().toLocaleString() });
+      if(c._fbId && window.fbUpdate) fbUpdate('ai_editor_reels', c._fbId, {cloudUrl: res.url, status: 'uploaded'});
     }).catch(function(e){
       msg.style.background = 'rgba(244,67,54,0.1)';
       msg.style.color = '#f44336';
