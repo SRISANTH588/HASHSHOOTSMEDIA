@@ -368,16 +368,51 @@
         }
         doStaffLogin(); return;
 
-        // 3. Customer check
-        const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
-        const cust = customers.find(c=>c.email===id&&c.password===p);
-        if((id==='customer@hash.com'&&p==='1234')||cust){
-          localStorage.setItem('hs_role','customer');
-          localStorage.setItem('hs_user', id);
-          localStorage.setItem('hs_customer_name', cust?cust.name:id.split('@')[0]);
-          localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet')||'500');
-          window.location.href='index.html'; return;
+        // 3. Customer check — fetch from Firestore first
+        async function doCustomerLogin(){
+          let cust = null;
+          // Try Firestore first
+          try{
+            const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            const fbApp = fbMod.getApps().find(a=>a.name==='login-app')||fbMod.initializeApp(fbCfg,'login-app');
+            const fbDb = fbStore.getFirestore(fbApp);
+            const snap = await fbStore.getDoc(fbStore.doc(fbDb,'customers',id));
+            if(snap.exists()) cust = snap.data();
+          }catch(e){ console.log('customer Firestore login error:',e); }
+          // Fallback to localStorage
+          if(!cust){
+            const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+            cust = customers.find(c=>c.email===id) || null;
+          }
+          // Demo account
+          if(id==='customer@hash.com' && p==='1234'){
+            localStorage.setItem('hs_role','customer');
+            localStorage.setItem('hs_user','customer@hash.com');
+            localStorage.setItem('hs_customer_email','customer@hash.com');
+            localStorage.setItem('hs_customer_name','Demo Customer');
+            localStorage.setItem('hs_customer_phone','');
+            window.location.href='index.html'; return;
+          }
+          if(cust && cust.password === p){
+            localStorage.setItem('hs_role','customer');
+            localStorage.setItem('hs_user', cust.email);
+            localStorage.setItem('hs_customer_email', cust.email);
+            localStorage.setItem('hs_customer_name', cust.name);
+            localStorage.setItem('hs_customer_phone', cust.phone||'');
+            localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet')||'500');
+            // Sync to localStorage for offline use
+            const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+            if(!customers.find(c=>c.email===cust.email)){ customers.push(cust); localStorage.setItem('hs_customers',JSON.stringify(customers)); }
+            window.location.href='index.html'; return;
+          }
+          showLoginError('Invalid credentials. Please try again.');
+          document.getElementById('loginBtn').classList.remove('loading');
+          document.getElementById('loginSpinner').style.display='none';
+          document.getElementById('loginArrow').style.display='block';
         }
+        doCustomerLogin(); return;
 
         showLoginError('Invalid credentials. Please try again.');
       }, 1000);
@@ -400,12 +435,24 @@
       document.getElementById('signupBtn').classList.add('loading');
       document.getElementById('signupSpinner').style.display='block';
       document.getElementById('signupArrow').style.display='none';
-      setTimeout(()=>{
-        customers.push({name,email,phone,password:pass,joined:new Date().toISOString()});
+      setTimeout(async ()=>{
+        const newCust = {name,email,phone,password:pass,joined:new Date().toISOString()};
+        customers.push(newCust);
         localStorage.setItem('hs_customers',JSON.stringify(customers));
+        // Save to Firestore so login works from any device
+        try{
+          const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          const fbApp = fbMod.getApps().find(a=>a.name==='login-app')||fbMod.initializeApp(fbCfg,'login-app');
+          const fbDb = fbStore.getFirestore(fbApp);
+          await fbStore.setDoc(fbStore.doc(fbDb,'customers',email), newCust);
+        }catch(e){ console.log('signup Firestore error:',e); }
         localStorage.setItem('hs_role','customer');
         localStorage.setItem('hs_user',email);
+        localStorage.setItem('hs_customer_email',email);
         localStorage.setItem('hs_customer_name',name);
+        localStorage.setItem('hs_customer_phone',phone);
         localStorage.setItem('hs_customer_wallet','500');
         window.location.href='index.html';
       },1200);
