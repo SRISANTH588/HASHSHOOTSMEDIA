@@ -327,6 +327,15 @@
       document.getElementById('planErr').style.display = 'none';
     }
 
+    // Auto-select plan from URL param (e.g. ?plan=Hourly+Plan)
+    (function(){
+      var param = new URLSearchParams(window.location.search).get('plan');
+      if(!param) return;
+      var map = { 'Hourly Plan':'hourly', 'Half-Day Plan':'halfday', 'Wedding':'wedding', 'Custom':'custom' };
+      var key = map[param] || null;
+      if(key) setTimeout(function(){ pickPlan(key); }, 100);
+    })();
+
     function bookSelectedPlan() {
       if (!selectedPlanKey) { document.getElementById('planErr').style.display = 'block'; return; }
       var p = planData[selectedPlanKey];
