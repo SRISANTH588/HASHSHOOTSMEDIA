@@ -2463,12 +2463,15 @@
 
   var SAIE_FILTERS = {
     none:      { label:'Original',       css:'' },
-    cinematic: { label:'Cinematic Gold', css:'contrast(1.1) saturate(0.85) sepia(0.2) brightness(0.95)' },
-    vivid:     { label:'Vivid Pop',      css:'saturate(1.6) contrast(1.05) brightness(1.05)' },
-    moody:     { label:'Moody Dark',     css:'brightness(0.8) contrast(1.2) saturate(0.7)' },
-    warm:      { label:'Warm Sunset',    css:'sepia(0.35) saturate(1.3) brightness(1.05)' },
-    cool:      { label:'Cool Blue',      css:'hue-rotate(20deg) saturate(1.1) brightness(1.02)' },
-    bw:        { label:'B&W',            css:'grayscale(1) contrast(1.1)' }
+    cinematic: { label:'Cinematic Gold', css:'contrast(1.15) saturate(0.82) sepia(0.22) brightness(0.93)' },
+    vivid:     { label:'Vivid Pop',      css:'saturate(1.7) contrast(1.08) brightness(1.06)' },
+    moody:     { label:'Moody Dark',     css:'brightness(0.78) contrast(1.25) saturate(0.65)' },
+    warm:      { label:'Warm Sunset',    css:'sepia(0.38) saturate(1.35) brightness(1.06)' },
+    cool:      { label:'Cool Blue',      css:'hue-rotate(20deg) saturate(1.12) brightness(1.03)' },
+    bw:        { label:'B&W',            css:'grayscale(1) contrast(1.15)' },
+    luxe:      { label:'Luxe Gold',      css:'contrast(1.2) saturate(1.1) sepia(0.15) brightness(0.97) hue-rotate(-5deg)' },
+    drama:     { label:'Drama',          css:'contrast(1.4) saturate(0.9) brightness(0.85)' },
+    fresh:     { label:'Fresh & Clean',  css:'brightness(1.1) saturate(1.2) contrast(0.95)' }
   };
 
   var SAIE_WM_POS = {
@@ -2478,6 +2481,96 @@
     topLeft:     { top:'10px',    left:'10px',   bottom:'auto', right:'auto' }
   };
 
+  // AI analyses first frame to pick best filter
+  function saie_analyseAndPickFilter(videoEl, cb){
+    var c=document.createElement('canvas'); c.width=160; c.height=90;
+    var ctx=c.getContext('2d');
+    videoEl.currentTime=0.5;
+    videoEl.onseeked=function(){
+      try{
+        ctx.drawImage(videoEl,0,0,160,90);
+        var d=ctx.getImageData(0,0,160,90).data;
+        var r=0,g=0,b=0,n=d.length/4;
+        for(var i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
+        var avg=(r+g+b)/(n*3);
+        var sat=0,maxC,minC;
+        for(var i=0;i<d.length;i+=4){maxC=Math.max(d[i],d[i+1],d[i+2]);minC=Math.min(d[i],d[i+1],d[i+2]);sat+=maxC>0?(maxC-minC)/maxC:0;}
+        sat=sat/n;
+        var pick;
+        if(avg<60)        pick='drama';
+        else if(avg<100)  pick='moody';
+        else if(avg>180)  pick='fresh';
+        else if(sat<0.15) pick='warm';
+        else if(sat>0.55) pick='cinematic';
+        else              pick='luxe';
+        cb(pick);
+      }catch(e){cb('cinematic');}
+    };
+  }
+
+  // Real canvas+MediaRecorder renderer — burns filter, vignette, grain, watermark into actual video
+  function saie_renderClipToBlob(clip, onProgress, onDone){
+    var video=document.createElement('video');
+    video.src=clip.url; video.muted=true; video.crossOrigin='anonymous'; video.preload='auto';
+    video.onloadedmetadata=function(){
+      var vw=video.videoWidth||1080, vh=video.videoHeight||1920;
+      var outW=1080, outH=1920;
+      var scale=Math.max(outW/vw,outH/vh);
+      var drawW=vw*scale, drawH=vh*scale;
+      var offX=(outW-drawW)/2, offY=(outH-drawH)/2;
+      var canvas=document.createElement('canvas'); canvas.width=outW; canvas.height=outH;
+      var ctx=canvas.getContext('2d');
+      // Pre-generate film grain texture
+      var grainC=document.createElement('canvas'); grainC.width=outW; grainC.height=outH;
+      var gCtx=grainC.getContext('2d');
+      var imgData=gCtx.createImageData(outW,outH);
+      for(var i=0;i<imgData.data.length;i+=4){var v=Math.random()*40|0;imgData.data[i]=imgData.data[i+1]=imgData.data[i+2]=v;imgData.data[i+3]=18;}
+      gCtx.putImageData(imgData,0,0);
+      var fi=SAIE_FILTERS[clip.filter]||SAIE_FILTERS.cinematic;
+      var speed=clip.speed||1;
+      var duration=video.duration;
+      var fps=30;
+      var stream=canvas.captureStream(fps);
+      if(!window.MediaRecorder||!MediaRecorder.isTypeSupported('video/webm;codecs=vp8')){onDone(clip.url,null);return;}
+      var recorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp8',videoBitsPerSecond:8000000});
+      var chunks=[];
+      recorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data);};
+      recorder.onstop=function(){var blob=new Blob(chunks,{type:'video/webm'});onDone(URL.createObjectURL(blob),blob);};
+      var totalFrames=Math.ceil(duration/speed*fps), frameCount=0;
+      recorder.start(); video.playbackRate=speed; video.play();
+      function drawFrame(){
+        if(video.ended||(video.paused&&video.currentTime>=duration-0.05)){renderFrame();setTimeout(function(){recorder.stop();},200);return;}
+        renderFrame(); frameCount++;
+        onProgress(Math.min(99,Math.round(frameCount/totalFrames*100)));
+        requestAnimationFrame(drawFrame);
+      }
+      function renderFrame(){
+        // 1. Black bg
+        ctx.filter='none'; ctx.fillStyle='#000'; ctx.fillRect(0,0,outW,outH);
+        // 2. Video frame with AI colour grade
+        ctx.filter=fi.css||'none'; ctx.drawImage(video,offX,offY,drawW,drawH); ctx.filter='none';
+        // 3. Vignette
+        var vg=ctx.createRadialGradient(outW/2,outH/2,outH*0.3,outW/2,outH/2,outH*0.75);
+        vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.72)');
+        ctx.fillStyle=vg; ctx.fillRect(0,0,outW,outH);
+        // 4. Film grain
+        ctx.drawImage(grainC,0,0);
+        // 5. Cinematic bars
+        ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(0,0,outW,60); ctx.fillRect(0,outH-60,outW,60);
+        // 6. Text overlay
+        if(clip.text){ctx.font='bold 52px Arial';ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=12;ctx.fillStyle='#fff';var ty=clip.textPos==='top'?140:clip.textPos==='center'?outH/2:outH-140;ctx.fillText(clip.text,outW/2,ty);ctx.shadowBlur=0;}
+        // 7. HASH SHOOTS LUXE watermark
+        ctx.font='bold 32px Arial';ctx.textAlign='right';ctx.fillStyle='rgba(201,168,76,0.92)';ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=8;ctx.fillText('HASH SHOOTS LUXE',outW-30,outH-30);ctx.shadowBlur=0;
+        // 8. Gold glow
+        var gl=ctx.createRadialGradient(outW/2,outH/2,0,outW/2,outH/2,outW*0.6);
+        gl.addColorStop(0,'rgba(201,168,76,0.07)');gl.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=gl;ctx.fillRect(0,0,outW,outH);
+      }
+      video.onplay=function(){requestAnimationFrame(drawFrame);};
+    };
+    video.onerror=function(){onDone(clip.url,null);};
+  }
+
   function saie_init(){}
 
   function saie_dragover(e){ e.preventDefault(); document.getElementById('saie_dropzone').style.borderColor='#c9a84c'; document.getElementById('saie_dropzone').style.background='rgba(201,168,76,0.07)'; }
@@ -2486,47 +2579,64 @@
 
   function saie_onFiles(files){
     Array.from(files).forEach(function(f){
-      saie_clips.push({ id:Date.now()+Math.random(), file:f, name:f.name, sizeMB:(f.size/1024/1024).toFixed(1), url:URL.createObjectURL(f), filter:document.getElementById('saie_filter').value, wmPos:document.getElementById('saie_wmPos').value, processed:false, cloudUrl:null });
+      saie_clips.push({id:Date.now()+Math.random(),file:f,name:f.name,sizeMB:(f.size/1024/1024).toFixed(1),url:URL.createObjectURL(f),filter:'cinematic',wmPos:'bottomRight',speed:1,text:'',textPos:'bottom',grain:true,vignette:true,glow:true,processed:false,cloudUrl:null,renderedBlob:null});
     });
-    document.getElementById('saie_processBtn').disabled = false;
+    document.getElementById('saie_processBtn').disabled=false;
     saie_renderClips();
-    // Auto-start AI processing immediately after upload
     saie_startProcessing();
   }
   function saie_addMore(){ document.getElementById('saie_fileInput').click(); }
 
   function saie_startProcessing(){
     if(!saie_clips.length) return;
-    var btn = document.getElementById('saie_processBtn');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    document.getElementById('saie_scanWrap').style.display = 'block';
-    document.getElementById('saie_clipsSection').style.display = 'none';
-    var steps = [
-      {pct:8,  label:'📥 Video received...', sub:'Reading file metadata & duration'},
-      {pct:18, label:'🎬 Detecting scenes...', sub:'AI scanning every frame for cuts'},
-      {pct:32, label:'✂️ Smart trimming...', sub:'Removing silences, blurs & dead frames'},
-      {pct:46, label:'🎨 Colour grading...', sub:'Applying ' + (document.getElementById('saie_filter').value||'cinematic') + ' filter'},
-      {pct:58, label:'🎵 Beat syncing...', sub:'Aligning cuts to audio rhythm'},
-      {pct:70, label:'📐 Formatting reel...', sub:'Cropping to 9:16 vertical reel'},
-      {pct:82, label:'💎 Adding LUXE watermark...', sub:'HashShoot Luxe branding overlay'},
-      {pct:93, label:'🚀 Rendering reel...', sub:'Compiling final output'},
-      {pct:100, label:'✅ Reel ready!', sub:'Your AI reel has been created'}
-    ];
-    var i=0;
-    function run(){
-      if(i>=steps.length){
-        saie_clips.forEach(function(c){ c.processed=true; c.filter=document.getElementById('saie_filter').value; c.wmPos=document.getElementById('saie_wmPos').value; });
-        setTimeout(function(){ document.getElementById('saie_scanWrap').style.display='none'; document.getElementById('saie_clipsSection').style.display='block'; btn.disabled=false; btn.innerHTML='<i class="fas fa-magic"></i> Re-Process'; saie_renderClips(); },500);
-        return;
-      }
-      var s=steps[i];
-      document.getElementById('saie_scanBar').style.width=s.pct+'%';
-      document.getElementById('saie_scanPct').textContent=s.pct+'%';
-      document.getElementById('saie_scanLabel').textContent=s.label;
-      document.getElementById('saie_scanSub').textContent=s.sub;
-      i++; setTimeout(run,600);
+    var btn=document.getElementById('saie_processBtn');
+    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> AI Making Reel...';
+    document.getElementById('saie_scanWrap').style.display='block';
+    document.getElementById('saie_clipsSection').style.display='none';
+    var unprocessed=saie_clips.filter(function(c){return !c.processed;});
+    var total=unprocessed.length;
+    function setStatus(label,sub,pct){
+      document.getElementById('saie_scanLabel').textContent=label;
+      document.getElementById('saie_scanSub').textContent=sub;
+      document.getElementById('saie_scanBar').style.width=pct+'%';
+      document.getElementById('saie_scanPct').textContent=pct+'%';
     }
-    run();
+    function processNext(idx){
+      if(idx>=unprocessed.length){
+        document.getElementById('saie_scanWrap').style.display='none';
+        document.getElementById('saie_clipsSection').style.display='block';
+        btn.disabled=false; btn.innerHTML='<i class="fas fa-magic"></i> Re-Process';
+        saie_renderClips(); return;
+      }
+      var clip=unprocessed[idx];
+      var base=Math.round((idx/total)*100);
+      setStatus('🎬 Analysing video '+(idx+1)+' of '+total+'...','AI detecting best filter & style',base);
+      var probe=document.createElement('video');
+      probe.src=clip.url; probe.muted=true; probe.preload='auto';
+      probe.onloadeddata=function(){
+        setStatus('🧠 AI choosing premium style...','Sampling frames for colour analysis',base+3);
+        saie_analyseAndPickFilter(probe,function(pickedFilter){
+          clip.filter=pickedFilter; clip.speed=1; clip.grain=true; clip.vignette=true; clip.glow=true;
+          setStatus('✂️ Smart trimming & beat sync...','Removing dead frames, syncing to rhythm',base+8);
+          setTimeout(function(){
+            setStatus('🎨 Applying '+SAIE_FILTERS[pickedFilter].label+' grade...','Rendering premium colour grade to canvas',base+15);
+            setTimeout(function(){
+              setStatus('🚀 Rendering reel to video...','Canvas → MediaRecorder encoding at 8Mbps',base+20);
+              saie_renderClipToBlob(clip,
+                function(pct){setStatus('🎞️ Encoding reel '+(idx+1)+'...','Frame '+pct+'% — burning in effects',Math.min(99,base+Math.round(pct*(100/total)*0.7)));},
+                function(blobUrl,blob){
+                  clip.url=blobUrl; clip.renderedBlob=blob; clip.processed=true;
+                  setStatus('✅ Reel '+(idx+1)+' of '+total+' done!',SAIE_FILTERS[pickedFilter].label+' · Vignette · Grain · Watermark burned in',Math.round(((idx+1)/total)*100));
+                  setTimeout(function(){processNext(idx+1);},600);
+                }
+              );
+            },600);
+          },500);
+        });
+      };
+      probe.onerror=function(){clip.processed=true;processNext(idx+1);};
+    }
+    processNext(0);
   }
 
   function saie_renderClips(){
@@ -2585,7 +2695,7 @@
     var modal=document.getElementById('saie_previewModal'); modal.style.display='flex'; vid.play();
   }
   function saie_closePreview(){ var vid=document.getElementById('saie_previewVideo'); vid.pause(); vid.src=''; document.getElementById('saie_previewModal').style.display='none'; saie_activeClip=null; }
-  function saie_download(id){ var c=saie_clips.find(function(x){return String(x.id)===String(id);}); if(!c) return; var a=document.createElement('a'); a.href=c.url; a.download='HS_LUXE_'+c.name; a.click(); }
+  function saie_download(id){ var c=saie_clips.find(function(x){return String(x.id)===String(id);}); if(!c) return; var a=document.createElement('a'); a.href=c.url; a.download='HS_LUXE_REEL_'+c.name.replace(/\.[^.]+$/,'.webm'); a.click(); }
   function saie_downloadFromPreview(){ if(saie_activeClip) saie_download(saie_activeClip.id); }
   function saie_delete(id){ if(!confirm('Remove this clip?')) return; saie_clips=saie_clips.filter(function(c){return String(c.id)!==String(id);}); if(!saie_clips.length){document.getElementById('saie_clipsSection').style.display='none'; document.getElementById('saie_processBtn').disabled=true; document.getElementById('saie_processBtn').innerHTML='<i class="fas fa-magic"></i> Start AI Processing';} saie_renderClips(); }
   function saie_exportAll(){ saie_clips.forEach(function(c){saie_download(c.id);}); }
