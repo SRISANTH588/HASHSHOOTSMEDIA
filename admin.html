@@ -2620,13 +2620,25 @@
       // Auto-fill fields if booking pre-selected
       if(autoBookingId){
         var bk = bookings.find(function(b){ return String(b.id)===String(autoBookingId); });
-        if(bk){
-          if(bk.date) document.getElementById('as_date').value = bk.date;
-          if(bk.time) document.getElementById('as_time').value = bk.time;
-          if((bk.location||bk.city) && !document.getElementById('as_notes').value)
-            document.getElementById('as_notes').value = 'Location: '+(bk.location||bk.city);
-        }
+        if(bk) autoFillDateTime(bk.date, bk.time, bk.notes, bk.location||bk.city);
       }
+    }
+
+    // Auto-fill date+time display labels from booking data
+    function autoFillDateTime(date, time, notes, location){
+      // Fill date
+      if(date){
+        pickDate(date);
+      }
+      // Fill time — parse HH:MM 24h into picker state
+      if(time){
+        setQuickTime(time);
+      }
+      // Fill notes
+      if((location) && !document.getElementById('as_notes').value)
+        document.getElementById('as_notes').value = 'Location: '+location;
+      if(notes && !document.getElementById('as_notes').value)
+        document.getElementById('as_notes').value = notes;
     }
 
     // When booking dropdown changes, auto-fill date/time/location
@@ -2637,12 +2649,8 @@
           var allBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
           var bk = allBookings.find(function(b){ return String(b.id)===String(bSel.value); });
           if(!bk) return;
-          if(bk.date) document.getElementById('as_date').value = bk.date;
-          if(bk.time) document.getElementById('as_time').value = bk.time;
-          if(bk.location || bk.city){
-            var notesEl = document.getElementById('as_notes');
-            if(notesEl && !notesEl.value) notesEl.value = 'Location: '+(bk.location||bk.city);
-          }
+          document.getElementById('as_notes').value = '';
+          autoFillDateTime(bk.date, bk.time, bk.notes, bk.location||bk.city);
         });
       }
     });
@@ -2734,6 +2742,11 @@
       document.getElementById('as_time').value='';
       document.getElementById('as_credit').value='';
       document.getElementById('as_notes').value='';
+      document.getElementById('as_date_label').innerHTML='<i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>Pick a date';
+      document.getElementById('as_date_display').style.color='#9a9080';
+      document.getElementById('as_time_label').innerHTML='<i class="fas fa-clock" style="color:#c9a84c;margin-right:0.5rem;"></i>Pick a time';
+      document.getElementById('as_time_display').style.color='#9a9080';
+      _selDate=null;
       document.querySelectorAll('#as_staff_list input[type=checkbox]').forEach(function(cb){ cb.checked=false; });
       document.getElementById('as_payout_preview').style.display='none';
 
