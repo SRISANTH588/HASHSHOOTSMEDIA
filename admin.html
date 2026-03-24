@@ -2299,9 +2299,7 @@
         toast.textContent='Username already exists.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return;
       }
       var member = { id: Date.now(), name:name, username:username, password:password, role:role, access:access, createdAt: new Date().toLocaleString() };
-      staff.push(member);
-      localStorage.setItem('hs_staff', JSON.stringify(staff));
-      // Sync to Firestore
+      // Write ONLY to Firestore — onSnapshot will update localStorage + re-render
       (async function(){
         try {
           var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -2310,16 +2308,22 @@
           var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
           var fbDb = fbStore.getFirestore(fbApp);
           await fbStore.setDoc(fbStore.doc(fbDb,'staff',String(member.id)), member);
-        } catch(e){ console.error('staff sync error:',e); }
+          toast.textContent='Staff account created!'; toast.style.display='block'; toast.style.color='#4caf50';
+          setTimeout(function(){ toast.style.display='none'; },3000);
+        } catch(e){
+          console.error('staff sync error:',e);
+          // Fallback: save to localStorage if Firestore fails
+          var s2 = getStaff(); s2.push(member); localStorage.setItem('hs_staff', JSON.stringify(s2));
+          renderStaffList();
+          toast.textContent='Saved locally (offline).'; toast.style.display='block'; toast.style.color='#ff9800';
+          setTimeout(function(){ toast.style.display='none'; },3000);
+        }
       })();
       document.getElementById('sf_name').value='';
       document.getElementById('sf_username').value='';
       document.getElementById('sf_password').value='';
       document.getElementById('sf_role').value='';
       document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(function(c){ c.checked=false; });
-      toast.textContent='Staff account created!'; toast.style.display='block'; toast.style.color='#4caf50';
-      setTimeout(function(){ toast.style.display='none'; },3000);
-      renderStaffList();
     }
 
     function renderStaffList(){
@@ -2341,9 +2345,20 @@
 
     function deleteStaff(id){
       if(!confirm('Delete this staff account?')) return;
-      var staff = getStaff().filter(function(s){ return s.id !== id; });
-      localStorage.setItem('hs_staff', JSON.stringify(staff));
-      renderStaffList();
+      (async function(){
+        try {
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
+          var fbDb = fbStore.getFirestore(fbApp);
+          await fbStore.deleteDoc(fbStore.doc(fbDb,'staff',String(id)));
+        } catch(e){
+          var staff = getStaff().filter(function(s){ return String(s.id)!==String(id); });
+          localStorage.setItem('hs_staff', JSON.stringify(staff));
+          renderStaffList();
+        }
+      })();
     }
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
