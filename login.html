@@ -329,88 +329,89 @@
       document.getElementById('loginSpinner').style.display='block';
       document.getElementById('loginArrow').style.display='none';
 
-      setTimeout(async ()=>{
-        // 1. Admin check
-        const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
-        if(id.toUpperCase()==='SRISANTH' && p===correctPass){
-          localStorage.setItem('hs_role','admin');
-          localStorage.setItem('hs_admin_name','SRISANTH');
-          window.location.href='admin.html'; return;
-        }
+      // 1. Admin check (instant)
+      const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
+      if(id.toUpperCase()==='SRISANTH' && p===correctPass){
+        localStorage.setItem('hs_role','admin');
+        localStorage.setItem('hs_admin_name','SRISANTH');
+        window.location.href='admin.html'; return;
+      }
 
-        // 2. Staff check — fetch from Firestore first, fallback to localStorage
-        async function doStaffLogin(){
-          let staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
-          try {
-            const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-            const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-            const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-            const fbApp = fbMod.getApps().find(a=>a.name==='login-app') || fbMod.initializeApp(fbCfg,'login-app');
-            const fbDb = fbStore.getFirestore(fbApp);
-            const snap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
+      const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+
+      function loginFailed(msg){
+        showLoginError(msg||'Invalid credentials. Please try again.');
+        document.getElementById('loginBtn').classList.remove('loading');
+        document.getElementById('loginSpinner').style.display='none';
+        document.getElementById('loginArrow').style.display='block';
+      }
+
+      (async()=>{
+        let fbDb = null;
+        try{
+          const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          const appName = 'hs-login-'+Date.now();
+          const fbApp = fbMod.initializeApp(fbCfg, appName);
+          fbDb = {store: fbStore, db: fbStore.getFirestore(fbApp)};
+        }catch(e){ console.log('Firebase init error:',e); }
+
+        // 2. Staff check
+        let staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+        if(fbDb){
+          try{
+            const snap = await fbDb.store.getDocs(fbDb.store.collection(fbDb.db,'staff'));
             const fbStaff = [];
             snap.forEach(d=>fbStaff.push(d.data()));
-            if(fbStaff.length){ staffList = fbStaff; localStorage.setItem('hs_staff', JSON.stringify(fbStaff)); }
-          } catch(e){ console.log('Firestore staff fetch failed, using localStorage'); }
-          const staff = staffList.find(s=>s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
-          if(staff){
-            localStorage.setItem('hs_role','staff');
-            localStorage.setItem('hs_staff_id', staff.id);
-            localStorage.setItem('hs_staff_name', staff.name);
-            localStorage.setItem('hs_staff_role', staff.role);
-            localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||[]));
-            window.location.href='staff.html'; return;
-          }
-          // Not a staff — try customer login
-          await doCustomerLogin();
+            if(fbStaff.length){ staffList=fbStaff; localStorage.setItem('hs_staff',JSON.stringify(fbStaff)); }
+          }catch(e){}
+        }
+        const staff = staffList.find(s=>s.username&&s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
+        if(staff){
+          localStorage.setItem('hs_role','staff');
+          localStorage.setItem('hs_staff_id',staff.id);
+          localStorage.setItem('hs_staff_name',staff.name);
+          localStorage.setItem('hs_staff_role',staff.role);
+          localStorage.setItem('hs_staff_access',JSON.stringify(staff.access||[]));
+          window.location.href='staff.html'; return;
         }
 
-        // 3. Customer check — fetch from Firestore first
-        async function doCustomerLogin(){
-          let cust = null;
+        // 3. Demo customer
+        if(id==='customer@hash.com'&&p==='1234'){
+          localStorage.setItem('hs_role','customer');
+          localStorage.setItem('hs_user','customer@hash.com');
+          localStorage.setItem('hs_customer_email','customer@hash.com');
+          localStorage.setItem('hs_customer_name','Demo Customer');
+          localStorage.setItem('hs_customer_phone','');
+          window.location.href='index.html'; return;
+        }
+
+        // 4. Customer check
+        let cust = null;
+        if(fbDb){
           try{
-            const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-            const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-            const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-            const fbApp = fbMod.getApps().find(a=>a.name==='login-app')||fbMod.initializeApp(fbCfg,'login-app');
-            const fbDb = fbStore.getFirestore(fbApp);
-            const snap = await fbStore.getDoc(fbStore.doc(fbDb,'customers',id));
+            const snap = await fbDb.store.getDoc(fbDb.store.doc(fbDb.db,'customers',id));
             if(snap.exists()) cust = snap.data();
-          }catch(e){ console.log('customer Firestore login error:',e); }
-          if(!cust){
-            const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
-            cust = customers.find(c=>c.email===id) || null;
-          }
-          // Demo account
-          if(id==='customer@hash.com' && p==='1234'){
-            localStorage.setItem('hs_role','customer');
-            localStorage.setItem('hs_user','customer@hash.com');
-            localStorage.setItem('hs_customer_email','customer@hash.com');
-            localStorage.setItem('hs_customer_name','Demo Customer');
-            localStorage.setItem('hs_customer_phone','');
-            window.location.href='index.html'; return;
-          }
-          if(cust && cust.password === p){
-            localStorage.setItem('hs_role','customer');
-            localStorage.setItem('hs_user', cust.email);
-            localStorage.setItem('hs_customer_email', cust.email);
-            localStorage.setItem('hs_customer_name', cust.name);
-            localStorage.setItem('hs_customer_phone', cust.phone||'');
-            localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet')||'500');
-            const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
-            if(!customers.find(c=>c.email===cust.email)){ customers.push(cust); localStorage.setItem('hs_customers',JSON.stringify(customers)); }
-            window.location.href='index.html'; return;
-          }
-          showLoginError('Invalid credentials. Please try again.');
-          document.getElementById('loginBtn').classList.remove('loading');
-          document.getElementById('loginSpinner').style.display='none';
-          document.getElementById('loginArrow').style.display='block';
+          }catch(e){}
+        }
+        if(!cust){
+          const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+          cust = customers.find(c=>c.email===id)||null;
+        }
+        if(cust&&cust.password===p){
+          localStorage.setItem('hs_role','customer');
+          localStorage.setItem('hs_user',cust.email);
+          localStorage.setItem('hs_customer_email',cust.email);
+          localStorage.setItem('hs_customer_name',cust.name);
+          localStorage.setItem('hs_customer_phone',cust.phone||'');
+          localStorage.setItem('hs_customer_wallet',localStorage.getItem('hs_customer_wallet')||'500');
+          const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
+          if(!customers.find(c=>c.email===cust.email)){customers.push(cust);localStorage.setItem('hs_customers',JSON.stringify(customers));}
+          window.location.href='index.html'; return;
         }
 
-
-        await doStaffLogin();
-
-      }, 1000);
+        loginFailed();
+      })();
     }
 
     function customerSignup(){
