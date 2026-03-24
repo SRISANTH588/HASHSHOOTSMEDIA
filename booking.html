@@ -419,6 +419,31 @@
       enquiries.push({ id:id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time+' | Plan: '+planInfo, submittedAt:now });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
 
+      // Send to Firebase (works from ANY device worldwide)
+      (async function(){
+        try {
+          var { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var { getFirestore, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbApp = initializeApp({
+            apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+            authDomain:'hash-shoots.firebaseapp.com',
+            projectId:'hash-shoots',
+            storageBucket:'hash-shoots.firebasestorage.app',
+            messagingSenderId:'1093054616221',
+            appId:'1:1093054616221:web:55bdebafc895acfd04fa74'
+          }, 'booking-app');
+          var fbDb = getFirestore(fbApp);
+          var data = {
+            name:d.name, phone:d.phone, email:d.email,
+            service:d.service, plan:planInfo, city:d.city,
+            location:d.location, date:d.date, time:d.time,
+            status:'pending', createdAt:serverTimestamp()
+          };
+          await addDoc(collection(fbDb,'bookings'), data);
+          await addDoc(collection(fbDb,'enquiries'), data);
+        } catch(e){ console.log('Firebase error:',e); }
+      })();
+
       // Send to email via Formspree (works from ANY device)
       var formData = new FormData();
       formData.append('name', d.name);

@@ -24,6 +24,10 @@
     .notif-toast-action{margin-top:0.65rem;background:var(--gold);color:var(--text);border:none;border-radius:7px;padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .notif-toast-action:hover{background:var(--gold-dark);}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
+    /* Firebase real-time badge */
+    .fb-live{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;}
+    .fb-dot{width:6px;height:6px;background:#4caf50;border-radius:50%;animation:fbPulse 1.5s infinite;}
+    @keyframes fbPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
     nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
     .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .admin-badge{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
@@ -3078,6 +3082,59 @@
     }
 
     setInterval(pollNotifications, 4000);
+
+    // FIREBASE REAL-TIME SYNC
+    (async function initFirebase(){
+      try {
+        var { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var { getFirestore, collection, onSnapshot, orderBy, query } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = {
+          apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+          authDomain:'hash-shoots.firebaseapp.com',
+          projectId:'hash-shoots',
+          storageBucket:'hash-shoots.firebasestorage.app',
+          messagingSenderId:'1093054616221',
+          appId:'1:1093054616221:web:55bdebafc895acfd04fa74'
+        };
+        var existing = getApps().find(function(a){ return a.name==='admin-app'; });
+        var fbApp = existing || initializeApp(fbCfg,'admin-app');
+        var fbDb = getFirestore(fbApp);
+
+        // Live badge
+        var badge = document.createElement('span');
+        badge.style.cssText='display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;margin-left:0.75rem;';
+        badge.innerHTML='<span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;animation:fbPulse 1.5s infinite;"></span> Firebase Live';
+        document.querySelector('nav').appendChild(badge);
+
+        // Real-time bookings listener
+        onSnapshot(query(collection(fbDb,'bookings'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var localIds = local.map(function(b){ return String(b.id); });
+          snap.forEach(function(d){
+            if(localIds.includes(d.id)) return;
+            var data = d.data();
+            local.push({ id:d.id, name:data.name, phone:data.phone, email:data.email||'', service:data.service, city:data.city, location:data.location||'', date:data.date, time:data.time, notes:'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          });
+          localStorage.setItem('hs_bookings', JSON.stringify(local));
+          if(currentTab==='bookings') loadAll();
+        });
+
+        // Real-time enquiries listener
+        onSnapshot(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+          var localIds = local.map(function(e){ return String(e.id); });
+          snap.forEach(function(d){
+            if(localIds.includes(d.id)) return;
+            var data = d.data();
+            local.push({ id:d.id, name:data.name, phone:data.phone, email:data.email||'', message:'Service: '+data.service+' | Plan: '+(data.plan||'')+' | City: '+data.city+' | Location: '+(data.location||'')+' | Date: '+data.date+' at '+data.time, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          });
+          localStorage.setItem('hs_enquiries', JSON.stringify(local));
+          if(currentTab==='enquiries') renderEnquiries();
+          updateEnquiriesNotifBadge();
+        });
+
+      } catch(e){ console.log('Firebase admin error:',e); }
+    })();
 
   </script>
 </body>
