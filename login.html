@@ -496,7 +496,7 @@
     }
 
     function findAccount(){
-      const id=document.getElementById('forgotIdentifier').value.trim();
+      const id=document.getElementById('forgotIdentifier').value.trim().toLowerCase();
       const errEl=document.getElementById('forgotError');
       const errMsg=document.getElementById('forgotErrMsg');
       errEl.style.display='none';
@@ -504,31 +504,62 @@
       if(!id){errMsg.textContent='Please enter your username or email.';errEl.style.display='flex';return;}
 
       // Admin?
-      if(id.toUpperCase()==='SRISANTH'){
+      if(id==='srisanth'){
         _forgotRole='admin'; _forgotTarget=null;
         document.getElementById('forgotNewPassWrap').style.display='block';
         document.getElementById('forgotFindBtn').style.display='none';
         return;
       }
-      // Staff?
+
+      // Staff? (localStorage)
       const staffList=JSON.parse(localStorage.getItem('hs_staff')||'[]');
-      const staff=staffList.find(s=>s.username.toLowerCase()===id.toLowerCase());
+      const staff=staffList.find(s=>s.username&&s.username.toLowerCase()===id);
       if(staff){
         _forgotRole='staff'; _forgotTarget=staff;
         document.getElementById('forgotNewPassWrap').style.display='block';
         document.getElementById('forgotFindBtn').style.display='none';
         return;
       }
-      // Customer?
+
+      // Customer — check localStorage by username or email, then Firestore
       const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
-      const cust=customers.find(c=>c.email===id);
+      const cust=customers.find(c=>(c.username&&c.username.toLowerCase()===id)||c.email===id);
       if(cust){
         _forgotRole='customer'; _forgotTarget=cust;
         document.getElementById('forgotNewPassWrap').style.display='block';
         document.getElementById('forgotFindBtn').style.display='none';
         return;
       }
-      errMsg.textContent='No account found with that username or email.';
+
+      // Try Firestore
+      (async()=>{
+        try{
+          const fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          const fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          const fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          const fbApp=fbMod.initializeApp(fbCfg,'hs-forgot-'+Date.now());
+          const fbDb=fbStore.getFirestore(fbApp);
+          // Try username
+          let snap=await fbStore.getDoc(fbStore.doc(fbDb,'customers',id));
+          if(!snap.exists()){
+            // Try email index
+            const eSnap=await fbStore.getDoc(fbStore.doc(fbDb,'customers_by_email',id));
+            if(eSnap.exists()) snap=await fbStore.getDoc(fbStore.doc(fbDb,'customers',eSnap.data().username));
+          }
+          if(snap.exists()){
+            _forgotRole='customer'; _forgotTarget=Object.assign({_fbUsername:snap.id},snap.data());
+            document.getElementById('forgotNewPassWrap').style.display='block';
+            document.getElementById('forgotFindBtn').style.display='none';
+          } else {
+            errMsg.textContent='No account found with that username or email.';
+            errEl.style.display='flex';
+          }
+        }catch(e){
+          errMsg.textContent='No account found with that username or email.';
+          errEl.style.display='flex';
+        }
+      })();
+    }      errMsg.textContent='No account found with that username or email.';
       errEl.style.display='flex';
     }
 
@@ -542,22 +573,46 @@
       if(np!==cp){errMsg.textContent='Passwords do not match.';errEl.style.display='flex';return;}
 
       if(_forgotRole==='admin'){
-        localStorage.setItem('hs_admin_password', np);
+        localStorage.setItem('hs_admin_password',np);
       } else if(_forgotRole==='staff'){
         const staffList=JSON.parse(localStorage.getItem('hs_staff')||'[]');
         const idx=staffList.findIndex(s=>s.id===_forgotTarget.id);
         if(idx>-1){staffList[idx].password=np;localStorage.setItem('hs_staff',JSON.stringify(staffList));}
+        // Sync to Firestore
+        (async()=>{
+          try{
+            const fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            const fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            const fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            const fbApp=fbMod.initializeApp(fbCfg,'hs-reset-'+Date.now());
+            const fbDb=fbStore.getFirestore(fbApp);
+            await fbStore.setDoc(fbStore.doc(fbDb,'staff',String(_forgotTarget.id)),{password:np},{merge:true});
+          }catch(e){}
+        })();
       } else if(_forgotRole==='customer'){
+        const uname=_forgotTarget._fbUsername||_forgotTarget.username;
+        // Update localStorage
         const customers=JSON.parse(localStorage.getItem('hs_customers')||'[]');
-        const idx=customers.findIndex(c=>c.email===_forgotTarget.email);
+        const idx=customers.findIndex(c=>(c.username&&c.username===uname)||c.email===_forgotTarget.email);
         if(idx>-1){customers[idx].password=np;localStorage.setItem('hs_customers',JSON.stringify(customers));}
+        // Update Firestore
+        (async()=>{
+          try{
+            const fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            const fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            const fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            const fbApp=fbMod.initializeApp(fbCfg,'hs-reset2-'+Date.now());
+            const fbDb=fbStore.getFirestore(fbApp);
+            if(uname) await fbStore.setDoc(fbStore.doc(fbDb,'customers',uname),{password:np},{merge:true});
+          }catch(e){}
+        })();
       }
 
       const suc=document.getElementById('forgotSuccess');
       suc.textContent='Password reset successfully! You can now login.';
       suc.style.display='block';
       document.getElementById('forgotNewPassWrap').style.display='none';
-      setTimeout(closeForgot, 2000);
+      setTimeout(closeForgot,2000);
     }
 
     document.addEventListener('keydown',e=>{
