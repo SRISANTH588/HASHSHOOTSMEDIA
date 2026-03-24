@@ -559,8 +559,6 @@
           errEl.style.display='flex';
         }
       })();
-    }      errMsg.textContent='No account found with that username or email.';
-      errEl.style.display='flex';
     }
 
     function resetPassword(){
@@ -616,7 +614,16 @@
     }
 
     document.addEventListener('keydown',e=>{
-      if(e.key==='Enter') unifiedLogin();
+      if(e.key==='Enter'){
+        const modal = document.getElementById('forgotModal');
+        if(modal && modal.style.display==='flex'){
+          const newPassWrap = document.getElementById('forgotNewPassWrap');
+          if(newPassWrap && newPassWrap.style.display==='block') resetPassword();
+          else findAccount();
+        } else {
+          unifiedLogin();
+        }
+      }
     });
   </script>
 </body>
