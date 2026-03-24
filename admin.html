@@ -2448,6 +2448,125 @@
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 
+    // ── CUSTOMER PAGE ─────────────────────────────────────────────────
+    function saveCustomerPage(){
+      var cfg = {};
+      ['cp_heroTitle','cp_heroSub','cp_bookingsTitle'].forEach(function(id){
+        var el = document.getElementById(id); if(el) cfg[id] = el.value.trim();
+      });
+      ['cp_showBookings','cp_showFeedback','cp_showWallet'].forEach(function(id){
+        var el = document.getElementById(id); if(el) cfg[id] = el.checked ? 'yes' : 'no';
+      });
+      localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
+      var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
+    }
+
+    function renderCustomerAccounts(){
+      var el = document.getElementById('customerAccountsList'); if(!el) return;
+      (async function(){
+        var customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+        try{
+          var f = await _fbAdmin(); if(f){
+            var snap = await f.s.getDocs(f.s.collection(f.db,'customers'));
+            var fb = []; snap.forEach(function(d){ fb.push(d.data()); });
+            if(fb.length) customers = fb;
+          }
+        }catch(e){}
+        if(!customers.length){ el.innerHTML='<div style="text-align:center;padding:2rem;color:#9a9080;">No customer accounts yet.</div>'; return; }
+        el.innerHTML = customers.map(function(c){
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:0.85rem 1.25rem;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+            +'<div><div style="font-weight:700;color:#fff;font-size:0.88rem;">'+(c.name||'')+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;">@'+(c.username||c.email||'')+' &nbsp;·&nbsp; '+(c.email||'')+'</div></div>'
+            +'<div style="font-size:0.7rem;color:#6a6050;">Joined: '+(c.joined?new Date(c.joined).toLocaleDateString():'')+'</div>'
+            +'</div>';
+        }).join('');
+      })();
+    }
+
+    // ── DEMO SESSIONS ─────────────────────────────────────────────────
+    function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
+    function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
+
+    function createDemo(){
+      var title = (document.getElementById('dm_title')||{}).value||'';
+      var date  = (document.getElementById('dm_date')||{}).value||'';
+      var time  = (document.getElementById('dm_time')||{}).value||'';
+      var slots = parseInt((document.getElementById('dm_slots')||{}).value)||10;
+      var fee   = parseFloat((document.getElementById('dm_fee')||{}).value)||0;
+      var place = (document.getElementById('dm_place')||{}).value||'';
+      var toast = document.getElementById('dmToast');
+      if(!title||!date||!time){ if(toast){toast.textContent='Please fill Title, Date and Time.';toast.style.display='block';toast.style.color='#f44336';setTimeout(function(){toast.style.display='none';},3000);} return; }
+      var demos = getDemos();
+      demos.push({ id:Date.now(), title:title.trim(), date:date, time:time, slots:slots, fee:fee, place:place.trim(), status:'open', registrations:[], createdAt:new Date().toLocaleString() });
+      saveDemos(demos);
+      if(window.fbSave) fbSave('demos', demos[demos.length-1]);
+      if(toast){toast.textContent='Demo session created!';toast.style.color='#4caf50';toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
+      renderDemoAdminList();
+    }
+
+    // ── FEEDBACK FILTER ───────────────────────────────────────────────
+    var _feedbackFilter = 'all';
+    function filterFeedback(type, btn){
+      _feedbackFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      if(btn) btn.classList.add('active');
+      renderFeedbackAdmin();
+    }
+
+    // ── STORE: T-SHIRTS & ID CARD ─────────────────────────────────────
+    function addTshirt(){
+      var name  = (document.getElementById('ts_name')||{}).value||'';
+      var price = parseFloat((document.getElementById('ts_price')||{}).value)||0;
+      var sizes = (document.getElementById('ts_sizes')||{}).value||'';
+      var toast = document.getElementById('tsToast');
+      if(!name||!price){ if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);} return; }
+      var imgEl = document.getElementById('ts_image');
+      var file = imgEl && imgEl.files && imgEl.files[0];
+      function doSave(imgData){
+        var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
+        items.push({ id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), image:imgData||'', active:true });
+        localStorage.setItem('hs_tshirts', JSON.stringify(items));
+        if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
+        loadStoreAdmin();
+      }
+      if(file){
+        var reader = new FileReader();
+        reader.onload = function(e){ doSave(e.target.result); };
+        reader.readAsDataURL(file);
+      } else { doSave(''); }
+    }
+
+    function saveIdCard(){
+      var price = parseFloat((document.getElementById('idc_price')||{}).value)||0;
+      var desc  = (document.getElementById('idc_desc')||{}).value||'';
+      var toast = document.getElementById('idcToast');
+      var imgEl = document.getElementById('idc_image');
+      var file  = imgEl && imgEl.files && imgEl.files[0];
+      function doSave(imgData){
+        var cfg = { price:price, desc:desc.trim(), image:imgData||localStorage.getItem('hs_idcard_img')||'' };
+        localStorage.setItem('hs_idcard', JSON.stringify(cfg));
+        if(imgData) localStorage.setItem('hs_idcard_img', imgData);
+        if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
+      }
+      if(file){
+        var reader = new FileReader();
+        reader.onload = function(e){ doSave(e.target.result); };
+        reader.readAsDataURL(file);
+      } else { doSave(''); }
+    }
+
+    // ── DELETE ASSIGNMENT ─────────────────────────────────────────────
+    function deleteAssignment(id){
+      if(!confirm('Delete this assignment?')) return;
+      var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
+      saveAssignedShoots(list);
+      (async function(){
+        var f = await _fbAdmin(); if(!f) return;
+        try{ await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id))); }catch(e){}
+      })();
+      renderAssignedList();
+    }
+
     function renderCustWallets(){
       var list = document.getElementById('cwList');
       if(!list) return;
