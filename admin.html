@@ -1480,6 +1480,55 @@
           <div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Text Position</label><select id="aie_textPos" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.55rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"><option value="bottom">Bottom</option><option value="top">Top</option><option value="center">Center</option></select></div>
           <button onclick="aie_applyControls()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.55rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ Apply All</button>
         </div>
+
+        <!-- 🎵 MUSIC SYNC -->
+        <div style="margin-top:1rem;border-top:1px solid rgba(201,168,76,0.1);padding-top:1rem;">
+          <div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.75rem;letter-spacing:1px;">🎵 MUSIC SYNC — Reel cuts to the beat</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:0.75rem;align-items:center;">
+            <div style="position:relative;">
+              <input type="file" id="aie_musicFile" accept="audio/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="aie_onMusicFile(this)"/>
+              <div id="aie_musicLabel" style="background:#111;border:1px dashed rgba(201,168,76,0.3);border-radius:10px;padding:0.6rem 1rem;font-size:0.8rem;color:#9a9080;cursor:pointer;">🎵 Upload song (MP3 / AAC / WAV)</div>
+            </div>
+            <button onclick="aie_clearMusic()" title="Remove music" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:8px;padding:0.6rem 0.8rem;font-size:0.8rem;cursor:pointer;">✕</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.65rem;margin-top:0.75rem;align-items:center;">
+            <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_beatSync" checked style="accent-color:#c9a84c;"> ⚡ Beat-sync cuts</label>
+            <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_musicOnly" style="accent-color:#c9a84c;"> 🔇 Replace original audio</label>
+            <div style="display:flex;align-items:center;gap:0.4rem;">
+              <span style="font-size:0.72rem;color:#9a9080;">Vol</span>
+              <input type="range" id="aie_musicVol" min="0" max="100" value="80" style="width:80px;accent-color:#c9a84c;" oninput="document.getElementById('aie_musicVolVal').textContent=this.value+'%'">
+              <span id="aie_musicVolVal" style="font-size:0.72rem;color:#c9a84c;">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🎬 TRANSITIONS -->
+        <div style="margin-top:1rem;border-top:1px solid rgba(201,168,76,0.1);padding-top:1rem;">
+          <div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.75rem;letter-spacing:1px;">🎬 TRANSITIONS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+            <button onclick="aie_setTransition('none',this)" class="aie-trans-btn aie-trans-active" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">None</button>
+            <button onclick="aie_setTransition('flash',this)" class="aie-trans-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Flash</button>
+            <button onclick="aie_setTransition('fade',this)" class="aie-trans-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🌅 Fade</button>
+            <button onclick="aie_setTransition('zoom',this)" class="aie-trans-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🔍 Zoom</button>
+            <button onclick="aie_setTransition('glitch',this)" class="aie-trans-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">📡 Glitch</button>
+          </div>
+        </div>
+
+        <!-- 🎨 PREMIUM FILTER OVERRIDE -->
+        <div style="margin-top:1rem;border-top:1px solid rgba(201,168,76,0.1);padding-top:1rem;">
+          <div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.75rem;letter-spacing:1px;">🎨 PREMIUM FILTER OVERRIDE</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" id="aie_filterBtns">
+            <button onclick="aie_setFilterOverride('auto',this)" class="aie-filt-btn aie-filt-active" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🤖 AI Auto</button>
+            <button onclick="aie_setFilterOverride('cinematic',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🎬 Cinematic</button>
+            <button onclick="aie_setFilterOverride('luxe',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">💎 Luxe Gold</button>
+            <button onclick="aie_setFilterOverride('moody',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🌑 Moody</button>
+            <button onclick="aie_setFilterOverride('neon',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🌈 Neon</button>
+            <button onclick="aie_setFilterOverride('vintage',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">📷 Vintage</button>
+            <button onclick="aie_setFilterOverride('teal',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🌊 Teal & Orange</button>
+            <button onclick="aie_setFilterOverride('matte',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🎞️ Matte</button>
+            <button onclick="aie_setFilterOverride('drama',this)" class="aie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.35rem 0.8rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">🎭 Drama</button>
+          </div>
+        </div>
       </div>
 
       <div id="aie_clipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;"></div>
@@ -3828,9 +3877,18 @@
         ctx.fillStyle = '#000';
         ctx.fillRect(0,0,outW,outH);
 
-        // 2. Video frame with AI filter
-        ctx.filter = fi.css||'none';
+        // 2. Video frame with AI filter + extra filter override
+        ctx.filter = (clip._extraFilter || fi.css) || 'none';
         ctx.drawImage(video, offX, offY, drawW, drawH);
+        // Beat-sync transition overlay
+        if(clip._beatSync && clip._beatTimes && clip._beatTimes.length){
+          var nearBeat = clip._beatTimes.some(function(t){ return Math.abs(video.currentTime-t)<0.06; });
+          if(nearBeat){
+            ctx.filter='none';
+            if(clip._transition==='flash'){ ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.fillRect(0,0,outW,outH); }
+            else if(clip._transition==='glitch'){ ctx.filter='hue-rotate(90deg) saturate(3)'; ctx.drawImage(video,offX+8,offY,drawW,drawH); }
+          }
+        }
         ctx.filter = 'none';
 
         // 3. Vignette
@@ -4299,6 +4357,104 @@
     var btn = event.target;
     btn.innerHTML = '✅ Applied!';
     setTimeout(function(){ btn.innerHTML = '✅ Apply All'; }, 1500);
+  }
+
+  // ── PREMIUM ADDITIONS: filters, music, beat-sync, transitions ──
+  // Extended filter map
+  var AIE_EXTRA_FILTERS = {
+    neon:    'brightness(1.05) saturate(2.2) contrast(1.1) hue-rotate(10deg)',
+    vintage: 'sepia(0.55) contrast(0.9) brightness(1.05) saturate(0.8)',
+    teal:    'contrast(1.15) saturate(1.3) hue-rotate(165deg) brightness(0.95)',
+    matte:   'contrast(0.85) saturate(0.75) brightness(1.08)',
+    drama:   'contrast(1.4) saturate(0.9) brightness(0.85)'
+  };
+  var aie_filterOverride = 'auto';
+  var aie_transition = 'none';
+  var aie_musicFile = null;
+  var aie_musicUrl  = null;
+  var aie_beatTimes = [];
+
+  function aie_setFilterOverride(val, btn){
+    aie_filterOverride = val;
+    document.querySelectorAll('.aie-filt-btn').forEach(function(b){
+      b.style.background='#111'; b.style.borderColor='#333'; b.style.color='#9a9080';
+    });
+    btn.style.background='rgba(201,168,76,0.15)'; btn.style.borderColor='rgba(201,168,76,0.4)'; btn.style.color='#c9a84c';
+    if(val!=='auto') aie_clips.forEach(function(c){ c.filter=val; }); aie_renderClips();
+  }
+
+  function aie_setTransition(val, btn){
+    aie_transition = val;
+    document.querySelectorAll('.aie-trans-btn').forEach(function(b){
+      b.style.background='#111'; b.style.borderColor='#333'; b.style.color='#9a9080';
+    });
+    btn.style.background='rgba(201,168,76,0.15)'; btn.style.borderColor='rgba(201,168,76,0.4)'; btn.style.color='#c9a84c';
+  }
+
+  function aie_onMusicFile(input){
+    var file = input.files[0]; if(!file) return;
+    aie_musicFile = file;
+    aie_musicUrl  = URL.createObjectURL(file);
+    document.getElementById('aie_musicLabel').innerHTML = '🎵 <b style="color:#c9a84c;">' + file.name + '</b>';
+    document.getElementById('aie_musicLabel').style.borderColor = 'rgba(201,168,76,0.6)';
+    // Detect beats via AudioContext
+    aie_detectBeats(file, function(beats){ aie_beatTimes = beats; });
+  }
+
+  function aie_clearMusic(){
+    aie_musicFile=null; aie_musicUrl=null; aie_beatTimes=[];
+    document.getElementById('aie_musicLabel').innerHTML='🎵 Upload song (MP3 / AAC / WAV)';
+    document.getElementById('aie_musicLabel').style.borderColor='rgba(201,168,76,0.3)';
+    document.getElementById('aie_musicFile').value='';
+  }
+
+  function aie_detectBeats(file, cb){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var ctx = new (window.AudioContext||window.webkitAudioContext)();
+      ctx.decodeAudioData(e.target.result, function(buf){
+        var data = buf.getChannelData(0);
+        var sr = buf.sampleRate;
+        var windowSize = Math.floor(sr * 0.05); // 50ms windows
+        var beats = [];
+        var threshold = 0;
+        // Compute RMS per window
+        var rms = [];
+        for(var i=0;i<data.length-windowSize;i+=windowSize){
+          var sum=0; for(var j=0;j<windowSize;j++) sum+=data[i+j]*data[i+j];
+          rms.push(Math.sqrt(sum/windowSize));
+        }
+        // Average RMS as threshold
+        var avg = rms.reduce(function(a,b){return a+b;},0)/rms.length;
+        threshold = avg * 1.5;
+        var lastBeat = -0.5;
+        rms.forEach(function(r,idx){
+          var t = idx*0.05;
+          if(r > threshold && t - lastBeat > 0.3){ beats.push(t); lastBeat=t; }
+        });
+        cb(beats);
+        ctx.close();
+      }, function(){ cb([]); });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Override renderClipToBlob to support music + transitions + extra filters
+  var _aie_origRender = aie_renderClipToBlob;
+  function aie_renderClipToBlob(clip, onProgress, onDone){
+    // Apply extra filter if override set
+    if(aie_filterOverride !== 'auto' && AIE_EXTRA_FILTERS[aie_filterOverride]){
+      clip._extraFilter = AIE_EXTRA_FILTERS[aie_filterOverride];
+    } else {
+      clip._extraFilter = null;
+    }
+    clip._transition = aie_transition;
+    clip._musicUrl   = aie_musicUrl;
+    clip._musicVol   = (document.getElementById('aie_musicVol').value||80)/100;
+    clip._musicOnly  = document.getElementById('aie_musicOnly').checked;
+    clip._beatSync   = document.getElementById('aie_beatSync').checked;
+    clip._beatTimes  = aie_beatTimes.slice();
+    _aie_origRender(clip, onProgress, onDone);
   }
 
   // ── END AI VIDEO EDITOR ─────────────────────────────────────────
