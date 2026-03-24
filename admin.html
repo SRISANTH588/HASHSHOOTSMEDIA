@@ -3410,17 +3410,16 @@
         badge.innerHTML='<span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;animation:fbPulse 1.5s infinite;"></span> Firebase Live';
         document.querySelector('nav').appendChild(badge);
 
-        // Real-time bookings listener
+        // Real-time bookings listener — Firestore is source of truth
         onSnapshot(query(collection(fbDb,'bookings'), orderBy('createdAt','desc')), function(snap){
-          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var localIds = local.map(function(b){ return String(b.id); });
+          var fbBookings = [];
           snap.forEach(function(d){
-            if(localIds.includes(d.id)) return;
             var data = d.data();
-            local.push({ id:d.id, name:data.name, phone:data.phone, email:data.email||'', service:data.service, city:data.city, location:data.location||'', date:data.date, time:data.time, notes:'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            fbBookings.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', service:data.service||'', city:data.city||'', location:data.location||'', date:data.date||'', time:data.time||'', notes:data.notes||'', plan:data.plan||'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
-          localStorage.setItem('hs_bookings', JSON.stringify(local));
-          if(currentTab==='bookings') loadAll();
+          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+          allBookings = fbBookings;
+          if(currentTab==='bookings'){ updateStats(); renderTable(); }
         });
 
         // Real-time support tickets
@@ -3539,18 +3538,16 @@
           if(currentTab==='affiliates') renderAffiliateApps();
         });
 
-        // Real-time enquiries listener
+        // Real-time enquiries listener — Firestore is source of truth
         onSnapshot(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')), function(snap){
-          var local = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
-          var localIds = local.map(function(e){ return String(e.id); });
+          var fbEnquiries = [];
           snap.forEach(function(d){
-            if(localIds.includes(d.id)) return;
             var data = d.data();
             var msg = data.message || '';
-            if(!msg && data.service) msg = 'Service: '+data.service+' | Plan: '+(data.plan||'')+' | City: '+(data.city||'')+' | Location: '+(data.location||'')+' | Date: '+(data.date||'')+' at '+(data.time||'');
-            local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            if(!msg && data.service) msg = 'Service: '+data.service+(data.plan?' | Plan: '+data.plan:'')+(data.city?' | City: '+data.city:'')+(data.location?' | Location: '+data.location:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
+            fbEnquiries.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
-          localStorage.setItem('hs_enquiries', JSON.stringify(local));
+          localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
           if(currentTab==='enquiries') renderEnquiries();
           updateEnquiriesNotifBadge();
         });
@@ -7046,17 +7043,16 @@
         badge.innerHTML='<span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;animation:fbPulse 1.5s infinite;"></span> Firebase Live';
         document.querySelector('nav').appendChild(badge);
 
-        // Real-time bookings listener
+        // Real-time bookings listener — Firestore is source of truth
         onSnapshot(query(collection(fbDb,'bookings'), orderBy('createdAt','desc')), function(snap){
-          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var localIds = local.map(function(b){ return String(b.id); });
+          var fbBookings = [];
           snap.forEach(function(d){
-            if(localIds.includes(d.id)) return;
             var data = d.data();
-            local.push({ id:d.id, name:data.name, phone:data.phone, email:data.email||'', service:data.service, city:data.city, location:data.location||'', date:data.date, time:data.time, notes:'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            fbBookings.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', service:data.service||'', city:data.city||'', location:data.location||'', date:data.date||'', time:data.time||'', notes:data.notes||'', plan:data.plan||'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
-          localStorage.setItem('hs_bookings', JSON.stringify(local));
-          if(currentTab==='bookings') loadAll();
+          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+          allBookings = fbBookings;
+          if(currentTab==='bookings'){ updateStats(); renderTable(); }
         });
 
         // Real-time support tickets
@@ -7175,18 +7171,16 @@
           if(currentTab==='affiliates') renderAffiliateApps();
         });
 
-        // Real-time enquiries listener
+        // Real-time enquiries listener — Firestore is source of truth
         onSnapshot(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')), function(snap){
-          var local = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
-          var localIds = local.map(function(e){ return String(e.id); });
+          var fbEnquiries = [];
           snap.forEach(function(d){
-            if(localIds.includes(d.id)) return;
             var data = d.data();
             var msg = data.message || '';
-            if(!msg && data.service) msg = 'Service: '+data.service+' | Plan: '+(data.plan||'')+' | City: '+(data.city||'')+' | Location: '+(data.location||'')+' | Date: '+(data.date||'')+' at '+(data.time||'');
-            local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            if(!msg && data.service) msg = 'Service: '+data.service+(data.plan?' | Plan: '+data.plan:'')+(data.city?' | City: '+data.city:'')+(data.location?' | Location: '+data.location:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
+            fbEnquiries.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
-          localStorage.setItem('hs_enquiries', JSON.stringify(local));
+          localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
           if(currentTab==='enquiries') renderEnquiries();
           updateEnquiriesNotifBadge();
         });
