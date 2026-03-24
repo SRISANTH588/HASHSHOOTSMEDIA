@@ -833,13 +833,71 @@
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-          <div class="form-group">
+
+          <!-- ADVANCED DATE PICKER -->
+          <div class="form-group" style="position:relative;">
             <label>Shoot Date *</label>
-            <input type="date" id="as_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <div id="as_date_display" onclick="toggleDatePicker()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#9a9080;font-family:inherit;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)'">
+              <span id="as_date_label"><i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>Pick a date</span>
+              <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.7rem;"></i>
+            </div>
+            <input type="hidden" id="as_date"/>
+            <!-- Calendar Popup -->
+            <div id="as_date_picker" style="display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:999;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:1rem;width:280px;box-shadow:0 12px 40px rgba(0,0,0,0.7);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;">
+                <button onclick="calNav(-1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:0.9rem;">&lsaquo;</button>
+                <span id="cal_month_label" style="font-weight:800;color:#fff;font-size:0.9rem;"></span>
+                <button onclick="calNav(1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:0.9rem;">&rsaquo;</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:0.5rem;">
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Su</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Mo</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Tu</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">We</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Th</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Fr</div>
+                <div style="text-align:center;font-size:0.65rem;font-weight:700;color:#6a6050;padding:0.2rem;">Sa</div>
+              </div>
+              <div id="cal_days" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;"></div>
+            </div>
           </div>
-          <div class="form-group">
+
+          <!-- ADVANCED TIME PICKER -->
+          <div class="form-group" style="position:relative;">
             <label>Shoot Time *</label>
-            <input type="time" id="as_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <div id="as_time_display" onclick="toggleTimePicker()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#9a9080;font-family:inherit;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)'">
+              <span id="as_time_label"><i class="fas fa-clock" style="color:#c9a84c;margin-right:0.5rem;"></i>Pick a time</span>
+              <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.7rem;"></i>
+            </div>
+            <input type="hidden" id="as_time"/>
+            <!-- Time Popup -->
+            <div id="as_time_picker" style="display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:999;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:1.25rem;width:220px;box-shadow:0 12px 40px rgba(0,0,0,0.7);">
+              <div style="text-align:center;font-size:0.75rem;font-weight:700;color:#9a9080;margin-bottom:1rem;text-transform:uppercase;letter-spacing:1px;">Select Time</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1rem;">
+                <div style="text-align:center;">
+                  <button onclick="adjHour(1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:36px;height:28px;border-radius:7px;cursor:pointer;font-size:0.8rem;display:block;margin:0 auto 4px;">▲</button>
+                  <div id="tp_hour" style="font-size:1.6rem;font-weight:900;color:#fff;width:48px;text-align:center;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.3rem 0;">09</div>
+                  <button onclick="adjHour(-1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:36px;height:28px;border-radius:7px;cursor:pointer;font-size:0.8rem;display:block;margin:4px auto 0;">▼</button>
+                </div>
+                <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;margin-bottom:4px;">:</div>
+                <div style="text-align:center;">
+                  <button onclick="adjMin(1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:36px;height:28px;border-radius:7px;cursor:pointer;font-size:0.8rem;display:block;margin:0 auto 4px;">▲</button>
+                  <div id="tp_min" style="font-size:1.6rem;font-weight:900;color:#fff;width:48px;text-align:center;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.3rem 0;">00</div>
+                  <button onclick="adjMin(-1)" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;width:36px;height:28px;border-radius:7px;cursor:pointer;font-size:0.8rem;display:block;margin:4px auto 0;">▼</button>
+                </div>
+                <div style="text-align:center;">
+                  <button onclick="adjAmpm()" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;width:44px;height:36px;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:800;display:block;margin:0 auto;"><span id="tp_ampm">AM</span></button>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:0.75rem;">
+                <button onclick="setQuickTime('09:00')" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;">9 AM</button>
+                <button onclick="setQuickTime('11:00')" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;">11 AM</button>
+                <button onclick="setQuickTime('14:00')" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;">2 PM</button>
+                <button onclick="setQuickTime('16:00')" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;">4 PM</button>
+                <button onclick="setQuickTime('18:00')" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;">6 PM</button>
+              </div>
+              <button onclick="confirmTime()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.55rem;border-radius:9px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Confirm</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Total Payout Amount (₹) * <span style="font-size:0.68rem;color:#ff9800;font-weight:600;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-eye-slash"></i> Hidden from Creator</span></label>
@@ -3806,6 +3864,85 @@
         console.log('[Admin] uploadVibeItem overridden with Cloudinary');
       }
     }, 500);
+
+    // ── ADVANCED DATE PICKER ──────────────────────────────────────────
+    var _calYear, _calMonth, _selDate;
+    (function(){ var n=new Date(); _calYear=n.getFullYear(); _calMonth=n.getMonth(); })();
+
+    function toggleDatePicker(){
+      var p=document.getElementById('as_date_picker');
+      var tp=document.getElementById('as_time_picker');
+      if(tp) tp.style.display='none';
+      p.style.display = p.style.display==='none' ? 'block' : 'none';
+      if(p.style.display==='block') renderCalendar();
+    }
+    function calNav(dir){
+      _calMonth+=dir;
+      if(_calMonth>11){_calMonth=0;_calYear++;}
+      if(_calMonth<0){_calMonth=11;_calYear--;}
+      renderCalendar();
+    }
+    function renderCalendar(){
+      var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('cal_month_label').textContent=months[_calMonth]+' '+_calYear;
+      var first=new Date(_calYear,_calMonth,1).getDay();
+      var days=new Date(_calYear,_calMonth+1,0).getDate();
+      var today=new Date(); today.setHours(0,0,0,0);
+      var html='';
+      for(var i=0;i<first;i++) html+='<div></div>';
+      for(var d=1;d<=days;d++){
+        var dt=new Date(_calYear,_calMonth,d);
+        var iso=_calYear+'-'+String(_calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var isPast=dt<today;
+        var isSel=_selDate===iso;
+        var isToday=dt.getTime()===today.getTime();
+        var bg=isSel?'background:#c9a84c;color:#000;font-weight:900;':(isToday?'border:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-weight:700;':'color:'+(isPast?'#3a3530':'#f0ece0')+';');
+        var hover=isPast?'':' onmouseover="if(!this.classList.contains(\'sel\'))this.style.background=\'rgba(201,168,76,0.15)\'" onmouseout="if(!this.classList.contains(\'sel\'))this.style.background=\'\'"';
+        html+='<div '+(isPast?'':'onclick="pickDate(\''+iso+'\')"')+hover+' style="text-align:center;padding:0.3rem 0;border-radius:7px;font-size:0.8rem;cursor:'+(isPast?'default':'pointer')+';'+bg+'transition:background 0.15s;">'+d+'</div>';
+      }
+      document.getElementById('cal_days').innerHTML=html;
+    }
+    function pickDate(iso){
+      _selDate=iso;
+      document.getElementById('as_date').value=iso;
+      var p=iso.split('-');
+      var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('as_date_label').innerHTML='<i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>'+parseInt(p[2])+' '+mn[parseInt(p[1])-1]+' '+p[0];
+      document.getElementById('as_date_display').style.color='#f0ece0';
+      document.getElementById('as_date_picker').style.display='none';
+      renderCalendar();
+    }
+
+    // ── ADVANCED TIME PICKER ──────────────────────────────────────────
+    var _tpH=9,_tpM=0,_tpAM=true;
+    function toggleTimePicker(){
+      var p=document.getElementById('as_time_picker');
+      var dp=document.getElementById('as_date_picker');
+      if(dp) dp.style.display='none';
+      p.style.display=p.style.display==='none'?'block':'none';
+    }
+    function adjHour(d){ _tpH=(_tpH+d+12)%12||12; document.getElementById('tp_hour').textContent=String(_tpH).padStart(2,'0'); }
+    function adjMin(d){ _tpM=(_tpM+d+60)%60; document.getElementById('tp_min').textContent=String(_tpM).padStart(2,'0'); }
+    function adjAmpm(){ _tpAM=!_tpAM; document.getElementById('tp_ampm').textContent=_tpAM?'AM':'PM'; }
+    function setQuickTime(t24){
+      var p=t24.split(':'); _tpAM=parseInt(p[0])<12; _tpH=parseInt(p[0])%12||12; _tpM=parseInt(p[1]);
+      document.getElementById('tp_hour').textContent=String(_tpH).padStart(2,'0');
+      document.getElementById('tp_min').textContent=String(_tpM).padStart(2,'0');
+      document.getElementById('tp_ampm').textContent=_tpAM?'AM':'PM';
+      confirmTime();
+    }
+    function confirmTime(){
+      var h24=_tpAM?(_tpH===12?0:_tpH):(_tpH===12?12:_tpH+12);
+      document.getElementById('as_time').value=String(h24).padStart(2,'0')+':'+String(_tpM).padStart(2,'0');
+      var disp=String(_tpH).padStart(2,'0')+':'+String(_tpM).padStart(2,'0')+' '+(_tpAM?'AM':'PM');
+      document.getElementById('as_time_label').innerHTML='<i class="fas fa-clock" style="color:#c9a84c;margin-right:0.5rem;"></i>'+disp;
+      document.getElementById('as_time_display').style.color='#f0ece0';
+      document.getElementById('as_time_picker').style.display='none';
+    }
+    document.addEventListener('click',function(e){
+      if(!e.target.closest('#as_date_display')&&!e.target.closest('#as_date_picker')){var dp=document.getElementById('as_date_picker');if(dp)dp.style.display='none';}
+      if(!e.target.closest('#as_time_display')&&!e.target.closest('#as_time_picker')){var tp=document.getElementById('as_time_picker');if(tp)tp.style.display='none';}
+    });
 
   </script>
 </body>
