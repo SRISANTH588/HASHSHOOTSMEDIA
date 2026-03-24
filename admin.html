@@ -639,6 +639,7 @@
               <option value="support">🎧 Support</option>
               <option value="custom">⚙️ Custom</option>
             </select>
+            <script>document.getElementById('sf_role').onchange=function(){ document.getElementById('sf_custom_role_wrap').style.display=this.value==='custom'?'block':'none'; };</script>
           </div>
         </div>
         <div class="form-group" id="sf_custom_role_wrap" style="display:none;">
@@ -2278,6 +2279,73 @@
     function clearAllBookings(){ if(!confirm('Delete ALL bookings? This cannot be undone.')) return; localStorage.removeItem('hs_bookings'); loadAll(); }
     function clearAllFeedback(){ if(!confirm('Delete ALL feedback? This cannot be undone.')) return; localStorage.removeItem('hs_feedbacks'); renderFeedbackAdmin(); }
     function clearAllDemos(){ if(!confirm('Delete ALL demo sessions? This cannot be undone.')) return; localStorage.removeItem('hs_demos'); renderDemoAdminList(); }
+    function getStaff(){ return JSON.parse(localStorage.getItem('hs_staff')||'[]'); }
+
+    function toggleAllAccess(cb){
+      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(function(c){ if(c.id!=='sf_access_all') c.checked = cb.checked; });
+    }
+
+    function createStaff(){
+      var name     = document.getElementById('sf_name').value.trim();
+      var username = document.getElementById('sf_username').value.trim();
+      var password = document.getElementById('sf_password').value.trim();
+      var roleVal  = document.getElementById('sf_role').value;
+      var role     = roleVal === 'custom' ? document.getElementById('sf_custom_role').value.trim() : roleVal;
+      var access   = Array.from(document.querySelectorAll('#sf_access_grid input[type=checkbox]:checked')).map(function(c){ return c.value; });
+      var toast    = document.getElementById('sfToast');
+      if(!name||!username||!password||!role){ toast.textContent='Please fill all required fields.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return; }
+      var staff = getStaff();
+      if(staff.find(function(s){ return s.username.toLowerCase()===username.toLowerCase(); })){
+        toast.textContent='Username already exists.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return;
+      }
+      var member = { id: Date.now(), name:name, username:username, password:password, role:role, access:access, createdAt: new Date().toLocaleString() };
+      staff.push(member);
+      localStorage.setItem('hs_staff', JSON.stringify(staff));
+      // Sync to Firestore
+      (async function(){
+        try {
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
+          var fbDb = fbStore.getFirestore(fbApp);
+          await fbStore.setDoc(fbStore.doc(fbDb,'staff',String(member.id)), member);
+        } catch(e){ console.error('staff sync error:',e); }
+      })();
+      document.getElementById('sf_name').value='';
+      document.getElementById('sf_username').value='';
+      document.getElementById('sf_password').value='';
+      document.getElementById('sf_role').value='';
+      document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(function(c){ c.checked=false; });
+      toast.textContent='Staff account created!'; toast.style.display='block'; toast.style.color='#4caf50';
+      setTimeout(function(){ toast.style.display='none'; },3000);
+      renderStaffList();
+    }
+
+    function renderStaffList(){
+      var staff = getStaff();
+      document.getElementById('staffCount').textContent = staff.length + ' member' + (staff.length===1?'':'s');
+      var el = document.getElementById('staffList');
+      if(!staff.length){ el.innerHTML='<div style="text-align:center;padding:2rem;color:#9a9080;">No staff accounts yet.</div>'; return; }
+      el.innerHTML = staff.map(function(s){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+          +'<div>'
+          +'<div style="font-weight:700;color:#fff;font-size:0.92rem;">'+s.name+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">@'+s.username+' &nbsp;·&nbsp; '+s.role+'</div>'
+          +'<div style="font-size:0.72rem;color:#6a6050;margin-top:0.2rem;">Access: '+(s.access&&s.access.length?s.access.join(', '):'none')+'</div>'
+          +'</div>'
+          +'<button onclick="deleteStaff('+s.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Remove</button>'
+          +'</div>';
+      }).join('');
+    }
+
+    function deleteStaff(id){
+      if(!confirm('Delete this staff account?')) return;
+      var staff = getStaff().filter(function(s){ return s.id !== id; });
+      localStorage.setItem('hs_staff', JSON.stringify(staff));
+      renderStaffList();
+    }
+
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 
     function renderCustWallets(){
@@ -3432,7 +3500,7 @@
     (async function initFirebase(){
       try {
         var { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var { getFirestore, collection, onSnapshot, orderBy, query } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var { getFirestore, collection, onSnapshot, orderBy, query, setDoc, doc, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg = {
           apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
           authDomain:'hash-shoots.firebaseapp.com',
@@ -3450,6 +3518,21 @@
         badge.style.cssText='display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;margin-left:0.75rem;';
         badge.innerHTML='<span style="width:6px;height:6px;background:#4caf50;border-radius:50%;display:inline-block;animation:fbPulse 1.5s infinite;"></span> Firebase Live';
         document.querySelector('nav').appendChild(badge);
+
+        // Seed SASIRAM staff account if not exists
+        var staffSnap = await getDocs(collection(fbDb,'staff'));
+        var staffIds = [];
+        staffSnap.forEach(function(d){ staffIds.push(d.id); });
+        if(!staffIds.find(function(id){ return id==='sasiram_staff'; })){
+          await setDoc(doc(fbDb,'staff','sasiram_staff'),{id:'sasiram_staff',name:'SASIRAM',username:'SASIRAM',password:'SASIRAM',role:'manager',access:['all'],createdAt:new Date().toLocaleString()});
+        }
+        // Real-time staff listener — sync from Firestore to localStorage
+        onSnapshot(collection(fbDb,'staff'), function(snap){
+          var fbStaff = [];
+          snap.forEach(function(d){ fbStaff.push(d.data()); });
+          localStorage.setItem('hs_staff', JSON.stringify(fbStaff));
+          if(currentTab==='staff') renderStaffList();
+        });
 
         // Real-time bookings listener — Firestore is source of truth
         onSnapshot(query(collection(fbDb,'bookings'), orderBy('createdAt','desc')), function(snap){

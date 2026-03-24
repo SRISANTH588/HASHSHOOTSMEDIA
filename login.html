@@ -338,25 +338,35 @@
           window.location.href='admin.html'; return;
         }
 
-        // 2. Staff check
-        const staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
-        const staff = staffList.find(s=>s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
-        if(id.toUpperCase()==='SASI' && p==='SASI2468'){
-          localStorage.setItem('hs_role','staff');
-          localStorage.setItem('hs_staff_id','SASI');
-          localStorage.setItem('hs_staff_name','SASI');
-          localStorage.setItem('hs_staff_role','Staff');
-          localStorage.setItem('hs_staff_access',JSON.stringify(['Shoots','Orders','Classes']));
-          window.location.href='staff.html'; return;
+        // 2. Staff check — fetch from Firestore first, fallback to localStorage
+        async function doStaffLogin(){
+          let staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+          try {
+            const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            const fbApp = fbMod.getApps().find(a=>a.name==='login-app') || fbMod.initializeApp(fbCfg,'login-app');
+            const fbDb = fbStore.getFirestore(fbApp);
+            const snap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
+            const fbStaff = [];
+            snap.forEach(d=>fbStaff.push(d.data()));
+            if(fbStaff.length){ staffList = fbStaff; localStorage.setItem('hs_staff', JSON.stringify(fbStaff)); }
+          } catch(e){ console.log('Firestore staff fetch failed, using localStorage'); }
+          const staff = staffList.find(s=>s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
+          if(staff){
+            localStorage.setItem('hs_role','staff');
+            localStorage.setItem('hs_staff_id', staff.id);
+            localStorage.setItem('hs_staff_name', staff.name);
+            localStorage.setItem('hs_staff_role', staff.role);
+            localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||[]));
+            window.location.href='staff.html'; return;
+          }
+          showLoginError('Invalid username or password.');
+          document.getElementById('loginBtn').classList.remove('loading');
+          document.getElementById('loginSpinner').style.display='none';
+          document.getElementById('loginArrow').style.display='block';
         }
-        if(staff){
-          localStorage.setItem('hs_role','staff');
-          localStorage.setItem('hs_staff_id', staff.id);
-          localStorage.setItem('hs_staff_name', staff.name);
-          localStorage.setItem('hs_staff_role', staff.role);
-          localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||[]));
-          window.location.href='staff.html'; return;
-        }
+        doStaffLogin(); return;
 
         // 3. Customer check
         const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
