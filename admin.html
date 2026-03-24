@@ -3126,7 +3126,9 @@
           snap.forEach(function(d){
             if(localIds.includes(d.id)) return;
             var data = d.data();
-            local.push({ id:d.id, name:data.name, phone:data.phone, email:data.email||'', message:'Service: '+data.service+' | Plan: '+(data.plan||'')+' | City: '+data.city+' | Location: '+(data.location||'')+' | Date: '+data.date+' at '+data.time, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            var msg = data.message || '';
+            if(!msg && data.service) msg = 'Service: '+data.service+' | Plan: '+(data.plan||'')+' | City: '+(data.city||'')+' | Location: '+(data.location||'')+' | Date: '+(data.date||'')+' at '+(data.time||'');
+            local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
           localStorage.setItem('hs_enquiries', JSON.stringify(local));
           if(currentTab==='enquiries') renderEnquiries();
