@@ -297,6 +297,144 @@
       </div>
     </div><!-- end tab-vibe -->
 
+  <script>
+  // ── VIBE FUNCTIONS ──────────────────────────────────────────────
+  var _vibeDB = null;
+  function openVibeDB(cb){
+    if(_vibeDB){ cb(_vibeDB); return; }
+    var req = indexedDB.open('hs_vibe_db', 1);
+    req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+    req.onsuccess = function(e){ _vibeDB = e.target.result; cb(_vibeDB); };
+    req.onerror = function(){ cb(null); };
+  }
+  function saveVideoDB(id, blob, cb){
+    openVibeDB(function(db){
+      if(!db){ cb && cb(); return; }
+      var tx = db.transaction('videos','readwrite');
+      tx.objectStore('videos').put({id:id, blob:blob});
+      tx.oncomplete = function(){ cb && cb(); };
+    });
+  }
+  function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
+  function saveVibeItems(items){ localStorage.setItem('hs_vibe', JSON.stringify(items)); }
+  function deleteVibeItem(id){
+    if(!confirm('Delete this vibe item?')) return;
+    openVibeDB(function(db){
+      if(db) db.transaction('videos','readwrite').objectStore('videos').delete(id);
+    });
+    saveVibeItems(getVibeItems().filter(function(i){ return i.id !== id; }));
+    renderVibeAdmin();
+  }
+  function uploadVibeItem(){
+    var title     = document.getElementById('vibe_title').value.trim();
+    var cat       = document.getElementById('vibe_cat').value;
+    var thumbFile = document.getElementById('vibe_thumb').files[0];
+    var videoFile = document.getElementById('vibe_video').files[0];
+    if(!title||!cat){ alert('Please fill title and category.'); return; }
+    if(!videoFile){ alert('Please select a video file.'); return; }
+    var btn = document.getElementById('vibe_upload_btn');
+    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
+    if(pw) pw.style.display='block';
+    var id = Date.now();
+    function finish(videoUrl, thumbUrl){
+      var newItem = {id:id, title:title, category:cat, thumbnail:thumbUrl||'', url:videoUrl, type:'video', addedAt:new Date().toLocaleString()};
+      var items = getVibeItems();
+      items.push(newItem);
+      saveVibeItems(items);
+      document.getElementById('vibe_title').value='';
+      document.getElementById('vibe_cat').value='';
+      document.getElementById('vibe_thumb').value='';
+      document.getElementById('vibe_video').value='';
+      btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+      if(pw) pw.style.display='none';
+      var toast=document.getElementById('vibeToast');
+      if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
+      renderVibeAdmin();
+    }
+    if(window.cloudinaryUpload){
+      (async function(){
+        try {
+          if(pl) pl.textContent='Uploading video to cloud...';
+          var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
+          var thumbUrl = vRes.thumbnail;
+          if(thumbFile){
+            if(pl) pl.textContent='Uploading thumbnail...';
+            var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
+            thumbUrl = tRes.url;
+          }
+          if(pb) pb.style.width='100%';
+          finish(vRes.url, thumbUrl);
+        } catch(e){
+          alert('Upload failed: '+e.message);
+          btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+          if(pw) pw.style.display='none';
+        }
+      })();
+    } else {
+      saveVideoDB(id, videoFile, function(){
+        var localUrl = URL.createObjectURL(videoFile);
+        if(thumbFile){
+          var r = new FileReader();
+          r.onload = function(e){ finish(localUrl, e.target.result); };
+          r.readAsDataURL(thumbFile);
+        } else { finish(localUrl, ''); }
+      });
+    }
+  }
+  function renderVibeAdmin(){
+    var items = getVibeItems().slice().reverse();
+    var grid = document.getElementById('vibeAdminGrid');
+    var countEl = document.getElementById('vibeCount');
+    if(countEl) countEl.textContent = items.length + ' item(s)';
+    if(!items.length){
+      grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>';
+      return;
+    }
+    grid.innerHTML='';
+    items.forEach(function(item){
+      var card = document.createElement('div');
+      card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
+      var mediaHtml = item.thumbnail
+        ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"/>'
+        : '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
+      card.innerHTML = mediaHtml
+        +'<div style="padding:0.75rem;">'
+        +'<div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
+        +'<div style="font-size:0.7rem;color:#c9a84c;font-weight:600;margin-bottom:0.5rem;">'+item.category+'</div>'
+        +'<div style="display:flex;gap:0.4rem;">'
+        +(item.url ? '<button onclick="downloadVibeVideo('+item.id+')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>' : '')
+        +'<button onclick="deleteVibeItem('+item.id+')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+        +'</div></div>';
+      grid.appendChild(card);
+    });
+  }
+  function downloadVibeVideo(id){
+    var item = getVibeItems().find(function(i){ return i.id == id; });
+    if(!item) return;
+    if(item.url){
+      var a = document.createElement('a');
+      a.href = item.url;
+      a.download = (item.title||'vibe_video').replace(/[^a-z0-9]/gi,'_')+'.mp4';
+      a.target = '_blank';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      return;
+    }
+    openVibeDB(function(db){
+      if(!db){ alert('Video not available for download.'); return; }
+      var req = db.transaction('videos','readonly').objectStore('videos').get(id);
+      req.onsuccess = function(){
+        if(!req.result){ alert('Video not found.'); return; }
+        var url = URL.createObjectURL(req.result.blob);
+        var a = document.createElement('a');
+        a.href=url; a.download=(item.title||'vibe_video').replace(/[^a-z0-9]/gi,'_')+'.mp4';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+      };
+    });
+  }
+  </script>
+
     <!-- CUSTOMER PAGE TAB -->
     <div class="tab-panel" id="tab-customer">
 
@@ -1429,6 +1567,27 @@
         #aie_logoSlider:before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
         #aie_logoToggle:checked + #aie_logoSlider:before { transform:translateX(22px); }
       </style>
+
+      <!-- Always-visible Music Upload -->
+      <div style="margin-top:1.25rem;background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.1rem;">
+        <div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.75rem;letter-spacing:1px;">&#127925; ADD MUSIC — Reel cuts to the beat</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:0.75rem;align-items:center;">
+          <div style="position:relative;">
+            <input type="file" id="aie_musicFileEarly" accept="audio/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="aie_onMusicFileEarly(this)"/>
+            <div id="aie_musicLabelEarly" style="background:#111;border:1px dashed rgba(201,168,76,0.3);border-radius:10px;padding:0.6rem 1rem;font-size:0.8rem;color:#9a9080;cursor:pointer;">&#127925; Upload song (MP3 / AAC / WAV)</div>
+          </div>
+          <button onclick="aie_clearMusicEarly()" title="Remove music" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:8px;padding:0.6rem 0.8rem;font-size:0.8rem;cursor:pointer;">&times;</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.65rem;margin-top:0.75rem;align-items:center;">
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_beatSyncEarly" checked style="accent-color:#c9a84c;"> &#9889; Beat-sync cuts</label>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#ccc;cursor:pointer;"><input type="checkbox" id="aie_musicOnlyEarly" style="accent-color:#c9a84c;"> &#128263; Replace original audio</label>
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="font-size:0.72rem;color:#9a9080;">Vol</span>
+            <input type="range" id="aie_musicVolEarly" min="0" max="100" value="80" style="width:80px;accent-color:#c9a84c;" oninput="document.getElementById('aie_musicVolValEarly').textContent=this.value+'%'">
+            <span id="aie_musicVolValEarly" style="font-size:0.72rem;color:#c9a84c;">80%</span>
+          </div>
+        </div>
+      </div>
 
       <button onclick="aie_startProcessing()" id="aie_processBtn" style="margin-top:1rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:12px;padding:0.85rem 2rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.6rem;transition:all 0.2s;box-shadow:0 8px 25px rgba(201,168,76,0.3);" disabled>
         <i class="fas fa-magic"></i> Start AI Processing
@@ -3850,13 +4009,13 @@
       // Apply CSS filter via offscreen canvas trick using filter property
       ctx.filter = fi.css || 'none';
 
-      var startTime = null;
-      var totalFrames = Math.ceil(duration/speed*fps);
+      var totalFrames = Math.ceil(duration / speed * fps);
       var frameCount = 0;
 
       recorder.start();
       video.playbackRate = speed;
-      video.play();
+      var playPromise = video.play();
+      if(playPromise && playPromise.catch) playPromise.catch(function(){ video.muted=true; video.play(); });
 
       function drawFrame(){
         if(video.ended || video.paused && video.currentTime>=duration-0.05){
@@ -3956,7 +4115,19 @@
         ctx.fillStyle=gl; ctx.fillRect(0,0,outW,outH);
       }
 
-      video.onplay = function(){ requestAnimationFrame(drawFrame); };
+      video.onplay = function(){
+        var intervalId = setInterval(function(){
+          if(video.ended || (video.paused && video.currentTime >= duration - 0.1)){
+            clearInterval(intervalId);
+            renderFrame();
+            setTimeout(function(){ recorder.stop(); }, 300);
+            return;
+          }
+          renderFrame();
+          frameCount++;
+          onProgress(Math.min(99, Math.round(frameCount / totalFrames * 100)));
+        }, 1000 / fps);
+      };
     };
 
     video.onerror = function(){ onDone(clip.url, null); };
@@ -4018,40 +4189,56 @@
   }
 
   function aie_onFiles(files){
-    files = Array.from(files);
+    files = Array.from(files).filter(function(f){ return f.type.startsWith('video/'); });
     if(!files.length) return;
-    files.forEach(function(f){
-      aie_clips.push({
-        id: Date.now() + Math.random(),
-        file: f,
-        name: f.name,
-        sizeMB: (f.size/1024/1024).toFixed(1),
-        url: URL.createObjectURL(f),
-        filter: 'cinematic', // will be overridden by AI analysis
-        wmPos: 'bottomRight',
-        format: 'reel',
-        speed: 1,
-        text: '',
-        textPos: 'bottom',
-        grain: true,
-        vignette: true,
-        glow: true,
-        fadein: false,
-        zoomin: false,
-        processed: false,
-        cloudUrl: null,
-        renderedBlob: null
-      });
-    });
+    // Limit: only 1 video at a time
+    if(aie_clips.length >= 1){
+      alert('Please process and download the current video before adding a new one.');
+      document.getElementById('aie_fileInput').value = '';
+      return;
+    }
+    var f = files[0];
+    aie_clips = [{
+      id: Date.now(),
+      file: f,
+      name: f.name,
+      sizeMB: (f.size/1024/1024).toFixed(1),
+      url: URL.createObjectURL(f),
+      filter: 'cinematic',
+      wmPos: document.getElementById('aie_wmPos').value || 'bottomRight',
+      format: document.getElementById('aie_format').value || 'reel',
+      speed: 1,
+      text: '',
+      textPos: 'bottom',
+      grain: true,
+      vignette: true,
+      glow: true,
+      fadein: false,
+      zoomin: false,
+      processed: false,
+      cloudUrl: null,
+      renderedBlob: null
+    }];
     document.getElementById('aie_processBtn').disabled = false;
+    document.getElementById('aie_clipsSection').style.display = 'block';
     aie_renderClips();
-    aie_startProcessing();
+    // Do NOT auto-start — let user click the button
   }
 
   function aie_addMore(){ document.getElementById('aie_fileInput').click(); }
 
   function aie_startProcessing(){
     if(!aie_clips.length) return;
+    // Sync early music inputs to controls panel
+    var bsEarly = document.getElementById('aie_beatSyncEarly');
+    var moEarly = document.getElementById('aie_musicOnlyEarly');
+    var mvEarly = document.getElementById('aie_musicVolEarly');
+    var bs = document.getElementById('aie_beatSync');
+    var mo = document.getElementById('aie_musicOnly');
+    var mv = document.getElementById('aie_musicVol');
+    if(bsEarly && bs) bs.checked = bsEarly.checked;
+    if(moEarly && mo) mo.checked = moEarly.checked;
+    if(mvEarly && mv){ mv.value = mvEarly.value; document.getElementById('aie_musicVolVal').textContent = mvEarly.value+'%'; }
     var btn = document.getElementById('aie_processBtn');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI Making Reel...';
@@ -4255,11 +4442,14 @@
 
   function aie_download(id){
     var c = aie_clips.find(function(x){ return String(x.id)===String(id); });
-    if(!c) return;
+    if(!c){ alert('Clip not found.'); return; }
+    if(!c.processed || !c.url){ alert('Please wait for AI processing to complete before downloading.'); return; }
     var a = document.createElement('a');
-    a.href = c.url; // url is already replaced with rendered blob URL after processing
+    a.href = c.url;
     a.download = 'HS_LUXE_REEL_' + c.name.replace(/\.[^.]+$/,'.webm');
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   }
 
   function aie_downloadFromPreview(){
@@ -4296,17 +4486,18 @@
   function aie_delete(id){
     if(!confirm('Remove this clip?')) return;
     aie_clips = aie_clips.filter(function(c){ return String(c.id)!==String(id); });
-    if(!aie_clips.length){
-      document.getElementById('aie_clipsSection').style.display = 'none';
-      document.getElementById('aie_processBtn').disabled = true;
-      document.getElementById('aie_processBtn').innerHTML = '<i class="fas fa-magic"></i> Start AI Processing';
-    }
+    document.getElementById('aie_clipsSection').style.display = 'none';
+    document.getElementById('aie_processBtn').disabled = true;
+    document.getElementById('aie_processBtn').innerHTML = '<i class="fas fa-magic"></i> Start AI Processing';
+    document.getElementById('aie_fileInput').value = '';
     aie_renderClips();
   }
 
   function aie_exportAll(){
     if(!aie_clips.length) return;
-    aie_clips.forEach(function(c){ aie_download(c.id); });
+    aie_clips.forEach(function(c, i){
+      setTimeout(function(){ aie_download(c.id); }, i * 800);
+    });
   }
   // ── PREMIUM CONTROLS ──────────────────────────────────────────
   function aie_buildFilter(base){
@@ -4383,7 +4574,27 @@
   var aie_musicUrl  = null;
   var aie_beatTimes = [];
 
-  function aie_setFilterOverride(val, btn){
+  function aie_onMusicFileEarly(input){
+    var file = input.files[0]; if(!file) return;
+    aie_musicFile = file;
+    aie_musicUrl  = URL.createObjectURL(file);
+    document.getElementById('aie_musicLabelEarly').innerHTML = '&#127925; <b style="color:#c9a84c;">' + file.name + '</b>';
+    document.getElementById('aie_musicLabelEarly').style.borderColor = 'rgba(201,168,76,0.6)';
+    var lbl = document.getElementById('aie_musicLabel');
+    if(lbl) lbl.innerHTML = '&#127925; <b style="color:#c9a84c;">' + file.name + '</b>';
+    aie_detectBeats(file, function(beats){ aie_beatTimes = beats; });
+  }
+  function aie_clearMusicEarly(){
+    aie_musicFile = null; aie_musicUrl = null; aie_beatTimes = [];
+    document.getElementById('aie_musicLabelEarly').innerHTML = '&#127925; Upload song (MP3 / AAC / WAV)';
+    document.getElementById('aie_musicLabelEarly').style.borderColor = 'rgba(201,168,76,0.3)';
+    document.getElementById('aie_musicFileEarly').value = '';
+    var lbl = document.getElementById('aie_musicLabel');
+    if(lbl) lbl.innerHTML = '&#127925; Upload song (MP3 / AAC / WAV)';
+    var fi = document.getElementById('aie_musicFile');
+    if(fi) fi.value = '';
+  }
+
     aie_filterOverride = val;
     document.querySelectorAll('.aie-filt-btn').forEach(function(b){
       b.style.background='#111'; b.style.borderColor='#333'; b.style.color='#9a9080';
