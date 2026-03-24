@@ -327,23 +327,36 @@
       document.getElementById('planErr').style.display = 'none';
     }
 
-    // Auto-select plan from URL param (e.g. ?plan=Hourly+Plan)
+    // Auto-select plan/service from URL params
     (function(){
       var params = new URLSearchParams(window.location.search);
       var planParam = params.get('plan');
       var serviceParam = params.get('service');
+
       if(planParam){
         var map = { 'Hourly Plan':'hourly', 'Half-Day Plan':'halfday', 'Wedding':'wedding', 'Custom':'custom' };
         var key = map[planParam] || null;
         if(key) setTimeout(function(){ pickPlan(key); }, 100);
       }
+
       if(serviceParam){
+        // Map service name to plan key
+        var svcPlanMap = {
+          'Reel Shoot':'hourly', 'Portrait Session':'hourly',
+          'Wedding Photography':'wedding', 'Product Shoot':'hourly',
+          'Event Coverage':'halfday', 'Food Photography':'hourly'
+        };
+        var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
+          // Select the plan
+          pickPlan(planKey);
+          // Skip plan step, go straight to form
+          bookSelectedPlan();
+          // Set service dropdown
           var sel = document.getElementById('bk_service');
           if(sel){
             for(var i=0;i<sel.options.length;i++){
-              if(sel.options[i].value.toLowerCase().includes(serviceParam.toLowerCase().split('+')[0].toLowerCase()) ||
-                 serviceParam.toLowerCase().includes(sel.options[i].value.toLowerCase().split(' ')[0].toLowerCase())){
+              if(sel.options[i].value === serviceParam || sel.options[i].text === serviceParam){
                 sel.selectedIndex = i; break;
               }
             }
