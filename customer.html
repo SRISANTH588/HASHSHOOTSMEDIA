@@ -374,12 +374,11 @@
     }
 
     function openPlanPreview(serviceName){
-      // Try to find matching plan from hs_customer_page services (format: Name|Price|Description)
-      var parts = [];
-      var svcs = c.services || [];
+      var cfg = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
+      var svcs = cfg.services || [];
       var match = svcs.find(function(s){ return s.split('|')[0].trim() === serviceName; });
-      if(match) parts = match.split('|');
-      var planName = parts[0] || serviceName;
+      var parts = match ? match.split('|') : [];
+      var planName = parts[0] ? parts[0].trim() : serviceName;
       var planPrice = parts[1] ? parts[1].trim() : '';
       var planDesc = parts[2] ? parts[2].trim() : '';
       document.getElementById('ppName').textContent = planName;
