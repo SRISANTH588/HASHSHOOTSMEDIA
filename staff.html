@@ -649,8 +649,8 @@
       <div id="saie_scanWrap" style="display:none;">
         <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.75rem;text-align:center;margin-bottom:1.5rem;">
           <div style="width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.85rem;animation:aie_spin 2s linear infinite;"><i class="fas fa-magic" style="font-size:1.2rem;color:#c9a84c;"></i></div>
-          <div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.3rem;" id="saie_scanLabel">AI Analysing...</div>
-          <div style="font-size:0.72rem;color:#9a9080;margin-bottom:1rem;" id="saie_scanSub">Please wait</div>
+          <div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.3rem;" id="saie_scanLabel">📥 Video received...</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-bottom:1rem;" id="saie_scanSub">AI is making your reel automatically</div>
           <div style="background:#111;border-radius:6px;height:6px;overflow:hidden;">
             <div id="saie_scanBar" style="height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);border-radius:6px;width:0%;transition:width 0.4s;"></div>
           </div>
@@ -2466,6 +2466,8 @@
     });
     document.getElementById('saie_processBtn').disabled = false;
     saie_renderClips();
+    // Auto-start AI processing immediately after upload
+    saie_startProcessing();
   }
   function saie_addMore(){ document.getElementById('saie_fileInput').click(); }
 
@@ -2476,12 +2478,15 @@
     document.getElementById('saie_scanWrap').style.display = 'block';
     document.getElementById('saie_clipsSection').style.display = 'none';
     var steps = [
-      {pct:15, label:'Scanning frames...', sub:'AI detecting scenes'},
-      {pct:35, label:'Applying filter...', sub:'Colour grading'},
-      {pct:55, label:'Auto-cutting...', sub:'Removing dead frames'},
-      {pct:75, label:'Adding LUXE watermark...', sub:'Branding overlay'},
-      {pct:90, label:'Rendering...', sub:'Compiling output'},
-      {pct:100, label:'Done!', sub:'Clips ready to preview'}
+      {pct:8,  label:'📥 Video received...', sub:'Reading file metadata & duration'},
+      {pct:18, label:'🎬 Detecting scenes...', sub:'AI scanning every frame for cuts'},
+      {pct:32, label:'✂️ Smart trimming...', sub:'Removing silences, blurs & dead frames'},
+      {pct:46, label:'🎨 Colour grading...', sub:'Applying ' + (document.getElementById('saie_filter').value||'cinematic') + ' filter'},
+      {pct:58, label:'🎵 Beat syncing...', sub:'Aligning cuts to audio rhythm'},
+      {pct:70, label:'📐 Formatting reel...', sub:'Cropping to 9:16 vertical reel'},
+      {pct:82, label:'💎 Adding LUXE watermark...', sub:'HashShoot Luxe branding overlay'},
+      {pct:93, label:'🚀 Rendering reel...', sub:'Compiling final output'},
+      {pct:100, label:'✅ Reel ready!', sub:'Your AI reel has been created'}
     ];
     var i=0;
     function run(){

@@ -1434,8 +1434,8 @@
     <div id="aie_scanWrap" style="display:none;">
       <div style="background:var(--card);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:2rem;text-align:center;margin-bottom:1.5rem;">
         <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.05));border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;animation:aie_spin 2s linear infinite;"><i class="fas fa-magic" style="font-size:1.5rem;color:#c9a84c;"></i></div>
-        <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;" id="aie_scanLabel">AI Analysing Videos...</div>
-        <div style="font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;" id="aie_scanSub">Detecting scenes, applying filters &amp; adding watermark</div>
+        <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;" id="aie_scanLabel">📥 Video received...</div>
+        <div style="font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;" id="aie_scanSub">AI is making your reel automatically</div>
         <div style="background:#111;border-radius:8px;height:8px;overflow:hidden;max-width:400px;margin:0 auto;">
           <div id="aie_scanBar" style="height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);border-radius:8px;width:0%;transition:width 0.4s;"></div>
         </div>
@@ -3702,6 +3702,8 @@
     });
     document.getElementById('aie_processBtn').disabled = false;
     aie_renderClips();
+    // Auto-start AI processing immediately after upload
+    aie_startProcessing();
   }
   function aie_addMore(){
     document.getElementById('aie_fileInput').click();
@@ -3716,13 +3718,15 @@
     document.getElementById('aie_clipsSection').style.display = 'none';
 
     var steps = [
-      {pct:10, label:'Scanning video frames...', sub:'AI detecting scenes & cuts'},
-      {pct:25, label:'Applying AI filter...', sub:'Colour grading with selected preset'},
-      {pct:45, label:'Auto-cutting dead frames...', sub:'Removing silences & blurry segments'},
-      {pct:65, label:'Adding HashShoot Luxe watermark...', sub:'Branding overlay positioned'},
-      {pct:80, label:'Enhancing audio levels...', sub:'Normalising background noise'},
-      {pct:92, label:'Rendering final output...', sub:'Compiling all clips'},
-      {pct:100, label:'Done! Clips ready.', sub:'All videos processed successfully'}
+      {pct:8,  label:'📥 Video received...', sub:'Reading file metadata & duration'},
+      {pct:18, label:'🎬 Detecting scenes...', sub:'AI scanning every frame for cuts'},
+      {pct:32, label:'✂️ Smart trimming...', sub:'Removing silences, blurs & dead frames'},
+      {pct:46, label:'🎨 Colour grading...', sub:'Applying ' + (document.getElementById('aie_filter').value||'cinematic') + ' filter'},
+      {pct:58, label:'🎵 Beat syncing...', sub:'Aligning cuts to audio rhythm'},
+      {pct:70, label:'📐 Formatting reel...', sub:'Cropping to ' + aie_formatLabel(document.getElementById('aie_format').value)},
+      {pct:82, label:'💎 Adding LUXE watermark...', sub:'HashShoot Luxe branding overlay'},
+      {pct:93, label:'🚀 Rendering reel...', sub:'Compiling final output'},
+      {pct:100, label:'✅ Reel ready!', sub:'Your AI reel has been created'}
     ];
     var i = 0;
     function runStep(){
