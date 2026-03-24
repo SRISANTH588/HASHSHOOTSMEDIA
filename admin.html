@@ -1179,6 +1179,7 @@
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-envelope" style="color:#c9a84c;margin-right:0.5rem;"></i> Customer Enquiries</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
             <span style="font-size:0.8rem;color:#9a9080;" id="enquiriesCount"></span>
+            <button onclick="fetchFirebaseEnquiries()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
             <button onclick="clearAllEnquiries()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
           </div>
         </div>
@@ -1621,7 +1622,7 @@
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') renderStaffList();
       if (tab === 'cwallets') renderCustWallets();
-      if (tab === 'enquiries') renderEnquiries();
+      if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'notifications') renderNotifications();
       if (tab === 'blog') { renderBlogList(); }
       if (tab === 'press') { renderPressList(); loadPressStats(); }
@@ -2815,6 +2816,30 @@
     }
     // ENQUIRIES
     function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
+
+    async function fetchFirebaseEnquiries(){
+      try {
+        var { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var { getFirestore, collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg = { apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE', authDomain:'hash-shoots.firebaseapp.com', projectId:'hash-shoots', storageBucket:'hash-shoots.firebasestorage.app', messagingSenderId:'1093054616221', appId:'1:1093054616221:web:55bdebafc895acfd04fa74' };
+        var existing = getApps().find(function(a){ return a.name==='admin-app'; });
+        var fbApp = existing || initializeApp(fbCfg,'admin-app');
+        var fbDb = getFirestore(fbApp);
+        var snap = await getDocs(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')));
+        var local = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+        var localIds = local.map(function(e){ return String(e.id); });
+        snap.forEach(function(d){
+          if(localIds.includes(d.id)) return;
+          var data = d.data();
+          var msg = data.message || '';
+          if(!msg) msg = 'Service: '+(data.service||'')+(data.city?' | City: '+data.city:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
+          local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          localIds.push(d.id);
+        });
+        localStorage.setItem('hs_enquiries', JSON.stringify(local));
+      } catch(e){ console.log('Firebase fetch error:',e); }
+      renderEnquiries();
+    }
 
     function renderEnquiries(){
       var list = getEnquiries().slice().reverse();
