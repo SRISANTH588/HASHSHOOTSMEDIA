@@ -329,7 +329,7 @@
       document.getElementById('loginSpinner').style.display='block';
       document.getElementById('loginArrow').style.display='none';
 
-      setTimeout(()=>{
+      setTimeout(async ()=>{
         // 1. Admin check
         const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
         if(id.toUpperCase()==='SRISANTH' && p===correctPass){
@@ -362,7 +362,7 @@
             window.location.href='staff.html'; return;
           }
           // Not a staff — try customer login
-          doCustomerLogin();
+          await doCustomerLogin();
         }
 
         // 3. Customer check — fetch from Firestore first
@@ -408,7 +408,8 @@
         }
 
 
-        showLoginError('Invalid credentials. Please try again.');
+        await doStaffLogin();
+
       }, 1000);
     }
 
