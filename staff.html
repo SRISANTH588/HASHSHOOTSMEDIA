@@ -245,6 +245,7 @@
     }
   </style>
 <script type="module" src="hs-firebase.js"></script>
+<script src="hs-cloudinary.js"></script>
 </head>
 <body>
 
@@ -775,25 +776,33 @@
       var btn = document.getElementById('uploadBtn');
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-      setUploadProgress(10, 'Saving to storage...');
+      setUploadProgress(5, 'Uploading to cloud...');
 
-      var id = Date.now();
       var staffId = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
 
-      saveVideoDB(id, selectedVideoFile, function(){
-        setUploadProgress(80, 'Finalising...');
-        var videos = getStaffVideos();
-        videos.push({
+      // Upload to Cloudinary
+      cloudinaryUpload(selectedVideoFile, 'staff_videos', function(pct){
+        setUploadProgress(pct, 'Uploading... ' + pct + '%');
+      }).then(function(result){
+        setUploadProgress(100, 'Done!');
+        var id = Date.now();
+        var videoData = {
           id: id, title: title, category: category,
           shootDate: shootDate, shootTime: shootTime,
           staffId: staffId, staffName: staffName,
           fileName: selectedVideoFile.name,
           sizeMB: (selectedVideoFile.size/1024/1024).toFixed(1),
-          uploadedAt: new Date().toLocaleString()
-        });
+          uploadedAt: new Date().toLocaleString(),
+          cloudUrl: result.url,
+          thumbnail: result.thumbnail
+        };
+        // Save to localStorage
+        var videos = getStaffVideos();
+        videos.push(videoData);
         saveStaffVideos(videos);
-        setUploadProgress(100, 'Done!');
+        // Save to Firebase so admin sees it
+        if(window.fbSave) fbSave('staff_videos', videoData);
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
         document.getElementById('uploadTitle').value = '';
@@ -806,6 +815,10 @@
         toast.style.display = 'block';
         setTimeout(function(){ toast.style.display = 'none'; }, 3000);
         renderMyVideos();
+      }).catch(function(err){
+        alert('Upload failed: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
       });
     }
 
@@ -828,19 +841,31 @@
           + '<div class="video-thumb-meta">' + v.uploadedAt + '</div>'
           + '</div>'
           + '<button class="video-thumb-del" onclick="deleteStaffVideo(' + v.id + ')" title="Delete"><i class="fas fa-times"></i></button>';
-        // Load actual video from IndexedDB
-        getVideoDB(v.id, function(blob){
-          if(blob){
-            var url = URL.createObjectURL(blob);
-            var placeholder = card.querySelector('div');
+        // Load video from Cloudinary URL or IndexedDB fallback
+        if(v.cloudUrl){
+          var placeholder = card.querySelector('div');
+          if(placeholder && placeholder.tagName !== 'VIDEO'){
             var vid = document.createElement('video');
-            vid.src = url;
+            vid.src = v.cloudUrl;
             vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;';
-            vid.controls = true;
-            vid.preload = 'metadata';
+            vid.controls = true; vid.preload = 'metadata';
             card.replaceChild(vid, placeholder);
           }
-        });
+        } else {
+          getVideoDB(v.id, function(blob){
+            if(blob){
+              var url = URL.createObjectURL(blob);
+              var placeholder = card.querySelector('div');
+              if(placeholder && placeholder.tagName !== 'VIDEO'){
+                var vid = document.createElement('video');
+                vid.src = url;
+                vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;';
+                vid.controls = true; vid.preload = 'metadata';
+                card.replaceChild(vid, placeholder);
+              }
+            }
+          });
+        }
         grid.appendChild(card);
       });
     }

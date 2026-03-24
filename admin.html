@@ -94,6 +94,7 @@
     .save-toast{display:none;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin-top:1rem;}
   </style>
 <script type="module" src="hs-firebase.js"></script>
+<script src="hs-cloudinary.js"></script>
 </head>
 <body>
   <nav>
@@ -1810,17 +1811,22 @@
             : '<button onclick="pushStaffVideoToVibe('+v.id+')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
           +'<button onclick="adminDeleteStaffVideo('+v.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
-        openAdminVideoDB(function(db){
-          if(!db) return;
-          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-          req.onsuccess = function(){
-            if(req.result && req.result.blob){
-              var url = URL.createObjectURL(req.result.blob);
-              var placeholder = document.getElementById('svp_'+v.id);
-              if(placeholder){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; placeholder.replaceWith(vid); }
-            }
-          };
-        });
+        if(v.cloudUrl){
+          var ph = document.getElementById('svp_'+v.id);
+          if(ph){ var vid2=document.createElement('video'); vid2.src=v.cloudUrl; vid2.controls=true; vid2.preload='metadata'; vid2.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid2); }
+        } else {
+          openAdminVideoDB(function(db){
+            if(!db) return;
+            var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+            req.onsuccess = function(){
+              if(req.result && req.result.blob){
+                var url = URL.createObjectURL(req.result.blob);
+                var placeholder = document.getElementById('svp_'+v.id);
+                if(placeholder){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; placeholder.replaceWith(vid); }
+              }
+            };
+          });
+        }
         grid.appendChild(card);
       });
     }
@@ -3298,6 +3304,41 @@
               if(currentTab==='bookings') loadAll();
             }
           });
+        });
+
+        // Real-time Vibe items — sync to all customer pages
+        onSnapshot(collection(fbDb,'vibe_items'), function(snap){
+          var items = [];
+          snap.forEach(function(d){ items.push(Object.assign({id:d.id}, d.data())); });
+          localStorage.setItem('hs_vibe', JSON.stringify(items));
+          if(currentTab==='vibe') renderVibeAdmin();
+        });
+
+        // Real-time testimonial videos metadata
+        onSnapshot(collection(fbDb,'testimonial_videos'), function(snap){
+          var items = [];
+          snap.forEach(function(d){ items.push(Object.assign({id:d.id}, d.data())); });
+          localStorage.setItem('hs_testi_videos', JSON.stringify(items));
+        });
+
+        // Real-time staff videos from Cloudinary
+        onSnapshot(query(collection(fbDb,'staff_videos'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+          var ids = local.map(function(v){ return String(v.id||''); });
+          snap.forEach(function(d){
+            var data = d.data();
+            var vid = Object.assign({_fbId:d.id}, data);
+            if(!ids.includes(String(vid.id||d.id))){
+              if(!vid.id) vid.id = d.id;
+              local.push(vid);
+            } else {
+              // Update cloudUrl if missing
+              var idx = local.findIndex(function(v){ return String(v.id) === String(vid.id||d.id); });
+              if(idx>-1 && !local[idx].cloudUrl && vid.cloudUrl) local[idx].cloudUrl = vid.cloudUrl;
+            }
+          });
+          localStorage.setItem('hs_staff_videos', JSON.stringify(local));
+          if(currentTab==='videos') renderStaffVideosAdmin();
         });
 
         // Real-time career applications listener
