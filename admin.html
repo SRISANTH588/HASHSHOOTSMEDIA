@@ -682,8 +682,10 @@
             <select id="as_booking" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select a booking</option></select>
           </div>
           <div class="form-group">
-            <label>Assign To (Creator) *</label>
-            <select id="as_staff" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="" disabled selected>Select staff member</option></select>
+            <label>Assign To (Creators) * <span style="font-size:0.68rem;color:#4caf50;font-weight:600;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-users"></i> Multi-select</span></label>
+            <div id="as_staff_list" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem;max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:0.5rem;">
+              <div style="color:#9a9080;font-size:0.82rem;">Loading staff...</div>
+            </div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
@@ -696,9 +698,10 @@
             <input type="time" id="as_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           </div>
           <div class="form-group">
-            <label>Payout Amount (₹) * <span style="font-size:0.68rem;color:#ff9800;font-weight:600;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-eye-slash"></i> Hidden from Creator</span></label>
-            <input type="number" id="as_credit" placeholder="e.g. 1500" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
-            <span style="font-size:0.72rem;color:#9a9080;margin-top:0.25rem;">This amount is only visible to admin. Creator sees their wallet balance after you release payment.</span>
+            <label>Total Payout Amount (₹) * <span style="font-size:0.68rem;color:#ff9800;font-weight:600;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);padding:0.15rem 0.5rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-eye-slash"></i> Hidden from Creator</span></label>
+            <input type="number" id="as_credit" placeholder="e.g. 1500" oninput="updatePayoutPreview()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+            <div id="as_payout_preview" style="display:none;margin-top:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.78rem;color:#c9a84c;font-weight:700;"></div>
+            <span style="font-size:0.72rem;color:#9a9080;margin-top:0.25rem;">Split equally among selected creators.</span>
           </div>
         </div>
         <div class="form-group">
@@ -2240,66 +2243,91 @@
       setTimeout(function(){ t.style.display='none'; }, 3000);
     }
 
+    function getSelectedCreators(){
+      return Array.from(document.querySelectorAll('#as_staff_list input[type=checkbox]:checked')).map(function(cb){ return cb.value; });
+    }
+
+    function updatePayoutPreview(){
+      var total = Number(document.getElementById('as_credit').value) || 0;
+      var selected = getSelectedCreators();
+      var preview = document.getElementById('as_payout_preview');
+      if(!total || !selected.length){ preview.style.display='none'; return; }
+      var each = Math.floor(total / selected.length);
+      preview.style.display = 'block';
+      preview.innerHTML = '<i class="fas fa-divide"></i> \u20b9' + total + ' \u00f7 ' + selected.length + ' creator' + (selected.length>1?'s':'') + ' = <strong>\u20b9' + each + ' each</strong>';
+    }
+
     function assignShoot(){
-      var bookingId = Number(document.getElementById('as_booking').value);
-      var staffId   = document.getElementById('as_staff').value;
-      var date      = document.getElementById('as_date').value;
-      var time      = document.getElementById('as_time').value;
-      var credit    = Number(document.getElementById('as_credit').value);
-      var notes     = document.getElementById('as_notes').value.trim();
-      if(!bookingId||!staffId||!date||!time){ showAssignToast('Please fill all required fields.', false); return; }
-      if(!credit) credit = 0;
+      var bookingId   = Number(document.getElementById('as_booking').value);
+      var selectedIds = getSelectedCreators();
+      var date        = document.getElementById('as_date').value;
+      var time        = document.getElementById('as_time').value;
+      var totalCredit = Number(document.getElementById('as_credit').value) || 0;
+      var notes       = document.getElementById('as_notes').value.trim();
+
+      if(!bookingId || !selectedIds.length || !date || !time){
+        showAssignToast('Please select a booking, at least one creator, date and time.', false); return;
+      }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var booking  = bookings.find(function(b){ return b.id===bookingId; });
-      var staffMember = getStaff().find(function(s){ return s.id==staffId; });
-
-      // Save assignment
+      var allStaff = getStaff();
+      var splitCredit = Math.floor(totalCredit / selectedIds.length);
       var assigned = getAssignedShoots();
-      assigned.push({
-        id: Date.now(),
-        bookingId: bookingId,
-        staffId: Number(staffId),
-        staffName: staffMember ? staffMember.name : 'Unknown',
-        staffPhone: staffMember ? (staffMember.phone || '') : '',
-        staffEmail: staffMember ? (staffMember.email || '') : '',
-        service: booking ? booking.service : '',
-        clientName: booking ? booking.name : '',
-        clientPhone: booking ? booking.phone : '',
-        city: booking ? booking.city : '',
-        location: booking ? (booking.location || booking.city) : '',
-        date: date, time: time, credit: credit, notes: notes,
-        status: 'assigned',
-        assignedAt: new Date().toLocaleString()
+      var names = [];
+
+      selectedIds.forEach(function(staffId, idx){
+        var staffMember = allStaff.find(function(s){ return s.id == staffId; });
+        names.push(staffMember ? staffMember.name : 'Unknown');
+
+        assigned.push({
+          id: Date.now() + idx,
+          bookingId: bookingId,
+          staffId: Number(staffId),
+          staffName: staffMember ? staffMember.name : 'Unknown',
+          staffPhone: staffMember ? (staffMember.phone || '') : '',
+          staffEmail: staffMember ? (staffMember.email || '') : '',
+          service: booking ? booking.service : '',
+          clientName: booking ? booking.name : '',
+          clientPhone: booking ? booking.phone : '',
+          city: booking ? booking.city : '',
+          location: booking ? (booking.location || booking.city) : '',
+          date: date, time: time, credit: splitCredit, notes: notes,
+          totalCreators: selectedIds.length,
+          status: 'assigned',
+          assignedAt: new Date().toLocaleString()
+        });
+
+        var walletKey = 'hs_wallet_' + staffId;
+        var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+        wallet.pending = (wallet.pending || 0) + splitCredit;
+        wallet.transactions.push({
+          type: 'pending', amount: splitCredit,
+          label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
+          note: (booking ? booking.name + ' \u2014 ' + booking.city : '') + (selectedIds.length > 1 ? ' (Split \u20b9'+totalCredit+' \u00f7 '+selectedIds.length+')' : ''),
+          date: new Date().toLocaleString()
+        });
+        localStorage.setItem(walletKey, JSON.stringify(wallet));
+
+        var staffList = getStaff();
+        var sm = staffList.find(function(s){ return s.id == staffId; });
+        if(sm){ sm.shootCredit = splitCredit; saveStaff(staffList); }
       });
+
       saveAssignedShoots(assigned);
 
-      // Credit staff wallet — goes to PENDING until admin releases
-      var walletKey = 'hs_wallet_' + staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.pending = (wallet.pending || 0) + credit;
-      wallet.transactions.push({
-        type: 'pending', amount: credit,
-        label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
-        note: (booking ? booking.name + ' — ' + booking.city : ''),
-        date: new Date().toLocaleString()
-      });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-
-      // Update staff shootCredit
-      var staffList = getStaff();
-      var sm = staffList.find(function(s){ return s.id==staffId; });
-      if(sm){ sm.shootCredit = credit; saveStaff(staffList); }
-
-      // Reset form
       document.getElementById('as_booking').value='';
-      document.getElementById('as_staff').value='';
       document.getElementById('as_date').value='';
       document.getElementById('as_time').value='';
       document.getElementById('as_credit').value='';
       document.getElementById('as_notes').value='';
+      document.querySelectorAll('#as_staff_list input[type=checkbox]').forEach(function(cb){ cb.checked=false; });
+      document.getElementById('as_payout_preview').style.display='none';
 
-      showAssignToast('Shoot assigned to ' + (staffMember?staffMember.name:'staff') + ' with \u20b9' + credit + ' credit!', true);
+      var msg = selectedIds.length > 1
+        ? 'Shoot assigned to ' + names.join(', ') + '. \u20b9' + totalCredit + ' split equally (\u20b9' + splitCredit + ' each)!'
+        : 'Shoot assigned to ' + names[0] + ' with \u20b9' + splitCredit + ' credit!';
+      showAssignToast(msg, true);
       renderAssignedList();
     }
 
