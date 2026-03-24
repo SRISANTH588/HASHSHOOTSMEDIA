@@ -640,9 +640,9 @@
 
     function loadBookings() {
       if(c.showBookings === 'no') return;
-      // Fetch bookings from Firestore so cross-device status (confirmed etc.) is always fresh
       var userEmail = localStorage.getItem('hs_user') || '';
       var userPhone = localStorage.getItem('hs_customer_phone') || '';
+      var userName  = localStorage.getItem('hs_customer_name') || '';
       (async function(){
         try {
           var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -650,20 +650,26 @@
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var fbApp = fbMod.getApps().find(a=>a.name==='cust') || fbMod.initializeApp(fbCfg,'cust');
           var fbDb = fbStore.getFirestore(fbApp);
+
+          // Fetch Razorpay config from Firestore so it works cross-device
+          var rpSnap = await fbStore.getDocs(fbStore.collection(fbDb,'razorpay_config'));
+          rpSnap.forEach(function(d){ localStorage.setItem('hs_razorpay', JSON.stringify(d.data())); });
+
+          // Fetch bookings
           var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')));
           var fbBookings = [];
           snap.forEach(function(d){
             var data = d.data();
-            // Only show bookings belonging to this customer
-            if(data.email === userEmail || data.phone === userPhone || !userEmail) {
-              fbBookings.push(Object.assign({id:d.id}, data));
-            }
+            var match = (userEmail && data.email === userEmail)
+                     || (userPhone && data.phone === userPhone)
+                     || (userName && data.name && data.name.toLowerCase() === userName.toLowerCase());
+            if(match) fbBookings.push(Object.assign({id:d.id}, data));
           });
-          // Merge with localStorage (same-device bookings not yet in Firestore)
+          // Merge local bookings not yet in Firestore
           var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
           var fbIds = fbBookings.map(b=>String(b.id));
           local.forEach(function(b){ if(!fbIds.includes(String(b.id))) fbBookings.push(b); });
-          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+          if(fbBookings.length) localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
         } catch(e){ console.log('loadBookings Firestore error:',e); }
         _renderBookings();
       })();
@@ -786,16 +792,28 @@
           payments.push({ id: Date.now(), bookingId: bookingId, paymentId: response.razorpay_payment_id, customerName: b.name, service: b.service, amount: amount/100, paidAt: new Date().toLocaleString() });
           localStorage.setItem('hs_payments', JSON.stringify(payments));
           b.paymentStatus = 'paid';
+          b.status = 'confirmed';
           b.paymentId = response.razorpay_payment_id;
           localStorage.setItem('hs_bookings', JSON.stringify(bookings));
           _syncPayment(bookingId, 'paid', response.razorpay_payment_id, amount/100, b.name, b.service);
           _renderBookings();
-          // Show success banner
-          var banner = document.createElement('div');
-          banner.style.cssText='position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);background:rgba(76,175,80,0.95);color:#fff;padding:1rem 2rem;border-radius:12px;font-weight:800;font-size:0.95rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.5);display:flex;align-items:center;gap:0.6rem;';
-          banner.innerHTML='<i class="fas fa-check-circle"></i> Payment Successful! ID: '+response.razorpay_payment_id;
-          document.body.appendChild(banner);
-          setTimeout(function(){ banner.remove(); }, 5000);
+          // Show full-screen success modal
+          var modal = document.createElement('div');
+          modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1.5rem;';
+          modal.innerHTML=`
+            <div style="background:#0f0f0f;border:1px solid rgba(76,175,80,0.4);border-radius:20px;padding:2.5rem 2rem;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+              <div style="width:70px;height:70px;background:rgba(76,175,80,0.15);border:2px solid #4caf50;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+                <i class="fas fa-check" style="font-size:1.8rem;color:#4caf50;"></i>
+              </div>
+              <div style="font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:0.5rem;">Booking Confirmed!</div>
+              <div style="font-size:0.88rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.6;">Your payment of <strong style="color:#c9a84c;">&#8377;${(amount/100).toLocaleString('en-IN')}</strong> was successful.<br/>Our team will be in touch shortly.</div>
+              <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#9a9080;margin-bottom:1.5rem;text-align:left;">
+                <div><span style="color:#6a6050;">Service:</span> <strong style="color:#f0ece0;">${b.service}</strong></div>
+                <div style="margin-top:0.3rem;"><span style="color:#6a6050;">Payment ID:</span> <span style="color:#c9a84c;font-size:0.72rem;">${response.razorpay_payment_id}</span></div>
+              </div>
+              <button onclick="this.closest('div[style*=fixed]').remove()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.85rem;border-radius:12px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;">Done</button>
+            </div>`;
+          document.body.appendChild(modal);
         },
         modal: {
           ondismiss: function(){

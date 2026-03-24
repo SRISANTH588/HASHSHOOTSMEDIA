@@ -3072,6 +3072,11 @@
         enabled:       document.getElementById('rp_enabled').checked
       };
       localStorage.setItem('hs_razorpay', JSON.stringify(cfg));
+      // Sync to Firestore so customers can fetch it cross-device
+      (async()=>{
+        var f = await _fbAdmin(); if(!f) return;
+        try{ await f.s.setDoc(f.s.doc(f.db,'razorpay_config','config'), cfg, {merge:true}); }catch(e){}
+      })();
       var toast = document.getElementById('rpToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display = 'none'; }, 3000);
