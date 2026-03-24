@@ -361,17 +361,13 @@
             localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||[]));
             window.location.href='staff.html'; return;
           }
-          showLoginError('Invalid username or password.');
-          document.getElementById('loginBtn').classList.remove('loading');
-          document.getElementById('loginSpinner').style.display='none';
-          document.getElementById('loginArrow').style.display='block';
+          // Not a staff — try customer login
+          doCustomerLogin();
         }
-        doStaffLogin(); return;
 
         // 3. Customer check — fetch from Firestore first
         async function doCustomerLogin(){
           let cust = null;
-          // Try Firestore first
           try{
             const fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
             const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -381,7 +377,6 @@
             const snap = await fbStore.getDoc(fbStore.doc(fbDb,'customers',id));
             if(snap.exists()) cust = snap.data();
           }catch(e){ console.log('customer Firestore login error:',e); }
-          // Fallback to localStorage
           if(!cust){
             const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
             cust = customers.find(c=>c.email===id) || null;
@@ -402,7 +397,6 @@
             localStorage.setItem('hs_customer_name', cust.name);
             localStorage.setItem('hs_customer_phone', cust.phone||'');
             localStorage.setItem('hs_customer_wallet', localStorage.getItem('hs_customer_wallet')||'500');
-            // Sync to localStorage for offline use
             const customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
             if(!customers.find(c=>c.email===cust.email)){ customers.push(cust); localStorage.setItem('hs_customers',JSON.stringify(customers)); }
             window.location.href='index.html'; return;
@@ -412,7 +406,7 @@
           document.getElementById('loginSpinner').style.display='none';
           document.getElementById('loginArrow').style.display='block';
         }
-        doCustomerLogin(); return;
+
 
         showLoginError('Invalid credentials. Please try again.');
       }, 1000);
