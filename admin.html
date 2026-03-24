@@ -3805,15 +3805,213 @@
           if(currentTab==='affiliates') renderAffiliateApps();
         });
 
+        // Real-time enquiries listener — Firestore is source of truth
+        onSnapshot(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')), function(snap){
+          var fbEnquiries = [];
+          snap.forEach(function(d){
+            var data = d.data();
+            var msg = data.message || '';
+            if(!msg && data.service) msg = 'Service: '+data.service+(data.plan?' | Plan: '+data.plan:'')+(data.city?' | City: '+data.city:'')+(data.location?' | Location: '+data.location:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
+            fbEnquiries.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          });
+          localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
+          if(currentTab==='enquiries') renderEnquiries();
+          updateEnquiriesNotifBadge();
+        });
+
+
+        // Real-time assigned_shoots listener
+        onSnapshot(collection(fbDb,'assigned_shoots'), function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(d.data()); });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+          if(currentTab==='assign') renderAssignedList();
+        });
+
+        // Real-time payout_requests listener
+        onSnapshot(query(collection(fbDb,'payout_requests'), orderBy('createdAt','desc')), function(snap){
+          var local = JSON.parse(localStorage.getItem('hs_payout_requests')||'[]');
+          var fbIds = [];
+          snap.forEach(function(d){ fbIds.push(d.id); });
+          snap.forEach(function(d){
+            var data = d.data();
+            var idx = local.findIndex(function(x){ return String(x.id)===d.id; });
+            if(idx>-1){ local[idx] = Object.assign(local[idx], data); }
+            else { local.push(Object.assign({id:d.id},data)); }
+          });
+          localStorage.setItem('hs_payout_requests', JSON.stringify(local));
+          updateWithdrawBadge();
+          if(currentTab==='withdraw') renderWithdrawList();
+        });
+
         // Real-time payment notifications from customers
         onSnapshot(query(collection(fbDb,'admin_notifications'), orderBy('createdAt','desc')), function(snap){
           snap.docChanges().forEach(function(change){
-            if(change.type === 'added'){
+            if(change.type==='added'){
               var data = change.doc.data();
-              if(!data.read){
-                pushNotif('booking', data.title || 'Payment Received', data.message || 'New payment received', 'bookings');
-              }
+              if(!data.read) pushNotif('booking', data.title||'Payment Received', data.message||'New payment received', 'bookings');
             }
           });
         });
 
+      } catch(e){ console.log('Firebase admin error:',e); }
+    })();
+
+    // Override saveVibeItems to sync to Firebase
+    var _origSaveVibe = null;
+    var _vibeOverrideInterval = setInterval(function(){
+      if(typeof saveVibeItems !== 'undefined' && !_origSaveVibe){
+        _origSaveVibe = saveVibeItems;
+        window.saveVibeItems = function(items){
+          localStorage.setItem('hs_vibe', JSON.stringify(items));
+          // Sync to Firebase
+          (async function(){
+            try {
+              var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+              var fbStore2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+              var fbCfg2 = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+              var apps2 = fbMod2.getApps();
+              var app2  = apps2.find(function(a){return a.name==='vibe-save';}) || fbMod2.initializeApp(fbCfg2,'vibe-save');
+              var db2   = fbStore2.getFirestore(app2);
+              for(var i=0;i<items.length;i++){
+                var item = items[i];
+                if(item.id) await fbStore2.setDoc(fbStore2.doc(db2,'vibe_items',String(item.id)), Object.assign({},item,{updatedAt:fbStore2.serverTimestamp()}),{merge:true});
+              }
+            } catch(e2){ console.error('Vibe Firebase sync:',e2); }
+          })();
+        };
+        clearInterval(_vibeOverrideInterval);
+        console.log('[Admin] saveVibeItems overridden with Firebase sync');
+      }
+    }, 500);
+
+    // Override uploadVibeItem to use Cloudinary
+    var _vibeUploadInterval = setInterval(function(){
+      if(typeof uploadVibeItem !== 'undefined' && typeof cloudinaryUpload !== 'undefined'){
+        window.uploadVibeItem = async function(){
+          var title     = document.getElementById('vibe_title').value.trim();
+          var cat       = document.getElementById('vibe_cat').value;
+          var thumbFile = document.getElementById('vibe_thumb').files[0];
+          var videoFile = document.getElementById('vibe_video').files[0];
+          if(!title||!cat){ alert('Please fill title and category.'); return; }
+          if(!videoFile){ alert('Please select a video file.'); return; }
+          var btn = document.getElementById('vibe_upload_btn');
+          btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+          var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
+          if(pw) pw.style.display='block';
+          try {
+            if(pl) pl.textContent='Uploading video to cloud...';
+            var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
+            var thumbUrl = vRes.thumbnail;
+            if(thumbFile){
+              if(pl) pl.textContent='Uploading thumbnail...';
+              var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
+              thumbUrl = tRes.url;
+            }
+            if(pb) pb.style.width='100%';
+            var id = Date.now();
+            var newItem = {id:id,title:title,category:cat,thumbnail:thumbUrl,url:vRes.url,type:'video',addedAt:new Date().toLocaleString()};
+            var items = JSON.parse(localStorage.getItem('hs_vibe')||'[]');
+            items.push(newItem);
+            window.saveVibeItems(items);
+            document.getElementById('vibe_title').value='';
+            document.getElementById('vibe_cat').value='';
+            document.getElementById('vibe_thumb').value='';
+            document.getElementById('vibe_video').value='';
+            btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+            if(pw) pw.style.display='none';
+            var toast=document.getElementById('vibeToast');
+            if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
+            renderVibeAdmin();
+          } catch(e){
+            alert('Upload failed: '+e.message);
+            btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+          }
+        };
+        clearInterval(_vibeUploadInterval);
+        console.log('[Admin] uploadVibeItem overridden with Cloudinary');
+      }
+    }, 500);
+
+    // ── ADVANCED DATE PICKER ──────────────────────────────────────────
+    var _calYear, _calMonth, _selDate;
+    (function(){ var n=new Date(); _calYear=n.getFullYear(); _calMonth=n.getMonth(); })();
+
+    function toggleDatePicker(){
+      var p=document.getElementById('as_date_picker');
+      var tp=document.getElementById('as_time_picker');
+      if(tp) tp.style.display='none';
+      p.style.display = p.style.display==='none' ? 'block' : 'none';
+      if(p.style.display==='block') renderCalendar();
+    }
+    function calNav(dir){
+      _calMonth+=dir;
+      if(_calMonth>11){_calMonth=0;_calYear++;}
+      if(_calMonth<0){_calMonth=11;_calYear--;}
+      renderCalendar();
+    }
+    function renderCalendar(){
+      var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('cal_month_label').textContent=months[_calMonth]+' '+_calYear;
+      var first=new Date(_calYear,_calMonth,1).getDay();
+      var days=new Date(_calYear,_calMonth+1,0).getDate();
+      var today=new Date(); today.setHours(0,0,0,0);
+      var html='';
+      for(var i=0;i<first;i++) html+='<div></div>';
+      for(var d=1;d<=days;d++){
+        var dt=new Date(_calYear,_calMonth,d);
+        var iso=_calYear+'-'+String(_calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var isPast=dt<today;
+        var isSel=_selDate===iso;
+        var isToday=dt.getTime()===today.getTime();
+        var bg=isSel?'background:#c9a84c;color:#000;font-weight:900;':(isToday?'border:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-weight:700;':'color:'+(isPast?'#3a3530':'#f0ece0')+';');
+        var hover=isPast?'':' onmouseover="if(!this.classList.contains(\'sel\'))this.style.background=\'rgba(201,168,76,0.15)\'" onmouseout="if(!this.classList.contains(\'sel\'))this.style.background=\'\'"';
+        html+='<div '+(isPast?'':'onclick="pickDate(\''+iso+'\')"')+hover+' style="text-align:center;padding:0.3rem 0;border-radius:7px;font-size:0.8rem;cursor:'+(isPast?'default':'pointer')+';'+bg+'transition:background 0.15s;">'+d+'</div>';
+      }
+      document.getElementById('cal_days').innerHTML=html;
+    }
+    function pickDate(iso){
+      _selDate=iso;
+      document.getElementById('as_date').value=iso;
+      var p=iso.split('-');
+      var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('as_date_label').innerHTML='<i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>'+parseInt(p[2])+' '+mn[parseInt(p[1])-1]+' '+p[0];
+      document.getElementById('as_date_display').style.color='#f0ece0';
+      document.getElementById('as_date_picker').style.display='none';
+      renderCalendar();
+    }
+
+    // ── ADVANCED TIME PICKER ──────────────────────────────────────────
+    var _tpH=9,_tpM=0,_tpAM=true;
+    function toggleTimePicker(){
+      var p=document.getElementById('as_time_picker');
+      var dp=document.getElementById('as_date_picker');
+      if(dp) dp.style.display='none';
+      p.style.display=p.style.display==='none'?'block':'none';
+    }
+    function adjHour(d){ _tpH=(_tpH+d+12)%12||12; document.getElementById('tp_hour').textContent=String(_tpH).padStart(2,'0'); }
+    function adjMin(d){ _tpM=(_tpM+d+60)%60; document.getElementById('tp_min').textContent=String(_tpM).padStart(2,'0'); }
+    function adjAmpm(){ _tpAM=!_tpAM; document.getElementById('tp_ampm').textContent=_tpAM?'AM':'PM'; }
+    function setQuickTime(t24){
+      var p=t24.split(':'); _tpAM=parseInt(p[0])<12; _tpH=parseInt(p[0])%12||12; _tpM=parseInt(p[1]);
+      document.getElementById('tp_hour').textContent=String(_tpH).padStart(2,'0');
+      document.getElementById('tp_min').textContent=String(_tpM).padStart(2,'0');
+      document.getElementById('tp_ampm').textContent=_tpAM?'AM':'PM';
+      confirmTime();
+    }
+    function confirmTime(){
+      var h24=_tpAM?(_tpH===12?0:_tpH):(_tpH===12?12:_tpH+12);
+      document.getElementById('as_time').value=String(h24).padStart(2,'0')+':'+String(_tpM).padStart(2,'0');
+      var disp=String(_tpH).padStart(2,'0')+':'+String(_tpM).padStart(2,'0')+' '+(_tpAM?'AM':'PM');
+      document.getElementById('as_time_label').innerHTML='<i class="fas fa-clock" style="color:#c9a84c;margin-right:0.5rem;"></i>'+disp;
+      document.getElementById('as_time_display').style.color='#f0ece0';
+      document.getElementById('as_time_picker').style.display='none';
+    }
+    document.addEventListener('click',function(e){
+      if(!e.target.closest('#as_date_display')&&!e.target.closest('#as_date_picker')){var dp=document.getElementById('as_date_picker');if(dp)dp.style.display='none';}
+      if(!e.target.closest('#as_time_display')&&!e.target.closest('#as_time_picker')){var tp=document.getElementById('as_time_picker');if(tp)tp.style.display='none';}
+    });
+
+  </script>
+</body>
+</html>
