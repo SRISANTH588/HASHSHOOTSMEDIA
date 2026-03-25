@@ -375,8 +375,8 @@
 
     function openPlanPreview(serviceName){
       var cfg = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
-      var svcs = cfg.services ? (Array.isArray(cfg.services) ? cfg.services : cfg.services.split('\n').filter(function(s){ return s.trim(); })) : [];
-      var match = svcs.find(function(s){ return s.split('|')[0].trim() === serviceName; });
+      var svcs = cfg.services ? (Array.isArray(cfg.services) ? cfg.services : cfg.services.split(/\r?\n/).filter(function(s){ return s.trim(); })) : [];
+      var match = svcs.find(function(s){ return s.split('|')[0].trim().toLowerCase() === serviceName.trim().toLowerCase(); });
       var parts = match ? match.split('|') : [];
       var planName = parts[0] ? parts[0].trim() : serviceName;
       var planPrice = parts[1] ? parts[1].trim() : '';
@@ -474,7 +474,7 @@
     // Services — format: Name|Price|Description (price/desc optional)
     const sel = document.getElementById('service');
     const services = c.services
-      ? (Array.isArray(c.services) ? c.services : c.services.split('\n').filter(function(s){ return s.trim(); }))
+      ? (Array.isArray(c.services) ? c.services : c.services.split(/\r?\n/).filter(function(s){ return s.trim(); }))
       : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
     services.forEach(s => {
       const o = document.createElement('option');

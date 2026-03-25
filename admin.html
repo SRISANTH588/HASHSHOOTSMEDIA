@@ -2444,12 +2444,16 @@
     // ── CUSTOMER PAGE ─────────────────────────────────────────────────
     function saveCustomerPage(){
       var cfg = {};
-      ['cp_heroTitle','cp_heroSub','cp_bookingsTitle'].forEach(function(id){
+      ['cp_title','cp_subtitle','cp_banner','cp_labelName','cp_labelPhone','cp_labelCity','cp_labelNotes',
+       'cp_services','cp_btnText','cp_btnIcon','cp_successTitle','cp_successMsg','cp_note','cp_bookingsTitle',
+       'cp_showDate','cp_showTime','cp_showNotes','cp_requireNotes','cp_showBookings'].forEach(function(id){
         var el = document.getElementById(id); if(el) cfg[id] = el.value.trim();
       });
-      ['cp_showBookings','cp_showFeedback','cp_showWallet'].forEach(function(id){
-        var el = document.getElementById(id); if(el) cfg[id] = el.checked ? 'yes' : 'no';
+      ['cp_bannerColor','cp_bannerTextColor','cp_btnColor','cp_btnTextColor','cp_bgColor','cp_cardColor','cp_accentColor'].forEach(function(id){
+        var el = document.getElementById(id); if(el) cfg[id] = el.value;
       });
+      // Normalize services: strip \r, clean blank lines
+      if(cfg.cp_services) cfg.services = cfg.cp_services.replace(/\r/g,'').split('\n').filter(function(s){ return s.trim(); }).join('\n');
       localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
       var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
     }
