@@ -896,7 +896,13 @@
       }catch(e){ console.log('realtime listener error:',e); }
     })();
     function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
-    function saveFeedbacks(list){ localStorage.setItem('hs_feedbacks', JSON.stringify(list)); if(window.fbSave && list.length) fbSave('feedbacks', list[list.length-1]); }
+    function saveFeedbacks(list){
+      localStorage.setItem('hs_feedbacks', JSON.stringify(list));
+      if(window.fbSave && list.length){
+        var f = list[list.length-1];
+        fbSave('feedbacks', Object.assign({}, f, { createdAt: new Date().toISOString() }));
+      }
+    }
     var selectedStars = {};
 
     function setStars(id, val){

@@ -2608,25 +2608,42 @@
       else if(_feedbackFilter==='demo') filtered = demos;
       else if(_feedbackFilter==='5') filtered = list.filter(function(f){ return parseFloat(f.rating)===5; });
       else if(_feedbackFilter==='low') filtered = list.filter(function(f){ return parseFloat(f.rating)<=2; });
-      if(!filtered.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No feedback yet.</p>'; return; }
-      el.innerHTML = filtered.slice().reverse().map(function(f){
+
+      function feedbackCard(f){
         var stars='';
         for(var i=1;i<=5;i++) stars+='<i class="fas fa-star" style="color:'+(i<=parseFloat(f.rating)?'#f5a623':'#333')+';"></i>';
+        var displayName = f.customerName || f.name || 'Anonymous';
+        var displayService = f.service || f.title || f.type || '';
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
           +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'
-          +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(f.name||'Anonymous')+'</div>'
-          +'<div style="font-size:0.72rem;color:#9a9080;">'+(f.service||f.type||'')+(f.city?' &nbsp;·&nbsp; '+f.city:'')+'</div></div>'
+          +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+displayName+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">'+displayService+(f.city?' &nbsp;&middot;&nbsp; '+f.city:'')+'</div></div>'
           +'<div style="display:flex;align-items:center;gap:0.5rem;">'+stars
-          +'<button onclick="deleteFeedback(String('+JSON.stringify(f.id)+'))" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button></div></div>'
+          +'<button onclick="deleteFeedback(String('+JSON.stringify(f.id||f._fbId)+'))" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button></div></div>'
+          +(f.comment?'<div style="font-size:0.82rem;color:#c8c0b0;margin-top:0.5rem;">'+f.comment+'</div>':'')
           +(f.message?'<div style="font-size:0.82rem;color:#c8c0b0;margin-top:0.5rem;">'+f.message+'</div>':'')
+          +(f.description?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;font-style:italic;">'+f.description+'</div>':'')
           +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+(f.submittedAt||f.createdAt||'')+'</div>'
           +'</div>';
-      }).join('');
+      }
+
+      if(!filtered.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No feedback yet.</p>'; }
+      else { el.innerHTML = filtered.slice().reverse().map(feedbackCard).join(''); }
+
+      // Creator feedback section
+      var creatorEl = document.getElementById('creatorFeedbackAdminList');
+      if(creatorEl){
+        var creatorFeedbacks = list.filter(function(f){ return f.type==='creator' || f.staffId; });
+        if(!creatorFeedbacks.length){ creatorEl.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No creator feedback yet.</p>'; }
+        else { creatorEl.innerHTML = creatorFeedbacks.slice().reverse().map(feedbackCard).join(''); }
+      }
     }
 
     function deleteFeedback(id){
       if(!confirm('Delete this feedback?')) return;
-      localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){ return String(f.id)!==String(id); })));
+      localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){
+        return String(f.id)!==String(id) && String(f._fbId)!==String(id);
+      })));
       renderFeedbackAdmin();
     }
 
@@ -4061,11 +4078,18 @@
         // Real-time feedbacks
         onSnapshot(query(collection(fbDb,'feedbacks'), orderBy('createdAt','desc')), function(snap){
           var local = JSON.parse(localStorage.getItem('hs_feedbacks')||'[]');
-          var ids = local.map(function(e){ return String(e.id||e._id||''); });
+          var fbDocs = [];
           snap.forEach(function(d){
-            if(ids.includes(d.id)) return;
             var data = d.data();
-            local.push(Object.assign({id:d.id}, data));
+            fbDocs.push(Object.assign({ _fbId: d.id }, data));
+          });
+          // Merge: update existing by _fbId or numeric id, add new ones
+          fbDocs.forEach(function(fb){
+            var idx = local.findIndex(function(l){
+              return String(l._fbId) === String(fb._fbId) || String(l.id) === String(fb.id);
+            });
+            if(idx > -1) { Object.assign(local[idx], fb); }
+            else { local.push(Object.assign({ id: fb.id || fb._fbId }, fb)); }
           });
           localStorage.setItem('hs_feedbacks', JSON.stringify(local));
           if(currentTab==='feedback') renderFeedbackAdmin();
