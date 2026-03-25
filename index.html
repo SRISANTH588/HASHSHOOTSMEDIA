@@ -786,7 +786,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
           <div class="svc-name">Reel Shoots</div>
           <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;999</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_reel">&#8377;999</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Reel+Shoot" class="svc-btn">Book Now</a>
         </div>
         <div class="svc-card pop">
@@ -795,7 +795,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
           <div class="svc-name">Portrait Sessions</div>
           <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;1,499</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_portrait">&#8377;1,499</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Portrait+Session" class="svc-btn">Book Now</a>
         </div>
         <div class="svc-card">
@@ -803,7 +803,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
           <div class="svc-name">Wedding Photography</div>
           <div class="svc-desc">Capture every precious moment of your special day with timeless elegance.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_wedding">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Wedding+Photography" class="svc-btn">Book Now</a>
         </div>
         <div class="svc-card">
@@ -811,7 +811,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
           <div class="svc-name">Product Shoots</div>
           <div class="svc-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;2,499</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_product">&#8377;2,499</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Product+Shoot" class="svc-btn">Book Now</a>
         </div>
         <div class="svc-card">
@@ -819,7 +819,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
           <div class="svc-name">Event Coverage</div>
           <div class="svc-desc">Corporate events, parties &amp; launches &mdash; every moment documented flawlessly.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;5,999</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_event">&#8377;5,999</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Event+Coverage" class="svc-btn">Book Now</a>
         </div>
         <div class="svc-card">
@@ -827,7 +827,7 @@
           <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
           <div class="svc-name">Food Photography</div>
           <div class="svc-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
-          <div class="svc-price-row"><span class="svc-price">&#8377;1,999</span><span class="svc-price-label">Starting Price</span></div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_food">&#8377;1,999</span><span class="svc-price-label">Starting Price</span></div>
           <a href="booking.html?service=Food+Photography" class="svc-btn">Book Now</a>
         </div>
       </div>
@@ -1105,6 +1105,14 @@
       if(hp.plan2Price) { var el = document.querySelector('.bs2-card.bs2-popular .bs2-price'); if(el) el.textContent = hp.plan2Price; }
       if(hp.plan2Sub)   { var el = document.querySelector('.bs2-card.bs2-popular .bs2-sub');   if(el) el.textContent = hp.plan2Sub; }
       if(hp.plan2Desc)  { var el = document.querySelector('.bs2-card.bs2-popular .bs2-desc');  if(el) el.textContent = hp.plan2Desc; }
+      // Service card prices
+      var priceMap = { reel:'svcPrice_reel', portrait:'svcPrice_portrait', wedding:'svcPrice_wedding', product:'svcPrice_product', event:'svcPrice_event', food:'svcPrice_food' };
+      Object.keys(priceMap).forEach(function(key){
+        if(hp['price_'+key]){
+          var el = document.getElementById(priceMap[key]);
+          if(el) el.textContent = hp['price_'+key];
+        }
+      });
       // Footer contact
       if(hp.email)     { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-envelope')) d.innerHTML = '<i class="fas fa-envelope"></i> ' + hp.email; }); }
       if(hp.instagram) { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-instagram')) d.innerHTML = '<i class="fab fa-instagram"></i> ' + hp.instagram; }); }

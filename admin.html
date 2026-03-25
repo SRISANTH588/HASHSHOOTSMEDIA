@@ -985,6 +985,20 @@
         <button class="btn-add-team" onclick="addServiceRow()"><i class="fas fa-plus"></i> Add Service</button>
       </div>
 
+      <!-- SERVICE CARD PRICES -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;margin-right:0.5rem;"></i> Service Card Prices</h2>
+        <p style="font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;">These prices appear on the home page service cards.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>Reel Shoots</label><input type="text" id="hp_price_reel" placeholder="e.g. &#8377;999"/></div>
+          <div class="form-group"><label>Portrait Sessions</label><input type="text" id="hp_price_portrait" placeholder="e.g. &#8377;1,499"/></div>
+          <div class="form-group"><label>Wedding Photography</label><input type="text" id="hp_price_wedding" placeholder="e.g. &#8377;15,000"/></div>
+          <div class="form-group"><label>Product Shoots</label><input type="text" id="hp_price_product" placeholder="e.g. &#8377;2,499"/></div>
+          <div class="form-group"><label>Event Coverage</label><input type="text" id="hp_price_event" placeholder="e.g. &#8377;5,999"/></div>
+          <div class="form-group"><label>Food Photography</label><input type="text" id="hp_price_food" placeholder="e.g. &#8377;1,999"/></div>
+        </div>
+      </div>
+
       <!-- PRICING / BESTSELLERS -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-tags" style="color:#c9a84c;margin-right:0.5rem;"></i> Bestsellers / Pricing</h2>
@@ -1898,6 +1912,13 @@
       document.getElementById('hp_announcement').value = hp.announcement || '';
       document.getElementById('hp_announceBg').value    = hp.announceBg    || '#c9a84c';
       document.getElementById('hp_announceColor').value = hp.announceColor || '#ffffff';
+      // Service card prices
+      document.getElementById('hp_price_reel').value     = hp.price_reel     || '';
+      document.getElementById('hp_price_portrait').value = hp.price_portrait || '';
+      document.getElementById('hp_price_wedding').value  = hp.price_wedding  || '';
+      document.getElementById('hp_price_product').value  = hp.price_product  || '';
+      document.getElementById('hp_price_event').value    = hp.price_event    || '';
+      document.getElementById('hp_price_food').value     = hp.price_food     || '';
       // Services
       var sList = document.getElementById('hp_servicesList');
       sList.innerHTML = '';
@@ -1966,6 +1987,13 @@
       hp.announcement  = document.getElementById('hp_announcement').value.trim();
       hp.announceBg    = document.getElementById('hp_announceBg').value;
       hp.announceColor = document.getElementById('hp_announceColor').value;
+      // Service card prices
+      hp.price_reel     = document.getElementById('hp_price_reel').value.trim();
+      hp.price_portrait = document.getElementById('hp_price_portrait').value.trim();
+      hp.price_wedding  = document.getElementById('hp_price_wedding').value.trim();
+      hp.price_product  = document.getElementById('hp_price_product').value.trim();
+      hp.price_event    = document.getElementById('hp_price_event').value.trim();
+      hp.price_food     = document.getElementById('hp_price_food').value.trim();
       // Services
       hp.services = Array.from(document.querySelectorAll('#hp_servicesList input')).map(function(i){ return i.value.trim(); }).filter(Boolean);
       // Testimonials
