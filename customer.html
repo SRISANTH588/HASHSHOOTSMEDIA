@@ -375,7 +375,7 @@
 
     function openPlanPreview(serviceName){
       var cfg = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
-      var svcs = cfg.services || [];
+      var svcs = cfg.services ? (Array.isArray(cfg.services) ? cfg.services : cfg.services.split('\n').filter(function(s){ return s.trim(); })) : [];
       var match = svcs.find(function(s){ return s.split('|')[0].trim() === serviceName; });
       var parts = match ? match.split('|') : [];
       var planName = parts[0] ? parts[0].trim() : serviceName;
@@ -473,7 +473,9 @@
 
     // Services — format: Name|Price|Description (price/desc optional)
     const sel = document.getElementById('service');
-    const services = c.services && c.services.length ? c.services : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
+    const services = c.services
+      ? (Array.isArray(c.services) ? c.services : c.services.split('\n').filter(function(s){ return s.trim(); }))
+      : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
     services.forEach(s => {
       const o = document.createElement('option');
       o.value = s.split('|')[0].trim(); // store just the name as value
@@ -605,7 +607,9 @@
 
       const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       const bkId = Date.now();
-      bookings.push({ id: bkId, name, phone, service, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
+      var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
+      var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
+      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
       if(window.fbSave) fbSave('bookings', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
       if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
@@ -625,7 +629,9 @@
           var fbApp = apps.find(function(a){ return a.name==='cust'; }) || fbMod.initializeApp(fbCfg,'cust');
           var fbDb = fbStore.getFirestore(fbApp);
           var userEmail = localStorage.getItem('hs_user')||'';
-          var data = { name, phone, email: userEmail, service, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
+          var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
+          var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
+          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
           await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
           await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
         } catch(e){ console.error('Firebase error:',e); }
