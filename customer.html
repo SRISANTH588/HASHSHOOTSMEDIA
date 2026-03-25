@@ -691,14 +691,6 @@
       list.innerHTML = bookings.slice().reverse().map(b => {
         const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
         const paid = payments.find(function(p){ return String(p.bookingId) === String(b.id); });
-    function _renderBookings() {
-      const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
-      const list = document.getElementById('bookingsList');
-      if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
-      list.innerHTML = bookings.slice().reverse().map(b => {
-        const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
-        const paid = payments.find(function(p){ return String(p.bookingId) === String(b.id); });
         const alreadyPaid = paid || b.paymentStatus === 'paid';
         let payBtn = '';
 
