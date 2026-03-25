@@ -320,6 +320,33 @@
     } catch(e){ alert('Delete failed: '+e.message); }
   }
 
+  // getVibeItems / saveVibeItems — localStorage + Firebase sync
+  function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
+  function saveVibeItems(items){
+    localStorage.setItem('hs_vibe', JSON.stringify(items));
+    // also push each item to Firebase vibe_items collection
+    (async function(){
+      try {
+        var f = await getVibeAdminDB();
+        for(var i=0;i<items.length;i++){
+          var it = items[i];
+          if(it.id) await f.fs.setDoc(f.fs.doc(f.db,'vibe_items',String(it.id)), Object.assign({},it), {merge:true});
+        }
+      } catch(e){ console.warn('saveVibeItems Firebase sync:',e); }
+    })();
+  }
+  function saveVideoDB(id, blob, cb){
+    var req = indexedDB.open('hs_staff_videos_db',1);
+    req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
+    req.onsuccess = function(e){
+      var db = e.target.result;
+      var tx = db.transaction('videos','readwrite');
+      tx.objectStore('videos').put({id:id, blob:blob});
+      tx.oncomplete = cb; tx.onerror = cb;
+    };
+    req.onerror = cb;
+  }
+
   async function uploadVibeItem(){
     var title     = document.getElementById('vibe_title').value.trim();
     var cat       = document.getElementById('vibe_cat').value;
@@ -332,20 +359,25 @@
     var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
     if(pw) pw.style.display='block';
     try {
-      if(pl) pl.textContent='Uploading video to Cloudinary...';
-      var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
+      if(pl) pl.textContent='Uploading video...';
+      var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.85)+'%'; });
       var thumbUrl = vRes.thumbnail;
       if(thumbFile){
         if(pl) pl.textContent='Uploading thumbnail...';
-        var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
+        var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(85+p*0.15)+'%'; });
         thumbUrl = tRes.url;
       }
       if(pb) pb.style.width='100%';
-      if(pl) pl.textContent='Saving to database...';
+      if(pl) pl.textContent='Saving...';
       var newItem = { title:title, category:cat, thumbnail:thumbUrl||'', url:vRes.url, type:'video', addedAt:new Date().toLocaleString() };
+      // Save directly to Firebase
       var f = await getVibeAdminDB();
       var ref = await f.fs.addDoc(f.fs.collection(f.db,'vibe_items'), newItem);
       newItem.id = ref.id;
+      // Also save to localStorage for offline access
+      var local = getVibeItems();
+      local.push(newItem);
+      localStorage.setItem('hs_vibe', JSON.stringify(local));
       document.getElementById('vibe_title').value='';
       document.getElementById('vibe_cat').value='';
       document.getElementById('vibe_thumb').value='';
@@ -356,9 +388,14 @@
       if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
       renderVibeAdmin();
     } catch(e){
-      alert('Upload failed: '+e.message);
       btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
       if(pw) pw.style.display='none';
+      if(pl) pl.textContent='';
+      // Show friendly error
+      var errMsg = e.message||'';
+      if(errMsg.indexOf('preset')>-1||errMsg.indexOf('400')>-1) alert('Upload failed: Cloudinary preset not configured. Please check hs-cloudinary.js upload preset.');
+      else if(errMsg.indexOf('network')>-1||errMsg.indexOf('Network')>-1) alert('Upload failed: No internet connection. Please check your network.');
+      else alert('Upload failed: '+errMsg);
     }
   }
 
@@ -2305,6 +2342,7 @@
     function clearAllFeedback(){ if(!confirm('Delete ALL feedback? This cannot be undone.')) return; localStorage.removeItem('hs_feedbacks'); renderFeedbackAdmin(); }
     function clearAllDemos(){ if(!confirm('Delete ALL demo sessions? This cannot be undone.')) return; localStorage.removeItem('hs_demos'); renderDemoAdminList(); }
     function getStaff(){ return JSON.parse(localStorage.getItem('hs_staff')||'[]'); }
+    function saveStaff(list){ localStorage.setItem('hs_staff', JSON.stringify(list)); }
 
     function toggleAllAccess(cb){
       document.querySelectorAll('#sf_access_grid input[type=checkbox]').forEach(function(c){ if(c.id!=='sf_access_all') c.checked = cb.checked; });
@@ -4094,82 +4132,6 @@
 
       } catch(e){ console.log('Firebase admin error:',e); }
     })();
-
-    // Override saveVibeItems to sync to Firebase
-    var _origSaveVibe = null;
-    var _vibeOverrideInterval = setInterval(function(){
-      if(typeof saveVibeItems !== 'undefined' && !_origSaveVibe){
-        _origSaveVibe = saveVibeItems;
-        window.saveVibeItems = function(items){
-          localStorage.setItem('hs_vibe', JSON.stringify(items));
-          // Sync to Firebase
-          (async function(){
-            try {
-              var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-              var fbStore2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-              var fbCfg2 = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-              var apps2 = fbMod2.getApps();
-              var app2  = apps2.find(function(a){return a.name==='vibe-save';}) || fbMod2.initializeApp(fbCfg2,'vibe-save');
-              var db2   = fbStore2.getFirestore(app2);
-              for(var i=0;i<items.length;i++){
-                var item = items[i];
-                if(item.id) await fbStore2.setDoc(fbStore2.doc(db2,'vibe_items',String(item.id)), Object.assign({},item,{updatedAt:fbStore2.serverTimestamp()}),{merge:true});
-              }
-            } catch(e2){ console.error('Vibe Firebase sync:',e2); }
-          })();
-        };
-        clearInterval(_vibeOverrideInterval);
-        console.log('[Admin] saveVibeItems overridden with Firebase sync');
-      }
-    }, 500);
-
-    // Override uploadVibeItem to use Cloudinary
-    var _vibeUploadInterval = setInterval(function(){
-      if(typeof uploadVibeItem !== 'undefined' && typeof cloudinaryUpload !== 'undefined'){
-        window.uploadVibeItem = async function(){
-          var title     = document.getElementById('vibe_title').value.trim();
-          var cat       = document.getElementById('vibe_cat').value;
-          var thumbFile = document.getElementById('vibe_thumb').files[0];
-          var videoFile = document.getElementById('vibe_video').files[0];
-          if(!title||!cat){ alert('Please fill title and category.'); return; }
-          if(!videoFile){ alert('Please select a video file.'); return; }
-          var btn = document.getElementById('vibe_upload_btn');
-          btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
-          var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
-          if(pw) pw.style.display='block';
-          try {
-            if(pl) pl.textContent='Uploading video to cloud...';
-            var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
-            var thumbUrl = vRes.thumbnail;
-            if(thumbFile){
-              if(pl) pl.textContent='Uploading thumbnail...';
-              var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
-              thumbUrl = tRes.url;
-            }
-            if(pb) pb.style.width='100%';
-            var id = Date.now();
-            var newItem = {id:id,title:title,category:cat,thumbnail:thumbUrl,url:vRes.url,type:'video',addedAt:new Date().toLocaleString()};
-            var items = JSON.parse(localStorage.getItem('hs_vibe')||'[]');
-            items.push(newItem);
-            window.saveVibeItems(items);
-            document.getElementById('vibe_title').value='';
-            document.getElementById('vibe_cat').value='';
-            document.getElementById('vibe_thumb').value='';
-            document.getElementById('vibe_video').value='';
-            btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
-            if(pw) pw.style.display='none';
-            var toast=document.getElementById('vibeToast');
-            if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
-            renderVibeAdmin();
-          } catch(e){
-            alert('Upload failed: '+e.message);
-            btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
-          }
-        };
-        clearInterval(_vibeUploadInterval);
-        console.log('[Admin] uploadVibeItem overridden with Cloudinary');
-      }
-    }, 500);
 
     // ── ADVANCED DATE PICKER ──────────────────────────────────────────
     var _calYear, _calMonth, _selDate;
