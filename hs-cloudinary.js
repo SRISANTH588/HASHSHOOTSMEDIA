@@ -1,4 +1,4 @@
-// hs-cloudinary.js — Cloudinary Upload Helper — FULL QUALITY (4K)
+// hs-cloudinary.js — Cloudinary Upload Helper — 1080p High Quality
 
 const CLOUD_NAME = 'dqmjfw1qb';
 const UPLOAD_PRESET = 'hs_unsigned';
@@ -10,12 +10,14 @@ window.cloudinaryUpload = async function(file, folder, onProgress) {
     formData.append('upload_preset', UPLOAD_PRESET);
     formData.append('folder', 'hashshoots/' + folder);
 
-    // Preserve original quality — no compression, no format conversion
     if (file.type.startsWith('video/')) {
-      formData.append('quality', 'auto:best');   // best quality
-      formData.append('video_codec', 'auto');     // keep original codec
+      // Auto-convert to 1080p max, high quality, keep aspect ratio
+      formData.append('eager', 'w_1920,h_1080,c_limit,q_auto:best,vc_h264');
+      formData.append('eager_async', 'true');
     } else {
-      formData.append('quality', '100');          // 100% image quality
+      // Images — full quality, max 2048px wide
+      formData.append('quality', '95');
+      formData.append('fetch_format', 'auto');
     }
 
     var xhr = new XMLHttpRequest();
@@ -31,12 +33,13 @@ window.cloudinaryUpload = async function(file, folder, onProgress) {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var res = JSON.parse(xhr.responseText);
-        // Return original URL — NO quality transformation applied to URL
         var originalUrl = res.secure_url;
-        // Thumbnail: auto-generated from video at 1 second, full width
+
+        // Thumbnail from video at 1 second mark
         var thumbnail = res.resource_type === 'video'
-          ? originalUrl.replace('/upload/', '/upload/so_1,w_400,h_711,c_fill/').replace(/\.[^.]+$/, '.jpg')
-          : originalUrl.replace('/upload/', '/upload/w_400,h_711,c_fill/');
+          ? originalUrl.replace('/upload/', '/upload/so_1,w_400,h_711,c_fill,q_auto/').replace(/\.[^.]+$/, '.jpg')
+          : originalUrl.replace('/upload/', '/upload/w_400,h_711,c_fill,q_auto/');
+
         resolve({
           url: originalUrl,
           publicId: res.public_id,
@@ -48,7 +51,7 @@ window.cloudinaryUpload = async function(file, folder, onProgress) {
         });
       } else {
         var errMsg = xhr.responseText;
-        try { errMsg = JSON.parse(xhr.responseText).error.message; } catch(e){}
+        try { errMsg = JSON.parse(xhr.responseText).error.message; } catch(e) {}
         reject(new Error(errMsg));
       }
     };
@@ -58,4 +61,4 @@ window.cloudinaryUpload = async function(file, folder, onProgress) {
   });
 };
 
-console.log('[HashShoots] Cloudinary ready — Full Quality Mode — Cloud:', CLOUD_NAME);
+console.log('[HashShoots] Cloudinary ready — 1080p High Quality Mode — Cloud:', CLOUD_NAME);
