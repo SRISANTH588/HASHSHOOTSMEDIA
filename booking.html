@@ -340,19 +340,16 @@
       }
 
       if(serviceParam){
-        // Map service name to plan key
         var svcPlanMap = {
-          'Reel Shoot':'hourly', 'Portrait Session':'hourly',
-          'Wedding Photography':'wedding', 'Product Shoot':'hourly',
-          'Event Coverage':'halfday', 'Food Photography':'hourly'
+          'Reel Shoot':'hourly', 'Portrait Session':'hourly', 'Food Photography':'hourly',
+          'Wedding Photography':'wedding',
+          'Product Shoot':'halfday', 'Event Coverage':'halfday'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
-          // Select the plan
           pickPlan(planKey);
-          // Skip plan step, go straight to form
           bookSelectedPlan();
-          // Set service dropdown
+          // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');
           if(sel){
             for(var i=0;i<sel.options.length;i++){
@@ -374,9 +371,10 @@
       // Update plan bar
       document.getElementById('formPlanName').textContent = p.name;
       document.getElementById('formPlanPrice').textContent = p.price + (p.per ? ' ' + p.per : '');
-      // Pre-fill service dropdown
+      // Pre-fill service dropdown only if no specific service was requested via URL
+      var _urlService = new URLSearchParams(window.location.search).get('service');
       var sel = document.getElementById('bk_service');
-      if (sel && p.service) Array.from(sel.options).forEach(function(o){ if(o.value === p.service || o.text === p.service) o.selected = true; });
+      if (sel && p.service && !_urlService) Array.from(sel.options).forEach(function(o){ if(o.value === p.service || o.text === p.service) o.selected = true; });
       window.scrollTo({ top: document.getElementById('formStep').offsetTop - 80, behavior: 'smooth' });
     }
 
