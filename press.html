@@ -276,30 +276,54 @@
     window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400));
     btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Load press data from admin localStorage
+    // Load press data — Firebase first, localStorage fallback
     (function(){
-      // Stats
-      var s = JSON.parse(localStorage.getItem('hs_press_stats') || '{}');
-      var nums = document.querySelectorAll('.press-stat-num');
-      if (nums[0] && s.founded)  nums[0].textContent = s.founded;
-      if (nums[1] && s.cities)   nums[1].textContent = s.cities;
-      if (nums[2] && s.creators) nums[2].textContent = s.creators;
-      if (nums[3] && s.reels)    nums[3].textContent = s.reels;
+      function renderPress() {
+        var s = JSON.parse(localStorage.getItem('hs_press_stats') || '{}');
+        var nums = document.querySelectorAll('.press-stat-num');
+        if (nums[0] && s.founded)  nums[0].textContent = s.founded;
+        if (nums[1] && s.cities)   nums[1].textContent = s.cities;
+        if (nums[2] && s.creators) nums[2].textContent = s.creators;
+        if (nums[3] && s.reels)    nums[3].textContent = s.reels;
+        var items = JSON.parse(localStorage.getItem('hs_press') || '[]');
+        if (!items.length) return;
+        var grid = document.querySelector('.coverage-grid');
+        if (!grid) return;
+        grid.innerHTML = items.slice().reverse().map(function(p){
+          return '<div class="coverage-card">'
+            +'<div class="coverage-pub">'+p.pub+'</div>'
+            +'<h3>'+p.title+'</h3>'
+            +(p.desc ? '<p>'+p.desc+'</p>' : '')
+            +(p.url ? '<a href="'+p.url+'" target="_blank" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>' : '<span class="coverage-link" style="cursor:default;">Coming Soon</span>')
+            +'<div class="coverage-date">'+p.date+'</div>'
+            +'</div>';
+        }).join('');
+      }
 
-      // Coverage cards
-      var items = JSON.parse(localStorage.getItem('hs_press') || '[]');
-      if (!items.length) return;
-      var grid = document.querySelector('.coverage-grid');
-      if (!grid) return;
-      grid.innerHTML = items.slice().reverse().map(function(p){
-        return '<div class="coverage-card">'
-          +'<div class="coverage-pub">'+p.pub+'</div>'
-          +'<h3>'+p.title+'</h3>'
-          +(p.desc ? '<p>'+p.desc+'</p>' : '')
-          +(p.url ? '<a href="'+p.url+'" target="_blank" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>' : '<span class="coverage-link" style="cursor:default;">Coming Soon</span>')
-          +'<div class="coverage-date">'+p.date+'</div>'
-          +'</div>';
-      }).join('');
+      // Render from localStorage immediately
+      renderPress();
+
+      // Fetch from Firebase and re-render
+      (async function(){
+        try {
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='press';}) || fbMod.initializeApp(fbCfg,'press');
+          var db      = fbStore.getFirestore(app);
+          var [snapPress, snapStats] = await Promise.all([
+            fbStore.getDoc(fbStore.doc(db,'settings','press')),
+            fbStore.getDoc(fbStore.doc(db,'settings','press_stats'))
+          ]);
+          if(snapPress.exists() && snapPress.data().items){
+            localStorage.setItem('hs_press', JSON.stringify(snapPress.data().items));
+          }
+          if(snapStats.exists()){
+            localStorage.setItem('hs_press_stats', JSON.stringify(snapStats.data()));
+          }
+          renderPress();
+        } catch(e){ console.log('Press Firebase load error:',e); }
+      })();
     })();
   </script>
 </body>

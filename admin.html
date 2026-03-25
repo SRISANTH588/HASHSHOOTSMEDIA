@@ -2564,6 +2564,7 @@
       // Normalize services: strip \r, clean blank lines
       if(cfg.cp_services) cfg.services = cfg.cp_services.replace(/\r/g,'').split('\n').filter(function(s){ return s.trim(); }).join('\n');
       localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
+      if(window.fbUpdate) fbUpdate('settings', 'customer_page', cfg);
       var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
     }
 
@@ -2770,12 +2771,14 @@
       var email=(document.getElementById('store_email')||{}).value||'';
       var disc=(document.getElementById('store_discount_email')||{}).value||'';
       localStorage.setItem('hs_store_settings', JSON.stringify({email:email.trim(),discountEmail:disc.trim()}));
+      if(window.fbUpdate) fbUpdate('settings', 'store_settings', {email:email.trim(),discountEmail:disc.trim()});
       var t=document.getElementById('storeSettingsToast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},3000);}
     }
 
     function deleteTshirt(id){
       if(!confirm('Delete this product?')) return;
       localStorage.setItem('hs_tshirts', JSON.stringify(JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return t.id!==id; })));
+      if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: JSON.parse(localStorage.getItem('hs_tshirts')||'[]')});
       loadStoreAdmin();
     }
 
@@ -2792,6 +2795,7 @@
         var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
         items.push({ id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), image:imgData||'', active:true });
         localStorage.setItem('hs_tshirts', JSON.stringify(items));
+        if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: items});
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
         loadStoreAdmin();
       }
@@ -2812,6 +2816,7 @@
         var cfg = { price:price, desc:desc.trim(), image:imgData||localStorage.getItem('hs_idcard_img')||'' };
         localStorage.setItem('hs_idcard', JSON.stringify(cfg));
         if(imgData) localStorage.setItem('hs_idcard_img', imgData);
+        if(window.fbUpdate) fbUpdate('settings', 'idcard', cfg);
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
       }
       if(file){
@@ -3552,6 +3557,7 @@
       var widgetId   = document.getElementById('tawk_widget_id').value.trim();
       if(!propertyId || !widgetId){ alert('Please enter both Property ID and Widget ID.'); return; }
       localStorage.setItem('hs_tawk_config', JSON.stringify({ propertyId: propertyId, widgetId: widgetId }));
+      if(window.fbUpdate) fbUpdate('settings', 'tawk_config', { propertyId: propertyId, widgetId: widgetId });
       loadTawkConfig();
       var toast = document.getElementById('tawkToast');
       toast.style.display = 'block';
@@ -3944,7 +3950,7 @@
 
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
-    function saveBlogs(list){ localStorage.setItem('hs_blogs', JSON.stringify(list)); }
+    function saveBlogs(list){ localStorage.setItem('hs_blogs', JSON.stringify(list)); if(window.fbUpdate) fbUpdate('settings','blogs',{items:list}); }
     function saveBlogPost(){
       var title = document.getElementById('bl_title').value.trim();
       var desc  = document.getElementById('bl_desc').value.trim();
@@ -3993,7 +3999,7 @@
 
     // PRESS
     function getPressItems(){ return JSON.parse(localStorage.getItem('hs_press')||'[]'); }
-    function savePressItems(list){ localStorage.setItem('hs_press', JSON.stringify(list)); }
+    function savePressItems(list){ localStorage.setItem('hs_press', JSON.stringify(list)); if(window.fbUpdate) fbUpdate('settings','press',{items:list}); }
     function savePressItem(){
       var pub   = document.getElementById('pr_pub').value.trim();
       var title = document.getElementById('pr_title').value.trim();
@@ -4043,6 +4049,7 @@
         reels:    document.getElementById('ps_reels').value.trim()
       };
       localStorage.setItem('hs_press_stats', JSON.stringify(stats));
+      if(window.fbUpdate) fbUpdate('settings','press_stats', stats);
       var t=document.getElementById('psToast'); t.style.display='block'; setTimeout(function(){t.style.display='none';},2500);
     }
     function loadPressStats(){
@@ -4224,6 +4231,29 @@
           });
           localStorage.setItem('hs_affiliate_applications', JSON.stringify(local));
           if(currentTab==='affiliates') renderAffiliateApps();
+        });
+
+        // Real-time settings listener — loads all admin-saved settings
+        onSnapshot(collection(fbDb,'settings'), function(snap){
+          snap.forEach(function(d){
+            var data = d.data();
+            switch(d.id){
+              case 'homepage':      localStorage.setItem('hs_homepage',      JSON.stringify(data)); break;
+              case 'about':         localStorage.setItem('hs_about',          JSON.stringify(data)); break;
+              case 'customer_page': localStorage.setItem('hs_customer_page',  JSON.stringify(data)); break;
+              case 'store_settings':localStorage.setItem('hs_store_settings', JSON.stringify(data)); break;
+              case 'tshirts':       if(data.items) localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); break;
+              case 'idcard':        localStorage.setItem('hs_idcard',         JSON.stringify(data)); break;
+              case 'tawk_config':   localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); break;
+              case 'blogs':         if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); break;
+              case 'press':         if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); break;
+              case 'press_stats':   localStorage.setItem('hs_press_stats',    JSON.stringify(data)); break;
+            }
+          });
+          // Re-render active tab if relevant
+          if(currentTab==='store') loadStoreAdmin();
+          if(currentTab==='blog') renderBlogList();
+          if(currentTab==='press') { renderPressList(); loadPressStats(); }
         });
 
         // Real-time enquiries listener — Firestore is source of truth

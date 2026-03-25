@@ -451,39 +451,57 @@
       });
     }
 
-    // Load blog posts from admin localStorage
+    // Load blog posts — Firebase first, localStorage fallback
     (function(){
-      var posts = JSON.parse(localStorage.getItem('hs_blogs') || '[]');
-      if (!posts.length) return;
-
-      // Featured post
-      var featured = posts.find(function(p){ return p.featured; }) || posts[posts.length - 1];
-      var fc = document.querySelector('.featured-card');
-      if (fc && featured) {
-        fc.querySelector('.featured-img').innerHTML = featured.img
-          ? '<img src="'+featured.img+'" alt="'+featured.title+'" style="width:100%;height:100%;object-fit:cover;"/>'
-          : '<i class="fas fa-camera featured-img-icon"></i>';
-        fc.querySelector('.featured-body h2').textContent = featured.title;
-        fc.querySelector('.featured-body p').textContent = featured.desc;
-        fc.querySelectorAll('.feat-meta span')[0].innerHTML = '<i class="fas fa-calendar-alt"></i> ' + featured.date;
-        fc.querySelectorAll('.feat-meta span')[1].innerHTML = '<i class="fas fa-clock"></i> ' + featured.read;
+      function renderBlogPosts(posts) {
+        if (!posts.length) return;
+        var featured = posts.find(function(p){ return p.featured; }) || posts[posts.length - 1];
+        var fc = document.querySelector('.featured-card');
+        if (fc && featured) {
+          fc.querySelector('.featured-img').innerHTML = featured.img
+            ? '<img src="'+featured.img+'" alt="'+featured.title+'" style="width:100%;height:100%;object-fit:cover;"/>'
+            : '<i class="fas fa-camera featured-img-icon"></i>';
+          fc.querySelector('.featured-body h2').textContent = featured.title;
+          fc.querySelector('.featured-body p').textContent = featured.desc;
+          fc.querySelectorAll('.feat-meta span')[0].innerHTML = '<i class="fas fa-calendar-alt"></i> ' + featured.date;
+          fc.querySelectorAll('.feat-meta span')[1].innerHTML = '<i class="fas fa-clock"></i> ' + featured.read;
+        }
+        var grid = document.querySelector('.blog-grid');
+        if (!grid) return;
+        var gridPosts = posts.filter(function(p){ return !p.featured; }).reverse();
+        if (!gridPosts.length) return;
+        grid.innerHTML = gridPosts.map(function(p){
+          return '<div class="blog-card">'
+            +'<div class="blog-card-img">'+(p.img ? '<img src="'+p.img+'" alt="'+p.title+'" style="width:100%;height:100%;object-fit:cover;"/>' : '<i class="fas fa-pen-nib"></i>')+'</div>'
+            +'<div class="blog-card-body">'
+            +'<div class="blog-card-tag">'+p.category+'</div>'
+            +'<h3>'+p.title+'</h3>'
+            +'<p>'+p.desc+'</p>'
+            +'<div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> '+p.date+'</span><span><i class="fas fa-clock"></i> '+p.read+'</span></div>'
+            +'</div></div>';
+        }).join('');
       }
 
-      // Grid posts (exclude featured)
-      var grid = document.querySelector('.blog-grid');
-      if (!grid) return;
-      var gridPosts = posts.filter(function(p){ return !p.featured; }).reverse();
-      if (!gridPosts.length) return;
-      grid.innerHTML = gridPosts.map(function(p){
-        return '<div class="blog-card">'
-          +'<div class="blog-card-img">'+(p.img ? '<img src="'+p.img+'" alt="'+p.title+'" style="width:100%;height:100%;object-fit:cover;"/>' : '<i class="fas fa-pen-nib"></i>')+'</div>'
-          +'<div class="blog-card-body">'
-          +'<div class="blog-card-tag">'+p.category+'</div>'
-          +'<h3>'+p.title+'</h3>'
-          +'<p>'+p.desc+'</p>'
-          +'<div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> '+p.date+'</span><span><i class="fas fa-clock"></i> '+p.read+'</span></div>'
-          +'</div></div>';
-      }).join('');
+      // Render from localStorage immediately
+      var local = JSON.parse(localStorage.getItem('hs_blogs') || '[]');
+      renderBlogPosts(local);
+
+      // Fetch from Firebase and re-render
+      (async function(){
+        try {
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='blog';}) || fbMod.initializeApp(fbCfg,'blog');
+          var db      = fbStore.getFirestore(app);
+          var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','blogs'));
+          if(snap.exists() && snap.data().items){
+            var posts = snap.data().items;
+            localStorage.setItem('hs_blogs', JSON.stringify(posts));
+            renderBlogPosts(posts);
+          }
+        } catch(e){ console.log('Blog Firebase load error:',e); }
+      })();
     })();
   </script>
 </body>
