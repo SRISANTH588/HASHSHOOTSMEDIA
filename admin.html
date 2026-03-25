@@ -1002,30 +1002,60 @@
       <!-- PRICING / BESTSELLERS -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-fire" style="color:#c9a84c;margin-right:0.5rem;"></i> Bestsellers / Pricing Plans</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+
+        <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.15);"><i class="fas fa-camera"></i> General Plans</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
           <div>
-            <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:0.75rem;border-bottom:1px solid rgba(201,168,76,0.15);padding-bottom:0.5rem;">Plan 1</div>
-            <div class="form-group"><label>Tag (e.g. Starter)</label><input type="text" id="hp_bs1_tag" placeholder="Starter"/></div>
+            <div style="font-size:0.78rem;font-weight:700;color:#9a9080;margin-bottom:0.75rem;">Plan 1</div>
+            <div class="form-group"><label>Tag</label><input type="text" id="hp_bs1_tag" placeholder="Starter"/></div>
             <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs1_name" placeholder="Hourly Plan"/></div>
             <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs1_tagline" placeholder="Perfect for a single, fast, high-quality reel."/></div>
             <div class="form-row">
               <div class="form-group"><label>Price</label><input type="text" id="hp_bs1_price" placeholder="&#8377;1,699"/></div>
-              <div class="form-group"><label>Per (e.g. / shoot)</label><input type="text" id="hp_bs1_per" placeholder="/ shoot"/></div>
+              <div class="form-group"><label>Per</label><input type="text" id="hp_bs1_per" placeholder="/ shoot"/></div>
             </div>
             <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs1_gstnote" placeholder="+ GST · No hidden charges"/></div>
-            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs1_features" style="min-height:110px;" placeholder="1 Hour Shoot&#10;1 Edited Reel Delivered&#10;Shot on Latest iPhone"></textarea></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs1_features" style="min-height:100px;"></textarea></div>
           </div>
           <div>
-            <div style="font-size:0.82rem;font-weight:700;color:#f5a623;margin-bottom:0.75rem;border-bottom:1px solid rgba(245,166,35,0.15);padding-bottom:0.5rem;">Plan 2 (Most Popular)</div>
-            <div class="form-group"><label>Tag (e.g. Best Value)</label><input type="text" id="hp_bs2_tag" placeholder="Best Value"/></div>
+            <div style="font-size:0.78rem;font-weight:700;color:#f5a623;margin-bottom:0.75rem;">Plan 2 (Most Popular)</div>
+            <div class="form-group"><label>Tag</label><input type="text" id="hp_bs2_tag" placeholder="Best Value"/></div>
             <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs2_name" placeholder="Half-Day Plan"/></div>
-            <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs2_tagline" placeholder="Ideal for events &amp; creators who need more content."/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs2_tagline" placeholder="Ideal for events &amp; creators."/></div>
             <div class="form-row">
               <div class="form-group"><label>Price</label><input type="text" id="hp_bs2_price" placeholder="&#8377;3,999"/></div>
-              <div class="form-group"><label>Per (e.g. / session)</label><input type="text" id="hp_bs2_per" placeholder="/ session"/></div>
+              <div class="form-group"><label>Per</label><input type="text" id="hp_bs2_per" placeholder="/ session"/></div>
             </div>
             <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs2_gstnote" placeholder="+ GST · Save vs hourly"/></div>
-            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs2_features" style="min-height:110px;" placeholder="Up to 3 Hours Shoot&#10;2 Edited Reels Delivered&#10;Shot on Latest iPhone"></textarea></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs2_features" style="min-height:100px;"></textarea></div>
+          </div>
+        </div>
+
+        <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.15);"><i class="fas fa-heart"></i> Wedding Plans (Basic / Silver / Gold / Luxe)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div>
+            <div style="font-size:0.78rem;font-weight:700;color:#9a9080;margin-bottom:0.75rem;">Basic</div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_w1_price" placeholder="&#8377;15,000"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_w1_tagline" placeholder="Essential coverage for intimate ceremonies."/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_w1_features" style="min-height:90px;"></textarea></div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:700;color:#c0c0c0;margin-bottom:0.75rem;">Silver</div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_w2_price" placeholder="&#8377;25,000"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_w2_tagline" placeholder="Perfect for full-day wedding celebrations."/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_w2_features" style="min-height:90px;"></textarea></div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-bottom:0.75rem;">Gold</div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_w3_price" placeholder="&#8377;45,000"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_w3_tagline" placeholder="Premium coverage for your dream wedding."/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_w3_features" style="min-height:90px;"></textarea></div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:700;color:#e8c96a;margin-bottom:0.75rem;">Luxe</div>
+            <div class="form-group"><label>Price</label><input type="text" id="hp_w4_price" placeholder="&#8377;80,000"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_w4_tagline" placeholder="The ultimate luxury wedding experience."/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_w4_features" style="min-height:90px;"></textarea></div>
           </div>
         </div>
       </div>
@@ -1930,6 +1960,12 @@
       document.getElementById('hp_bs2_per').value      = hp.bs2_per      || '';
       document.getElementById('hp_bs2_gstnote').value  = hp.bs2_gstnote  || '';
       document.getElementById('hp_bs2_features').value = hp.bs2_features ? hp.bs2_features.join('\n') : '';
+      // Wedding plans
+      ['w1','w2','w3','w4'].forEach(function(k){
+        var p = document.getElementById('hp_'+k+'_price');    if(p) p.value = hp[k+'_price']    || '';
+        var t = document.getElementById('hp_'+k+'_tagline');  if(t) t.value = hp[k+'_tagline']  || '';
+        var f = document.getElementById('hp_'+k+'_features'); if(f) f.value = hp[k+'_features'] ? hp[k+'_features'].join('\n') : '';
+      });
       document.getElementById('hp_instagram').value  = hp.instagram  || '';
       document.getElementById('hp_location').value   = hp.location   || '';
       document.getElementById('hp_copyright').value  = hp.copyright  || '';
@@ -2019,6 +2055,12 @@
       hp.bs2_per     = document.getElementById('hp_bs2_per').value.trim();
       hp.bs2_gstnote = document.getElementById('hp_bs2_gstnote').value.trim();
       hp.bs2_features= document.getElementById('hp_bs2_features').value.split('\n').map(function(f){return f.trim();}).filter(Boolean);
+      // Wedding plans
+      ['w1','w2','w3','w4'].forEach(function(k){
+        var p = document.getElementById('hp_'+k+'_price');    hp[k+'_price']    = p ? p.value.trim() : '';
+        var t = document.getElementById('hp_'+k+'_tagline');  hp[k+'_tagline']  = t ? t.value.trim() : '';
+        var f = document.getElementById('hp_'+k+'_features'); hp[k+'_features'] = f ? f.value.split('\n').map(function(x){return x.trim();}).filter(Boolean) : [];
+      });
       hp.email       = document.getElementById('hp_email').value.trim();
       hp.instagram   = document.getElementById('hp_instagram').value.trim();
       hp.location    = document.getElementById('hp_location').value.trim();

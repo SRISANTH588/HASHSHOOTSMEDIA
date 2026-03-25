@@ -404,12 +404,24 @@
       .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
       .bs-wrap{max-width:1000px;margin:0 auto;padding:0 2rem;}
       .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;align-items:start;}
       .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
       .bs-card:hover{transform:translateY(-8px);}
       .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
       .bs-card-1:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
       .bs-card-2{background:#141414;border:1px solid rgba(201,168,76,0.35);box-shadow:0 0 0 1px rgba(201,168,76,0.08);}
       .bs-card-2:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.12),0 0 0 1px rgba(201,168,76,0.4);border-color:rgba(201,168,76,0.5);}
+      .bs-card-silver{background:#111;border:1px solid rgba(192,192,192,0.25);}
+      .bs-card-silver:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(192,192,192,0.3);border-color:rgba(192,192,192,0.4);}
+      .bs-card-gold{background:#141410;border:1px solid rgba(201,168,76,0.4);}
+      .bs-card-gold:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.6);}
+      .bs-card-luxe{background:linear-gradient(145deg,#0f0f0f,#1a1408);border:1px solid rgba(201,168,76,0.6);box-shadow:0 0 30px rgba(201,168,76,0.08);}
+      .bs-card-luxe:hover{box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.8);}
+      .bs-plan-tabs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:2.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:5px;max-width:360px;margin-left:auto;margin-right:auto;}
+      .bs-plan-tab{flex:1;padding:0.6rem 1rem;border-radius:10px;border:none;background:none;color:#5a5040;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.25s;}
+      .bs-plan-tab.active{background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(160,120,48,0.12));color:#c9a84c;border:1px solid rgba(201,168,76,0.3);}
+      .bs-panel{display:none;}
+      .bs-panel.active{display:block;}
       .bs-glow{position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;pointer-events:none;}
       .bs-card-1 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);}
       .bs-card-2 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 70%);}
@@ -438,7 +450,7 @@
       .bs-btn:hover::before{transform:translateX(100%);}
       .bs-anim{opacity:0;transform:translateY(40px);transition:opacity 0.6s ease,transform 0.6s ease;}
       .bs-anim.visible{opacity:1;transform:translateY(0);}
-      @media(max-width:680px){.bs-grid{grid-template-columns:1fr;}}
+      @media(max-width:680px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;}.bs-plan-tabs{max-width:100%;}}
     </style>
 
     <div class="bs-wrap">
@@ -448,58 +460,159 @@
         <p class="bs-sub">Simple pricing. No hidden fees. Just great content.</p>
       </div>
 
-      <div class="bs-grid">
-
-        <!-- PLAN 1 -->
-        <div class="bs-card bs-card-1 bs-anim">
-          <div class="bs-glow"></div>
-          <div class="bs-plan-tag"><i class="fas fa-bolt"></i> <span id="bs1_tag">Starter</span></div>
-          <div class="bs-name" id="bs1_name">Hourly Plan</div>
-          <div class="bs-tagline" id="bs1_tagline">Perfect for a single, fast, high-quality reel.</div>
-          <div class="bs-price-wrap">
-            <div class="bs-price" id="bs1_price">&#8377;1,699</div>
-            <div class="bs-per" id="bs1_per">/ shoot</div>
-          </div>
-          <div class="bs-gst-note" id="bs1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
-          <div class="bs-divider"></div>
-          <div class="bs-features-label">What's Included</div>
-          <ul class="bs-features" id="bs1_features">
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
-          </ul>
-          <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?plan=Hourly+Plan'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
-        </div>
-
-        <!-- PLAN 2 -->
-        <div class="bs-card bs-card-2 bs-anim" style="transition-delay:0.15s;">
-          <div class="bs-glow"></div>
-          <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
-          <div class="bs-plan-tag"><i class="fas fa-crown"></i> <span id="bs2_tag">Best Value</span></div>
-          <div class="bs-name" id="bs2_name">Half-Day Plan</div>
-          <div class="bs-tagline" id="bs2_tagline">Ideal for events &amp; creators who need more content.</div>
-          <div class="bs-price-wrap">
-            <div class="bs-price" id="bs2_price">&#8377;3,999</div>
-            <div class="bs-per" id="bs2_per">/ session</div>
-          </div>
-          <div class="bs-gst-note" id="bs2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
-          <div class="bs-divider"></div>
-          <div class="bs-features-label">What's Included</div>
-          <ul class="bs-features" id="bs2_features">
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-            <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
-          </ul>
-          <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?plan=Half-Day+Plan'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
-        </div>
-
+      <!-- PLAN TYPE TABS -->
+      <div class="bs-plan-tabs">
+        <button class="bs-plan-tab active" onclick="bsTab('general',this)"><i class="fas fa-camera"></i> General</button>
+        <button class="bs-plan-tab" onclick="bsTab('wedding',this)"><i class="fas fa-heart"></i> Wedding</button>
       </div>
+
+      <!-- GENERAL PLANS -->
+      <div class="bs-panel active" id="bsPanel_general">
+        <div class="bs-grid">
+          <div class="bs-card bs-card-1 bs-anim">
+            <div class="bs-glow"></div>
+            <div class="bs-plan-tag"><i class="fas fa-bolt"></i> <span id="bs1_tag">Starter</span></div>
+            <div class="bs-name" id="bs1_name">Hourly Plan</div>
+            <div class="bs-tagline" id="bs1_tagline">Perfect for a single, fast, high-quality reel.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="bs1_price">&#8377;1,699</div>
+              <div class="bs-per" id="bs1_per">/ shoot</div>
+            </div>
+            <div class="bs-gst-note" id="bs1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="bs1_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?plan=Hourly+Plan'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+          <div class="bs-card bs-card-2 bs-anim" style="transition-delay:0.15s;">
+            <div class="bs-glow"></div>
+            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
+            <div class="bs-plan-tag"><i class="fas fa-crown"></i> <span id="bs2_tag">Best Value</span></div>
+            <div class="bs-name" id="bs2_name">Half-Day Plan</div>
+            <div class="bs-tagline" id="bs2_tagline">Ideal for events &amp; creators who need more content.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="bs2_price">&#8377;3,999</div>
+              <div class="bs-per" id="bs2_per">/ session</div>
+            </div>
+            <div class="bs-gst-note" id="bs2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="bs2_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Hash Shoots Branding Included</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?plan=Half-Day+Plan'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEDDING PLANS -->
+      <div class="bs-panel" id="bsPanel_wedding">
+        <div class="bs-grid-4">
+          <!-- BASIC -->
+          <div class="bs-card bs-card-1 bs-anim">
+            <div class="bs-glow"></div>
+            <div class="bs-plan-tag"><i class="fas fa-leaf"></i> <span id="w1_tag">Basic</span></div>
+            <div class="bs-name" id="w1_name">Basic</div>
+            <div class="bs-tagline" id="w1_tagline">Essential coverage for intimate ceremonies.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="w1_price">&#8377;15,000</div>
+              <div class="bs-per" id="w1_per">/ event</div>
+            </div>
+            <div class="bs-gst-note" id="w1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="w1_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>4 Hours Coverage</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Photographer</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>100 Edited Photos</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Highlight Reel</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+          <!-- SILVER -->
+          <div class="bs-card bs-card-silver bs-anim" style="transition-delay:0.1s;">
+            <div class="bs-glow"></div>
+            <div class="bs-plan-tag" style="color:#c0c0c0;"><i class="fas fa-medal"></i> <span id="w2_tag">Silver</span></div>
+            <div class="bs-name" id="w2_name">Silver</div>
+            <div class="bs-tagline" id="w2_tagline">Perfect for full-day wedding celebrations.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="w2_price" style="background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;25,000</div>
+              <div class="bs-per" id="w2_per">/ event</div>
+            </div>
+            <div class="bs-gst-note" id="w2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs Basic</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="w2_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>8 Hours Coverage</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Photographers</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>300 Edited Photos</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Highlight Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.4);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+          <!-- GOLD -->
+          <div class="bs-card bs-card-gold bs-anim" style="transition-delay:0.2s;">
+            <div class="bs-glow"></div>
+            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
+            <div class="bs-plan-tag"><i class="fas fa-trophy"></i> <span id="w3_tag">Gold</span></div>
+            <div class="bs-name" id="w3_name">Gold</div>
+            <div class="bs-tagline" id="w3_tagline">Premium coverage for your dream wedding.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="w3_price">&#8377;45,000</div>
+              <div class="bs-per" id="w3_per">/ event</div>
+            </div>
+            <div class="bs-gst-note" id="w3_gstnote">+ GST &nbsp;&middot;&nbsp; Best Value</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="w3_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Full Day Coverage</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>3 Photographers</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>500+ Edited Photos</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Cinematic Film</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Pre-shoot Consultation</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+          <!-- LUXE -->
+          <div class="bs-card bs-card-luxe bs-anim" style="transition-delay:0.3s;">
+            <div class="bs-glow"></div>
+            <div class="bs-plan-tag" style="color:#c9a84c;"><i class="fas fa-gem"></i> <span id="w4_tag">Luxe</span></div>
+            <div class="bs-name" id="w4_name">Luxe</div>
+            <div class="bs-tagline" id="w4_tagline">The ultimate luxury wedding experience.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="w4_price">&#8377;80,000</div>
+              <div class="bs-per" id="w4_per">/ event</div>
+            </div>
+            <div class="bs-gst-note" id="w4_gstnote">+ GST &nbsp;&middot;&nbsp; All-Inclusive</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="w4_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Multi-Day Coverage</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Dedicated Team</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Unlimited Edited Photos</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Cinematic Film + Drone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Album Design Included</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Priority Support</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
   <script>
@@ -512,6 +625,13 @@
       },{threshold:0.15});
       cards.forEach(function(c){ io.observe(c); });
     })();
+
+    function bsTab(panel, btn){
+      document.querySelectorAll('.bs-plan-tab').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.bs-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('bsPanel_'+panel).classList.add('active');
+    }
   </script>
 
   <!-- FEATURES SECTION -->
@@ -1080,7 +1200,7 @@
       Object.keys(priceMap).forEach(function(key){
         if(hp['price_'+key]){ var el=document.getElementById(priceMap[key]); if(el) el.textContent=hp['price_'+key]; }
       });
-      // Bestsellers Plan 1
+      // Bestsellers Plan 1 & 2
       var _s = function(id,val){ var e=document.getElementById(id); if(e&&val) e.textContent=val; };
       _s('bs1_tag',hp.bs1_tag); _s('bs1_name',hp.bs1_name); _s('bs1_tagline',hp.bs1_tagline);
       _s('bs1_price',hp.bs1_price); _s('bs1_per',hp.bs1_per); _s('bs1_gstnote',hp.bs1_gstnote);
@@ -1088,13 +1208,21 @@
         var ul=document.getElementById('bs1_features');
         if(ul) ul.innerHTML=hp.bs1_features.map(function(f){ return '<li><div class="bs-check"><i class="fas fa-check"></i></div>'+f+'</li>'; }).join('');
       }
-      // Bestsellers Plan 2
       _s('bs2_tag',hp.bs2_tag); _s('bs2_name',hp.bs2_name); _s('bs2_tagline',hp.bs2_tagline);
       _s('bs2_price',hp.bs2_price); _s('bs2_per',hp.bs2_per); _s('bs2_gstnote',hp.bs2_gstnote);
       if(hp.bs2_features && hp.bs2_features.length){
         var ul=document.getElementById('bs2_features');
         if(ul) ul.innerHTML=hp.bs2_features.map(function(f){ return '<li><div class="bs-check"><i class="fas fa-check"></i></div>'+f+'</li>'; }).join('');
       }
+      // Wedding Plans
+      ['w1','w2','w3','w4'].forEach(function(k){
+        _s(k+'_tag',hp[k+'_tag']); _s(k+'_name',hp[k+'_name']); _s(k+'_tagline',hp[k+'_tagline']);
+        _s(k+'_price',hp[k+'_price']); _s(k+'_per',hp[k+'_per']); _s(k+'_gstnote',hp[k+'_gstnote']);
+        if(hp[k+'_features'] && hp[k+'_features'].length){
+          var ul=document.getElementById(k+'_features');
+          if(ul) ul.innerHTML=hp[k+'_features'].map(function(f){ return '<li><div class="bs-check"><i class="fas fa-check"></i></div>'+f+'</li>'; }).join('');
+        }
+      });
       // Footer
       if(hp.email)     { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-envelope')) d.innerHTML='<i class="fas fa-envelope"></i> '+hp.email; }); }
       if(hp.instagram) { document.querySelectorAll('.contact-details div').forEach(function(d){ if(d.innerHTML.includes('fa-instagram')) d.innerHTML='<i class="fab fa-instagram"></i> '+hp.instagram; }); }
