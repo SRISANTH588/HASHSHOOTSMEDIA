@@ -298,34 +298,29 @@
     </div><!-- end tab-vibe -->
 
   <script>
-  // ── VIBE FUNCTIONS ──────────────────────────────────────────────
-  var _vibeDB = null;
-  function openVibeDB(cb){
-    if(_vibeDB){ cb(_vibeDB); return; }
-    var req = indexedDB.open('hs_vibe_db', 1);
-    req.onupgradeneeded = function(e){ e.target.result.createObjectStore('videos',{keyPath:'id'}); };
-    req.onsuccess = function(e){ _vibeDB = e.target.result; cb(_vibeDB); };
-    req.onerror = function(){ cb(null); };
+  // ── VIBE FUNCTIONS (Cloudinary + Firestore only — no localStorage/IndexedDB) ──
+
+  var _vibeAdminDB = null;
+  async function getVibeAdminDB(){
+    if(_vibeAdminDB) return _vibeAdminDB;
+    var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+    var app = fbMod.getApps().find(function(a){return a.name==='vibe-admin';}) || fbMod.initializeApp(fbCfg,'vibe-admin');
+    _vibeAdminDB = { db: fbStore.getFirestore(app), fs: fbStore };
+    return _vibeAdminDB;
   }
-  function saveVideoDB(id, blob, cb){
-    openVibeDB(function(db){
-      if(!db){ cb && cb(); return; }
-      var tx = db.transaction('videos','readwrite');
-      tx.objectStore('videos').put({id:id, blob:blob});
-      tx.oncomplete = function(){ cb && cb(); };
-    });
-  }
-  function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
-  function saveVibeItems(items){ localStorage.setItem('hs_vibe', JSON.stringify(items)); }
-  function deleteVibeItem(id){
+
+  async function deleteVibeItem(id){
     if(!confirm('Delete this vibe item?')) return;
-    openVibeDB(function(db){
-      if(db) db.transaction('videos','readwrite').objectStore('videos').delete(id);
-    });
-    saveVibeItems(getVibeItems().filter(function(i){ return i.id !== id; }));
-    renderVibeAdmin();
+    try {
+      var f = await getVibeAdminDB();
+      await f.fs.deleteDoc(f.fs.doc(f.db,'vibe_items',String(id)));
+      renderVibeAdmin();
+    } catch(e){ alert('Delete failed: '+e.message); }
   }
-  function uploadVibeItem(){
+
+  async function uploadVibeItem(){
     var title     = document.getElementById('vibe_title').value.trim();
     var cat       = document.getElementById('vibe_cat').value;
     var thumbFile = document.getElementById('vibe_thumb').files[0];
@@ -336,12 +331,21 @@
     btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
     var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
     if(pw) pw.style.display='block';
-    var id = Date.now();
-    function finish(videoUrl, thumbUrl){
-      var newItem = {id:id, title:title, category:cat, thumbnail:thumbUrl||'', url:videoUrl, type:'video', addedAt:new Date().toLocaleString()};
-      var items = getVibeItems();
-      items.push(newItem);
-      saveVibeItems(items);
+    try {
+      if(pl) pl.textContent='Uploading video to Cloudinary...';
+      var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
+      var thumbUrl = vRes.thumbnail;
+      if(thumbFile){
+        if(pl) pl.textContent='Uploading thumbnail...';
+        var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
+        thumbUrl = tRes.url;
+      }
+      if(pb) pb.style.width='100%';
+      if(pl) pl.textContent='Saving to database...';
+      var newItem = { title:title, category:cat, thumbnail:thumbUrl||'', url:vRes.url, type:'video', addedAt:new Date().toLocaleString() };
+      var f = await getVibeAdminDB();
+      var ref = await f.fs.addDoc(f.fs.collection(f.db,'vibe_items'), newItem);
+      newItem.id = ref.id;
       document.getElementById('vibe_title').value='';
       document.getElementById('vibe_cat').value='';
       document.getElementById('vibe_thumb').value='';
@@ -351,87 +355,44 @@
       var toast=document.getElementById('vibeToast');
       if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
       renderVibeAdmin();
-    }
-    if(window.cloudinaryUpload){
-      (async function(){
-        try {
-          if(pl) pl.textContent='Uploading video to cloud...';
-          var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){ if(pb) pb.style.width=(p*0.8)+'%'; });
-          var thumbUrl = vRes.thumbnail;
-          if(thumbFile){
-            if(pl) pl.textContent='Uploading thumbnail...';
-            var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs',function(p){ if(pb) pb.style.width=(80+p*0.2)+'%'; });
-            thumbUrl = tRes.url;
-          }
-          if(pb) pb.style.width='100%';
-          finish(vRes.url, thumbUrl);
-        } catch(e){
-          alert('Upload failed: '+e.message);
-          btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
-          if(pw) pw.style.display='none';
-        }
-      })();
-    } else {
-      saveVideoDB(id, videoFile, function(){
-        var localUrl = URL.createObjectURL(videoFile);
-        if(thumbFile){
-          var r = new FileReader();
-          r.onload = function(e){ finish(localUrl, e.target.result); };
-          r.readAsDataURL(thumbFile);
-        } else { finish(localUrl, ''); }
-      });
+    } catch(e){
+      alert('Upload failed: '+e.message);
+      btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+      if(pw) pw.style.display='none';
     }
   }
-  function renderVibeAdmin(){
-    var items = getVibeItems().slice().reverse();
+
+  async function renderVibeAdmin(){
     var grid = document.getElementById('vibeAdminGrid');
     var countEl = document.getElementById('vibeCount');
-    if(countEl) countEl.textContent = items.length + ' item(s)';
-    if(!items.length){
-      grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>';
-      return;
+    grid.innerHTML='<p style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    try {
+      var f = await getVibeAdminDB();
+      var snap = await f.fs.getDocs(f.fs.query(f.fs.collection(f.db,'vibe_items'), f.fs.orderBy('addedAt','desc')));
+      var items = [];
+      snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
+      if(countEl) countEl.textContent = items.length + ' item(s)';
+      if(!items.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>'; return; }
+      grid.innerHTML='';
+      items.forEach(function(item){
+        var card = document.createElement('div');
+        card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
+        var mediaHtml = item.thumbnail
+          ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"/>'
+          : '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
+        card.innerHTML = mediaHtml
+          +'<div style="padding:0.75rem;">'
+          +'<div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
+          +'<div style="font-size:0.7rem;color:#c9a84c;font-weight:600;margin-bottom:0.5rem;">'+item.category+'</div>'
+          +'<div style="display:flex;gap:0.4rem;">'
+          +(item.url ? '<a href="'+item.url+'" target="_blank" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;"><i class="fas fa-external-link-alt"></i> View</a>' : '')
+          +'<button onclick="deleteVibeItem(\''+String(item.id)+'\')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'</div></div>';
+        grid.appendChild(card);
+      });
+    } catch(e){
+      grid.innerHTML='<p style="color:#f44336;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">Error loading: '+e.message+'</p>';
     }
-    grid.innerHTML='';
-    items.forEach(function(item){
-      var card = document.createElement('div');
-      card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
-      var mediaHtml = item.thumbnail
-        ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"/>'
-        : '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
-      card.innerHTML = mediaHtml
-        +'<div style="padding:0.75rem;">'
-        +'<div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
-        +'<div style="font-size:0.7rem;color:#c9a84c;font-weight:600;margin-bottom:0.5rem;">'+item.category+'</div>'
-        +'<div style="display:flex;gap:0.4rem;">'
-        +(item.url ? '<button onclick="downloadVibeVideo('+item.id+')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>' : '')
-        +'<button onclick="deleteVibeItem('+item.id+')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
-        +'</div></div>';
-      grid.appendChild(card);
-    });
-  }
-  function downloadVibeVideo(id){
-    var item = getVibeItems().find(function(i){ return i.id == id; });
-    if(!item) return;
-    if(item.url){
-      var a = document.createElement('a');
-      a.href = item.url;
-      a.download = (item.title||'vibe_video').replace(/[^a-z0-9]/gi,'_')+'.mp4';
-      a.target = '_blank';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      return;
-    }
-    openVibeDB(function(db){
-      if(!db){ alert('Video not available for download.'); return; }
-      var req = db.transaction('videos','readonly').objectStore('videos').get(id);
-      req.onsuccess = function(){
-        if(!req.result){ alert('Video not found.'); return; }
-        var url = URL.createObjectURL(req.result.blob);
-        var a = document.createElement('a');
-        a.href=url; a.download=(item.title||'vibe_video').replace(/[^a-z0-9]/gi,'_')+'.mp4';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-      };
-    });
   }
   </script>
 
@@ -1696,11 +1657,11 @@
           <td><span class="status-badge ${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span></td>
           <td>
             <div class="action-btns">
-              ${b.status==='pending'?`<button class="btn-action btn-confirm" onclick="updateStatus(${b.id},'confirmed')">Confirm</button>`:''}
-              ${b.status==='confirmed'?`<button class="btn-action btn-complete" onclick="updateStatus(${b.id},'completed')">Complete</button>`:''}
-              ${b.status!=='cancelled'&&b.status!=='completed'?`<button class="btn-action btn-cancel" onclick="updateStatus(${b.id},'cancelled')">Cancel</button>`:''}
-              <button class="btn-action" style="background:rgba(33,150,243,0.15);color:#2196f3;" onclick="editBooking(${b.id})"><i class="fas fa-edit"></i></button>
-              <button class="btn-action btn-delete" onclick="deleteBooking(${b.id})"><i class="fas fa-trash"></i></button>
+              ${b.status==='pending'?`<button class="btn-action btn-confirm" onclick="updateStatus('${b.id}','confirmed')">Confirm</button>`:''}
+              ${b.status==='confirmed'?`<button class="btn-action btn-complete" onclick="updateStatus('${b.id}','completed')">Complete</button>`:''}
+              ${b.status!=='cancelled'&&b.status!=='completed'?`<button class="btn-action btn-cancel" onclick="updateStatus('${b.id}','cancelled')">Cancel</button>`:''}
+              <button class="btn-action" style="background:rgba(33,150,243,0.15);color:#2196f3;" onclick="editBooking('${b.id}')"><i class="fas fa-edit"></i></button>
+              <button class="btn-action btn-delete" onclick="deleteBooking('${b.id}')"><i class="fas fa-trash"></i></button>
             </div>
           </td>
         </tr>`).join('');
@@ -2022,8 +1983,8 @@
           +'<div style="display:flex;flex-direction:column;gap:0.4rem;">'
           +(alreadyInVibe
             ? '<div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:6px;padding:0.35rem 0.6rem;font-size:0.72rem;font-weight:700;text-align:center;"><i class="fas fa-check-circle"></i> Added to Vibe</div>'
-            : '<button onclick="pushStaffVideoToVibe('+v.id+')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
-          +'<button onclick="adminDeleteStaffVideo('+v.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+            : '<button onclick="pushStaffVideoToVibe('"+String(v.id)+"')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
+          +'<button onclick="adminDeleteStaffVideo('"+String(v.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         if(v.cloudUrl){
           var ph = document.getElementById('svp_'+v.id);
@@ -2246,9 +2207,9 @@
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
           +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
-          +'<button onclick="openTestiVidEdit('+v.id+')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          +'<button onclick="openTestiVidEdit('"+String(v.id)+"')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
           +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
-          +'<button onclick="deleteTestiVideo('+v.id+')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'<button onclick="deleteTestiVideo('"+String(v.id)+"')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         openTestiVideoDB(function(db){
           if(!db) return;
@@ -2908,11 +2869,11 @@
         // Action buttons based on status
         var actionBtns = '';
         if(a.status === 'assigned'){
-          actionBtns = '<button onclick="adminMarkDone('+a.id+')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+          actionBtns = '<button onclick="adminMarkDone('"+String(a.id)+"')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
         } else if(a.status === 'done'){
-          actionBtns = '<button onclick="approveAndPay('+a.id+')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
+          actionBtns = '<button onclick="approveAndPay('"+String(a.id)+"')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
         } else if(a.status === 'completed'){
-          actionBtns = '<button onclick="releasePayment('+a.id+')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
+          actionBtns = '<button onclick="releasePayment('"+String(a.id)+"')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
         } else if(a.status === 'paid'){
           actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
         }
@@ -2948,7 +2909,7 @@
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
-          + '<button onclick="deleteAssignment('+a.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
+          + '<button onclick="deleteAssignment('"+String(a.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
@@ -3561,8 +3522,8 @@
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+n.time+'</div>'
           + '</div></div>'
           + '<div style="display:flex;gap:0.5rem;align-items:center;">'
-          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif('+n.id+')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
-          + '<button onclick="deleteNotif('+n.id+')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif('"+String(n.id)+"')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
+          + '<button onclick="deleteNotif('"+String(n.id)+"')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
           + '</div></div>';
       }).join('');
     }
@@ -3714,7 +3675,7 @@
           +'<div style="font-size:0.78rem;color:#9a9080;">'+p.desc.slice(0,100)+'...</div>'
           +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+p.date+' &nbsp;·&nbsp; '+p.read+'</div>'
           +'</div>'
-          +'<button onclick="deleteBlogPost('+p.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deleteBlogPost('"+String(p.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
       }).join('');
     }
@@ -3759,7 +3720,7 @@
           +(p.desc?'<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.2rem;">'+p.desc.slice(0,100)+'...</div>':'')
           +'<div style="font-size:0.65rem;color:#777;">'+p.date+(p.url?' &nbsp;·&nbsp; <a href="'+p.url+'" target="_blank" style="color:#c9a84c;">View Article</a>':'')+'</div>'
           +'</div>'
-          +'<button onclick="deletePressItem('+p.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deletePressItem('"+String(p.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
       }).join('');
     }

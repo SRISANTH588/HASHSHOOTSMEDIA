@@ -74,10 +74,25 @@
   <script>
     (function(){
       var currentCat = 'all';
-      function getVibeItems(){ return JSON.parse(localStorage.getItem('hs_vibe')||'[]'); }
+      var _vibeItems = [];
+
+      async function loadVibeFromFirestore(){
+        try {
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
+          var db  = fbStore.getFirestore(app);
+          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
+            _vibeItems = [];
+            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
+            renderVibe();
+          });
+        } catch(e){ console.error('Vibe index load error:',e); }
+      }
+
       function renderVibe(){
-        var items = getVibeItems();
-        var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
+        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
         var grid = document.getElementById('vibeGrid');
         if(!filtered.length){
           grid.innerHTML='<div class="vibe-empty"><i class="fas fa-photo-video"></i>No content yet. Check back soon!</div>';
@@ -86,7 +101,7 @@
         grid.innerHTML = filtered.map(function(item,idx){
           var thumb = item.thumbnail
             ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
-            : '<div class="vibe-thumb-placeholder"><i class="fas fa-'+(item.type==='video'?'play-circle':'image')+'"></i><span>'+item.category+'</span></div>';
+            : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
           return '<div class="vibe-card" onclick="openVibeLb(\''+idx+'\')">' + thumb + '<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div><div class="vibe-info-cat">'+item.category+'</div></div></div>';
         }).join('');
       }
@@ -158,8 +173,7 @@
       }
 
       window.openVibeLb = function(idx){
-        var items = getVibeItems();
-        var filtered = currentCat==='all' ? items : items.filter(function(i){return i.category===currentCat;});
+        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
         var item = filtered[idx];
         var videoUrl = item.url || item.cloudUrl || '';
         var html = '';
@@ -180,11 +194,7 @@
       document.getElementById('vibeLightbox').addEventListener('click',function(e){
         if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
       });
-      renderVibe();
-      window.addEventListener('storage',function(e){
-        if(e.key==='hs_vibe') renderVibe();
-        if((e.key==='hs_homepage'||e.key==='hs_testi_videos') && currentCat==='Testimonials') renderTestimonials();
-      });
+      loadVibeFromFirestore();
     })();
   </script>
 
@@ -1117,32 +1127,7 @@
   </script>
   <script src="script.js"></script>
 
-  <script type="module">
-    // Firebase real-time sync for Vibe items
-    (async function(){
-      try {
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var apps = fbMod.getApps();
-        var app  = apps.find(function(a){return a.name==='vibe';}) || fbMod.initializeApp(fbCfg,'vibe');
-        var db   = fbStore.getFirestore(app);
-        fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
-          var items = [];
-          snap.forEach(function(d){ items.push(Object.assign({id:d.id}, d.data())); });
-          if(items.length) {
-            localStorage.setItem('hs_vibe', JSON.stringify(items));
-            // Trigger re-render if renderVibe exists
-            if(typeof renderVibe === 'function') renderVibe();
-          }
-        });
-        // Homepage settings
-        fbStore.onSnapshot(fbStore.doc(db,'settings','homepage'), function(snap){
-          if(snap.exists()) localStorage.setItem('hs_homepage', JSON.stringify(snap.data()));
-        });
-      } catch(e){ console.log('Vibe Firebase sync:', e); }
-    })();
-  </script>
+
 
 </body>
 </html>
