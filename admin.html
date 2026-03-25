@@ -2552,19 +2552,29 @@
     function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
 
     function createDemo(){
-      var title = (document.getElementById('dm_title')||{}).value||'';
-      var date  = (document.getElementById('dm_date')||{}).value||'';
-      var time  = (document.getElementById('dm_time')||{}).value||'';
-      var slots = parseInt((document.getElementById('dm_slots')||{}).value)||10;
-      var fee   = parseFloat((document.getElementById('dm_fee')||{}).value)||0;
-      var place = (document.getElementById('dm_place')||{}).value||'';
+      var title     = (document.getElementById('dm_title')||{}).value||'';
+      var date      = (document.getElementById('dm_date')||{}).value||'';
+      var time      = (document.getElementById('dm_time')||{}).value||'';
+      var place     = (document.getElementById('dm_place')||{}).value||'';
+      var desc      = (document.getElementById('dm_desc')||{}).value||'';
+      var headName  = (document.getElementById('dm_head_name')||{}).value||'';
+      var headPhone = (document.getElementById('dm_head_phone')||{}).value||'';
+      var headEmail = (document.getElementById('dm_head_email')||{}).value||'';
+      var staffSel  = document.getElementById('dm_staff');
+      var staffId   = staffSel ? staffSel.value : '';
+      var staffName = staffSel && staffSel.selectedIndex > 0 ? staffSel.options[staffSel.selectedIndex].text : '';
       var toast = document.getElementById('dmToast');
       if(!title||!date||!time){ if(toast){toast.textContent='Please fill Title, Date and Time.';toast.style.display='block';toast.style.color='#f44336';setTimeout(function(){toast.style.display='none';},3000);} return; }
+      if(!staffId){ if(toast){toast.textContent='Please select a staff member.';toast.style.display='block';toast.style.color='#f44336';setTimeout(function(){toast.style.display='none';},3000);} return; }
       var demos = getDemos();
-      demos.push({ id:Date.now(), title:title.trim(), date:date, time:time, slots:slots, fee:fee, place:place.trim(), status:'open', registrations:[], createdAt:new Date().toLocaleString() });
+      var demo = { id:Date.now(), title:title.trim(), date:date, time:time, place:place.trim(), desc:desc.trim(), staffId:staffId, staffName:staffName, headName:headName.trim(), headPhone:headPhone.trim(), headEmail:headEmail.trim(), status:'open', registrations:[], createdAt:new Date().toLocaleString() };
+      demos.push(demo);
       saveDemos(demos);
-      if(window.fbSave) fbSave('demos', demos[demos.length-1]);
+      if(window.fbUpdate) fbUpdate('demos', String(demo.id), demo);
       if(toast){toast.textContent='Demo session created!';toast.style.color='#4caf50';toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
+      // Clear form
+      ['dm_title','dm_date','dm_time','dm_place','dm_desc','dm_head_name','dm_head_phone','dm_head_email'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+      if(staffSel) staffSel.selectedIndex=0;
       renderDemoAdminList();
     }
 
