@@ -1561,10 +1561,6 @@
       if(m && !hasAccess(m[1])) btn.style.display = 'none';
     });
 
-    // Activate first visible tab
-    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
-    if(firstVisible) firstVisible.click();
-
     function logout() {
       ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
       window.location.href = 'login.html';
@@ -1835,6 +1831,10 @@
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
     }
 
+    // Activate first visible tab
+    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
+    if(firstVisible) firstVisible.click();
+
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
       document.getElementById('hp_statReels').value  = hp.statReels  || '';
@@ -1944,12 +1944,6 @@
       setTimeout(function(){ toast.style.display='none'; }, 2500);
     }
 
-    function deleteFeedback(id){
-      if(!confirm('Delete this feedback?')) return;
-      localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){ return f.id !== id; })));
-      renderFeedbackAdmin();
-    }
-
     // STAFF VIDEOS ADMIN
     function renderStaffVideosAdmin(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').slice().reverse();
@@ -1983,8 +1977,8 @@
           +'<div style="display:flex;flex-direction:column;gap:0.4rem;">'
           +(alreadyInVibe
             ? '<div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:6px;padding:0.35rem 0.6rem;font-size:0.72rem;font-weight:700;text-align:center;"><i class="fas fa-check-circle"></i> Added to Vibe</div>'
-            : '<button onclick="pushStaffVideoToVibe('"+String(v.id)+"')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
-          +'<button onclick="adminDeleteStaffVideo('"+String(v.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+            : '<button onclick="pushStaffVideoToVibe('+String(v.id)+')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
+          +'<button onclick="adminDeleteStaffVideo('+String(v.id)+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         if(v.cloudUrl){
           var ph = document.getElementById('svp_'+v.id);
@@ -2207,9 +2201,9 @@
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
           +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
-          +'<button onclick="openTestiVidEdit('"+String(v.id)+"')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          +'<button onclick="openTestiVidEdit("+String(v.id)+")" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
           +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
-          +'<button onclick="deleteTestiVideo('"+String(v.id)+"')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'<button onclick="deleteTestiVideo("+String(v.id)+")" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         openTestiVideoDB(function(db){
           if(!db) return;
@@ -2465,13 +2459,146 @@
       renderDemoAdminList();
     }
 
-    // ── FEEDBACK FILTER ───────────────────────────────────────────────
+    // ── FEEDBACK ──────────────────────────────────────────────────────
+    function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks')||'[]'); }
+
     var _feedbackFilter = 'all';
     function filterFeedback(type, btn){
       _feedbackFilter = type;
       document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
       if(btn) btn.classList.add('active');
       renderFeedbackAdmin();
+    }
+
+    function renderFeedbackAdmin(){
+      var list = getFeedbacks();
+      var el = document.getElementById('feedbackAdminList'); if(!el) return;
+      var fb_total = document.getElementById('fb_totalCount');
+      var fb_avg   = document.getElementById('fb_avgRating');
+      var fb_shoot = document.getElementById('fb_shootCount');
+      var fb_demo  = document.getElementById('fb_demoCount');
+      var shoots = list.filter(function(f){ return f.type!=='demo'; });
+      var demos  = list.filter(function(f){ return f.type==='demo'; });
+      var ratings = list.map(function(f){ return parseFloat(f.rating)||0; }).filter(function(r){ return r>0; });
+      if(fb_total) fb_total.textContent = list.length;
+      if(fb_avg)   fb_avg.textContent   = ratings.length ? (ratings.reduce(function(a,b){return a+b;},0)/ratings.length).toFixed(1) : '0.0';
+      if(fb_shoot) fb_shoot.textContent = shoots.length;
+      if(fb_demo)  fb_demo.textContent  = demos.length;
+      var filtered = list;
+      if(_feedbackFilter==='shoot') filtered = shoots;
+      else if(_feedbackFilter==='demo') filtered = demos;
+      else if(_feedbackFilter==='5') filtered = list.filter(function(f){ return parseFloat(f.rating)===5; });
+      else if(_feedbackFilter==='low') filtered = list.filter(function(f){ return parseFloat(f.rating)<=2; });
+      if(!filtered.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No feedback yet.</p>'; return; }
+      el.innerHTML = filtered.slice().reverse().map(function(f){
+        var stars='';
+        for(var i=1;i<=5;i++) stars+='<i class="fas fa-star" style="color:'+(i<=parseFloat(f.rating)?'#f5a623':'#333')+';"></i>';
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'
+          +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(f.name||'Anonymous')+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">'+(f.service||f.type||'')+(f.city?' &nbsp;·&nbsp; '+f.city:'')+'</div></div>'
+          +'<div style="display:flex;align-items:center;gap:0.5rem;">'+stars
+          +'<button onclick="deleteFeedback(String('+JSON.stringify(f.id)+'))" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button></div></div>'
+          +(f.message?'<div style="font-size:0.82rem;color:#c8c0b0;margin-top:0.5rem;">'+f.message+'</div>':'')
+          +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+(f.submittedAt||f.createdAt||'')+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    function deleteFeedback(id){
+      if(!confirm('Delete this feedback?')) return;
+      localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){ return String(f.id)!==String(id); })));
+      renderFeedbackAdmin();
+    }
+
+    // ── DEMO LIST & STAFF SELECT ──────────────────────────────────────
+    function populateDemoStaffSelect(){
+      var sel = document.getElementById('dm_staff'); if(!sel) return;
+      var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+      sel.innerHTML = '<option value="" disabled selected>Select staff member</option>'
+        + staff.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('');
+    }
+
+    function renderDemoAdminList(){
+      var demos = getDemos().slice().reverse();
+      var el = document.getElementById('demoAdminList'); if(!el) return;
+      var countEl = document.getElementById('demoCount');
+      if(countEl) countEl.textContent = demos.length+' session(s)';
+      var pending   = demos.filter(function(d){ return d.status==='open'; }).length;
+      var submitted = demos.filter(function(d){ return d.status==='submitted'; }).length;
+      var approved  = demos.filter(function(d){ return d.status==='approved'; }).length;
+      var rejected  = demos.filter(function(d){ return d.status==='rejected'; }).length;
+      ['dm_pendingCount','dm_submittedCount','dm_approvedCount','dm_rejectedCount'].forEach(function(id,i){
+        var e=document.getElementById(id); if(e) e.textContent=[pending,submitted,approved,rejected][i];
+      });
+      if(!demos.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No demo sessions yet.</p>'; return; }
+      el.innerHTML = demos.map(function(d){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
+          +'<div style="flex:1;"><div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+d.title+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+d.date+' at '+d.time+(d.place?' &nbsp;·&nbsp; '+d.place:'')+'</div>'
+          +(d.desc?'<div style="font-size:0.78rem;color:#c8c0b0;margin-top:0.3rem;">'+d.desc+'</div>':'')
+          +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">Created: '+d.createdAt+'</div></div>'
+          +'<div style="display:flex;gap:0.5rem;align-items:center;">'
+          +'<span style="font-size:0.72rem;font-weight:700;padding:0.25rem 0.7rem;border-radius:50px;background:rgba(201,168,76,0.1);color:#c9a84c;">'+d.status+'</span>'
+          +'<button onclick="deleteDemo('+d.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+          +'</div></div>';
+      }).join('');
+    }
+
+    function deleteDemo(id){
+      if(!confirm('Delete this demo session?')) return;
+      saveDemos(getDemos().filter(function(d){ return d.id!==id; }));
+      renderDemoAdminList();
+    }
+
+    // ── CUSTOMER PAGE LOAD ────────────────────────────────────────────
+    function loadCustomerForm(){
+      var cfg = JSON.parse(localStorage.getItem('hs_customer_page')||'{}');
+      ['cp_title','cp_subtitle','cp_banner','cp_labelName','cp_labelPhone','cp_labelCity','cp_labelNotes',
+       'cp_services','cp_btnText','cp_btnIcon','cp_successTitle','cp_successMsg','cp_note','cp_bookingsTitle',
+       'cp_showDate','cp_showTime','cp_showNotes','cp_requireNotes','cp_showBookings'].forEach(function(id){
+        var el=document.getElementById(id); if(el && cfg[id]!==undefined) el.value=cfg[id];
+      });
+      ['cp_bannerColor','cp_bannerTextColor','cp_btnColor','cp_btnTextColor','cp_bgColor','cp_cardColor','cp_accentColor'].forEach(function(id){
+        var el=document.getElementById(id); if(el && cfg[id]) el.value=cfg[id];
+      });
+    }
+
+    // ── STORE LOAD ────────────────────────────────────────────────────
+    function loadStoreAdmin(){
+      var cfg = JSON.parse(localStorage.getItem('hs_store_settings')||'{}');
+      var emailEl=document.getElementById('store_email'); if(emailEl) emailEl.value=cfg.email||'';
+      var discEl=document.getElementById('store_discount_email'); if(discEl) discEl.value=cfg.discountEmail||'';
+      var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
+      var countEl=document.getElementById('tsCount'); if(countEl) countEl.textContent=items.length+' product(s)';
+      var listEl=document.getElementById('tshirtAdminList');
+      if(listEl){
+        if(!items.length){ listEl.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No t-shirts added yet.</p>'; }
+        else { listEl.innerHTML=items.map(function(t){
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:0.85rem 1.25rem;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">'
+            +(t.image?'<img src="'+t.image+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/>':'')
+            +'<div style="flex:1;"><div style="font-weight:700;color:#fff;font-size:0.88rem;">'+t.name+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;">&#8377;'+t.price+(t.sizes?' &nbsp;·&nbsp; '+t.sizes:'')+'</div></div>'
+            +'<button onclick="deleteTshirt('+t.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'</div>';
+        }).join(''); }
+      }
+      var idc=JSON.parse(localStorage.getItem('hs_idcard')||'{}');
+      var idcPrice=document.getElementById('idc_price'); if(idcPrice) idcPrice.value=idc.price||'';
+      var idcDesc=document.getElementById('idc_desc'); if(idcDesc) idcDesc.value=idc.desc||'';
+    }
+
+    function saveStoreSettings(){
+      var email=(document.getElementById('store_email')||{}).value||'';
+      var disc=(document.getElementById('store_discount_email')||{}).value||'';
+      localStorage.setItem('hs_store_settings', JSON.stringify({email:email.trim(),discountEmail:disc.trim()}));
+      var t=document.getElementById('storeSettingsToast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},3000);}
+    }
+
+    function deleteTshirt(id){
+      if(!confirm('Delete this product?')) return;
+      localStorage.setItem('hs_tshirts', JSON.stringify(JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return t.id!==id; })));
+      loadStoreAdmin();
     }
 
     // ── STORE: T-SHIRTS & ID CARD ─────────────────────────────────────
@@ -2869,11 +2996,11 @@
         // Action buttons based on status
         var actionBtns = '';
         if(a.status === 'assigned'){
-          actionBtns = '<button onclick="adminMarkDone('"+String(a.id)+"')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+          actionBtns = '<button onclick="adminMarkDone("+String(a.id)+")" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
         } else if(a.status === 'done'){
-          actionBtns = '<button onclick="approveAndPay('"+String(a.id)+"')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
+          actionBtns = '<button onclick="approveAndPay("+String(a.id)+")" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
         } else if(a.status === 'completed'){
-          actionBtns = '<button onclick="releasePayment('"+String(a.id)+"')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
+          actionBtns = '<button onclick="releasePayment("+String(a.id)+")" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
         } else if(a.status === 'paid'){
           actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
         }
@@ -2909,7 +3036,7 @@
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
-          + '<button onclick="deleteAssignment('"+String(a.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
+          + '<button onclick="deleteAssignment("+String(a.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
@@ -3522,8 +3649,8 @@
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+n.time+'</div>'
           + '</div></div>'
           + '<div style="display:flex;gap:0.5rem;align-items:center;">'
-          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif('"+String(n.id)+"')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
-          + '<button onclick="deleteNotif('"+String(n.id)+"')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
+          + '<button onclick="deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
           + '</div></div>';
       }).join('');
     }
@@ -3630,6 +3757,7 @@
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+'</div>'
           +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+' &nbsp;·&nbsp; '+a.channel+'</div>'
           +(a.profile?'<div style="font-size:0.72rem;margin-top:0.2rem;"><a href="'+a.profile+'" target="_blank" style="color:#c9a84c;">'+a.profile+'</a></div>':'')
+          +(a.audience?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;">'+a.audience+'</div>':'')
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
           +'</div>';
       }).join('');
@@ -3675,7 +3803,7 @@
           +'<div style="font-size:0.78rem;color:#9a9080;">'+p.desc.slice(0,100)+'...</div>'
           +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+p.date+' &nbsp;·&nbsp; '+p.read+'</div>'
           +'</div>'
-          +'<button onclick="deleteBlogPost('"+String(p.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deleteBlogPost("+String(p.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
       }).join('');
     }
@@ -3720,7 +3848,7 @@
           +(p.desc?'<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.2rem;">'+p.desc.slice(0,100)+'...</div>':'')
           +'<div style="font-size:0.65rem;color:#777;">'+p.date+(p.url?' &nbsp;·&nbsp; <a href="'+p.url+'" target="_blank" style="color:#c9a84c;">View Article</a>':'')+'</div>'
           +'</div>'
-          +'<button onclick="deletePressItem('"+String(p.id)+"')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
+          +'<button onclick="deletePressItem("+String(p.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
       }).join('');
     }
@@ -3909,7 +4037,7 @@
           snap.forEach(function(d){
             if(localIds.includes(d.id)) return;
             var data = d.data();
-            local.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', channel:data.channel||'', profile:data.profile||'', type:'affiliate_application', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            local.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', channel:data.channel||'', profile:data.profile||'', audience:data.audience||'', type:'affiliate_application', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           });
           localStorage.setItem('hs_affiliate_applications', JSON.stringify(local));
           if(currentTab==='affiliates') renderAffiliateApps();
