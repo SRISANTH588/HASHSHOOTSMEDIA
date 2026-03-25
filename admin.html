@@ -1001,21 +1001,31 @@
 
       <!-- PRICING / BESTSELLERS -->
       <div class="about-form" style="margin-bottom:1rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-tags" style="color:#c9a84c;margin-right:0.5rem;"></i> Bestsellers / Pricing</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-fire" style="color:#c9a84c;margin-right:0.5rem;"></i> Bestsellers / Pricing Plans</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
           <div>
-            <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:0.75rem;">Plan 1 — Hourly</div>
-            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_plan1Name" placeholder="Hourly Plan"/></div>
-            <div class="form-group"><label>Price</label><input type="text" id="hp_plan1Price" placeholder="₹1,699"/></div>
-            <div class="form-group"><label>Subtitle</label><input type="text" id="hp_plan1Sub" placeholder="Quickest Content"/></div>
-            <div class="form-group"><label>Description</label><textarea id="hp_plan1Desc" style="min-height:70px;"></textarea></div>
+            <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:0.75rem;border-bottom:1px solid rgba(201,168,76,0.15);padding-bottom:0.5rem;">Plan 1</div>
+            <div class="form-group"><label>Tag (e.g. Starter)</label><input type="text" id="hp_bs1_tag" placeholder="Starter"/></div>
+            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs1_name" placeholder="Hourly Plan"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs1_tagline" placeholder="Perfect for a single, fast, high-quality reel."/></div>
+            <div class="form-row">
+              <div class="form-group"><label>Price</label><input type="text" id="hp_bs1_price" placeholder="&#8377;1,699"/></div>
+              <div class="form-group"><label>Per (e.g. / shoot)</label><input type="text" id="hp_bs1_per" placeholder="/ shoot"/></div>
+            </div>
+            <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs1_gstnote" placeholder="+ GST · No hidden charges"/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs1_features" style="min-height:110px;" placeholder="1 Hour Shoot&#10;1 Edited Reel Delivered&#10;Shot on Latest iPhone"></textarea></div>
           </div>
           <div>
-            <div style="font-size:0.82rem;font-weight:700;color:#f5a623;margin-bottom:0.75rem;">Plan 2 — Half-Day (Popular)</div>
-            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_plan2Name" placeholder="Half-Day Plan"/></div>
-            <div class="form-group"><label>Price</label><input type="text" id="hp_plan2Price" placeholder="₹3,999"/></div>
-            <div class="form-group"><label>Subtitle</label><input type="text" id="hp_plan2Sub" placeholder="Event Essential"/></div>
-            <div class="form-group"><label>Description</label><textarea id="hp_plan2Desc" style="min-height:70px;"></textarea></div>
+            <div style="font-size:0.82rem;font-weight:700;color:#f5a623;margin-bottom:0.75rem;border-bottom:1px solid rgba(245,166,35,0.15);padding-bottom:0.5rem;">Plan 2 (Most Popular)</div>
+            <div class="form-group"><label>Tag (e.g. Best Value)</label><input type="text" id="hp_bs2_tag" placeholder="Best Value"/></div>
+            <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs2_name" placeholder="Half-Day Plan"/></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs2_tagline" placeholder="Ideal for events &amp; creators who need more content."/></div>
+            <div class="form-row">
+              <div class="form-group"><label>Price</label><input type="text" id="hp_bs2_price" placeholder="&#8377;3,999"/></div>
+              <div class="form-group"><label>Per (e.g. / session)</label><input type="text" id="hp_bs2_per" placeholder="/ session"/></div>
+            </div>
+            <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs2_gstnote" placeholder="+ GST · Save vs hourly"/></div>
+            <div class="form-group"><label>Features (one per line)</label><textarea id="hp_bs2_features" style="min-height:110px;" placeholder="Up to 3 Hours Shoot&#10;2 Edited Reels Delivered&#10;Shot on Latest iPhone"></textarea></div>
           </div>
         </div>
       </div>
@@ -1905,7 +1915,21 @@
       document.getElementById('hp_plan2Price').value = hp.plan2Price || '';
       document.getElementById('hp_plan2Sub').value   = hp.plan2Sub   || '';
       document.getElementById('hp_plan2Desc').value  = hp.plan2Desc  || '';
-      document.getElementById('hp_email').value      = hp.email      || '';
+      // Bestsellers
+      document.getElementById('hp_bs1_tag').value      = hp.bs1_tag      || '';
+      document.getElementById('hp_bs1_name').value     = hp.bs1_name     || '';
+      document.getElementById('hp_bs1_tagline').value  = hp.bs1_tagline  || '';
+      document.getElementById('hp_bs1_price').value    = hp.bs1_price    || '';
+      document.getElementById('hp_bs1_per').value      = hp.bs1_per      || '';
+      document.getElementById('hp_bs1_gstnote').value  = hp.bs1_gstnote  || '';
+      document.getElementById('hp_bs1_features').value = hp.bs1_features ? hp.bs1_features.join('\n') : '';
+      document.getElementById('hp_bs2_tag').value      = hp.bs2_tag      || '';
+      document.getElementById('hp_bs2_name').value     = hp.bs2_name     || '';
+      document.getElementById('hp_bs2_tagline').value  = hp.bs2_tagline  || '';
+      document.getElementById('hp_bs2_price').value    = hp.bs2_price    || '';
+      document.getElementById('hp_bs2_per').value      = hp.bs2_per      || '';
+      document.getElementById('hp_bs2_gstnote').value  = hp.bs2_gstnote  || '';
+      document.getElementById('hp_bs2_features').value = hp.bs2_features ? hp.bs2_features.join('\n') : '';
       document.getElementById('hp_instagram').value  = hp.instagram  || '';
       document.getElementById('hp_location').value   = hp.location   || '';
       document.getElementById('hp_copyright').value  = hp.copyright  || '';
@@ -1972,14 +1996,29 @@
       hp.btnBook     = document.getElementById('hp_btnBook').value.trim();
       hp.servicesHeading = document.getElementById('hp_servicesHeading').value.trim();
       hp.servicesSub     = document.getElementById('hp_servicesSub').value.trim();
-      hp.plan1Name   = document.getElementById('hp_plan1Name').value.trim();
-      hp.plan1Price  = document.getElementById('hp_plan1Price').value.trim();
-      hp.plan1Sub    = document.getElementById('hp_plan1Sub').value.trim();
-      hp.plan1Desc   = document.getElementById('hp_plan1Desc').value.trim();
-      hp.plan2Name   = document.getElementById('hp_plan2Name').value.trim();
-      hp.plan2Price  = document.getElementById('hp_plan2Price').value.trim();
-      hp.plan2Sub    = document.getElementById('hp_plan2Sub').value.trim();
-      hp.plan2Desc   = document.getElementById('hp_plan2Desc').value.trim();
+      hp.plan1Name   = document.getElementById('hp_plan1Name') ? document.getElementById('hp_plan1Name').value.trim() : '';
+      hp.plan1Price  = document.getElementById('hp_plan1Price') ? document.getElementById('hp_plan1Price').value.trim() : '';
+      hp.plan1Sub    = document.getElementById('hp_plan1Sub') ? document.getElementById('hp_plan1Sub').value.trim() : '';
+      hp.plan1Desc   = document.getElementById('hp_plan1Desc') ? document.getElementById('hp_plan1Desc').value.trim() : '';
+      hp.plan2Name   = document.getElementById('hp_plan2Name') ? document.getElementById('hp_plan2Name').value.trim() : '';
+      hp.plan2Price  = document.getElementById('hp_plan2Price') ? document.getElementById('hp_plan2Price').value.trim() : '';
+      hp.plan2Sub    = document.getElementById('hp_plan2Sub') ? document.getElementById('hp_plan2Sub').value.trim() : '';
+      hp.plan2Desc   = document.getElementById('hp_plan2Desc') ? document.getElementById('hp_plan2Desc').value.trim() : '';
+      // Bestsellers
+      hp.bs1_tag     = document.getElementById('hp_bs1_tag').value.trim();
+      hp.bs1_name    = document.getElementById('hp_bs1_name').value.trim();
+      hp.bs1_tagline = document.getElementById('hp_bs1_tagline').value.trim();
+      hp.bs1_price   = document.getElementById('hp_bs1_price').value.trim();
+      hp.bs1_per     = document.getElementById('hp_bs1_per').value.trim();
+      hp.bs1_gstnote = document.getElementById('hp_bs1_gstnote').value.trim();
+      hp.bs1_features= document.getElementById('hp_bs1_features').value.split('\n').map(function(f){return f.trim();}).filter(Boolean);
+      hp.bs2_tag     = document.getElementById('hp_bs2_tag').value.trim();
+      hp.bs2_name    = document.getElementById('hp_bs2_name').value.trim();
+      hp.bs2_tagline = document.getElementById('hp_bs2_tagline').value.trim();
+      hp.bs2_price   = document.getElementById('hp_bs2_price').value.trim();
+      hp.bs2_per     = document.getElementById('hp_bs2_per').value.trim();
+      hp.bs2_gstnote = document.getElementById('hp_bs2_gstnote').value.trim();
+      hp.bs2_features= document.getElementById('hp_bs2_features').value.split('\n').map(function(f){return f.trim();}).filter(Boolean);
       hp.email       = document.getElementById('hp_email').value.trim();
       hp.instagram   = document.getElementById('hp_instagram').value.trim();
       hp.location    = document.getElementById('hp_location').value.trim();
