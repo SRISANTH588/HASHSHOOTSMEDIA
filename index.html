@@ -924,7 +924,7 @@
           <div class="svc-name">Wedding Photography</div>
           <div class="svc-desc">Capture every precious moment of your special day with timeless elegance.</div>
           <div class="svc-price-row"><span class="svc-price" id="svcPrice_wedding">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Wedding+Photography" class="svc-btn">Book Now</a>
+          <a href="#" onclick="openWeddingPlans();return false;" class="svc-btn">View Plans</a>
         </div>
         <div class="svc-card">
           <div class="svc-num">04 &mdash; PRODUCTS</div>
@@ -1214,13 +1214,18 @@
         var ul=document.getElementById('bs2_features');
         if(ul) ul.innerHTML=hp.bs2_features.map(function(f){ return '<li><div class="bs-check"><i class="fas fa-check"></i></div>'+f+'</li>'; }).join('');
       }
-      // Wedding Plans
+      // Wedding Plans (bestseller cards + overlay)
       ['w1','w2','w3','w4'].forEach(function(k){
         _s(k+'_tag',hp[k+'_tag']); _s(k+'_name',hp[k+'_name']); _s(k+'_tagline',hp[k+'_tagline']);
         _s(k+'_price',hp[k+'_price']); _s(k+'_per',hp[k+'_per']); _s(k+'_gstnote',hp[k+'_gstnote']);
+        // Also update overlay cards
+        _s('wp_'+k+'_name',hp[k+'_name']); _s('wp_'+k+'_tagline',hp[k+'_tagline']);
+        _s('wp_'+k+'_price',hp[k+'_price']); _s('wp_'+k+'_per',hp[k+'_per']);
         if(hp[k+'_features'] && hp[k+'_features'].length){
           var ul=document.getElementById(k+'_features');
           if(ul) ul.innerHTML=hp[k+'_features'].map(function(f){ return '<li><div class="bs-check"><i class="fas fa-check"></i></div>'+f+'</li>'; }).join('');
+          var wul=document.getElementById('wp_'+k+'_features');
+          if(wul) wul.innerHTML=hp[k+'_features'].map(function(f){ return '<li><i class="fas fa-check"></i>'+f+'</li>'; }).join('');
         }
       });
       // Footer
@@ -1257,6 +1262,186 @@
   <script src="script.js"></script>
 
 
+
+
+  <!-- WEDDING PLANS OVERLAY -->
+  <div id="weddingPlansOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;overflow-y:auto;padding:2rem 1rem;">
+    <style>
+      .wp-wrap{max-width:1100px;margin:0 auto;}
+      .wp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
+      .wp-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#fff;}
+      .wp-title span{color:#c9a84c;}
+      .wp-sub{color:#9a9080;font-size:0.9rem;margin-bottom:2.5rem;}
+      .wp-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+      .wp-close:hover{background:rgba(244,67,54,0.2);border-color:#f44336;color:#f44336;}
+      .wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+      .wp-card{border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.3s,box-shadow 0.3s;}
+      .wp-card:hover{transform:translateY(-6px);}
+      .wp-card-basic{background:#111;border:1px solid rgba(201,168,76,0.15);}
+      .wp-card-basic:hover{box-shadow:0 24px 60px rgba(0,0,0,0.6);border-color:rgba(201,168,76,0.3);}
+      .wp-card-silver{background:#111;border:1px solid rgba(192,192,192,0.25);}
+      .wp-card-silver:hover{box-shadow:0 24px 60px rgba(0,0,0,0.6);border-color:rgba(192,192,192,0.5);}
+      .wp-card-gold{background:#141410;border:1px solid rgba(201,168,76,0.4);}
+      .wp-card-gold:hover{box-shadow:0 24px 60px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.7);}
+      .wp-card-luxe{background:linear-gradient(145deg,#0f0f0f,#1a1408);border:1px solid rgba(201,168,76,0.6);}
+      .wp-card-luxe:hover{box-shadow:0 24px 60px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.18);border-color:rgba(201,168,76,0.9);}
+      .wp-badge{position:absolute;top:-1px;right:1.25rem;font-size:0.6rem;font-weight:800;padding:0.2rem 0.75rem;border-radius:0 0 8px 8px;letter-spacing:1px;text-transform:uppercase;}
+      .wp-badge-popular{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;}
+      .wp-badge-luxe{background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#000;}
+      .wp-tier{font-size:0.7rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;}
+      .wp-tier-basic{color:#9a9080;}
+      .wp-tier-silver{color:#c0c0c0;}
+      .wp-tier-gold{color:#c9a84c;}
+      .wp-tier-luxe{color:#e8c96a;}
+      .wp-name{font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:0.3rem;}
+      .wp-tagline{font-size:0.8rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.5;}
+      .wp-price{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.2rem;}
+      .wp-price-silver{background:linear-gradient(135deg,#e0e0e0,#c0c0c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+      .wp-per{font-size:0.72rem;color:#6a6050;margin-bottom:0.25rem;}
+      .wp-gst{font-size:0.65rem;color:#4a4030;margin-bottom:1.25rem;}
+      .wp-divider{height:1px;background:rgba(201,168,76,0.08);margin-bottom:1.25rem;}
+      .wp-features{list-style:none;display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.75rem;flex:1;}
+      .wp-features li{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:#b8b0a0;}
+      .wp-features li i{color:#c9a84c;font-size:0.6rem;flex-shrink:0;}
+      .wp-btn{display:block;text-align:center;padding:0.85rem;border-radius:12px;font-size:0.88rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;font-family:inherit;}
+      .wp-btn-basic{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;}
+      .wp-btn-basic:hover{background:#c9a84c;color:#000;}
+      .wp-btn-silver{background:rgba(192,192,192,0.1);border:1px solid rgba(192,192,192,0.3);color:#c0c0c0;}
+      .wp-btn-silver:hover{background:#c0c0c0;color:#000;}
+      .wp-btn-gold{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;}
+      .wp-btn-gold:hover{filter:brightness(1.1);transform:translateY(-1px);}
+      .wp-btn-luxe{background:linear-gradient(135deg,#e8c96a,#c9a84c);color:#000;box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+      .wp-btn-luxe:hover{filter:brightness(1.1);transform:translateY(-1px);}
+      @media(max-width:900px){.wp-grid{grid-template-columns:1fr 1fr;}}
+      @media(max-width:520px){.wp-grid{grid-template-columns:1fr;}}
+    </style>
+    <div class="wp-wrap">
+      <div class="wp-header">
+        <div>
+          <div class="wp-title">Wedding <span>Photography</span></div>
+        </div>
+        <button class="wp-close" onclick="closeWeddingPlans()"><i class="fas fa-times"></i></button>
+      </div>
+      <p class="wp-sub">Choose the perfect plan for your special day. All plans include professional photographers &amp; same-day delivery.</p>
+      <div class="wp-grid">
+
+        <!-- BASIC -->
+        <div class="wp-card wp-card-basic">
+          <div class="wp-tier wp-tier-basic">Basic</div>
+          <div class="wp-name" id="wp_w1_name">Basic</div>
+          <div class="wp-tagline" id="wp_w1_tagline">Essential coverage for intimate ceremonies.</div>
+          <div class="wp-price" id="wp_w1_price">&#8377;15,000</div>
+          <div class="wp-per" id="wp_w1_per">/ event</div>
+          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+          <div class="wp-divider"></div>
+          <ul class="wp-features" id="wp_w1_features">
+            <li><i class="fas fa-check"></i>4 Hours Coverage</li>
+            <li><i class="fas fa-check"></i>1 Photographer</li>
+            <li><i class="fas fa-check"></i>100 Edited Photos</li>
+            <li><i class="fas fa-check"></i>1 Highlight Reel</li>
+          </ul>
+          <a href="booking.html?service=Wedding+Photography&plan=Basic" class="wp-btn wp-btn-basic"><i class="fas fa-heart"></i> Book Basic</a>
+        </div>
+
+        <!-- SILVER -->
+        <div class="wp-card wp-card-silver">
+          <div class="wp-tier wp-tier-silver">Silver</div>
+          <div class="wp-name" id="wp_w2_name">Silver</div>
+          <div class="wp-tagline" id="wp_w2_tagline">Perfect for full-day wedding celebrations.</div>
+          <div class="wp-price wp-price-silver" id="wp_w2_price">&#8377;25,000</div>
+          <div class="wp-per" id="wp_w2_per">/ event</div>
+          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; Save vs Basic</div>
+          <div class="wp-divider"></div>
+          <ul class="wp-features" id="wp_w2_features">
+            <li><i class="fas fa-check"></i>8 Hours Coverage</li>
+            <li><i class="fas fa-check"></i>2 Photographers</li>
+            <li><i class="fas fa-check"></i>300 Edited Photos</li>
+            <li><i class="fas fa-check"></i>2 Highlight Reels</li>
+            <li><i class="fas fa-check"></i>Same Day Delivery</li>
+          </ul>
+          <a href="booking.html?service=Wedding+Photography&plan=Silver" class="wp-btn wp-btn-silver"><i class="fas fa-heart"></i> Book Silver</a>
+        </div>
+
+        <!-- GOLD -->
+        <div class="wp-card wp-card-gold">
+          <div class="wp-badge wp-badge-popular"><i class="fas fa-star"></i> Most Popular</div>
+          <div class="wp-tier wp-tier-gold">Gold</div>
+          <div class="wp-name" id="wp_w3_name">Gold</div>
+          <div class="wp-tagline" id="wp_w3_tagline">Premium coverage for your dream wedding.</div>
+          <div class="wp-price" id="wp_w3_price">&#8377;45,000</div>
+          <div class="wp-per" id="wp_w3_per">/ event</div>
+          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; Best Value</div>
+          <div class="wp-divider"></div>
+          <ul class="wp-features" id="wp_w3_features">
+            <li><i class="fas fa-check"></i>Full Day Coverage</li>
+            <li><i class="fas fa-check"></i>3 Photographers</li>
+            <li><i class="fas fa-check"></i>500+ Edited Photos</li>
+            <li><i class="fas fa-check"></i>Cinematic Film</li>
+            <li><i class="fas fa-check"></i>Pre-shoot Consultation</li>
+            <li><i class="fas fa-check"></i>Same Day Delivery</li>
+          </ul>
+          <a href="booking.html?service=Wedding+Photography&plan=Gold" class="wp-btn wp-btn-gold"><i class="fas fa-trophy"></i> Book Gold</a>
+        </div>
+
+        <!-- LUXE -->
+        <div class="wp-card wp-card-luxe">
+          <div class="wp-badge wp-badge-luxe"><i class="fas fa-gem"></i> Luxe</div>
+          <div class="wp-tier wp-tier-luxe">Luxe</div>
+          <div class="wp-name" id="wp_w4_name">Luxe</div>
+          <div class="wp-tagline" id="wp_w4_tagline">The ultimate luxury wedding experience.</div>
+          <div class="wp-price" id="wp_w4_price">&#8377;80,000</div>
+          <div class="wp-per" id="wp_w4_per">/ event</div>
+          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; All-Inclusive</div>
+          <div class="wp-divider"></div>
+          <ul class="wp-features" id="wp_w4_features">
+            <li><i class="fas fa-check"></i>Multi-Day Coverage</li>
+            <li><i class="fas fa-check"></i>Dedicated Team</li>
+            <li><i class="fas fa-check"></i>Unlimited Edited Photos</li>
+            <li><i class="fas fa-check"></i>Cinematic Film + Drone</li>
+            <li><i class="fas fa-check"></i>Album Design Included</li>
+            <li><i class="fas fa-check"></i>Priority Support</li>
+          </ul>
+          <a href="booking.html?service=Wedding+Photography&plan=Luxe" class="wp-btn wp-btn-luxe"><i class="fas fa-gem"></i> Book Luxe</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openWeddingPlans(){
+      // Sync data from hs_homepage into overlay
+      var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+      var plans = [
+        {k:'w1', nameId:'wp_w1_name', taglineId:'wp_w1_tagline', priceId:'wp_w1_price', featId:'wp_w1_features'},
+        {k:'w2', nameId:'wp_w2_name', taglineId:'wp_w2_tagline', priceId:'wp_w2_price', featId:'wp_w2_features'},
+        {k:'w3', nameId:'wp_w3_name', taglineId:'wp_w3_tagline', priceId:'wp_w3_price', featId:'wp_w3_features'},
+        {k:'w4', nameId:'wp_w4_name', taglineId:'wp_w4_tagline', priceId:'wp_w4_price', featId:'wp_w4_features'}
+      ];
+      plans.forEach(function(p){
+        var k = p.k;
+        if(hp[k+'_price'])   { var e=document.getElementById(p.priceId);   if(e) e.textContent=hp[k+'_price']; }
+        if(hp[k+'_tagline']) { var e=document.getElementById(p.taglineId); if(e) e.textContent=hp[k+'_tagline']; }
+        if(hp[k+'_features'] && hp[k+'_features'].length){
+          var ul=document.getElementById(p.featId);
+          if(ul) ul.innerHTML=hp[k+'_features'].map(function(f){ return '<li><i class="fas fa-check"></i>'+f+'</li>'; }).join('');
+        }
+      });
+      var ov = document.getElementById('weddingPlansOverlay');
+      ov.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeWeddingPlans(){
+      document.getElementById('weddingPlansOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    // Close on backdrop click
+    document.getElementById('weddingPlansOverlay').addEventListener('click', function(e){
+      if(e.target === this) closeWeddingPlans();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWeddingPlans(); });
+  </script>
 
 </body>
 </html>
