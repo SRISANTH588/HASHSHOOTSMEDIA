@@ -119,6 +119,7 @@
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
 <script src="fix-staff-videos.js"></script>
+<script src="immediate-fix.js"></script>
 </head>
 <body>
   <nav>
@@ -848,6 +849,8 @@
               <option value="paid">Paid</option>
             </select>
             <button onclick="exportShootReelsData()" style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Export</button>
+            <button onclick="refreshStaffVideosFromFirebase()" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Sync</button>
+            <button onclick="debugStaffVideoSync()" style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);color:#ff9800;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-bug"></i> Debug</button>
             <span style="font-size:0.8rem;color:#9a9080;" id="shootReelsCount"></span>
           </div>
         </div>
