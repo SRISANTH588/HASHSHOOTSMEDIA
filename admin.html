@@ -118,9 +118,6 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
-<script src="fix-staff-videos.js"></script>
-<script src="immediate-fix.js"></script>
-<script src="staff-upload-fix.js"></script>
 </head>
 <body>
   <nav>
@@ -1706,6 +1703,21 @@
     var _role = localStorage.getItem('hs_role');
     if(_role !== 'admin' && _role !== 'staff') { window.location.href='login.html'; }
 
+    // One-time cleanup: remove test/fake videos injected by old fix scripts
+    (function(){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+      var cleaned = videos.filter(function(v){
+        var url = v.cloudUrl || '';
+        return !(url.includes('cloudinary.com/demo') || url.includes('example.com') || v.staffId === '1001' || v.staffId === '1002' || v.staffName === 'Test Staff 1' || v.staffName === 'Test Staff 2');
+      });
+      if(cleaned.length !== videos.length) localStorage.setItem('hs_staff_videos', JSON.stringify(cleaned));
+      var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var cleanedAssigns = assigns.filter(function(a){ return a.id !== 3001 && a.id !== 3002 && a.id !== 3003; });
+      if(cleanedAssigns.length !== assigns.length) localStorage.setItem('hs_assigned_shoots', JSON.stringify(cleanedAssigns));
+      var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+      var cleanedStaff = staff.filter(function(s){ return s.name !== 'Test Staff 1' && s.name !== 'Test Staff 2'; });
+      if(cleanedStaff.length !== staff.length) localStorage.setItem('hs_staff', JSON.stringify(cleanedStaff));
+    })();
     var isAdmin = _role === 'admin';
     var staffAccess = [];
     try { staffAccess = JSON.parse(localStorage.getItem('hs_staff_access') || '[]'); } catch(e){ staffAccess = []; }
