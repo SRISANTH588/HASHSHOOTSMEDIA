@@ -2819,19 +2819,25 @@
     
     function deleteShootVideo(videoId) {
       if (!confirm('Delete this video? This action cannot be undone.')) return;
-      
-      // Remove from localStorage
+
+      // Remove from localStorage (String compare to handle number/string mismatch)
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
-      videos = videos.filter(function(v) { return v.id !== videoId; });
+      var target = videos.find(function(v){ return String(v.id) === String(videoId); });
+      videos = videos.filter(function(v) { return String(v.id) !== String(videoId); });
       localStorage.setItem('hs_staff_videos', JSON.stringify(videos));
-      
+
       // Remove from IndexedDB
       openAdminVideoDB(function(db) {
-        if (db) {
-          db.transaction('videos', 'readwrite').objectStore('videos').delete(videoId);
-        }
+        if (db) db.transaction('videos', 'readwrite').objectStore('videos').delete(videoId);
       });
-      
+
+      // Remove from Firebase so it doesn't reappear after sync
+      if (target && target._fbId && window.fbDelete) {
+        fbDelete('staff_videos', target._fbId).catch(function(e){ console.error('Firebase delete failed:', e); });
+      } else if (window.fbDelete) {
+        fbDelete('staff_videos', String(videoId)).catch(function(e){ console.error('Firebase delete failed:', e); });
+      }
+
       renderShootReelsAdmin();
     }
     

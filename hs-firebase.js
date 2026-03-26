@@ -39,6 +39,14 @@ window.fbUpdate = async function(col, docId, data) {
   } catch(e) { console.error('fbUpdate error:', e); return false; }
 };
 
+window.fbDelete = async function(col, docId) {
+  try {
+    const db = await getDB();
+    await _fbStore.deleteDoc(_fbStore.doc(db, col, String(docId)));
+    return true;
+  } catch(e) { console.error('fbDelete error:', e); return false; }
+};
+
 // Listen to a collection in real time
 window.fbListen = async function(col, callback, orderField) {
   try {

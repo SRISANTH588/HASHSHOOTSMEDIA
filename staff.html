@@ -1294,6 +1294,7 @@
 
     // ── ASSIGNED SHOOTS ─────────────────────────────────────────
     var shootFileMap = {};
+    var _shootUploadInProgress = false; // BUG 8 FIX: prevent interval re-render during upload
 
     function renderAssignedShoots(){
       var rawId  = localStorage.getItem('hs_staff_id');
@@ -1324,7 +1325,7 @@
         var custPhone  = booking ? booking.phone : '—';
         var custCity   = booking ? booking.city  : (a.city || '—');
         var arrivedKey = 'hs_arrived_' + a.id;
-        var arrived    = localStorage.getItem(arrivedKey) === '1';
+        var arrived    = localStorage.getItem(arrivedKey) === '1' || !!a.arrivedAt; // BUG 3 FIX: reconcile both sources
 
         var card = document.createElement('div');
         card.id  = 'shootCard_' + a.id;
@@ -1367,11 +1368,10 @@
         var uploadHTML = '';
         if(a.status === 'assigned' || a.status === 'done'){
           var uploaded = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
-            .filter(function(v){ return v.assignId == a.id; });
+            .filter(function(v){ return String(v.assignId) === String(a.id) && !v.isFeedback; });
           if(uploaded.length){
-            // Check if feedback video uploaded
             var fbVideos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
-              .filter(function(v){ return v.assignId == a.id && v.isFeedback; });
+              .filter(function(v){ return String(v.assignId) === String(a.id) && v.isFeedback; });
             var fbVideoUploaded = fbVideos.length > 0;
 
             var feedbackVideoZone = fbVideoUploaded
@@ -1398,21 +1398,27 @@
                   : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-lock"></i> Upload feedback video above to unlock Mark as Done</div>')
               : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
             var payoutBtn = '';
+            // BUG 2 FIX: only show upload zone when status is 'assigned', not 'done'
             uploadHTML = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:0.85rem 1rem;margin-top:0.5rem;">'
               +'<div style="font-size:0.78rem;font-weight:700;color:#4caf50;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> '+uploaded.length+' edited video'+(uploaded.length>1?'s':'')+' uploaded</div>'
               +'<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
               +uploaded.map(function(v){ return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-film" style="color:#c9a84c;"></i> '+v.title+'</div>'; }).join('')
               +'</div>'
-              +shootUploadZone(a.id)
+              +(a.status === 'assigned' ? shootUploadZone(a.id) : '') // BUG 2 FIX
               +feedbackVideoZone
               +doneBtn
               +payoutBtn
               +'</div>';
           } else {
-            uploadHTML = '<div style="margin-top:0.5rem;">'
-              +'<div style="font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-upload" style="color:#c9a84c;"></i> Upload Edited Video</div>'
-              +shootUploadZone(a.id)
-              +'</div>';
+            // only show upload zone if still assigned, not done
+            if(a.status === 'assigned'){
+              uploadHTML = '<div style="margin-top:0.5rem;">'
+                +'<div style="font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-upload" style="color:#c9a84c;"></i> Upload Edited Video</div>'
+                +shootUploadZone(a.id)
+                +'</div>';
+            } else {
+              uploadHTML = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
+            }
           }
         } else if(a.status === 'completed' || a.status === 'paid'){
           var paidLabel = a.status === 'paid'
@@ -1466,8 +1472,10 @@
       var label = document.getElementById('shootProgressLabel_' + assignId);
       if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
       if(prog) prog.style.display='block';
-      if(label) label.textContent='Saving...';
-      if(fill) fill.style.width='20%';
+      if(label) label.textContent='Uploading to cloud...';
+      if(fill) fill.style.width='5%';
+
+      _shootUploadInProgress = true; // BUG 8 FIX
 
       var videoId   = Date.now();
       var staffId   = localStorage.getItem('hs_staff_id');
@@ -1475,57 +1483,48 @@
       var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
 
-      // Read file as ArrayBuffer for reliable IndexedDB storage
-      var reader = new FileReader();
-      reader.onload = function(e){
-        if(fill) fill.style.width='60%';
-        if(label) label.textContent='Storing...';
-        var blob = new Blob([e.target.result], {type: file.type});
-        openStaffDB(function(db){
-          if(!db){
-            alert('Storage unavailable. Try a different browser.');
-            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
-            return;
-          }
-          var tx = db.transaction('videos','readwrite');
-          var store = tx.objectStore('videos');
-          store.put({id: videoId, blob: blob});
-          tx.oncomplete = function(){
-            if(fill) fill.style.width='90%';
-            if(label) label.textContent='Finalising...';
-            var videos = getStaffVideos();
-            videos.push({
-              id: videoId,
-              assignId: Number(assignId),
-              title: (shoot ? shoot.service : 'Shoot') + ' — ' + (shoot ? shoot.clientName : ''),
-              category: 'Shoot Delivery',
-              shootDate: shoot ? shoot.date : '',
-              shootTime: shoot ? shoot.time : '',
-              staffId: staffId,
-              staffName: staffName,
-              fileName: file.name,
-              sizeMB: (file.size/1024/1024).toFixed(1),
-              uploadedAt: new Date().toLocaleString()
-            });
-            saveStaffVideos(videos);
-            if(fill) fill.style.width='100%';
-            if(label) label.textContent='Uploaded!';
-            delete shootFileMap[String(assignId)];
-            setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
-          };
-          tx.onerror = function(){
-            alert('Upload failed: ' + tx.error);
-            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
-          };
-        });
-      };
-      reader.onerror = function(){ alert('Could not read file.'); };
-      reader.readAsArrayBuffer(file);
+      // BUG 1 FIX: Upload to Cloudinary so cloudUrl is persisted — survives refresh
+      cloudinaryUpload(file, 'shoot_videos', function(pct){
+        if(fill) fill.style.width = Math.min(85, pct) + '%';
+        if(label) label.textContent = 'Uploading... ' + pct + '%';
+      }).then(function(result){
+        if(fill) fill.style.width='95%';
+        if(label) label.textContent='Saving...';
+        var videos = getStaffVideos();
+        var videoData = {
+          id: videoId,
+          assignId: Number(assignId),
+          title: (shoot ? shoot.service : 'Shoot') + ' — ' + (shoot ? shoot.clientName : ''),
+          category: 'Shoot Delivery',
+          shootDate: shoot ? shoot.date : '',
+          shootTime: shoot ? shoot.time : '',
+          staffId: staffId,
+          staffName: staffName,
+          fileName: file.name,
+          sizeMB: (file.size/1024/1024).toFixed(1),
+          uploadedAt: new Date().toLocaleString(),
+          cloudUrl: result.url,
+          thumbnail: result.thumbnail
+        };
+        videos.push(videoData);
+        saveStaffVideos(videos);
+        // Sync to Firebase
+        if(window.fbSave) fbSave('staff_videos', videoData).catch(function(e){ console.error('Firebase sync failed:', e); });
+        if(fill) fill.style.width='100%';
+        if(label) label.textContent='Uploaded!';
+        delete shootFileMap[String(assignId)];
+        _shootUploadInProgress = false; // BUG 8 FIX
+        setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
+      }).catch(function(err){
+        alert('Upload failed: ' + err.message);
+        if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+        _shootUploadInProgress = false; // BUG 8 FIX
+      });
     }
 
     function markShootDone(assignId){
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-      var s = shoots.find(function(a){ return a.id === assignId; });
+      var s = shoots.find(function(a){ return String(a.id) === String(assignId); }); // BUG 5 FIX
       if(!s) return;
       s.status = 'done';
       s.doneAt = new Date().toLocaleString();
@@ -1578,7 +1577,7 @@
     }
 
     renderAssignedShoots();
-    setInterval(function(){ renderAssignedShoots(); renderPayout(); }, 5000);
+    setInterval(function(){ if(!_shootUploadInProgress){ renderAssignedShoots(); renderPayout(); } }, 5000); // BUG 8 FIX
 
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
@@ -1649,8 +1648,8 @@
       var label = document.getElementById('fbVidProgressLabel_' + assignId);
       if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
       if(prog) prog.style.display='block';
-      if(label) label.textContent='Saving...';
-      if(fill) fill.style.width='20%';
+      if(label) label.textContent='Uploading to cloud...';
+      if(fill) fill.style.width='5%';
 
       var videoId   = Date.now();
       var staffId   = localStorage.getItem('hs_staff_id');
@@ -1658,43 +1657,40 @@
       var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
 
-      var reader = new FileReader();
-      reader.onload = function(e){
-        if(fill) fill.style.width='60%';
-        if(label) label.textContent='Storing...';
-        var blob = new Blob([e.target.result], {type: file.type});
-        openStaffDB(function(db){
-          if(!db){ alert('Storage unavailable.'); if(btn){ btn.disabled=false; btn.style.opacity='1'; } return; }
-          var tx = db.transaction('videos','readwrite');
-          tx.objectStore('videos').put({id: videoId, blob: blob});
-          tx.oncomplete = function(){
-            if(fill) fill.style.width='90%';
-            if(label) label.textContent='Finalising...';
-            var videos = getStaffVideos();
-            videos.push({
-              id: videoId,
-              assignId: Number(assignId),
-              isFeedback: true,
-              title: 'Feedback — ' + (shoot ? shoot.service : 'Shoot'),
-              category: 'Shoot Feedback',
-              shootDate: shoot ? shoot.date : '',
-              staffId: staffId,
-              staffName: staffName,
-              fileName: file.name,
-              sizeMB: (file.size/1024/1024).toFixed(1),
-              uploadedAt: new Date().toLocaleString()
-            });
-            saveStaffVideos(videos);
-            if(fill) fill.style.width='100%';
-            if(label) label.textContent='Uploaded!';
-            delete feedbackVideoFileMap[String(assignId)];
-            setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
-          };
-          tx.onerror = function(){ alert('Upload failed.'); if(btn){ btn.disabled=false; btn.style.opacity='1'; } };
-        });
-      };
-      reader.onerror = function(){ alert('Could not read file.'); };
-      reader.readAsArrayBuffer(file);
+      // BUG 4 FIX: Upload feedback video to Cloudinary so it persists after refresh
+      cloudinaryUpload(file, 'feedback_videos', function(pct){
+        if(fill) fill.style.width = Math.min(85, pct) + '%';
+        if(label) label.textContent = 'Uploading... ' + pct + '%';
+      }).then(function(result){
+        if(fill) fill.style.width='95%';
+        if(label) label.textContent='Saving...';
+        var videos = getStaffVideos();
+        var videoData = {
+          id: videoId,
+          assignId: Number(assignId),
+          isFeedback: true,
+          title: 'Feedback — ' + (shoot ? shoot.service : 'Shoot'),
+          category: 'Shoot Feedback',
+          shootDate: shoot ? shoot.date : '',
+          staffId: staffId,
+          staffName: staffName,
+          fileName: file.name,
+          sizeMB: (file.size/1024/1024).toFixed(1),
+          uploadedAt: new Date().toLocaleString(),
+          cloudUrl: result.url,
+          thumbnail: result.thumbnail
+        };
+        videos.push(videoData);
+        saveStaffVideos(videos);
+        if(window.fbSave) fbSave('staff_videos', videoData).catch(function(e){ console.error('Firebase sync failed:', e); });
+        if(fill) fill.style.width='100%';
+        if(label) label.textContent='Uploaded!';
+        delete feedbackVideoFileMap[String(assignId)];
+        setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
+      }).catch(function(err){
+        alert('Feedback video upload failed: ' + err.message);
+        if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+      });
     }
 
     // CREATOR FEEDBACK SECTION
@@ -1740,7 +1736,7 @@
           + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">' + a.service + ' — ' + a.clientName + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
           + '<div style="display:flex;gap:0.3rem;margin-bottom:0.65rem;">' + [1,2,3,4,5].map(function(v){
-              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#a078303;</span>';
+              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#9733;</span>'; // BUG 6 FIX
             }).join('') + '</div>'
           + '<textarea id="cfb_' + a.id + '" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:65px;" placeholder="How was the shoot? Any notes..."></textarea>'
           + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
@@ -2492,11 +2488,11 @@
         <div>
           <label class="efb-label">Client Rating *</label>
           <div class="efb-stars">
-            <span class="efb-star" data-val="1" onclick="setEfbStar(1)">&#a078303;</span>
-            <span class="efb-star" data-val="2" onclick="setEfbStar(2)">&#a078303;</span>
-            <span class="efb-star" data-val="3" onclick="setEfbStar(3)">&#a078303;</span>
-            <span class="efb-star" data-val="4" onclick="setEfbStar(4)">&#a078303;</span>
-            <span class="efb-star" data-val="5" onclick="setEfbStar(5)">&#a078303;</span>
+            <span class="efb-star" data-val="1" onclick="setEfbStar(1)">&#9733;</span>
+            <span class="efb-star" data-val="2" onclick="setEfbStar(2)">&#9733;</span>
+            <span class="efb-star" data-val="3" onclick="setEfbStar(3)">&#9733;</span>
+            <span class="efb-star" data-val="4" onclick="setEfbStar(4)">&#9733;</span>
+            <span class="efb-star" data-val="5" onclick="setEfbStar(5)">&#9733;</span>
           </div>
         </div>
         <div>
