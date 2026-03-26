@@ -24,6 +24,29 @@
     .notif-toast-action{margin-top:0.65rem;background:var(--gold);color:var(--text);border:none;border-radius:7px;padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .notif-toast-action:hover{background:var(--gold-dark);}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0ece0;min-height:100vh;}
+    
+    /* Shoot Reels Tab Specific Styles */
+    .shoot-reel-card{background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;transition:all 0.3s ease;}
+    .shoot-reel-card:hover{transform:translateY(-4px);box-shadow:0 12px 35px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
+    .shoot-reel-preview{position:relative;width:100%;aspect-ratio:16/9;background:#0a0a0a;overflow:hidden;}
+    .shoot-reel-preview video{width:100%;height:100%;object-fit:cover;}
+    .shoot-reel-type-badge{position:absolute;top:8px;left:8px;font-size:0.65rem;font-weight:700;padding:0.25rem 0.6rem;border-radius:50px;backdrop-filter:blur(8px);}
+    .shoot-reel-info{padding:1.25rem;}
+    .shoot-reel-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;gap:0.5rem;}
+    .shoot-reel-title{font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+    .shoot-reel-staff{font-size:0.72rem;color:#9a9080;}
+    .shoot-reel-status{font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;white-space:nowrap;}
+    .shoot-reel-assignment{background:#0f0f0f;border:1px solid rgba(201,168,76,0.08);border-radius:10px;padding:0.85rem;margin-bottom:0.75rem;}
+    .shoot-reel-assignment-title{font-size:0.82rem;font-weight:700;color:#c9a84c;margin-bottom:0.4rem;}
+    .shoot-reel-assignment-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.75rem;}
+    .shoot-reel-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;font-size:0.72rem;color:#9a9080;}
+    .shoot-reel-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
+    .shoot-reel-btn{flex:1;min-width:100px;padding:0.5rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;border:none;text-decoration:none;text-align:center;transition:all 0.2s;}
+    .shoot-reel-btn:hover{transform:translateY(-1px);filter:brightness(1.1);}
+    .shoot-reel-btn-view{background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;}
+    .shoot-reel-btn-download{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;}
+    .shoot-reel-btn-approve{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;}
+    .shoot-reel-btn-delete{background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;}
     /* Firebase real-time badge */
     .fb-live{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;}
     .fb-dot{width:6px;height:6px;background:#4caf50;border-radius:50%;animation:fbPulse 1.5s infinite;}
@@ -95,6 +118,7 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
+<script src="fix-staff-videos.js"></script>
 </head>
 <body>
   <nav>
@@ -124,6 +148,7 @@
       <button class="tab-btn" onclick="switchTab('demo',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span id="demoNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Feedback <span id="feedbackNotifBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
+    <button class="tab-btn" onclick="switchTab('shoot-reels',this)" id="shootReelsTabBtn"><i class="fas fa-film"></i> Shoot Reels & Feedback <span class="notif" id="shootReelsNotifBadge" style="display:none;">0</span></button>
       <button class="tab-btn" onclick="switchTab('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
       <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
@@ -803,6 +828,47 @@
         <div id="staffVideosAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;"></div>
       </div>
     </div><!-- end tab-videos -->
+
+    <!-- SHOOT REELS & FEEDBACK TAB -->
+    <div class="tab-panel" id="tab-shoot-reels">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-film" style="color:#c9a84c;margin-right:0.5rem;"></i> Shoot Reels & Feedback Videos</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+            <select id="shootReelsFilterStaff" onchange="renderShootReelsAdmin()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;"><option value="">All Staff</option></select>
+            <select id="shootReelsFilterType" onchange="renderShootReelsAdmin()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;">
+              <option value="">All Types</option>
+              <option value="shoot">Shoot Reels</option>
+              <option value="feedback">Feedback Videos</option>
+            </select>
+            <select id="shootReelsFilterStatus" onchange="renderShootReelsAdmin()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;">
+              <option value="">All Status</option>
+              <option value="assigned">In Progress</option>
+              <option value="done">Completed</option>
+              <option value="paid">Paid</option>
+            </select>
+            <button onclick="exportShootReelsData()" style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Export</button>
+            <span style="font-size:0.8rem;color:#9a9080;" id="shootReelsCount"></span>
+          </div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+          <div class="stat-card"><div class="num" id="shootReelsTotal" style="color:#c9a84c;">0</div><div class="lbl">Total Videos</div></div>
+          <div class="stat-card"><div class="num" id="shootReelsDelivered" style="color:#4caf50;">0</div><div class="lbl">Shoot Reels</div></div>
+          <div class="stat-card"><div class="num" id="shootReelsFeedback" style="color:#9c27b0;">0</div><div class="lbl">Feedback Videos</div></div>
+          <div class="stat-card"><div class="num" id="shootReelsPending" style="color:#ff9800;">0</div><div class="lbl">Pending Review</div></div>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div style="margin-bottom:1.5rem;">
+          <input type="text" id="shootReelsSearch" placeholder="🔍 Search by client name, service, location..." oninput="renderShootReelsAdmin()" style="width:100%;max-width:400px;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;" />
+        </div>
+
+        <!-- VIDEOS GRID -->
+        <div id="shootReelsAdminGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;"></div>
+      </div>
+    </div><!-- end tab-shoot-reels -->
 
     <!-- ASSIGN SHOOTS TAB -->
     <div class="tab-panel" id="tab-assign">
@@ -1919,6 +1985,7 @@
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
+      if (tab === 'shoot-reels') renderShootReelsAdmin();
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
     }
 
@@ -2096,13 +2163,17 @@
       var staffList = getStaff();
       var assigns = getAssignedShoots();
       var sel = document.getElementById('videoFilterStaff');
-      var curVal = sel.value;
-      sel.innerHTML = '<option value="">All Staff</option>';
-      staffList.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o); });
-      sel.value = curVal;
+      var curVal = sel ? sel.value : '';
+      if(sel) {
+        sel.innerHTML = '<option value="">All Staff</option>';
+        staffList.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o); });
+        sel.value = curVal;
+      }
       if(curVal) videos = videos.filter(function(v){ return v.staffId == curVal; });
-      document.getElementById('staffVideosCount').textContent = videos.length + ' video(s)';
+      var countEl = document.getElementById('staffVideosCount');
+      if(countEl) countEl.textContent = videos.length + ' video(s)';
       var grid = document.getElementById('staffVideosAdminGrid');
+      if(!grid) return;
       if(!videos.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
       grid.innerHTML = '';
       videos.forEach(function(v){
@@ -2412,6 +2483,400 @@
       });
       saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return v.id!==id; }));
       renderTestiVideos();
+    }
+
+    // SHOOT REELS & FEEDBACK ADMIN
+    function renderShootReelsAdmin() {
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+      var staffList = getStaff();
+      var assigns = getAssignedShoots();
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      
+      // Get filter values
+      var staffFilter = document.getElementById('shootReelsFilterStaff')?.value || '';
+      var typeFilter = document.getElementById('shootReelsFilterType')?.value || '';
+      var statusFilter = document.getElementById('shootReelsFilterStatus')?.value || '';
+      var searchTerm = document.getElementById('shootReelsSearch')?.value.toLowerCase() || '';
+      
+      // Populate staff filter dropdown
+      var staffSelect = document.getElementById('shootReelsFilterStaff');
+      if (staffSelect) {
+        var currentStaffValue = staffSelect.value;
+        staffSelect.innerHTML = '<option value="">All Staff</option>';
+        staffList.forEach(function(s) {
+          var option = document.createElement('option');
+          option.value = s.id;
+          option.textContent = s.name;
+          staffSelect.appendChild(option);
+        });
+        staffSelect.value = currentStaffValue;
+      }
+      
+      // Filter videos to only show shoot-related ones
+      var shootVideos = videos.filter(function(v) {
+        return v.assignId || v.category === 'Shoot Delivery' || v.category === 'Shoot Feedback' || v.isFeedback;
+      });
+      
+      // Apply filters
+      var filteredVideos = shootVideos.filter(function(v) {
+        // Staff filter
+        if (staffFilter && String(v.staffId) !== String(staffFilter)) return false;
+        
+        // Type filter
+        if (typeFilter === 'shoot' && (v.isFeedback || v.category === 'Shoot Feedback')) return false;
+        if (typeFilter === 'feedback' && !v.isFeedback && v.category !== 'Shoot Feedback') return false;
+        
+        // Status filter (based on associated assignment)
+        if (statusFilter && v.assignId) {
+          var assign = assigns.find(function(a) { return a.id == v.assignId; });
+          if (!assign || assign.status !== statusFilter) return false;
+        }
+        
+        // Search filter
+        if (searchTerm) {
+          var assign = assigns.find(function(a) { return a.id == v.assignId; });
+          var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
+          var searchText = [
+            v.title,
+            v.staffName,
+            assign?.service,
+            assign?.clientName,
+            assign?.city,
+            assign?.location,
+            booking?.name,
+            booking?.city
+          ].filter(Boolean).join(' ').toLowerCase();
+          
+          if (!searchText.includes(searchTerm)) return false;
+        }
+        
+        return true;
+      });
+      
+      // Update stats
+      var totalVideos = shootVideos.length;
+      var shootReels = shootVideos.filter(function(v) { return !v.isFeedback && v.category !== 'Shoot Feedback'; }).length;
+      var feedbackVideos = shootVideos.filter(function(v) { return v.isFeedback || v.category === 'Shoot Feedback'; }).length;
+      var pendingReview = shootVideos.filter(function(v) {
+        var assign = assigns.find(function(a) { return a.id == v.assignId; });
+        return assign && assign.status === 'done';
+      }).length;
+      
+      document.getElementById('shootReelsTotal').textContent = totalVideos;
+      document.getElementById('shootReelsDelivered').textContent = shootReels;
+      document.getElementById('shootReelsFeedback').textContent = feedbackVideos;
+      document.getElementById('shootReelsPending').textContent = pendingReview;
+      
+      // Update count
+      var countEl = document.getElementById('shootReelsCount');
+      if (countEl) countEl.textContent = filteredVideos.length + ' video(s)';
+      
+      // Update notification badge
+      var badge = document.getElementById('shootReelsNotifBadge');
+      if (badge) {
+        badge.textContent = pendingReview;
+        badge.style.display = pendingReview > 0 ? 'inline' : 'none';
+      }
+      
+      // Render grid
+      var grid = document.getElementById('shootReelsAdminGrid');
+      if (!grid) return;
+      
+      if (!filteredVideos.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;background:#1a1a1a;border-radius:16px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-film" style="display:block;font-size:2.5rem;opacity:0.2;margin-bottom:1rem;"></i>No shoot videos found.<br/>Videos will appear here when staff upload shoot reels and feedback videos.</div>';
+        return;
+      }
+      
+      grid.innerHTML = '';
+      
+      // Sort by upload date (newest first)
+      filteredVideos.sort(function(a, b) {
+        return new Date(b.uploadedAt) - new Date(a.uploadedAt);
+      });
+      
+      filteredVideos.forEach(function(v) {
+        var assign = assigns.find(function(a) { return a.id == v.assignId; });
+        var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
+        var isShootReel = !v.isFeedback && v.category !== 'Shoot Feedback';
+        var isFeedbackVideo = v.isFeedback || v.category === 'Shoot Feedback';
+        
+        // Determine status and colors
+        var statusInfo = getVideoStatusInfo(v, assign);
+        
+        var card = document.createElement('div');
+        card.className = 'shoot-reel-card';
+        card.style.borderLeftColor = statusInfo.color;
+        
+        // Video preview section
+        var videoPreview = '<div class="shoot-reel-preview" id="srv_' + v.id + '">';
+        videoPreview += '<div style="display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;height:100%;"><i class="fas fa-film"></i></div>';
+        
+        // Add type badge overlay
+        var typeBadge = isShootReel 
+          ? '<div class="shoot-reel-type-badge" style="background:rgba(76,175,80,0.9);color:#fff;"><i class="fas fa-video"></i> REEL</div>'
+          : '<div class="shoot-reel-type-badge" style="background:rgba(156,39,176,0.9);color:#fff;"><i class="fas fa-clipboard-list"></i> FEEDBACK</div>';
+        
+        videoPreview += typeBadge + '</div>';
+        
+        // Info section
+        var infoSection = '<div class="shoot-reel-info">';
+        
+        // Header with title and status
+        infoSection += '<div class="shoot-reel-header">';
+        infoSection += '<div style="flex:1;"><div class="shoot-reel-title">' + (v.title || 'Untitled Video') + '</div>';
+        infoSection += '<div class="shoot-reel-staff"><i class="fas fa-user" style="color:#c9a84c;"></i> ' + v.staffName + '</div></div>';
+        infoSection += '<span class="shoot-reel-status" style="background:' + statusInfo.color + '22;border:1px solid ' + statusInfo.color + '44;color:' + statusInfo.color + ';">' + statusInfo.label + '</span>';
+        infoSection += '</div>';
+        
+        // Assignment details (if available)
+        if (assign) {
+          infoSection += '<div class="shoot-reel-assignment">';
+          infoSection += '<div class="shoot-reel-assignment-title"><i class="fas fa-briefcase"></i> Assignment Details</div>';
+          infoSection += '<div class="shoot-reel-assignment-grid">';
+          infoSection += '<div><span style="color:#9a9080;">Service:</span> <span style="color:#fff;font-weight:600;">' + assign.service + '</span></div>';
+          infoSection += '<div><span style="color:#9a9080;">Client:</span> <span style="color:#fff;font-weight:600;">' + assign.clientName + '</span></div>';
+          infoSection += '<div><span style="color:#9a9080;">Date:</span> <span style="color:#fff;font-weight:600;">' + assign.date + '</span></div>';
+          infoSection += '<div><span style="color:#9a9080;">Location:</span> <span style="color:#fff;font-weight:600;">' + (assign.location || assign.city) + '</span></div>';
+          infoSection += '</div>';
+          if (assign.arrivedAt) {
+            infoSection += '<div style="font-size:0.68rem;color:#4caf50;margin-top:0.4rem;"><i class="fas fa-map-marker-alt"></i> Arrived: ' + assign.arrivedAt + '</div>';
+          }
+          infoSection += '</div>';
+        }
+        
+        // Video metadata
+        infoSection += '<div class="shoot-reel-meta">';
+        infoSection += '<div><i class="fas fa-hdd"></i> ' + v.sizeMB + ' MB</div>';
+        infoSection += '<div><i class="fas fa-clock"></i> ' + v.uploadedAt + '</div>';
+        infoSection += '</div>';
+        
+        // Action buttons
+        infoSection += '<div class="shoot-reel-actions">';
+        
+        if (v.cloudUrl) {
+          infoSection += '<a href="' + v.cloudUrl + '" target="_blank" class="shoot-reel-btn shoot-reel-btn-view"><i class="fas fa-external-link-alt"></i> View</a>';
+        }
+        
+        infoSection += '<button onclick="downloadShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-download"><i class="fas fa-download"></i> Download</button>';
+        
+        if (assign && assign.status === 'done') {
+          infoSection += '<button onclick="approveShootVideo(' + assign.id + ')" class="shoot-reel-btn shoot-reel-btn-approve"><i class="fas fa-check-circle"></i> Approve & Pay</button>';
+        }
+        
+        infoSection += '<button onclick="deleteShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-delete" style="flex:none;width:auto;padding:0.5rem 0.75rem;"><i class="fas fa-trash"></i></button>';
+        
+        infoSection += '</div></div>';
+        
+        card.innerHTML = videoPreview + infoSection;
+        
+        // Load video preview
+        loadVideoPreview(v, 'srv_' + v.id);
+        
+        grid.appendChild(card);
+      });
+    }
+    
+    function getVideoStatusInfo(video, assign) {
+      if (!assign) {
+        return { color: '#9a9080', label: 'No Assignment' };
+      }
+      
+      switch (assign.status) {
+        case 'assigned':
+          return { color: '#ff9800', label: 'In Progress' };
+        case 'done':
+          return { color: '#9c27b0', label: 'Pending Review' };
+        case 'completed':
+          return { color: '#4caf50', label: 'Completed' };
+        case 'paid':
+          return { color: '#2196f3', label: 'Paid' };
+        default:
+          return { color: '#9a9080', label: assign.status };
+      }
+    }
+    
+    function loadVideoPreview(video, elementId) {
+      if (video.cloudUrl) {
+        var element = document.getElementById(elementId);
+        if (element) {
+          var videoEl = document.createElement('video');
+          videoEl.src = video.cloudUrl;
+          videoEl.controls = true;
+          videoEl.preload = 'metadata';
+          videoEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;background:#000;';
+          element.innerHTML = '';
+          element.appendChild(videoEl);
+        }
+      } else {
+        // Try to load from IndexedDB
+        openAdminVideoDB(function(db) {
+          if (!db) return;
+          var req = db.transaction('videos', 'readonly').objectStore('videos').get(video.id);
+          req.onsuccess = function() {
+            if (req.result && req.result.blob) {
+              var url = URL.createObjectURL(req.result.blob);
+              var element = document.getElementById(elementId);
+              if (element) {
+                var videoEl = document.createElement('video');
+                videoEl.src = url;
+                videoEl.controls = true;
+                videoEl.preload = 'metadata';
+                videoEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;background:#000;';
+                element.innerHTML = '';
+                element.appendChild(videoEl);
+              }
+            }
+          };
+        });
+      }
+    }
+    
+    function downloadShootVideo(videoId) {
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+      var video = videos.find(function(v) { return v.id === videoId; });
+      if (!video) return;
+      
+      if (video.cloudUrl) {
+        // Download from cloud URL
+        var a = document.createElement('a');
+        a.href = video.cloudUrl;
+        a.download = video.fileName || (video.title + '.mp4');
+        a.target = '_blank';
+        a.click();
+      } else {
+        // Download from IndexedDB
+        openAdminVideoDB(function(db) {
+          if (!db) return;
+          var req = db.transaction('videos', 'readonly').objectStore('videos').get(videoId);
+          req.onsuccess = function() {
+            if (req.result && req.result.blob) {
+              var url = URL.createObjectURL(req.result.blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = video.fileName || (video.title + '.mp4');
+              a.click();
+              setTimeout(function() { URL.revokeObjectURL(url); }, 3000);
+            }
+          };
+        });
+      }
+    }
+    
+    function approveShootVideo(assignId) {
+      if (!confirm('Approve this shoot and release payment to the staff member?')) return;
+      
+      var assigns = getAssignedShoots();
+      var assign = assigns.find(function(a) { return a.id === assignId; });
+      if (!assign) return;
+      
+      // Update assignment status
+      assign.status = 'completed';
+      assign.completedAt = new Date().toLocaleString();
+      assign.approvedBy = localStorage.getItem('hs_admin_name') || 'Admin';
+      
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+      
+      // Release payment to staff wallet
+      var staffId = assign.staffId;
+      var walletKey = 'hs_wallet_' + staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"pending":0,"transactions":[]}');
+      
+      var paymentAmount = assign.credit || 0;
+      wallet.balance = (wallet.balance || 0) + paymentAmount;
+      wallet.totalEarned = (wallet.totalEarned || 0) + paymentAmount;
+      wallet.pending = Math.max(0, (wallet.pending || 0) - paymentAmount);
+      
+      wallet.transactions = wallet.transactions || [];
+      wallet.transactions.push({
+        type: 'credit',
+        amount: paymentAmount,
+        label: 'Shoot Payment - ' + assign.service,
+        note: 'Client: ' + assign.clientName,
+        date: new Date().toLocaleString()
+      });
+      
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+      
+      // Update assignment status to paid
+      assign.status = 'paid';
+      assign.paidAt = new Date().toLocaleString();
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+      
+      // Sync to Firebase
+      if (window.fbUpdate) {
+        fbUpdate('assigned_shoots', String(assignId), { status: 'paid', completedAt: assign.completedAt, paidAt: assign.paidAt });
+        fbUpdate('wallets', String(staffId), wallet);
+      }
+      
+      alert('✅ Shoot approved and payment of ₹' + paymentAmount.toLocaleString('en-IN') + ' released to ' + assign.staffName);
+      renderShootReelsAdmin();
+      updateCreatorPendingPayments();
+    }
+    
+    function deleteShootVideo(videoId) {
+      if (!confirm('Delete this video? This action cannot be undone.')) return;
+      
+      // Remove from localStorage
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+      videos = videos.filter(function(v) { return v.id !== videoId; });
+      localStorage.setItem('hs_staff_videos', JSON.stringify(videos));
+      
+      // Remove from IndexedDB
+      openAdminVideoDB(function(db) {
+        if (db) {
+          db.transaction('videos', 'readwrite').objectStore('videos').delete(videoId);
+        }
+      });
+      
+      renderShootReelsAdmin();
+    }
+    
+    function exportShootReelsData() {
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+      var assigns = getAssignedShoots();
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      
+      var shootVideos = videos.filter(function(v) {
+        return v.assignId || v.category === 'Shoot Delivery' || v.category === 'Shoot Feedback' || v.isFeedback;
+      });
+      
+      var exportData = shootVideos.map(function(v) {
+        var assign = assigns.find(function(a) { return a.id == v.assignId; });
+        var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
+        
+        return {
+          'Video ID': v.id,
+          'Title': v.title,
+          'Staff Name': v.staffName,
+          'Type': v.isFeedback || v.category === 'Shoot Feedback' ? 'Feedback' : 'Shoot Reel',
+          'Service': assign?.service || '',
+          'Client Name': assign?.clientName || '',
+          'Location': assign?.location || assign?.city || '',
+          'Shoot Date': assign?.date || '',
+          'Upload Date': v.uploadedAt,
+          'File Size (MB)': v.sizeMB,
+          'Status': assign?.status || 'No Assignment',
+          'Cloud URL': v.cloudUrl || 'Local Only'
+        };
+      });
+      
+      // Convert to CSV
+      var csv = 'data:text/csv;charset=utf-8,';
+      var headers = Object.keys(exportData[0] || {});
+      csv += headers.join(',') + '\n';
+      
+      exportData.forEach(function(row) {
+        csv += headers.map(function(header) {
+          var value = row[header] || '';
+          return '"' + String(value).replace(/"/g, '""') + '"';
+        }).join(',') + '\n';
+      });
+      
+      // Download
+      var link = document.createElement('a');
+      link.href = encodeURI(csv);
+      link.download = 'shoot_reels_export_' + new Date().toISOString().split('T')[0] + '.csv';
+      link.click();
     }
 
     // Also define openAdminVideoDB (used by staff videos section)

@@ -246,6 +246,7 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
+<script src="fix-staff-videos.js"></script>
 </head>
 <body>
 
@@ -972,8 +973,23 @@
         var videos = getStaffVideos();
         videos.push(videoData);
         saveStaffVideos(videos);
-        // Save to Firebase so admin sees it
-        if(window.fbSave) fbSave('staff_videos', videoData);
+        // Save to Firebase so admin sees it - with better error handling
+        if(window.fbSave) {
+          fbSave('staff_videos', videoData).then(function(docId) {
+            console.log('Video synced to Firebase with ID:', docId);
+            // Update the video with Firebase ID
+            videoData._fbId = docId;
+            var updatedVideos = getStaffVideos();
+            var videoIndex = updatedVideos.findIndex(v => v.id === videoData.id);
+            if (videoIndex !== -1) {
+              updatedVideos[videoIndex]._fbId = docId;
+              localStorage.setItem('hs_staff_videos', JSON.stringify(updatedVideos));
+            }
+          }).catch(function(error) {
+            console.error('Failed to sync video to Firebase:', error);
+            alert('Video uploaded locally but failed to sync to admin. Please check your internet connection.');
+          });
+        }
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
         document.getElementById('uploadTitle').value = '';
