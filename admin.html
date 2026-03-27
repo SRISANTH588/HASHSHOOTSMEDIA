@@ -4188,7 +4188,7 @@
     var _opEnabled = false;
     function loadOpening(){
       var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
-      _opEnabled = (cfg.enabled !== false); // default ON
+      _opEnabled = (cfg.enabled !== false);
       var f1n = document.getElementById('op_f1name');
       var f1r = document.getElementById('op_f1role');
       var f1p = document.getElementById('op_f1photo');
