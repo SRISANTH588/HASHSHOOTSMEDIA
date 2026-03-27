@@ -100,11 +100,22 @@
   </div>
 
   <script>
-    // ===== TAWK.TO — loaded from admin config =====
-    (function(){
+    // ===== TAWK.TO — load config from Firebase first, fallback to localStorage =====
+    (async function(){
       var cfg = JSON.parse(localStorage.getItem('hs_tawk_config') || '{}');
+      // Try Firebase for latest config
+      try {
+        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app = fbMod.getApps().find(function(a){return a.name==='tawk-load';}) || fbMod.initializeApp(FB,'tawk-load');
+        var db  = fbStore.getFirestore(app);
+        var snap = await fbStore.getDoc(fbStore.doc(db,'settings','tawk_config'));
+        if(snap.exists()){ cfg = snap.data(); localStorage.setItem('hs_tawk_config', JSON.stringify(cfg)); }
+      } catch(e){ console.log('[Tawk] Firebase load failed, using localStorage'); }
       if(cfg.propertyId && cfg.widgetId){
-        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        window.Tawk_API = window.Tawk_API || {};
+        window.Tawk_LoadStart = new Date();
         var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
         s1.async = true;
         s1.src = 'https://embed.tawk.to/' + cfg.propertyId + '/' + cfg.widgetId;
@@ -122,7 +133,13 @@
       if(window.Tawk_API && window.Tawk_API.maximize){
         window.Tawk_API.maximize();
       } else {
-        alert('Live chat is not configured yet. Please paste your Tawk.to script in the placeholder above.');
+        var cfg = JSON.parse(localStorage.getItem('hs_tawk_config')||'{}');
+        if(!cfg.propertyId){
+          // Try to open WhatsApp as fallback
+          window.open('https://wa.me/916304279351','_blank');
+        } else {
+          alert('Live chat is loading, please wait a moment and try again.');
+        }
       }
     }
 

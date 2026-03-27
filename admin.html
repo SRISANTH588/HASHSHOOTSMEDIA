@@ -343,7 +343,11 @@
     if(!confirm('Delete this vibe item?')) return;
     try {
       var f = await getVibeAdminDB();
+      // id may be a Firestore string doc ID or a numeric timestamp — always use String
       await f.fs.deleteDoc(f.fs.doc(f.db,'vibe_items',String(id)));
+      // Also remove from localStorage
+      var local = JSON.parse(localStorage.getItem('hs_vibe')||'[]');
+      localStorage.setItem('hs_vibe', JSON.stringify(local.filter(function(x){ return String(x.id) !== String(id); })));
       renderVibeAdmin();
     } catch(e){ alert('Delete failed: '+e.message); }
   }
@@ -436,6 +440,8 @@
       var snap = await f.fs.getDocs(f.fs.query(f.fs.collection(f.db,'vibe_items'), f.fs.orderBy('addedAt','desc')));
       var items = [];
       snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
+      // Sync to localStorage so offline access works
+      localStorage.setItem('hs_vibe', JSON.stringify(items));
       if(countEl) countEl.textContent = items.length + ' item(s)';
       if(!items.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>'; return; }
       grid.innerHTML='';
@@ -2652,6 +2658,26 @@
       });
     }
 
+
+    // Load testimonial videos from Firebase into localStorage
+    async function loadTestiVideosFromFirebase(){
+      try {
+        var f = await _fbAdmin(); if(!f) return [];
+        var snap = await f.s.getDocs(f.s.collection(f.db,'testimonial_videos'));
+        var fbItems = [];
+        snap.forEach(function(d){ fbItems.push(Object.assign({id:d.id},d.data())); });
+        if(fbItems.length){
+          var local = getTestiVideosMeta();
+          fbItems.forEach(function(v){
+            var idx = local.findIndex(function(x){ return String(x.id)===String(v.id); });
+            if(idx>-1) Object.assign(local[idx],v); else local.push(v);
+          });
+          localStorage.setItem('hs_testi_videos', JSON.stringify(local));
+        }
+        return fbItems;
+      } catch(e){ console.error('loadTestiVideosFromFirebase:',e); return []; }
+    }
+    window.loadTestiVideosFromFirebase = loadTestiVideosFromFirebase;
     function renderTestiVideos(){
       var meta = getTestiVideosMeta().slice().reverse();
       var grid = document.getElementById('testiVidGrid');
@@ -2662,27 +2688,36 @@
       meta.forEach(function(v){
         var card = document.createElement('div');
         card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;';
+        var viewBtn = v.cloudUrl
+          ? '<a href="'+v.cloudUrl+'" target="_blank" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;text-align:center;text-decoration:none;"><i class="fas fa-external-link-alt"></i> View</a>'
+          : '<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>';
         card.innerHTML=
-          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-spinner fa-spin"></i></div>'
           +'<div style="padding:0.85rem;">'
           +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+v.clientName+'</div>'
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
-          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+(v.sizeMB||'')+(v.sizeMB?' MB &nbsp;&middot;&nbsp; ':'')+v.uploadedBy+' &nbsp;&middot;&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
-          +'<button onclick="openTestiVidEdit("+String(v.id)+")" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
-          +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
-          +'<button onclick="deleteTestiVideo("+String(v.id)+")" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'<button onclick="openTestiVidEdit('+String(v.id)+')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          +viewBtn
+          +'<button onclick="deleteTestiVideo('+String(v.id)+')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
-        openTestiVideoDB(function(db){
-          if(!db) return;
-          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-          req.onsuccess = function(){
-            if(!req.result) return;
-            var url = URL.createObjectURL(req.result.blob);
-            var ph = document.getElementById('tvp_'+v.id);
-            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
-          };
-        });
+        // Prefer cloudUrl, fallback to IndexedDB blob
+        if(v.cloudUrl){
+          var ph = document.getElementById('tvp_'+v.id);
+          if(ph){ var vid=document.createElement('video'); vid.src=v.cloudUrl; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+        } else {
+          openTestiVideoDB(function(db){
+            if(!db){ var ph2=document.getElementById('tvp_'+v.id); if(ph2) ph2.innerHTML='<i class="fas fa-film"></i>'; return; }
+            var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+            req.onsuccess = function(){
+              if(!req.result){ var ph3=document.getElementById('tvp_'+v.id); if(ph3) ph3.innerHTML='<i class="fas fa-film"></i>'; return; }
+              var url = URL.createObjectURL(req.result.blob);
+              var ph = document.getElementById('tvp_'+v.id);
+              if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+            };
+          });
+        }
         grid.appendChild(card);
       });
     }
@@ -4093,8 +4128,21 @@
       var propertyId = document.getElementById('tawk_property_id').value.trim();
       var widgetId   = document.getElementById('tawk_widget_id').value.trim();
       if(!propertyId || !widgetId){ alert('Please enter both Property ID and Widget ID.'); return; }
-      localStorage.setItem('hs_tawk_config', JSON.stringify({ propertyId: propertyId, widgetId: widgetId }));
-      if(window.fbUpdate) fbUpdate('settings', 'tawk_config', { propertyId: propertyId, widgetId: widgetId });
+      var cfg = { propertyId: propertyId, widgetId: widgetId };
+      localStorage.setItem('hs_tawk_config', JSON.stringify(cfg));
+      // Save to Firebase so ALL pages (customer-support, customer.html etc.) pick it up
+      (async function(){
+        try {
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = fbMod.getApps().find(function(a){return a.name==='tawk-save';}) || fbMod.initializeApp(FB,'tawk-save');
+          var db  = fbStore.getFirestore(app);
+          await fbStore.setDoc(fbStore.doc(db,'settings','tawk_config'), cfg, {merge:true});
+          console.log('[Tawk] Config saved to Firebase');
+        } catch(e){ console.error('[Tawk] Firebase save error:',e); }
+      })();
+      if(window.fbUpdate) fbUpdate('settings', 'tawk_config', cfg);
       loadTawkConfig();
       var toast = document.getElementById('tawkToast');
       toast.style.display = 'block';
@@ -4322,6 +4370,17 @@
     setInterval(updateEnquiriesNotifBadge, 3000);
 
     // ── NOTIFICATIONS ─────────────────────────────────────────
+
+    async function loadAdminNotificationsFromFirebase(){
+      try {
+        var f = await _fbAdmin(); if(!f) return [];
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'admin_notifications'), f.s.orderBy('createdAt','desc'), f.s.limit(50)));
+        var items = [];
+        snap.forEach(function(d){ items.push(Object.assign({_fbId:d.id},d.data())); });
+        return items;
+      } catch(e){ return []; }
+    }
+    window.loadAdminNotificationsFromFirebase = loadAdminNotificationsFromFirebase;
     function getNotifications(){ return JSON.parse(localStorage.getItem('hs_admin_notifs')||'[]'); }
     function saveNotifications(list){ localStorage.setItem('hs_admin_notifs', JSON.stringify(list)); }
 
@@ -4402,7 +4461,7 @@
     }
 
     function _notifView(tab, notifId){
-      // Find the tab button that matches this tab name and click it
+      if(!tab) return;
       var btn = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){
         var m = b.getAttribute('onclick');
         return m && m.indexOf("'" + tab + "'") !== -1;
@@ -5132,7 +5191,7 @@
     }
 
     function refreshStaffVideosFromFirebase(){
-      fetchStaffVideosFromFirebase().then(function(){
+      return fetchStaffVideosFromFirebase().then(function(){
         renderShootReelsAdmin();
         renderStaffVideosAdmin();
       });
