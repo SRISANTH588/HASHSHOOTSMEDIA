@@ -249,9 +249,11 @@
   (function(){
     var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
     if(cfg.enabled===false) return;
+    if(sessionStorage.getItem('og_launched')) return;
     var launch=document.getElementById('ogLaunch');
     launch.classList.add('active');
     document.body.style.overflow='hidden';
+    sessionStorage.setItem('og_launched','1');
     var bgImg=cfg.bgPhoto||'';
     var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
     var f2Photo=cfg.founder2Photo||'sumanth.jpeg';
