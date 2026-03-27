@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Staff Home - Hash Shoots</title>
+  <title>Staff Home - OG SHOOTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -251,7 +251,7 @@
 
   <!-- NAV -->
   <nav>
-    <div class="logo">HA<span>⚡</span>H SHOOTS</div>
+    <div class="logo">OG SHOOTS</div>
     <div class="nav-center"><div class="nav-clock" id="navClock">00:00:00</div></div>
     <div class="nav-badge"><div class="nav-dot"></div><i class="fas fa-users"></i> STAFF PORTAL</div>
   </nav>
@@ -495,12 +495,12 @@
 
     <!-- STORE -->
     <div class="section" id="sec-store">
-      <div class="sec-title"><i class="fas fa-store" style="color:#c9a84c;"></i> Hash Shoots Store</div>
+      <div class="sec-title"><i class="fas fa-store" style="color:#c9a84c;"></i> OG SHOOTS Store</div>
 
       <!-- BANNER -->
       <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(100,0,0,0.25));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
-          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official Hash Shoots Merchandise</div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official OG SHOOTS Merchandise</div>
           <div style="font-size:0.82rem;color:#9a9080;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
         </div>
         <div style="font-size:2rem;">🛍️</div>
@@ -598,7 +598,7 @@
         <div style="position:relative;display:flex;align-items:center;gap:0.75rem;">
           <div style="width:40px;height:40px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">⚡</div>
           <div>
-            <div style="font-size:1.1rem;font-weight:900;color:#fff;">HASH SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
+            <div style="font-size:1.1rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
             <div style="font-size:0.65rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">AI Video Editor</div>
           </div>
         </div>
@@ -639,7 +639,7 @@
         <!-- Logo Toggle -->
         <div style="display:flex;align-items:center;justify-content:space-between;background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.9rem;margin-top:0.75rem;">
           <div>
-            <div style="font-size:0.8rem;font-weight:800;color:#fff;">💎 Hash Shoots Luxe Logo</div>
+            <div style="font-size:0.8rem;font-weight:800;color:#fff;">💎 OG SHOOTS Luxe Logo</div>
             <div style="font-size:0.65rem;color:#9a9080;margin-top:0.1rem;">Burn logo onto every reel</div>
           </div>
           <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
@@ -857,7 +857,7 @@
     const access = JSON.parse(localStorage.getItem('hs_staff_access') || '[]');
 
     document.getElementById('staffNameDisplay').textContent = name;
-    document.getElementById('staffRoleDisplay').textContent = role + ' — Hash Shoots';
+    document.getElementById('staffRoleDisplay').textContent = role + ' — OG SHOOTS';
     document.getElementById('sidebarName').textContent = name;
     document.getElementById('sidebarRole').textContent = role;
     document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
@@ -2011,7 +2011,7 @@
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
           var mailSubject = encodeURIComponent('T-Shirt Order — ' + t.name + ' — ' + staffName);
-          var mailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: ₹' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
+          var mailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: ₹' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 16px 40px rgba(201,168,76,0.15)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
@@ -2028,16 +2028,16 @@
       var idEl = document.getElementById('storeIdCard');
       var discountEmail = store.discountEmail || contactEmail;
       var idMailSubject = encodeURIComponent('ID Card Request — ' + staffName);
-      var idMailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI would like to request my official Hash Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
+      var idMailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI would like to request my official OG SHOOTS ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
       var discountMailSubject = encodeURIComponent('ID Card Discount Request — ' + staffName);
-      var discountMailBody = encodeURIComponent('Hi Hash Shoots Team,\n\nI am writing to request a discount on my official Hash Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
+      var discountMailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI am writing to request a discount on my official OG SHOOTS ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
 
       idEl.innerHTML = '<div style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:16px;overflow:hidden;">'
         + '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(100,60,0,0.2));padding:1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">'
         + (idcard.image ? '<img src="'+idcard.image+'" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid rgba(245,166,35,0.3);"/>' : '<div style="width:90px;height:90px;background:rgba(245,166,35,0.1);border:2px dashed rgba(245,166,35,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-id-badge" style="font-size:2rem;color:#f5a623;opacity:0.5;"></i></div>')
         + '<div style="flex:1;">'
-        + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">Hash Shoots Official ID Card</div>'
-        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all Hash Shoots events and shoots.') + '</div>'
+        + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">OG SHOOTS Official ID Card</div>'
+        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all OG SHOOTS events and shoots.') + '</div>'
         + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">₹' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
         + '</div></div>'
         + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(201,168,76,0.06);">'
@@ -2423,15 +2423,15 @@
           <div class="stnc-icon" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);"><i class="fas fa-id-badge" style="color:#c9a84c;"></i></div>
           <div class="stnc-text">
             <h5>ID Card — Mandatory</h5>
-            <p>You must carry your official Hash Shoots ID card at all times during the shoot. The client has the right to verify your identity before the session begins. Shooting without an ID card is strictly prohibited.</p>
+            <p>You must carry your official OG SHOOTS ID card at all times during the shoot. The client has the right to verify your identity before the session begins. Shooting without an ID card is strictly prohibited.</p>
           </div>
         </div>
 
         <div class="stnc-rule">
           <div class="stnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-tshirt" style="color:#2196f3;"></i></div>
           <div class="stnc-text">
-            <h5>Hash Shoots T-Shirt — Mandatory</h5>
-            <p>You must wear the official Hash Shoots branded T-shirt during every shoot. This represents our brand and builds client trust. Arriving without the T-shirt may result in the shoot being cancelled.</p>
+            <h5>OG SHOOTS T-Shirt — Mandatory</h5>
+            <p>You must wear the official OG SHOOTS branded T-shirt during every shoot. This represents our brand and builds client trust. Arriving without the T-shirt may result in the shoot being cancelled.</p>
           </div>
         </div>
 
@@ -2439,7 +2439,7 @@
           <div class="stnc-icon" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);"><i class="fas fa-shoe-prints" style="color:#4caf50;"></i></div>
           <div class="stnc-text">
             <h5>Proper Footwear — Mandatory</h5>
-            <p>You must wear clean, formal or smart-casual shoes. Slippers, flip-flops, or torn footwear are not allowed. Proper footwear is part of the professional dress code required at all Hash Shoots events.</p>
+            <p>You must wear clean, formal or smart-casual shoes. Slippers, flip-flops, or torn footwear are not allowed. Proper footwear is part of the professional dress code required at all OG SHOOTS events.</p>
           </div>
         </div>
 
@@ -2463,7 +2463,7 @@
           <div class="stnc-icon" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.25);"><i class="fas fa-handshake" style="color:#ff9800;"></i></div>
           <div class="stnc-text">
             <h5>Professional Conduct</h5>
-            <p>Maintain respectful, professional behaviour at all times. Do not discuss pricing, personal matters, or Hash Shoots internal operations with clients. Any misconduct will result in immediate termination and forfeiture of payment.</p>
+            <p>Maintain respectful, professional behaviour at all times. Do not discuss pricing, personal matters, or OG SHOOTS internal operations with clients. Any misconduct will result in immediate termination and forfeiture of payment.</p>
           </div>
         </div>
 
@@ -2471,11 +2471,11 @@
       <div class="staff-tnc-footer">
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck1" onchange="checkStncProceed()"/>
-          I am wearing my official Hash Shoots <strong>T-shirt</strong> and carrying my <strong>ID card</strong> right now.
+          I am wearing my official OG SHOOTS <strong>T-shirt</strong> and carrying my <strong>ID card</strong> right now.
         </label>
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck2" onchange="checkStncProceed()"/>
-          I am wearing proper <strong>shoes</strong> as per the Hash Shoots dress code.
+          I am wearing proper <strong>shoes</strong> as per the OG SHOOTS dress code.
         </label>
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck3" onchange="checkStncProceed()"/>
@@ -2541,7 +2541,7 @@
       <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.85rem;"><i class="fas fa-play-circle" style="color:#c9a84c;margin-right:0.4rem;"></i> Preview</div>
       <div style="position:relative;">
         <video id="saie_previewVideo" controls style="width:100%;border-radius:10px;background:#000;max-height:55vh;"></video>
-        <div id="saie_previewWatermark" style="position:absolute;bottom:10px;right:10px;background:linear-gradient(135deg,rgba(201,168,76,0.92),rgba(160,120,48,0.92));color:#fff;font-size:0.55rem;font-weight:900;padding:0.2rem 0.5rem;border-radius:4px;letter-spacing:1px;pointer-events:none;">HASH SHOOTS LUXE</div>
+        <div id="saie_previewWatermark" style="position:absolute;bottom:10px;right:10px;background:linear-gradient(135deg,rgba(201,168,76,0.92),rgba(160,120,48,0.92));color:#fff;font-size:0.55rem;font-weight:900;padding:0.2rem 0.5rem;border-radius:4px;letter-spacing:1px;pointer-events:none;">OG SHOOTS LUXE</div>
       </div>
       <div style="display:flex;gap:0.65rem;margin-top:0.85rem;">
         <button onclick="saie_downloadFromPreview()" style="flex:1;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>
@@ -2676,7 +2676,7 @@
         ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(0,0,outW,60); ctx.fillRect(0,outH-60,outW,60);
         // 6. Text overlay
         if(clip.text){ctx.font='bold 52px Arial';ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=12;ctx.fillStyle='#fff';var ty=clip.textPos==='top'?140:clip.textPos==='center'?outH/2:outH-140;ctx.fillText(clip.text,outW/2,ty);ctx.shadowBlur=0;}
-        // 7. HASH SHOOTS LUXE logo (image or premium text fallback)
+        // 7. OG SHOOTS LUXE logo (image or premium text fallback)
         if(clip.showLogo!==false){
           var wmPos=clip.wmPos||'bottomRight';
           var logoW=280,logoH=68,lx,ly;
@@ -2695,7 +2695,7 @@
             ctx.fill();
             ctx.font='bold 28px Arial';ctx.textAlign='left';
             ctx.fillStyle='rgba(201,168,76,0.95)';ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=8;
-            ctx.fillText('HASH SHOOTS',lx+8,ly+32);
+            ctx.fillText('OG SHOOTS',lx+8,ly+32);
             ctx.font='900 22px Arial';ctx.fillStyle='#fff';
             ctx.fillText('L U X E',lx+8,ly+58);ctx.shadowBlur=0;
           }
@@ -2839,7 +2839,7 @@
         +'<video src="'+c.url+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;filter:'+builtCss+';" preload="metadata" muted></video>'
         +'<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.8) 100%);pointer-events:none;"></div>'
         +(c.vignette?'<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>':'')
-        +(c.processed?'<div style="position:absolute;bottom:0.4rem;right:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;letter-spacing:1px;">HASH SHOOTS LUXE</div>':'<div style="position:absolute;top:0.4rem;left:0.4rem;background:rgba(255,152,0,0.85);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;">PENDING</div>')
+        +(c.processed?'<div style="position:absolute;bottom:0.4rem;right:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;letter-spacing:1px;">OG SHOOTS LUXE</div>':'<div style="position:absolute;top:0.4rem;left:0.4rem;background:rgba(255,152,0,0.85);color:#fff;font-size:0.5rem;font-weight:900;padding:0.18rem 0.45rem;border-radius:3px;">PENDING</div>')
         +(c.text?'<div style="position:absolute;bottom:1.5rem;left:0;right:0;text-align:center;color:#fff;font-size:0.6rem;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.9);">'+c.text+'</div>':'')
         +'</div>'
         +'<div style="padding:0.65rem;">'
