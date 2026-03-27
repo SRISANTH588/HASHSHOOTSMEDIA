@@ -190,7 +190,11 @@
           <div class="form-group"><label>Founder 2 Role</label><input type="text" id="op_f2role" placeholder="Managing Director"/></div>
         </div>
         <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 2 Photo URL</label><input type="text" id="op_f2photo" placeholder="sumanth.jpeg"/></div>
-        <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(optional)</span></label><input type="text" id="op_bgphoto" placeholder="https://... or leave blank"/></div>
+        <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(default: Tirumala idol)</span></label><input type="text" id="op_bgphoto" placeholder="tirumala-sri-venkateswara-swamy-idol.jpg"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div class="form-group"><label>Place / Venue <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_place" placeholder="e.g. Vijayawada, India"/></div>
+          <div class="form-group"><label>Launch Date <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_date" placeholder="e.g. 25 Jan 2025"/></div>
+        </div>
         <button class="btn-save-about" onclick="saveOpening()"><i class="fas fa-save"></i> Save Opening Settings</button>
       </div>
     </div>
@@ -4191,6 +4195,8 @@
       document.getElementById('op_f2role').value  = cfg.founder2Role  || 'Managing Director';
       document.getElementById('op_f2photo').value = cfg.founder2Photo || 'sumanth.jpeg';
       document.getElementById('op_bgphoto').value = cfg.bgPhoto       || '';
+      document.getElementById('op_place').value   = cfg.placeText     || '';
+      document.getElementById('op_date').value    = cfg.dateText      || '';
       updateOpToggle();
     }
     function updateOpToggle(){
@@ -4213,7 +4219,9 @@
         founder2Name: document.getElementById('op_f2name').value.trim()  || 'Gulimi Sumanth',
         founder2Role: document.getElementById('op_f2role').value.trim()  || 'Managing Director',
         founder2Photo:document.getElementById('op_f2photo').value.trim() || 'sumanth.jpeg',
-        bgPhoto:      document.getElementById('op_bgphoto').value.trim()
+        bgPhoto:      document.getElementById('op_bgphoto').value.trim(),
+        placeText:    document.getElementById('op_place').value.trim(),
+        dateText:     document.getElementById('op_date').value.trim()
       };
       localStorage.setItem('hs_opening', JSON.stringify(data));
       var toast = document.getElementById('saveToast');

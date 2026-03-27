@@ -44,9 +44,14 @@
     }
     .og-bg-img{
       position:absolute;inset:0;z-index:1;
-      background-size:cover;background-position:center;
-      opacity:0.12;
-      filter:saturate(0.3);
+      background-size:cover;background-position:center top;
+      opacity:0.22;
+      filter:saturate(0.4) sepia(0.3);
+      transition:opacity 1.5s ease;
+    }
+    #ogLaunch.congrats-mode .og-bg-img{
+      opacity:0.45;
+      filter:saturate(0.7) sepia(0.15);
     }
     /* GOLD LINES */
     .og-lines{
@@ -254,7 +259,9 @@
     launch.classList.add('active');
     document.body.style.overflow='hidden';
     sessionStorage.setItem('og_launched','1');
-    var bgImg=cfg.bgPhoto||'';
+    var bgImg=cfg.bgPhoto||'tirumala-sri-venkateswara-swamy-idol.jpg';
+    var placeText=cfg.placeText||'';
+    var dateText=cfg.dateText||'';
     var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
     var f2Photo=cfg.founder2Photo||'sumanth.jpeg';
     var f1Name=cfg.founder1Name||'Boddu Srisanth';
@@ -275,7 +282,7 @@
     }
     launch.innerHTML=
       '<div class="og-bg-layer"></div>'
-      +(bgImg?'<div class="og-bg-img" style="background-image:url(\"'+bgImg+'\")"></div>':'')
+      +'<div class="og-bg-img" style="background-image:url(\"'+bgImg+'\")"></div>'
       +'<div class="og-lines"><div class="og-line"></div><div class="og-line"></div><div class="og-line"></div></div>'
       +'<div class="og-particles">'+pts+'</div>'
       +'<div class="og-bar-top"></div><div class="og-bar-bot"></div>'
@@ -291,7 +298,12 @@
         +'<div id="ogCountWrap" style="display:none;margin-top:1.5rem;">'
           +'<div class="og-count-wrap"><div class="og-count-ring"></div><span class="og-count" id="ogCount">10</span></div>'
         +'</div>'
-        +'<div class="og-congrats" id="ogCongrats">&#127881; Congratulations <strong>'+f1Name+'</strong> &amp; <strong>'+f2Name+'</strong>!<br/>The App <strong>OG SHOOTS LUXE</strong> is Live Now!</div>'
+        +'<div class="og-congrats" id="ogCongrats">&#127881; Congratulations <strong>'+f1Name+'</strong> &amp; <strong>'+f2Name+'</strong>!<br/>The App <strong>OG SHOOTS LUXE</strong> is Live Now!'
+        +(placeText||dateText?'<div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(201,168,76,0.8);letter-spacing:1px;">'
+          +(placeText?'<i class="fas fa-map-marker-alt"></i> '+placeText+' &nbsp;':'')
+          +(dateText?'<i class="fas fa-calendar-alt"></i> '+dateText:'')
+          +'</div>':'')
+        +'</div>'
         +'<div class="og-live" id="ogLive"><div class="og-live-dot"></div> APP IS LIVE</div>'
       +'</div>'
       +'<button class="og-skip" onclick="ogClose()">SKIP &rsaquo;</button>';
@@ -304,7 +316,44 @@
       if(!AC)return;
       try{var c=new AC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=freq;o.type=type||'sine';g.gain.setValueAtTime(vol||0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur);}catch(e){}
     }
-    function celebrate(){[523,659,784,1047,1319].forEach(function(n,i){setTimeout(function(){tone(n,0.4,0.4);},i*120);});}
+    function celebrate(){
+      [523,659,784,1047,1319].forEach(function(n,i){setTimeout(function(){tone(n,0.4,0.4);},i*120);});
+      // Om Namo Venkateshaya chant — synthesized sacred tone
+      if(AC){
+        try{
+          var ctx=new AC();
+          // Deep Om drone
+          var osc1=ctx.createOscillator(),g1=ctx.createGain();
+          osc1.type='sine';osc1.frequency.value=136.1; // Om frequency (C#)
+          g1.gain.setValueAtTime(0,ctx.currentTime);
+          g1.gain.linearRampToValueAtTime(0.18,ctx.currentTime+0.5);
+          g1.gain.setValueAtTime(0.18,ctx.currentTime+3);
+          g1.gain.linearRampToValueAtTime(0,ctx.currentTime+5);
+          osc1.connect(g1);g1.connect(ctx.destination);
+          osc1.start();osc1.stop(ctx.currentTime+5);
+          // Harmonic overtone
+          var osc2=ctx.createOscillator(),g2=ctx.createGain();
+          osc2.type='sine';osc2.frequency.value=272.2;
+          g2.gain.setValueAtTime(0,ctx.currentTime);
+          g2.gain.linearRampToValueAtTime(0.08,ctx.currentTime+0.5);
+          g2.gain.linearRampToValueAtTime(0,ctx.currentTime+5);
+          osc2.connect(g2);g2.connect(ctx.destination);
+          osc2.start();osc2.stop(ctx.currentTime+5);
+          // Bell-like Venkateshaya note
+          setTimeout(function(){
+            try{
+              var ctx2=new AC();
+              var bell=ctx2.createOscillator(),bg=ctx2.createGain();
+              bell.type='sine';bell.frequency.value=528;
+              bg.gain.setValueAtTime(0.4,ctx2.currentTime);
+              bg.gain.exponentialRampToValueAtTime(0.001,ctx2.currentTime+2.5);
+              bell.connect(bg);bg.connect(ctx2.destination);
+              bell.start();bell.stop(ctx2.currentTime+2.5);
+            }catch(e){}
+          },600);
+        }catch(e){}
+      }
+    }
     window.ogStartCountdown=function(){
       document.getElementById('ogBtnWrap').style.display='none';
       document.getElementById('ogCountWrap').style.display='block';
@@ -320,6 +369,7 @@
         } else {
           clearInterval(timer);
           document.getElementById('ogCountWrap').style.display='none';
+          launch.classList.add('congrats-mode');
           celebrate();
           var cf=document.getElementById('ogCf');
           var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];

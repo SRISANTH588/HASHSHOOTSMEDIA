@@ -312,10 +312,14 @@
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
 
     var planData = {
-      hourly:  { service:'Reel Shoot',          name:'Hourly Plan',   price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      halfday: { service:'Event Coverage',       name:'Half-Day Plan', price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      wedding: { service:'Wedding Photography',  name:'Wedding Plan',  price:'\u20b915,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      custom:  { service:'',                     name:'Custom Plan',   price:'Let\'s Talk', per:'',          features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
+      hourly:        { service:'Reel Shoot',         name:'Hourly Plan',          price:'\u20b91,699',  per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      halfday:       { service:'Event Coverage',      name:'Half-Day Plan',         price:'\u20b93,999',  per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      wedding:       { service:'Wedding Photography', name:'Wedding Plan',           price:'\u20b915,000', per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      weddingBasic:  { service:'Wedding Photography', name:'Wedding Basic',          price:'\u20b915,000', per:'/ event',   features:['Essential Coverage','2 Edited Reels','Shot on Latest iPhone','Same Day Delivery','Certified Content Maker'] },
+      weddingSilver: { service:'Wedding Photography', name:'Wedding Silver',         price:'\u20b925,000', per:'/ event',   features:['Full Day Coverage','4 Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker'] },
+      weddingGold:   { service:'Wedding Photography', name:'Wedding Gold',           price:'\u20b945,000', per:'/ event',   features:['Full Day Coverage','6 Edited Reels','Shot on Latest iPhone','Priority Delivery','2 Content Makers','Pre-shoot Consultation'] },
+      weddingLuxe:   { service:'Wedding Photography', name:'Wedding Luxe',           price:'\u20b980,000', per:'/ event',   features:['Full Day + Pre-event','10+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','3 Content Makers','Drone Coverage','Pre-shoot Consultation'] },
+      custom:        { service:'',                    name:'Custom Plan',            price:'Let\'s Talk', per:'',          features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
     };
 
     var selectedPlanKey = null;
@@ -330,35 +334,48 @@
     // Auto-select plan/service from URL params
     (function(){
       var params = new URLSearchParams(window.location.search);
-      var planParam = params.get('plan');
+      var planParam   = params.get('plan');
       var serviceParam = params.get('service');
 
-      if(planParam){
-        var map = { 'Hourly Plan':'hourly', 'Half-Day Plan':'halfday', 'Wedding':'wedding', 'Custom':'custom' };
-        var key = map[planParam] || null;
-        if(key) setTimeout(function(){ pickPlan(key); }, 100);
+      // Map URL plan names to planData keys
+      var planMap = {
+        'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
+        'Wedding':'wedding',
+        'Basic':'weddingBasic', 'Silver':'weddingSilver',
+        'Gold':'weddingGold',   'Luxe':'weddingLuxe',
+        'Custom':'custom'
+      };
+
+      var resolvedKey = null;
+
+      if(planParam && planMap[planParam]){
+        resolvedKey = planMap[planParam];
+      } else if(serviceParam){
+        var svcMap = {
+          'Reel Shoot':'hourly','Portrait Session':'hourly','Food Photography':'hourly',
+          'Wedding Photography':'wedding',
+          'Product Shoot':'halfday','Event Coverage':'halfday'
+        };
+        resolvedKey = svcMap[serviceParam] || 'hourly';
       }
 
-      if(serviceParam){
-        var svcPlanMap = {
-          'Reel Shoot':'hourly', 'Portrait Session':'hourly', 'Food Photography':'hourly',
-          'Wedding Photography':'wedding',
-          'Product Shoot':'halfday', 'Event Coverage':'halfday'
-        };
-        var planKey = svcPlanMap[serviceParam] || 'hourly';
+      if(resolvedKey){
         setTimeout(function(){
-          pickPlan(planKey);
+          pickPlan(resolvedKey);
           bookSelectedPlan();
-          // Force-set the service dropdown to the actual clicked service
-          var sel = document.getElementById('bk_service');
-          if(sel){
-            for(var i=0;i<sel.options.length;i++){
-              if(sel.options[i].value === serviceParam || sel.options[i].text === serviceParam){
-                sel.selectedIndex = i; break;
+          // Set service dropdown
+          var p = planData[resolvedKey];
+          if(p && p.service){
+            var sel = document.getElementById('bk_service');
+            if(sel){
+              for(var i=0;i<sel.options.length;i++){
+                if(sel.options[i].value===p.service||sel.options[i].text===p.service){
+                  sel.selectedIndex=i; break;
+                }
               }
             }
           }
-        }, 150);
+        },150);
       }
     })();
 
