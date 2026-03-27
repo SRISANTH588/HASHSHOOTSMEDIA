@@ -15,138 +15,246 @@
   <!-- APP LAUNCH SCREEN -->
   <div id="ogLaunch" style="display:none;"></div>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
     #ogLaunch{
       position:fixed;inset:0;z-index:999999;
       background:#000;
       flex-direction:column;align-items:center;justify-content:center;
-      overflow:hidden;
-      font-family:'Inter',sans-serif;
+      overflow:hidden;font-family:'Inter',sans-serif;
     }
     #ogLaunch.active{display:flex;}
-    .og-launch-bg{
-      position:absolute;inset:0;
-      background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(201,168,76,0.18) 0%,transparent 65%),#000;
-      z-index:0;
+
+    /* CINEMATIC BARS */
+    .og-bar-top,.og-bar-bot{
+      position:absolute;left:0;right:0;height:80px;
+      background:#000;z-index:10;
+      transition:height 1.2s cubic-bezier(0.77,0,0.18,1);
     }
-    .og-launch-particles{
-      position:absolute;inset:0;z-index:1;pointer-events:none;
+    .og-bar-top{top:0;}
+    .og-bar-bot{bottom:0;}
+    #ogLaunch.bars-open .og-bar-top,
+    #ogLaunch.bars-open .og-bar-bot{height:0;}
+
+    /* BG */
+    .og-bg-layer{
+      position:absolute;inset:0;z-index:0;
+      background:radial-gradient(ellipse 140% 100% at 50% -10%,rgba(201,168,76,0.22) 0%,transparent 60%),
+                 radial-gradient(ellipse 80% 60% at 80% 80%,rgba(201,168,76,0.08) 0%,transparent 60%),
+                 #050505;
+    }
+    .og-bg-img{
+      position:absolute;inset:0;z-index:1;
+      background-size:cover;background-position:center;
+      opacity:0.12;
+      filter:saturate(0.3);
+    }
+    /* GOLD LINES */
+    .og-lines{
+      position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;
+    }
+    .og-line{
+      position:absolute;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);
+      height:1px;width:100%;
+      animation:ogLineSweep 3s ease-in-out infinite;
+      opacity:0;
+    }
+    .og-line:nth-child(1){top:25%;animation-delay:0s;}
+    .og-line:nth-child(2){top:50%;animation-delay:1s;}
+    .og-line:nth-child(3){top:75%;animation-delay:2s;}
+    @keyframes ogLineSweep{
+      0%{opacity:0;transform:translateX(-100%);}
+      50%{opacity:1;}
+      100%{opacity:0;transform:translateX(100%);}
+    }
+    /* PARTICLES */
+    .og-particles{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+    .og-pt{
+      position:absolute;border-radius:50%;background:#c9a84c;
+      animation:ogPtRise linear infinite;opacity:0;
+    }
+    @keyframes ogPtRise{
+      0%{transform:translateY(110vh) scale(0);opacity:0;}
+      10%{opacity:0.8;}
+      90%{opacity:0.2;}
+      100%{transform:translateY(-10vh) scale(1.5);opacity:0;}
+    }
+
+    /* CONTENT */
+    .og-content{
+      position:relative;z-index:5;text-align:center;
+      width:100%;max-width:900px;padding:0 1.5rem;
+      opacity:0;transform:translateY(30px);
+      transition:opacity 0.9s 1.3s ease,transform 0.9s 1.3s ease;
+    }
+    #ogLaunch.bars-open .og-content{opacity:1;transform:translateY(0);}
+
+    /* LOGO */
+    .og-logo{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(3rem,10vw,6rem);font-weight:900;
+      letter-spacing:6px;line-height:1;
+      margin-bottom:0.2rem;
+      text-shadow:0 0 80px rgba(201,168,76,0.5);
+    }
+    .og-logo-og{color:#c9a84c;}
+    .og-logo-shoots{color:#fff;}
+    .og-luxe{
+      font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;
+      color:#c9a84c;letter-spacing:10px;text-transform:uppercase;
+      margin-bottom:0.5rem;
+      opacity:0.9;
+    }
+    .og-divider{
+      width:120px;height:1px;
+      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
+      margin:0.8rem auto 2rem;
+    }
+
+    /* COUNTDOWN */
+    .og-count-wrap{
+      margin-bottom:2rem;
+      position:relative;display:inline-block;
+    }
+    .og-count-ring{
+      position:absolute;inset:-16px;
+      border-radius:50%;
+      border:2px solid rgba(201,168,76,0.25);
+      animation:ogRingSpin 10s linear infinite;
+    }
+    .og-count-ring::before{
+      content:'';
+      position:absolute;top:-3px;left:50%;transform:translateX(-50%);
+      width:8px;height:8px;border-radius:50%;
+      background:#c9a84c;
+      box-shadow:0 0 12px #c9a84c;
+    }
+    @keyframes ogRingSpin{to{transform:rotate(360deg);}}
+    .og-count{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(4.5rem,16vw,9rem);font-weight:900;
+      color:#c9a84c;line-height:1;
+      text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);
+      display:block;min-width:120px;
+      transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),opacity 0.15s;
+    }
+    .og-count.pop{transform:scale(1.25);}
+
+    /* FOUNDERS */
+    .og-founders{
+      display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;
+      margin-bottom:2rem;
+    }
+    .og-fcard{
+      position:relative;
+      background:linear-gradient(145deg,rgba(201,168,76,0.08),rgba(0,0,0,0.6));
+      border:1px solid rgba(201,168,76,0.35);
+      border-radius:24px;
+      padding:1.75rem 1.5rem 1.25rem;
+      text-align:center;width:180px;
+      backdrop-filter:blur(20px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.1) inset,0 0 40px rgba(201,168,76,0.08);
       overflow:hidden;
     }
-    .og-particle{
-      position:absolute;border-radius:50%;
-      background:#c9a84c;
-      animation:ogParticleFall linear infinite;
-      opacity:0;
+    .og-fcard::before{
+      content:'';
+      position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
     }
-    @keyframes ogParticleFall{
-      0%{transform:translateY(-20px) scale(0);opacity:0;}
-      10%{opacity:0.7;}
-      90%{opacity:0.3;}
-      100%{transform:translateY(110vh) scale(1.5);opacity:0;}
+    .og-fcard-glow{
+      position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+      width:120px;height:120px;
+      background:radial-gradient(circle,rgba(201,168,76,0.2),transparent 70%);
+      pointer-events:none;
     }
-    .og-launch-content{position:relative;z-index:2;text-align:center;width:100%;padding:0 1.5rem;}
-    .og-launch-logo{
-      font-size:clamp(2.5rem,8vw,4.5rem);font-weight:900;
-      letter-spacing:4px;text-transform:uppercase;
-      margin-bottom:0.3rem;
-      animation:ogLogoIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
-      opacity:0;transform:scale(0.7);
-    }
-    @keyframes ogLogoIn{
-      to{opacity:1;transform:scale(1);}
-    }
-    .og-launch-luxe{
-      font-size:clamp(0.7rem,2vw,1rem);font-weight:700;
-      color:#c9a84c;letter-spacing:8px;text-transform:uppercase;
-      margin-bottom:2.5rem;
-      animation:ogFadeUp 0.8s 0.3s ease forwards;opacity:0;transform:translateY(10px);
-    }
-    @keyframes ogFadeUp{to{opacity:1;transform:translateY(0);}}
-    .og-launch-countdown{
-      font-size:clamp(4rem,15vw,8rem);font-weight:900;
-      color:#c9a84c;line-height:1;
-      text-shadow:0 0 60px rgba(201,168,76,0.6),0 0 120px rgba(201,168,76,0.3);
-      animation:ogPulse 1s ease infinite;
-      margin-bottom:2rem;
-    }
-    @keyframes ogPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-    .og-launch-founders{
-      display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;
-      margin-bottom:2rem;
-      animation:ogFadeUp 0.8s 0.5s ease forwards;opacity:0;transform:translateY(20px);
-    }
-    .og-founder-card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(201,168,76,0.3);
-      border-radius:20px;padding:1.25rem 1.5rem;
-      text-align:center;min-width:160px;max-width:200px;
-      backdrop-filter:blur(10px);
-      box-shadow:0 8px 32px rgba(201,168,76,0.15);
-      transition:transform 0.3s;
-    }
-    .og-founder-card:hover{transform:translateY(-4px);}
-    .og-founder-img{
-      width:90px;height:90px;border-radius:50%;
-      object-fit:cover;object-position:top;
+    .og-fimg{
+      width:110px;height:110px;border-radius:50%;
+      object-fit:cover;object-position:top center;
       border:3px solid #c9a84c;
-      box-shadow:0 0 20px rgba(201,168,76,0.4);
-      margin:0 auto 0.75rem;
-      display:block;
+      box-shadow:0 0 0 6px rgba(201,168,76,0.12),0 8px 30px rgba(0,0,0,0.5);
+      margin:0 auto 1rem;display:block;
+      transition:transform 0.4s;
     }
-    .og-founder-img-placeholder{
-      width:90px;height:90px;border-radius:50%;
-      background:linear-gradient(135deg,#c9a84c,#7f5a00);
+    .og-fcard:hover .og-fimg{transform:scale(1.05);}
+    .og-fph{
+      width:110px;height:110px;border-radius:50%;
+      background:linear-gradient(135deg,#c9a84c,#5a3a00);
       display:flex;align-items:center;justify-content:center;
-      font-size:1.8rem;font-weight:900;color:#fff;
+      font-size:2.2rem;font-weight:900;color:#fff;
       border:3px solid #c9a84c;
-      margin:0 auto 0.75rem;
+      box-shadow:0 0 0 6px rgba(201,168,76,0.12);
+      margin:0 auto 1rem;
     }
-    .og-founder-name{font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
-    .og-founder-role{font-size:0.7rem;color:#c9a84c;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
-    .og-launch-congrats{
-      font-size:clamp(0.85rem,2.5vw,1.1rem);color:#fff;
-      font-weight:600;line-height:1.7;
-      max-width:600px;margin:0 auto 1.5rem;
-      animation:ogFadeUp 0.8s 0.7s ease forwards;opacity:0;transform:translateY(10px);
-    }
-    .og-launch-congrats span{color:#c9a84c;font-weight:800;}
-    .og-launch-live{
-      display:inline-flex;align-items:center;gap:0.5rem;
-      background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);
-      color:#c9a84c;font-size:0.8rem;font-weight:700;
-      padding:0.5rem 1.25rem;border-radius:50px;
+    .og-fname{font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;letter-spacing:0.5px;}
+    .og-frole{
+      font-size:0.65rem;color:#c9a84c;font-weight:700;
       letter-spacing:2px;text-transform:uppercase;
-      animation:ogFadeUp 0.8s 0.9s ease forwards;opacity:0;
+      background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);
+      padding:0.2rem 0.6rem;border-radius:50px;display:inline-block;
     }
+
+    /* CONGRATS */
+    .og-congrats{
+      font-size:clamp(0.9rem,2.5vw,1.15rem);color:#e8e0d0;
+      font-weight:500;line-height:1.8;
+      max-width:560px;margin:0 auto 1.25rem;
+      opacity:0;transform:translateY(12px);
+      transition:opacity 0.6s ease,transform 0.6s ease;
+    }
+    .og-congrats.show{opacity:1;transform:translateY(0);}
+    .og-congrats strong{color:#c9a84c;font-weight:800;}
+
+    /* LIVE BADGE */
+    .og-live{
+      display:inline-flex;align-items:center;gap:0.6rem;
+      background:rgba(201,168,76,0.12);
+      border:1px solid rgba(201,168,76,0.5);
+      color:#c9a84c;font-size:0.78rem;font-weight:800;
+      padding:0.55rem 1.5rem;border-radius:50px;
+      letter-spacing:3px;text-transform:uppercase;
+      box-shadow:0 0 30px rgba(201,168,76,0.2);
+      opacity:0;transform:scale(0.8);
+      transition:opacity 0.5s ease,transform 0.5s ease;
+    }
+    .og-live.show{opacity:1;transform:scale(1);}
     .og-live-dot{
       width:8px;height:8px;border-radius:50%;background:#4caf50;
-      box-shadow:0 0 8px #4caf50;
-      animation:ogLivePulse 1s ease infinite;
+      box-shadow:0 0 10px #4caf50,0 0 20px #4caf50;
+      animation:ogDotPulse 0.8s ease infinite;
     }
-    @keyframes ogLivePulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:0.6;}}
-    .og-launch-confetti{
-      position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;
+    @keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}
+
+    /* CONFETTI */
+    .og-confetti{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;}
+    .og-cf{
+      position:absolute;
+      animation:ogCfFall linear forwards;
     }
-    .og-confetti-piece{
-      position:absolute;width:8px;height:8px;
-      animation:ogConfettiFall linear forwards;
-      opacity:0;
+    @keyframes ogCfFall{
+      0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1;}
+      100%{transform:translateY(110vh) rotate(900deg) scale(0.5);opacity:0;}
     }
-    @keyframes ogConfettiFall{
-      0%{transform:translateY(-10px) rotate(0deg);opacity:1;}
-      100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+
+    /* SKIP */
+    .og-skip{
+      position:absolute;bottom:2rem;right:2rem;z-index:20;
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.4);font-size:0.72rem;font-weight:600;
+      padding:0.4rem 1rem;border-radius:50px;cursor:pointer;
+      font-family:'Inter',sans-serif;letter-spacing:1px;
+      transition:all 0.2s;
     }
+    .og-skip:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
   </style>
   <script>
   (function(){
-    var cfg = JSON.parse(localStorage.getItem('hs_opening') || '{}');
+    var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
     if(!cfg.enabled) return;
 
     var launch = document.getElementById('ogLaunch');
     launch.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    var bgImg = cfg.bgPhoto || '';
+    var bgImg   = cfg.bgPhoto       || '';
     var f1Photo = cfg.founder1Photo || 'srisanth.jpeg';
     var f2Photo = cfg.founder2Photo || 'sumanth.jpeg';
     var f1Name  = cfg.founder1Name  || 'Boddu Srisanth';
@@ -154,110 +262,114 @@
     var f1Role  = cfg.founder1Role  || 'Founder & CEO';
     var f2Role  = cfg.founder2Role  || 'Managing Director';
 
-    var bgStyle = bgImg
-      ? 'position:absolute;inset:0;z-index:0;background:url("'+bgImg+'") center/cover no-repeat;opacity:0.18;'
-      : '';
+    function initials(n){ return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); }
+    function founderCard(photo,name,role){
+      return '<div class="og-fcard">'
+        +'<div class="og-fcard-glow"></div>'
+        +'<img src="'+photo+'" class="og-fimg" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
+        +'<div class="og-fph" style="display:none;">'+initials(name)+'</div>'
+        +'<div class="og-fname">'+name+'</div>'
+        +'<div class="og-frole">'+role+'</div>'
+        +'</div>';
+    }
 
-    // Build particles
-    var particles = '';
-    for(var i=0;i<30;i++){
-      var size = (Math.random()*4+2).toFixed(1);
-      var left = (Math.random()*100).toFixed(1);
-      var dur  = (Math.random()*6+4).toFixed(1);
-      var delay= (Math.random()*4).toFixed(1);
-      particles += '<div class="og-particle" style="width:'+size+'px;height:'+size+'px;left:'+left+'%;animation-duration:'+dur+'s;animation-delay:'+delay+'s;"></div>';
+    // Particles
+    var pts = '';
+    for(var i=0;i<40;i++){
+      var s=(Math.random()*3+1.5).toFixed(1),l=(Math.random()*100).toFixed(1),d=(Math.random()*8+5).toFixed(1),dl=(Math.random()*6).toFixed(1);
+      pts+='<div class="og-pt" style="width:'+s+'px;height:'+s+'px;left:'+l+'%;animation-duration:'+d+'s;animation-delay:'+dl+'s;"></div>';
     }
 
     launch.innerHTML =
-      '<div class="og-launch-bg"></div>'
-      +(bgImg?'<div style="'+bgStyle+'"></div>':'')
-      +'<div class="og-launch-particles">'+particles+'</div>'
-      +'<div class="og-launch-confetti" id="ogConfetti"></div>'
-      +'<div class="og-launch-content">'
-        +'<div class="og-launch-logo"><span style="color:#c9a84c;">OG</span> <span style="color:#fff;">SHOOTS</span></div>'
-        +'<div class="og-launch-luxe">✦ LUXE ✦</div>'
-        +'<div class="og-launch-countdown" id="ogCount">10</div>'
-        +'<div class="og-launch-founders">'
-          +'<div class="og-founder-card">'
-            +'<img src="'+f1Photo+'" class="og-founder-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
-            +'<div class="og-founder-img-placeholder" style="display:none;">'+f1Name.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>'
-            +'<div class="og-founder-name">'+f1Name+'</div>'
-            +'<div class="og-founder-role">'+f1Role+'</div>'
-          +'</div>'
-          +'<div class="og-founder-card">'
-            +'<img src="'+f2Photo+'" class="og-founder-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
-            +'<div class="og-founder-img-placeholder" style="display:none;">'+f2Name.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>'
-            +'<div class="og-founder-name">'+f2Name+'</div>'
-            +'<div class="og-founder-role">'+f2Role+'</div>'
-          +'</div>'
-        +'</div>'
-        +'<div class="og-launch-congrats" id="ogCongrats" style="display:none;">'
-          +'🎉 Congratulations <span>'+f1Name+'</span> & <span>'+f2Name+'</span>!<br/>'
-          +'The App <span>OG SHOOTS LUXE</span> is Live Now!'
-        +'</div>'
-        +'<div class="og-launch-live" id="ogLiveBadge" style="display:none;"><div class="og-live-dot"></div> APP IS LIVE</div>'
-      +'</div>';
+       '<div class="og-bg-layer"></div>'
+      +(bgImg?'<div class="og-bg-img" style="background-image:url('+JSON.stringify(bgImg)+')"></div>':'')
+      +'<div class="og-lines"><div class="og-line"></div><div class="og-line"></div><div class="og-line"></div></div>'
+      +'<div class="og-particles">'+pts+'</div>'
+      +'<div class="og-bar-top"></div>'
+      +'<div class="og-bar-bot"></div>'
+      +'<div class="og-confetti" id="ogCf"></div>'
+      +'<div class="og-content">'
+        +'<div class="og-logo"><span class="og-logo-og">OG</span> <span class="og-logo-shoots">SHOOTS</span></div>'
+        +'<div class="og-luxe">&#10022; LUXE &#10022;</div>'
+        +'<div class="og-divider"></div>'
+        +'<div class="og-founders">'+founderCard(f1Photo,f1Name,f1Role)+founderCard(f2Photo,f2Name,f2Role)+'</div>'
+        +'<div class="og-count-wrap"><div class="og-count-ring"></div><span class="og-count" id="ogCount">10</span></div>'
+        +'<div class="og-congrats" id="ogCongrats">&#127881; Congratulations <strong>'+f1Name+'</strong> &amp; <strong>'+f2Name+'</strong>!<br/>The App <strong>OG SHOOTS LUXE</strong> is Live Now!</div>'
+        +'<div class="og-live" id="ogLive"><div class="og-live-dot"></div> APP IS LIVE</div>'
+      +'</div>'
+      +'<button class="og-skip" onclick="ogClose()">SKIP &rsaquo;</button>';
 
-    // Sound — countdown beep using Web Audio API
-    var AudioCtx = window.AudioContext || window.webkitAudioContext;
-    function beep(freq, dur, vol){
-      if(!AudioCtx) return;
+    // Open cinematic bars after 300ms
+    setTimeout(function(){ launch.classList.add('bars-open'); }, 300);
+
+    // Audio
+    var AC = window.AudioContext||window.webkitAudioContext;
+    function tone(freq,dur,vol,type){
+      if(!AC) return;
       try{
-        var ctx = new AudioCtx();
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(vol||0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + dur);
+        var c=new AC(),o=c.createOscillator(),g=c.createGain();
+        o.connect(g);g.connect(c.destination);
+        o.frequency.value=freq;o.type=type||'sine';
+        g.gain.setValueAtTime(vol||0.25,c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
+        o.start();o.stop(c.currentTime+dur);
       }catch(e){}
     }
+    function celebrationSound(){
+      var notes=[523,659,784,1047,1319];
+      notes.forEach(function(n,i){ setTimeout(function(){ tone(n,0.4,0.4); },i*120); });
+    }
 
-    var count = 10;
-    var countEl = document.getElementById('ogCount');
-    beep(880, 0.15);
-    var timer = setInterval(function(){
-      count--;
-      if(count > 0){
-        countEl.textContent = count;
-        beep(count === 1 ? 1200 : 880, 0.15);
-      } else {
-        clearInterval(timer);
-        // Final celebration
-        countEl.style.display = 'none';
-        document.getElementById('ogCongrats').style.display = 'block';
-        document.getElementById('ogLiveBadge').style.display = 'inline-flex';
-        beep(1047, 0.4, 0.5);
-        setTimeout(function(){ beep(1319, 0.4, 0.5); }, 150);
-        setTimeout(function(){ beep(1568, 0.6, 0.5); }, 300);
-        // Confetti burst
-        var conf = document.getElementById('ogConfetti');
-        var colors = ['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa'];
-        for(var j=0;j<80;j++){
-          var el = document.createElement('div');
-          el.className = 'og-confetti-piece';
-          var color = colors[Math.floor(Math.random()*colors.length)];
-          var left2 = (Math.random()*100).toFixed(1);
-          var dur2 = (Math.random()*2+1.5).toFixed(1);
-          var delay2 = (Math.random()*1).toFixed(2);
-          var shape = Math.random()>0.5 ? '50%' : '2px';
-          el.style.cssText = 'left:'+left2+'%;top:-10px;background:'+color+';border-radius:'+shape+';animation-duration:'+dur2+'s;animation-delay:'+delay2+'s;width:'+(Math.random()*8+4).toFixed(0)+'px;height:'+(Math.random()*8+4).toFixed(0)+'px;';
-          conf.appendChild(el);
-        }
-        // Close after 4s
-        setTimeout(function(){
-          launch.style.transition = 'opacity 0.8s ease';
-          launch.style.opacity = '0';
+    var count=10, countEl;
+    // Wait for bars to open then start
+    setTimeout(function(){
+      countEl = document.getElementById('ogCount');
+      tone(880,0.12,0.3,'square');
+      var timer=setInterval(function(){
+        count--;
+        if(count>0){
+          countEl.classList.add('pop');
+          setTimeout(function(){ if(countEl) countEl.classList.remove('pop'); },150);
+          countEl.textContent=count;
+          tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
+        } else {
+          clearInterval(timer);
+          countEl.style.display='none';
+          celebrationSound();
+          // Confetti
+          var cf=document.getElementById('ogCf');
+          var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
+          var shapes=['50%','3px','0'];
+          for(var j=0;j<120;j++){
+            var el=document.createElement('div');
+            el.className='og-cf';
+            var c2=colors[Math.floor(Math.random()*colors.length)];
+            var sh=shapes[Math.floor(Math.random()*shapes.length)];
+            var w=(Math.random()*10+4).toFixed(0),h=(Math.random()*10+4).toFixed(0);
+            var lft=(Math.random()*100).toFixed(1);
+            var dr=(Math.random()*2.5+1.5).toFixed(2);
+            var dl2=(Math.random()*1.5).toFixed(2);
+            el.style.cssText='left:'+lft+'%;top:-20px;width:'+w+'px;height:'+h+'px;background:'+c2+';border-radius:'+sh+';animation-duration:'+dr+'s;animation-delay:'+dl2+'s;';
+            cf.appendChild(el);
+          }
+          // Show congrats + live
           setTimeout(function(){
-            launch.style.display = 'none';
-            document.body.style.overflow = '';
-          }, 800);
-        }, 4000);
-      }
-    }, 1000);
+            var cg=document.getElementById('ogCongrats');
+            var lv=document.getElementById('ogLive');
+            if(cg) cg.classList.add('show');
+            if(lv) lv.classList.add('show');
+          },400);
+          // Auto close
+          setTimeout(function(){ ogClose(); },5000);
+        }
+      },1000);
+    },1400);
+
+    window.ogClose=function(){
+      launch.style.transition='opacity 0.9s ease';
+      launch.style.opacity='0';
+      setTimeout(function(){ launch.style.display='none'; document.body.style.overflow=''; },900);
+    };
   })();
   </script>
 
