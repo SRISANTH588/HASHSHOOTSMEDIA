@@ -1716,6 +1716,7 @@
 
         <button class="btn-save-about" onclick="saveLaunchConfig()" style="margin-right:0.75rem;"><i class="fas fa-save"></i> Save Launch Settings</button>
         <button onclick="previewLaunch()" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> Preview Launch Screen</button>
+        <button onclick="forceEnableLaunch()" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:0.5rem;"><i class="fas fa-rocket"></i> Force Enable Now</button>
         <div class="save-toast" id="launchToast"><i class="fas fa-check-circle"></i> Launch settings saved!</div>
       </div>
     </div><!-- end tab-opening -->
@@ -5341,6 +5342,14 @@
         if(prev) prev.style.display = 'block';
       };
       reader.readAsDataURL(fileEl.files[0]);
+    }
+
+    function forceEnableLaunch(){
+      // Tick the checkbox and save with enabled:true immediately
+      var el = document.getElementById('launch_enabled');
+      if(el) el.checked = true;
+      saveLaunchConfig();
+      alert('\u2705 Launch screen ENABLED! Visitors will now see it when they open the site.');
     }
 
     function previewLaunch(){
