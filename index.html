@@ -247,128 +247,101 @@
   </style>
   <script>
   (function(){
-    var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
-    if(!cfg.enabled) return;
-
-    var launch = document.getElementById('ogLaunch');
+    var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
+    if(cfg.enabled===false) return;
+    var launch=document.getElementById('ogLaunch');
     launch.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    var bgImg   = cfg.bgPhoto       || '';
-    var f1Photo = cfg.founder1Photo || 'srisanth.jpeg';
-    var f2Photo = cfg.founder2Photo || 'sumanth.jpeg';
-    var f1Name  = cfg.founder1Name  || 'Boddu Srisanth';
-    var f2Name  = cfg.founder2Name  || 'Gulimi Sumanth';
-    var f1Role  = cfg.founder1Role  || 'Founder & CEO';
-    var f2Role  = cfg.founder2Role  || 'Managing Director';
-
-    function initials(n){ return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); }
-    function founderCard(photo,name,role){
-      return '<div class="og-fcard">'
-        +'<div class="og-fcard-glow"></div>'
-        +'<img src="'+photo+'" class="og-fimg" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
-        +'<div class="og-fph" style="display:none;">'+initials(name)+'</div>'
-        +'<div class="og-fname">'+name+'</div>'
-        +'<div class="og-frole">'+role+'</div>'
-        +'</div>';
+    document.body.style.overflow='hidden';
+    var bgImg=cfg.bgPhoto||'';
+    var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
+    var f2Photo=cfg.founder2Photo||'sumanth.jpeg';
+    var f1Name=cfg.founder1Name||'Boddu Srisanth';
+    var f2Name=cfg.founder2Name||'Gulimi Sumanth';
+    var f1Role=cfg.founder1Role||'Founder & CEO';
+    var f2Role=cfg.founder2Role||'Managing Director';
+    function ini(n){return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
+    function fcard(ph,nm,rl){
+      return '<div class="og-fcard"><div class="og-fcard-glow"></div>'
+        +'<img src="'+ph+'" class="og-fimg" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" />'
+        +'<div class="og-fph" style="display:none;">'+ini(nm)+'</div>'
+        +'<div class="og-fname">'+nm+'</div><div class="og-frole">'+rl+'</div></div>';
     }
-
-    // Particles
-    var pts = '';
+    var pts='';
     for(var i=0;i<40;i++){
-      var s=(Math.random()*3+1.5).toFixed(1),l=(Math.random()*100).toFixed(1),d=(Math.random()*8+5).toFixed(1),dl=(Math.random()*6).toFixed(1);
-      pts+='<div class="og-pt" style="width:'+s+'px;height:'+s+'px;left:'+l+'%;animation-duration:'+d+'s;animation-delay:'+dl+'s;"></div>';
+      var s=(Math.random()*3+1.5).toFixed(1),lp=(Math.random()*100).toFixed(1),dp=(Math.random()*8+5).toFixed(1),dlp=(Math.random()*6).toFixed(1);
+      pts+='<div class="og-pt" style="width:'+s+'px;height:'+s+'px;left:'+lp+'%;animation-duration:'+dp+'s;animation-delay:'+dlp+'s;"></div>';
     }
-
-    launch.innerHTML =
-       '<div class="og-bg-layer"></div>'
-      +(bgImg?'<div class="og-bg-img" style="background-image:url('+JSON.stringify(bgImg)+')"></div>':'')
+    launch.innerHTML=
+      '<div class="og-bg-layer"></div>'
+      +(bgImg?'<div class="og-bg-img" style="background-image:url(\"'+bgImg+'\")"></div>':'')
       +'<div class="og-lines"><div class="og-line"></div><div class="og-line"></div><div class="og-line"></div></div>'
       +'<div class="og-particles">'+pts+'</div>'
-      +'<div class="og-bar-top"></div>'
-      +'<div class="og-bar-bot"></div>'
+      +'<div class="og-bar-top"></div><div class="og-bar-bot"></div>'
       +'<div class="og-confetti" id="ogCf"></div>'
       +'<div class="og-content">'
         +'<div class="og-logo"><span class="og-logo-og">OG</span> <span class="og-logo-shoots">SHOOTS</span></div>'
         +'<div class="og-luxe">&#10022; LUXE &#10022;</div>'
         +'<div class="og-divider"></div>'
-        +'<div class="og-founders">'+founderCard(f1Photo,f1Name,f1Role)+founderCard(f2Photo,f2Name,f2Role)+'</div>'
-        +'<div class="og-count-wrap"><div class="og-count-ring"></div><span class="og-count" id="ogCount">10</span></div>'
+        +'<div class="og-founders">'+fcard(f1Photo,f1Name,f1Role)+fcard(f2Photo,f2Name,f2Role)+'</div>'
+        +'<div id="ogBtnWrap" style="margin-top:1.5rem;">'
+          +'<button onclick="ogStartCountdown()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-family:Inter,sans-serif;font-size:1rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:50px;padding:1rem 3rem;cursor:pointer;box-shadow:0 0 40px rgba(201,168,76,0.5),0 8px 30px rgba(0,0,0,0.4);animation:ogBtnPulse 2s ease infinite;">&#9654;&nbsp; LAUNCH APP</button>'
+        +'</div>'
+        +'<div id="ogCountWrap" style="display:none;margin-top:1.5rem;">'
+          +'<div class="og-count-wrap"><div class="og-count-ring"></div><span class="og-count" id="ogCount">10</span></div>'
+        +'</div>'
         +'<div class="og-congrats" id="ogCongrats">&#127881; Congratulations <strong>'+f1Name+'</strong> &amp; <strong>'+f2Name+'</strong>!<br/>The App <strong>OG SHOOTS LUXE</strong> is Live Now!</div>'
         +'<div class="og-live" id="ogLive"><div class="og-live-dot"></div> APP IS LIVE</div>'
       +'</div>'
       +'<button class="og-skip" onclick="ogClose()">SKIP &rsaquo;</button>';
-
-    // Open cinematic bars after 300ms
-    setTimeout(function(){ launch.classList.add('bars-open'); }, 300);
-
-    // Audio
-    var AC = window.AudioContext||window.webkitAudioContext;
+    var st=document.createElement('style');
+    st.textContent='@keyframes ogBtnPulse{0%,100%{box-shadow:0 0 40px rgba(201,168,76,0.5),0 8px 30px rgba(0,0,0,0.4);}50%{box-shadow:0 0 70px rgba(201,168,76,0.9),0 8px 40px rgba(0,0,0,0.5);}}';
+    document.head.appendChild(st);
+    setTimeout(function(){launch.classList.add('bars-open');},300);
+    var AC=window.AudioContext||window.webkitAudioContext;
     function tone(freq,dur,vol,type){
-      if(!AC) return;
-      try{
-        var c=new AC(),o=c.createOscillator(),g=c.createGain();
-        o.connect(g);g.connect(c.destination);
-        o.frequency.value=freq;o.type=type||'sine';
-        g.gain.setValueAtTime(vol||0.25,c.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
-        o.start();o.stop(c.currentTime+dur);
-      }catch(e){}
+      if(!AC)return;
+      try{var c=new AC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=freq;o.type=type||'sine';g.gain.setValueAtTime(vol||0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur);}catch(e){}
     }
-    function celebrationSound(){
-      var notes=[523,659,784,1047,1319];
-      notes.forEach(function(n,i){ setTimeout(function(){ tone(n,0.4,0.4); },i*120); });
-    }
-
-    var count=10, countEl;
-    // Wait for bars to open then start
-    setTimeout(function(){
-      countEl = document.getElementById('ogCount');
+    function celebrate(){[523,659,784,1047,1319].forEach(function(n,i){setTimeout(function(){tone(n,0.4,0.4);},i*120);});}
+    window.ogStartCountdown=function(){
+      document.getElementById('ogBtnWrap').style.display='none';
+      document.getElementById('ogCountWrap').style.display='block';
+      var count=10,countEl=document.getElementById('ogCount');
       tone(880,0.12,0.3,'square');
       var timer=setInterval(function(){
         count--;
         if(count>0){
           countEl.classList.add('pop');
-          setTimeout(function(){ if(countEl) countEl.classList.remove('pop'); },150);
+          setTimeout(function(){if(countEl)countEl.classList.remove('pop');},150);
           countEl.textContent=count;
           tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
         } else {
           clearInterval(timer);
-          countEl.style.display='none';
-          celebrationSound();
-          // Confetti
+          document.getElementById('ogCountWrap').style.display='none';
+          celebrate();
           var cf=document.getElementById('ogCf');
           var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
           var shapes=['50%','3px','0'];
           for(var j=0;j<120;j++){
-            var el=document.createElement('div');
-            el.className='og-cf';
+            var el=document.createElement('div');el.className='og-cf';
             var c2=colors[Math.floor(Math.random()*colors.length)];
             var sh=shapes[Math.floor(Math.random()*shapes.length)];
             var w=(Math.random()*10+4).toFixed(0),h=(Math.random()*10+4).toFixed(0);
-            var lft=(Math.random()*100).toFixed(1);
-            var dr=(Math.random()*2.5+1.5).toFixed(2);
-            var dl2=(Math.random()*1.5).toFixed(2);
+            var lft=(Math.random()*100).toFixed(1),dr=(Math.random()*2.5+1.5).toFixed(2),dl2=(Math.random()*1.5).toFixed(2);
             el.style.cssText='left:'+lft+'%;top:-20px;width:'+w+'px;height:'+h+'px;background:'+c2+';border-radius:'+sh+';animation-duration:'+dr+'s;animation-delay:'+dl2+'s;';
             cf.appendChild(el);
           }
-          // Show congrats + live
           setTimeout(function(){
-            var cg=document.getElementById('ogCongrats');
-            var lv=document.getElementById('ogLive');
-            if(cg) cg.classList.add('show');
-            if(lv) lv.classList.add('show');
+            var cg=document.getElementById('ogCongrats'),lv=document.getElementById('ogLive');
+            if(cg)cg.classList.add('show');if(lv)lv.classList.add('show');
           },400);
-          // Auto close
-          setTimeout(function(){ ogClose(); },5000);
+          setTimeout(function(){ogClose();},5000);
         }
       },1000);
-    },1400);
-
+    };
     window.ogClose=function(){
-      launch.style.transition='opacity 0.9s ease';
-      launch.style.opacity='0';
-      setTimeout(function(){ launch.style.display='none'; document.body.style.overflow=''; },900);
+      launch.style.transition='opacity 0.9s ease';launch.style.opacity='0';
+      setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
     };
   })();
   </script>
