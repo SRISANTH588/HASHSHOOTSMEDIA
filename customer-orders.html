@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Orders - OG SHOOTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+  <title>My Orders - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -44,7 +44,7 @@
 </head>
 <body>
   <nav>
-    <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
     <div class="nav-right">
       <span id="welcomeMsg">Welcome, Customer</span>
       <a href="customer.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
@@ -73,8 +73,15 @@
     }
 
     function loadBookings(){
-      var bookings  = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      var custEmail = localStorage.getItem('hs_user') || '';
+      var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      var custPhone = localStorage.getItem('hs_customer_phone') || '';
+      // SECURITY: Only show bookings belonging to this customer
+      var bookings = allBookings.filter(function(b){
+        if(!custEmail && !custPhone) return false;
+        return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
+               (custPhone && b.phone === custPhone);
+      });
       var enquiries = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
       var allVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
       var assigns   = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
@@ -112,7 +119,7 @@
             + '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;color:#fff;flex-shrink:0;border:2px solid rgba(201,168,76,0.4);">' + assign.staffName.charAt(0).toUpperCase() + '</div>'
             + '<div style="flex:1;">'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + assign.staffName + '</div>'
-            + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">OG SHOOTS Creator</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">OG Shoots Creator</div>'
             + '</div>'
             + arrivedBadge
             + '</div>'
@@ -190,8 +197,8 @@
             el.innerHTML = '<div style="font-size:0.78rem;font-weight:800;color:#c9a84c;margin-bottom:0.5rem;"><i class="fas fa-film"></i> Your Edited Reel is Ready!</div>'
               + '<video src="'+url+'" controls style="width:100%;max-height:280px;border-radius:10px;margin-bottom:0.75rem;"></video>'
               + '<div style="display:flex;gap:0.65rem;align-items:center;flex-wrap:wrap;">'
-              + '<a href="'+url+'" download="HashShoots_Reel.mp4" style="display:inline-flex;align-items:center;gap:0.5rem;background:#c9a84c;color:#fff;border-radius:9px;padding:0.6rem 1.4rem;font-size:0.85rem;font-weight:700;text-decoration:none;" onmouseover="this.style.background=\'#a07830\'" onmouseout="this.style.background=\'#c9a84c\'"><i class="fas fa-download"></i> Download Reel</a>'
-              + '<span style="font-size:0.7rem;color:#9a9080;display:flex;align-items:center;gap:0.3rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Delivered by OG SHOOTS</span>'
+              + '<a href="'+url+'" download="OG Shoots_Reel.mp4" style="display:inline-flex;align-items:center;gap:0.5rem;background:#c9a84c;color:#fff;border-radius:9px;padding:0.6rem 1.4rem;font-size:0.85rem;font-weight:700;text-decoration:none;" onmouseover="this.style.background=\'#a07830\'" onmouseout="this.style.background=\'#c9a84c\'"><i class="fas fa-download"></i> Download Reel</a>'
+              + '<span style="font-size:0.7rem;color:#9a9080;display:flex;align-items:center;gap:0.3rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Delivered by OG Shoots</span>'
               + '</div>';
           };
         });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - OG SHOOTS</title>
+  <title>Login - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -130,7 +130,7 @@
   <div class="bg-particles" id="particles"></div>
   <div class="bg-glow"></div>
   <div class="wrapper">
-    <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
     <div class="logo-sub">Professional Shoot Platform</div>
     <!-- UNIFIED LOGIN -->
     <div class="card" id="loginCard">
@@ -178,7 +178,7 @@
       <div id="signupForm" style="display:none;">
         <div class="card-header">
           <h2>Create <span>Account</span></h2>
-          <p>Join OG SHOOTS and start booking today</p>
+          <p>Join OG Shoots and start booking today</p>
         </div>
         <div class="error-msg" id="signupError"><i class="fas fa-exclamation-circle"></i>&nbsp; <span id="signupErrMsg">Please fill all fields.</span></div>
         <div class="form-group">
@@ -286,7 +286,7 @@
       const p=document.createElement('div');
       p.className='particle';
       const size=Math.random()*4+2;
-      p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:rgba(229,57,53,${Math.random()*0.4+0.1});animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*8}s;`;
+      p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:rgba(201,168,76,${Math.random()*0.4+0.1});animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*8}s;`;
       container.appendChild(p);
     }
 
@@ -327,6 +327,7 @@
     }
 
     function unifiedLogin(){
+      if(window.hsCheckRateLimit && !hsCheckRateLimit()) return;
       const id = document.getElementById('loginIdentifier').value.trim();
       const p  = document.getElementById('loginPass').value;
       document.getElementById('loginError').style.display='none';
@@ -384,10 +385,10 @@
         }
 
         // 3. Demo customer
-        if(id==='customer@hash.com'&&p==='1234'){
+        if(id==='customer@og.com'&&p==='1234'){
           localStorage.setItem('hs_role','customer');
-          localStorage.setItem('hs_user','customer@hash.com');
-          localStorage.setItem('hs_customer_email','customer@hash.com');
+          localStorage.setItem('hs_user','customer@og.com');
+          localStorage.setItem('hs_customer_email','customer@og.com');
           localStorage.setItem('hs_customer_name','Demo Customer');
           localStorage.setItem('hs_customer_phone','');
           window.location.href='index.html'; return;

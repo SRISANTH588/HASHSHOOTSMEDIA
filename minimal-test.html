@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Cloudinary Test</title>
+</head>
+<body>
+    <h1>Minimal Upload Test</h1>
+    <input type="file" id="fileInput" accept="video/*">
+    <button onclick="testUpload()">Upload</button>
+    <div id="result"></div>
+
+    <script>
+        // Absolutely minimal upload function
+        function testUpload() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) {
+                document.getElementById('result').innerHTML = 'Please select a file';
+                return;
+            }
+
+            console.log('Starting minimal upload test...');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'ml_default');
+            
+            // Log exactly what we're sending
+            console.log('FormData contents:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://api.cloudinary.com/v1_1/demo/video/upload');
+            
+            xhr.onload = function() {
+                console.log('Response status:', xhr.status);
+                console.log('Response text:', xhr.responseText);
+                
+                if (xhr.status === 200) {
+                    document.getElementById('result').innerHTML = '✅ SUCCESS!';
+                } else {
+                    document.getElementById('result').innerHTML = '❌ FAILED: ' + xhr.responseText;
+                }
+            };
+            
+            xhr.onerror = function() {
+                console.log('Network error');
+                document.getElementById('result').innerHTML = '❌ Network error';
+            };
+            
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>

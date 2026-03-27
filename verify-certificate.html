@@ -3,220 +3,360 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verify Certificate – OG SHOOTS</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <title>Verify Certificate – OG Shoots LUXE – OG Shoots</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; }
+
     .page-bg {
       min-height: 100vh;
       background:
-        radial-gradient(ellipse 90% 70% at 50% 10%, rgba(180,20,20,0.55) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120,10,10,0.3) 0%, transparent 70%),
-        linear-gradient(180deg, #2a0505 0%, #150202 40%, #080808 100%);
-    }
-    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
-    .logo-flash { color: #c9a84c; }
-    .nav-right { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-app { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
-    .btn-app:hover { border-color: #fff; }
-    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #c9a84c; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
-    .btn-contact:hover { background: #a07830; }
-
-    /* PAGE */
-    .page-wrap {
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 8rem 1.5rem 4rem;
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,168,76,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(201,168,76,0.03) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a0a 0%, #080808 100%);
     }
 
-    .pill {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(180,30,30,0.35); border: 1px solid rgba(201,168,76,0.25);
-      color: #e07070; font-size: 0.8rem; font-weight: 600;
-      padding: 0.45rem 1.1rem; border-radius: 50px; margin-bottom: 1.5rem;
+    /* NAVBAR */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,10,0.92);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+      backdrop-filter: blur(12px);
     }
+    .logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: #c9a84c; }
+    .nav-links { display: flex; gap: 0.75rem; align-items: center; }
+    .nav-links a { padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.82rem; color: #9a9080; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-btn { padding: 0.55rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; background: #c9a84c; color: #000; text-decoration: none; transition: background 0.2s; }
+    .nav-btn:hover { background: #e0b85a; }
 
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; color: #fff;
-      text-align: center; margin-bottom: 0.75rem; line-height: 1.1;
+    /* HERO */
+    .hero {
+      padding: 9rem 1.5rem 3rem;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
     }
+    .badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); color: #c9a84c; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 1.25rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.75rem; }
+    .hero h1 span { color: #c9a84c; }
+    .hero p { color: #6a5a40; font-size: 0.9rem; line-height: 1.7; max-width: 500px; margin: 0 auto; }
 
-    .subtitle {
-      color: #a07070; font-size: 0.95rem; text-align: center;
-      margin-bottom: 3rem; max-width: 520px;
-    }
+    /* VERIFY BOX */
+    .verify-wrap { max-width: 640px; margin: 0 auto; padding: 0 1.5rem 6rem; }
 
-    /* FORM CARD */
     .verify-card {
-      width: 100%; max-width: 720px;
+      background: rgba(18,16,12,0.9);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
     }
 
-    .field-label {
-      font-size: 0.85rem; font-weight: 600; color: #fff;
-      margin-bottom: 0.6rem; display: block;
+    .verify-card h2 {
+      font-size: 1rem; font-weight: 800; color: #fff;
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem;
     }
+    .verify-card h2 i { color: #c9a84c; }
 
-    .input-wrap {
-      position: relative; margin-bottom: 0.5rem;
-    }
-    .input-wrap i {
-      position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%);
-      color: #a07070; font-size: 0.9rem;
-    }
-    .cert-input {
-      width: 100%; background: rgba(80,10,10,0.5);
-      border: 1px solid rgba(180,60,60,0.25); border-radius: 14px;
-      padding: 1rem 1rem 1rem 2.8rem; color: #fff;
-      font-family: inherit; font-size: 0.95rem; outline: none;
+    .input-group { margin-bottom: 1.25rem; }
+    .input-group label { display: block; font-size: 0.8rem; font-weight: 700; color: #7a6a50; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+    .input-group input {
+      width: 100%; background: #0f0f0f;
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 12px; padding: 0.85rem 1.1rem;
+      color: #fff; font-family: inherit; font-size: 0.9rem; outline: none;
       transition: border-color 0.2s;
     }
-    .cert-input::placeholder { color: #6a4040; }
-    .cert-input:focus { border-color: rgba(201,168,76,0.5); }
-
-    .field-hint {
-      font-size: 0.78rem; color: #e07070; margin-bottom: 1.5rem;
-    }
+    .input-group input:focus { border-color: rgba(201,168,76,0.4); }
+    .input-group input::placeholder { color: #4a3a28; }
 
     .verify-btn {
-      width: 100%; background: #c9a84c; color: #fff; border: none;
-      border-radius: 14px; padding: 1.1rem; font-size: 1rem; font-weight: 700;
-      cursor: pointer; font-family: inherit; display: flex; align-items: center;
-      justify-content: center; gap: 0.6rem;
-      transition: background 0.2s, transform 0.2s; margin-bottom: 2rem;
+      width: 100%; padding: 0.9rem;
+      background: linear-gradient(135deg, #c9a84c, #a07830);
+      color: #000; border: none; border-radius: 12px;
+      font-size: 0.95rem; font-weight: 800; cursor: pointer;
+      font-family: inherit; transition: opacity 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
     }
-    .verify-btn:hover { background: #8a6520; transform: translateY(-2px); }
+    .verify-btn:hover { opacity: 0.9; }
+    .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* RESULT */
-    .result-box { display: none; border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; }
-    .result-box.success { background: rgba(30,80,30,0.3); border: 1px solid rgba(76,175,80,0.3); }
-    .result-box.error { background: rgba(180,20,20,0.3); border: 1px solid rgba(201,168,76,0.3); }
-    .result-box .result-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-    .result-box .result-icon { font-size: 1.3rem; }
-    .result-box.success .result-icon { color: #4caf50; }
-    .result-box.error .result-icon { color: #c9a84c; }
-    .result-box h3 { font-size: 1rem; font-weight: 800; color: #fff; }
-    .result-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .result-detail { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 0.75rem 1rem; }
-    .result-detail .detail-label { font-size: 0.72rem; color: #a07070; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    .result-detail .detail-value { font-size: 0.88rem; color: #fff; font-weight: 600; }
+    .result-box { display: none; margin-top: 1.5rem; }
 
-    /* ABOUT CARD */
-    .about-card {
-      width: 100%; max-width: 720px;
-      background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2);
-      border-radius: 16px; padding: 1.75rem;
+    .result-valid {
+      background: rgba(76,175,80,0.08);
+      border: 1px solid rgba(76,175,80,0.25);
+      border-radius: 16px; padding: 2rem;
     }
-    .about-card .about-header {
-      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+    .result-invalid {
+      background: rgba(244,67,54,0.08);
+      border: 1px solid rgba(244,67,54,0.2);
+      border-radius: 16px; padding: 1.5rem;
+      text-align: center;
     }
-    .about-card .about-header i { color: #c9a84c; font-size: 1rem; }
-    .about-card .about-header h3 { font-size: 1rem; font-weight: 800; color: #fff; }
-    .about-card p { font-size: 0.88rem; color: #a07070; line-height: 1.75; margin-bottom: 0.75rem; }
-    .about-card p:last-child { margin-bottom: 0; }
+
+    .valid-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .valid-icon { width: 52px; height: 52px; border-radius: 50%; background: rgba(76,175,80,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #4caf50; flex-shrink: 0; }
+    .valid-header h3 { font-size: 1.1rem; font-weight: 800; color: #4caf50; }
+    .valid-header p { font-size: 0.82rem; color: #6a8a6a; margin-top: 0.2rem; }
+
+    .cert-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .cert-field label { font-size: 0.72rem; font-weight: 700; color: #4a6a4a; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem; }
+    .cert-field span { font-size: 0.9rem; font-weight: 600; color: #d4f0d4; }
+
+    .invalid-icon { font-size: 2.5rem; color: #f44336; margin-bottom: 0.75rem; }
+    .result-invalid h3 { font-size: 1rem; font-weight: 800; color: #f44336; margin-bottom: 0.4rem; }
+    .result-invalid p { font-size: 0.85rem; color: #8a5050; }
+
+    /* HOW IT WORKS */
+    .how-card {
+      background: rgba(18,16,12,0.7);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 16px; padding: 2rem;
+    }
+    .how-card h3 { font-size: 0.9rem; font-weight: 800; color: #c9a84c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1.25rem; }
+    .steps { display: flex; flex-direction: column; gap: 1rem; }
+    .step { display: flex; align-items: flex-start; gap: 1rem; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: #c9a84c; flex-shrink: 0; }
+    .step-text h4 { font-size: 0.85rem; font-weight: 700; color: #d4b870; margin-bottom: 0.2rem; }
+    .step-text p { font-size: 0.82rem; color: #6a5a40; line-height: 1.6; }
+
+    .footer { border-top: 1px solid rgba(201,168,76,0.08); padding: 2rem 1.5rem; text-align: center; color: #4a3a28; font-size: 0.8rem; }
+    .footer a { color: #6a5a40; text-decoration: none; margin: 0 0.5rem; }
+    .footer a:hover { color: #c9a84c; }
+
+    @media(max-width:600px){
+      .navbar { padding: 0.85rem 1rem; }
+      .nav-links a { display: none; }
+      .hero { padding: 7rem 1rem 2rem; }
+      .verify-wrap { padding: 0 1rem 4rem; }
+      .verify-card { padding: 1.5rem; }
+      .cert-details { grid-template-columns: 1fr; }
+    }
   </style>
-
-  <script src="nav.js"></script>
 </head>
 <body>
-  <div class="page-bg">
+<div class="page-bg">
 
-  <div class="page-wrap">
+  <nav class="navbar">
+    <a href="index.html" class="logo">Hash <span>Shoots</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="booking.html" class="nav-btn">Book Now</a>
+    </div>
+  </nav>
 
-    <div class="pill"><i class="fas fa-certificate"></i> Certificate Verification</div>
-    <h1>Verify Your Certificate</h1>
-    <p class="subtitle">Enter your certificate ID to verify the authenticity of your OG SHOOTS training certificate</p>
+  <div class="hero">
+    <div class="badge"><i class="fas fa-shield-alt"></i> Verification</div>
+    <h1>Verify <span>Certificate</span></h1>
+    <p>Enter a certificate ID or staff ID to instantly verify the authenticity of a OG Shoots certificate or partner credential.</p>
+  </div>
+
+  <div class="verify-wrap">
 
     <!-- VERIFY FORM -->
     <div class="verify-card">
+      <h2><i class="fas fa-search"></i> Certificate Lookup</h2>
 
-      <!-- RESULT BOX -->
-      <div class="result-box" id="resultBox">
-        <div class="result-header">
-          <span class="result-icon" id="resultIcon"></span>
-          <h3 id="resultTitle"></h3>
-        </div>
-        <div class="result-details" id="resultDetails"></div>
+      <div class="input-group">
+        <label>Certificate ID / Staff ID</label>
+        <input type="text" id="certId" placeholder="e.g. HS-2025-001 or Staff ID" autocomplete="off"/>
+      </div>
+      <div class="input-group">
+        <label>Name on Certificate (optional)</label>
+        <input type="text" id="certName" placeholder="e.g. Ravi Kumar" autocomplete="off"/>
       </div>
 
-      <label class="field-label">Certificate ID</label>
-      <div class="input-wrap">
-        <i class="fas fa-file-alt"></i>
-        <input type="text" class="cert-input" id="certInput" placeholder="Enter certificate ID (e.g., CERT-2024-001)"/>
-      </div>
-      <p class="field-hint">You can find your certificate ID on your training completion certificate</p>
-
-      <button class="verify-btn" onclick="verifyCert()">
-        <i class="fas fa-search"></i> Verify Certificate
+      <button class="verify-btn" id="verifyBtn" onclick="verifyCert()">
+        <i class="fas fa-shield-check"></i> Verify Now
       </button>
-    </div>
 
-    <!-- ABOUT CARD -->
-    <div class="about-card">
-      <div class="about-header">
-        <i class="fas fa-info-circle"></i>
-        <h3>About Certificate Verification</h3>
+      <!-- RESULT -->
+      <div class="result-box" id="resultBox">
+
+        <div class="result-valid" id="resultValid" style="display:none;">
+          <div class="valid-header">
+            <div class="valid-icon"><i class="fas fa-check-circle"></i></div>
+            <div>
+              <h3>✅ Certificate Verified</h3>
+              <p>This is an authentic OG Shoots certificate</p>
+            </div>
+          </div>
+          <div class="cert-details" id="certDetails"></div>
+        </div>
+
+        <div class="result-invalid" id="resultInvalid" style="display:none;">
+          <div class="invalid-icon"><i class="fas fa-times-circle"></i></div>
+          <h3>Certificate Not Found</h3>
+          <p>No certificate matching this ID was found in our records. Please check the ID and try again, or contact us if you believe this is an error.</p>
+        </div>
+
       </div>
-      <p>This verification system allows you to confirm the authenticity of certificates issued by OG SHOOTS upon completion of our training modules.</p>
-      <p>All certificates are digitally verified and stored securely in our system. If you have any questions or concerns about your certificate, please contact our support team.</p>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-card">
+      <h3><i class="fas fa-info-circle" style="margin-right:0.5rem;"></i> How Verification Works</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <h4>Enter the Certificate ID</h4>
+            <p>Find the unique ID printed on the certificate (usually in the format HS-YYYY-XXX) or use the staff ID number.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <h4>Instant Database Check</h4>
+            <p>We check our secure Firestore database in real time to verify the certificate's authenticity.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <h4>View Certificate Details</h4>
+            <p>If valid, you'll see the holder's name, issue date, role, and certification level.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <h4>Contact Us for Disputes</h4>
+            <p>If you believe a certificate is fraudulent or have any concerns, contact us immediately at ogshootsmedia@gmail.com.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
+
+  <div class="footer">
+    <p>© 2025 OG Shoots Media. All rights reserved.</p>
+    <p style="margin-top:0.5rem;">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="cookies.html">Cookie Policy</a>
+      <a href="contact.html">Contact</a>
+    </p>
   </div>
 
-  <script>
-    // Sample valid certificates for demo
-    const certificates = {
-      'CERT-2024-001': { name: 'Arjun Reddy', course: 'Content Maker Certification', date: 'Jan 15, 2024', status: 'Valid' },
-      'CERT-2024-002': { name: 'Priya Sharma', course: 'Advanced Videography', date: 'Feb 20, 2024', status: 'Valid' },
-      'CERT-2025-001': { name: 'Kiran Kumar', course: 'Content Maker Certification', date: 'Mar 10, 2025', status: 'Valid' },
-    };
+</div>
 
-    function verifyCert() {
-      const id = document.getElementById('certInput').value.trim().toUpperCase();
-      const box = document.getElementById('resultBox');
-      const icon = document.getElementById('resultIcon');
-      const title = document.getElementById('resultTitle');
-      const details = document.getElementById('resultDetails');
+<script type="module">
+  const FB_CFG = {
+    apiKey: 'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+    authDomain: 'hash-shoots.firebaseapp.com',
+    projectId: 'hash-shoots',
+    storageBucket: 'hash-shoots.firebasestorage.app',
+    messagingSenderId: '1093054616221',
+    appId: '1:1093054616221:web:55bdebafc895acfd04fa74'
+  };
 
-      if (!id) {
-        document.getElementById('certInput').focus();
-        return;
+  let _db = null, _s = null;
+  async function getDB() {
+    if (_db) return { db: _db, s: _s };
+    const m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    _s = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const app = m.getApps().find(a => a.name === 'verify') || m.initializeApp(FB_CFG, 'verify');
+    _db = _s.getFirestore(app);
+    return { db: _db, s: _s };
+  }
+
+  window.verifyCert = async function() {
+    const certId   = document.getElementById('certId').value.trim();
+    const certName = document.getElementById('certName').value.trim().toLowerCase();
+    if (!certId) { alert('Please enter a Certificate ID or Staff ID.'); return; }
+
+    const btn = document.getElementById('verifyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+    const resultBox   = document.getElementById('resultBox');
+    const resultValid = document.getElementById('resultValid');
+    const resultInvalid = document.getElementById('resultInvalid');
+    resultBox.style.display = 'none';
+    resultValid.style.display = 'none';
+    resultInvalid.style.display = 'none';
+
+    try {
+      const f = await getDB();
+      let found = null;
+
+      // Check certificates collection
+      const certSnap = await f.s.getDoc(f.s.doc(f.db, 'certificates', certId));
+      if (certSnap.exists()) {
+        found = certSnap.data();
+      } else {
+        // Check staff collection by ID
+        const staffSnap = await f.s.getDocs(
+          f.s.query(f.s.collection(f.db, 'staff'),
+            f.s.where('staffId', '==', certId))
+        );
+        if (!staffSnap.empty) {
+          staffSnap.forEach(d => { found = d.data(); });
+        } else {
+          // Try numeric staff ID
+          const numId = parseInt(certId);
+          if (!isNaN(numId)) {
+            const numSnap = await f.s.getDocs(
+              f.s.query(f.s.collection(f.db, 'staff'),
+                f.s.where('id', '==', numId))
+            );
+            if (!numSnap.empty) numSnap.forEach(d => { found = d.data(); });
+          }
+        }
       }
 
-      box.style.display = 'block';
+      // Name filter if provided
+      if (found && certName) {
+        const foundName = (found.name || found.staffName || '').toLowerCase();
+        if (!foundName.includes(certName)) found = null;
+      }
 
-      if (certificates[id]) {
-        const c = certificates[id];
-        box.className = 'result-box success';
-        icon.innerHTML = '<i class="fas fa-check-circle"></i>';
-        title.textContent = 'Certificate Verified Successfully';
+      resultBox.style.display = 'block';
+      if (found) {
+        resultValid.style.display = 'block';
+        const details = document.getElementById('certDetails');
+        const name    = found.name || found.staffName || '—';
+        const role    = found.role || found.staffRole || '—';
+        const issued  = found.issuedAt || found.certDate || found.createdAt || '—';
+        const level   = found.certLevel || found.level || 'Certified Partner';
+        const city    = found.city || found.location || '—';
+        const status  = found.status || 'Active';
         details.innerHTML = `
-          <div class="result-detail"><div class="detail-label">Certificate ID</div><div class="detail-value">${id}</div></div>
-          <div class="result-detail"><div class="detail-label">Partner Name</div><div class="detail-value">${c.name}</div></div>
-          <div class="result-detail"><div class="detail-label">Course</div><div class="detail-value">${c.course}</div></div>
-          <div class="result-detail"><div class="detail-label">Issue Date</div><div class="detail-value">${c.date}</div></div>
+          <div class="cert-field"><label>Name</label><span>${name}</span></div>
+          <div class="cert-field"><label>Role</label><span>${role}</span></div>
+          <div class="cert-field"><label>Certification</label><span>${level}</span></div>
+          <div class="cert-field"><label>City</label><span>${city}</span></div>
+          <div class="cert-field"><label>Status</label><span style="color:${status==='Active'?'#4caf50':'#ff9800'}">${status}</span></div>
+          <div class="cert-field"><label>Issued</label><span>${typeof issued === 'object' && issued.seconds ? new Date(issued.seconds*1000).toLocaleDateString('en-IN') : issued}</span></div>
         `;
       } else {
-        box.className = 'result-box error';
-        icon.innerHTML = '<i class="fas fa-times-circle"></i>';
-        title.textContent = 'Certificate Not Found';
-        details.innerHTML = `<div class="result-detail" style="grid-column:1/-1"><div class="detail-label">Certificate ID</div><div class="detail-value">${id}</div></div>`;
+        resultInvalid.style.display = 'block';
       }
-
-      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch(e) {
+      console.error('Verify error:', e);
+      resultBox.style.display = 'block';
+      resultInvalid.style.display = 'block';
     }
 
-    document.getElementById('certInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') verifyCert();
-    });
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-shield-check"></i> Verify Now';
+  };
 
-    window.addEventListener('scroll', () => {
-      document.querySelector('.navbar').style.background =
-        window.scrollY > 50 ? 'rgba(15,2,2,0.97)' : 'rgba(20,2,2,0.85)';
-    });
-  </script>
+  // Allow Enter key
+  document.getElementById('certId').addEventListener('keydown', function(e){ if(e.key==='Enter') window.verifyCert(); });
+  document.getElementById('certName').addEventListener('keydown', function(e){ if(e.key==='Enter') window.verifyCert(); });
+</script>
 </body>
 </html>

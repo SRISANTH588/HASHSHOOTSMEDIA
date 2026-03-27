@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard - OG SHOOTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+  <title>Admin Dashboard - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -118,16 +118,18 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
+<script src="hs-fixes.js"></script>
 </head>
 <body>
   <nav>
     <div style="display:flex;align-items:center;gap:1rem;">
-      <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+      <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
       <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
     </div>
     <div class="nav-right">
       <span style="color:#9a9080;font-size:0.85rem;" id="adminNameDisplay"></span>
       <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <button onclick="gitPush()" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:700;transition:all 0.2s;" title="Commit & push all changes to Git"><i class="fas fa-code-branch"></i> Push to Git</button>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </nav>
@@ -139,7 +141,7 @@
     </div>
 
     <div class="tabs">
-      <button class="tab-btn" onclick="switchTab('opening',this)"><i class="fas fa-rocket"></i> Opening</button>
+      <button class="tab-btn" onclick="switchTab('opening',this)" style="background:linear-gradient(135deg,rgba(201,168,76,0.25),rgba(201,168,76,0.1));border-color:rgba(201,168,76,0.5);color:#fff;"><i class="fas fa-rocket"></i> 🚀 App Launch</button>
       <button class="tab-btn active" onclick="switchTab('bookings',this)"><i class="fas fa-calendar-alt"></i> Bookings</button>
       <button class="tab-btn" onclick="switchTab('about',this)"><i class="fas fa-info-circle"></i> About Us</button>
       <button class="tab-btn" onclick="switchTab('vibe',this)"><i class="fas fa-fire"></i> Discover with Vibe</button>
@@ -164,51 +166,8 @@
       <button class="tab-btn" onclick="switchTab('press',this)"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+      <button class="tab-btn" onclick="switchTab('admin-feedback',this)"><i class="fas fa-comment-dots"></i> Give Feedback</button>
 
-    </div>
-
-    <!-- OPENING TAB -->
-    <div class="tab-panel" id="tab-opening">
-      <div class="about-form">
-        <h2><i class="fas fa-rocket" style="color:#c9a84c;"></i> App Opening Screen</h2>
-        <p style="color:#888;font-size:0.85rem;margin-bottom:1.5rem;">Control the launch screen shown when visitors open the website. Countdown 10→1 with sound, founder cards &amp; confetti celebration.</p>
-        <div class="form-group" style="margin-bottom:1.25rem;">
-          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
-            <div style="position:relative;width:52px;height:28px;">
-              <span id="op_toggle" onclick="toggleOpening()" style="position:absolute;inset:0;border-radius:50px;cursor:pointer;transition:background 0.3s;display:block;" ><span style="position:absolute;left:3px;top:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform 0.3s;display:block;" id="op_knob"></span></span>
-            </div>
-            <span style="color:#fff;font-weight:700;font-size:0.95rem;">Enable Opening Screen</span>
-          </label>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
-          <div class="form-group"><label>Founder 1 Name</label><input type="text" id="op_f1name" placeholder="Boddu Srisanth"/></div>
-          <div class="form-group"><label>Founder 1 Role</label><input type="text" id="op_f1role" placeholder="Founder &amp; CEO"/></div>
-        </div>
-        <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 1 Photo URL</label><input type="text" id="op_f1photo" placeholder="srisanth.jpeg"/></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
-          <div class="form-group"><label>Founder 2 Name</label><input type="text" id="op_f2name" placeholder="Gulimi Sumanth"/></div>
-          <div class="form-group"><label>Founder 2 Role</label><input type="text" id="op_f2role" placeholder="Managing Director"/></div>
-        </div>
-        <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 2 Photo URL</label><input type="text" id="op_f2photo" placeholder="sumanth.jpeg"/></div>
-        <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(default: Tirumala idol)</span></label><input type="text" id="op_bgphoto" placeholder="venkateswara.jpg"/></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
-          <div class="form-group"><label>Place / Venue <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_place" placeholder="e.g. Vijayawada, India"/></div>
-          <div class="form-group"><label>Launch Date <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_date" placeholder="e.g. 25 Jan 2025"/></div>
-        </div>
-        <div class="form-group" style="margin-bottom:1rem;">
-          <label>Congratulations Music URL <span style="color:#888;font-weight:400;">(mp3/ogg direct link — plays on congrats)</span></label>
-          <input type="text" id="op_musicurl" placeholder="https://... direct .mp3 link or leave blank for synthesized chant"/>
-        </div>
-        <div class="form-group" style="margin-bottom:1.5rem;">
-          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
-            <div style="position:relative;width:44px;height:24px;">
-              <span id="op_sound_toggle" onclick="toggleOpSound()" style="position:absolute;inset:0;border-radius:50px;cursor:pointer;transition:background 0.3s;display:block;"><span style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.3s;display:block;" id="op_sound_knob"></span></span>
-            </div>
-            <span style="color:#fff;font-weight:600;font-size:0.9rem;">Enable Countdown Beep Sound</span>
-          </label>
-        </div>
-        <button class="btn-save-about" onclick="saveOpening()"><i class="fas fa-save"></i> Save Opening Settings</button>
-      </div>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -219,7 +178,7 @@
       <div class="stat-card"><div class="num" style="color:#ff9800" id="pendingCount">0</div><div class="lbl">Pending Bookings</div></div>
       <div class="stat-card"><div class="num" style="color:#4caf50" id="confirmedCount">0</div><div class="lbl">Confirmed</div></div>
       <div class="stat-card"><div class="num" style="color:#2196f3" id="completedCount">0</div><div class="lbl">Completed</div></div>
-      <div class="stat-card" style="cursor:pointer;" onclick="switchTab('assign',document.querySelector('[onclick*=assign]'))">
+      <div class="stat-card" style="cursor:pointer;" onclick="_notifView('assign')">
         <div class="num" style="color:#f44336" id="creatorPendingAmt">₹0</div>
         <div class="lbl">Creator Pending Pay</div>
       </div>
@@ -235,7 +194,7 @@
             <div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
           </div>
         </div>
-        <button onclick="switchTab('assign',document.querySelector('[onclick*=assign]'))" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
+        <button onclick="_notifView('assign')" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
       </div>
       <div id="creatorPendingBreakdown" style="margin-top:0.85rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.6rem;"></div>
     </div>
@@ -275,7 +234,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Page Title</label>
-            <input type="text" id="ab_heroTitle" placeholder="e.g. OG SHOOTS"/>
+            <input type="text" id="ab_heroTitle" placeholder="e.g. OG Shoots"/>
           </div>
           <div class="form-group">
             <label>Hero Description</label>
@@ -538,6 +497,8 @@
             <input type="color" id="cp_bannerTextColor" value="#ffffff" style="height:42px;padding:0.3rem;"/>
           </div>
         </div>
+        <button class="btn-save-about" onclick="saveCustomerPage()" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Save Header</button>
+        <div class="save-toast" id="cpHeaderToast" style="margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Header saved!</div>
       </div>
 
       <!-- SECTION 2: FORM FIELDS -->
@@ -563,6 +524,14 @@
             <input type="text" id="cp_labelNotes" placeholder="Additional Notes"/>
           </div>
         </div>
+        <!-- CITY MANAGEMENT -->
+        <div class="form-group">
+          <label>Available Cities (one per line — shown as dropdown in customer booking form)</label>
+          <textarea id="cp_cities" style="min-height:100px;" placeholder="Vijayawada&#10;Hyderabad&#10;Bangalore&#10;Chennai&#10;Mumbai"></textarea>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;"><i class="fas fa-info-circle" style="color:#c9a84c;"></i> One city per line. Customer will see a dropdown instead of a text field.</div>
+        </div>
+        <button class="btn-save-about" onclick="saveCities()" style="margin-bottom:1rem;"><i class="fas fa-save"></i> Save Cities</button>
+        <div class="save-toast" id="citiestoast" style="margin-bottom:1rem;"><i class="fas fa-check-circle"></i> Cities saved!</div>
         <div class="form-group">
           <label>Service Dropdown Options (one per line)</label>
           <textarea id="cp_services" style="min-height:130px;" placeholder="Reel Shoot|₹999|Quick 60-sec reel for social media&#10;Portrait Session|₹1,499|Professional portrait photography&#10;Event Coverage|₹15,000|Full event documentation&#10;Product Shoot|₹2,499|E-commerce & brand product shoots&#10;Wedding Photography|₹20,499|Complete wedding coverage&#10;Food Photography|₹1,999|Restaurant & food brand shoots"></textarea>
@@ -588,9 +557,9 @@
             <select id="cp_requireNotes"><option value="no">No</option><option value="yes">Yes</option></select>
           </div>
         </div>
+        <button class="btn-save-about" onclick="saveCustomerPage()" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Save Form Fields &amp; Cities</button>
+        <div class="save-toast" id="cpFormToast" style="margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Form fields saved!</div>
       </div>
-
-      <!-- SECTION 3: SUBMIT BUTTON -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:0.95rem;color:#c9a84c;margin-bottom:1.25rem;"><i class="fas fa-mouse-pointer"></i> &nbsp;Submit Button</h2>
         <div class="form-row">
@@ -613,9 +582,8 @@
             <input type="color" id="cp_btnTextColor" value="#ffffff" style="height:42px;padding:0.3rem;"/>
           </div>
         </div>
+        <button class="btn-save-about" onclick="saveCustomerPage()" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Save Button Settings</button>
       </div>
-
-      <!-- SECTION 4: MESSAGES -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:0.95rem;color:#c9a84c;margin-bottom:1.25rem;"><i class="fas fa-comment-alt"></i> &nbsp;Messages</h2>
         <div class="form-group">
@@ -1026,9 +994,13 @@
 
       <!-- ASSIGNED LIST -->
       <div class="about-form">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> Assigned Shoots</h2>
-          <span style="font-size:0.8rem;color:#9a9080;" id="assignedCount"></span>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+            <input type="date" id="assignFilterDate" class="search-bar" style="max-width:160px;padding:0.4rem 0.75rem;font-size:0.8rem;" onchange="renderAssignedList()" title="Filter by shoot date"/>
+            <button onclick="document.getElementById('assignFilterDate').value='';renderAssignedList();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+            <span style="font-size:0.8rem;color:#9a9080;" id="assignedCount"></span>
+          </div>
         </div>
         <div id="assignedList"></div>
       </div>
@@ -1185,11 +1157,11 @@
         <div class="form-row">
           <div class="form-group">
             <label>Email</label>
-            <input type="text" id="hp_email" placeholder="hashshootsmedia@gmail.com"/>
+            <input type="text" id="hp_email" placeholder="ogshootsmedia@gmail.com"/>
           </div>
           <div class="form-group">
             <label>Instagram Handle</label>
-            <input type="text" id="hp_instagram" placeholder="@wearehashoot"/>
+            <input type="text" id="hp_instagram" placeholder="@weareogshoots"/>
           </div>
         </div>
         <div class="form-row">
@@ -1199,7 +1171,7 @@
           </div>
           <div class="form-group">
             <label>Copyright Text</label>
-            <input type="text" id="hp_copyright" placeholder="© 2025 OG SHOOTS. All rights reserved."/>
+            <input type="text" id="hp_copyright" placeholder="© 2025 OG Shoots. All rights reserved."/>
           </div>
         </div>
       </div>
@@ -1236,7 +1208,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Order Contact Email</label>
-            <input type="text" id="store_email" placeholder="hashshootsmedia@gmail.com"/>
+            <input type="text" id="store_email" placeholder="ogshootsmedia@gmail.com"/>
           </div>
           <div class="form-group">
             <label>Discount Request Email</label>
@@ -1253,7 +1225,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Product Name *</label>
-            <input type="text" id="ts_name" placeholder="e.g. OG SHOOTS Classic Tee"/>
+            <input type="text" id="ts_name" placeholder="e.g. OG Shoots Classic Tee"/>
           </div>
           <div class="form-group">
             <label>Price (₹) *</label>
@@ -1262,7 +1234,7 @@
         </div>
         <div class="form-group">
           <label>Description</label>
-          <input type="text" id="ts_desc" placeholder="e.g. Premium cotton, official OG SHOOTS branding"/>
+          <input type="text" id="ts_desc" placeholder="e.g. Premium cotton, official OG Shoots branding"/>
         </div>
         <div class="form-group">
           <label>Available Sizes (comma separated)</label>
@@ -1296,7 +1268,7 @@
           </div>
           <div class="form-group">
             <label>ID Card Description</label>
-            <input type="text" id="idc_desc" placeholder="e.g. Official OG SHOOTS identity card for all events"/>
+            <input type="text" id="idc_desc" placeholder="e.g. Official OG Shoots identity card for all events"/>
           </div>
         </div>
         <div class="form-group">
@@ -1361,7 +1333,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Business Name (shown on payment popup)</label>
-            <input type="text" id="rp_business_name" placeholder="OG SHOOTS"/>
+            <input type="text" id="rp_business_name" placeholder="OG Shoots"/>
           </div>
           <div class="form-group">
             <label>Business Logo URL (optional)</label>
@@ -1385,7 +1357,7 @@
 
         <div class="form-group">
           <label>Payment Description (shown to customer)</label>
-          <input type="text" id="rp_description" placeholder="OG SHOOTS — Reel Shoot Booking"/>
+          <input type="text" id="rp_description" placeholder="OG Shoots — Reel Shoot Booking"/>
         </div>
 
         <!-- Enable/Disable toggle -->
@@ -1641,6 +1613,166 @@
       </div>
     </div>
 
+    <!-- APP LAUNCH / OPENING TAB -->
+    <div class="tab-panel" id="tab-opening">
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-rocket" style="color:#c9a84c;margin-right:0.5rem;"></i> App Launch Screen</h2>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">When enabled, visitors see a countdown launch screen before entering the site. Customize the message and toggle it on/off.</p>
+
+        <!-- ENABLE TOGGLE -->
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:1rem 1.25rem;">
+          <label class="toggle-switch" style="position:relative;display:inline-block;width:48px;height:26px;flex-shrink:0;">
+            <input type="checkbox" id="launch_enabled" onchange="saveLaunchConfig()" style="opacity:0;width:0;height:0;">
+            <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;border-radius:26px;transition:0.3s;" id="launch_toggle_track"></span>
+            <span style="position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;" id="launch_toggle_thumb"></span>
+          </label>
+          <div>
+            <div style="font-size:0.88rem;font-weight:700;color:#fff;">Launch Screen Active</div>
+            <div style="font-size:0.78rem;color:#9a9080;">Toggle to show/hide the countdown launch screen for all visitors</div>
+          </div>
+          <div id="launch_status_badge" style="margin-left:auto;padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;background:rgba(244,67,54,0.15);color:#f44336;border:1px solid rgba(244,67,54,0.3);">OFF</div>
+        </div>
+
+        <!-- CUSTOMIZATION -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Founder Name</label>
+            <input type="text" id="launch_founder" placeholder="Boddu Srisanth" value="Boddu Srisanth"/>
+          </div>
+          <div class="form-group">
+            <label>Founder Title</label>
+            <input type="text" id="launch_founder_title" placeholder="Founder & CEO" value="Founder &amp; CEO"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Co-Founder Name</label>
+            <input type="text" id="launch_cofounder" placeholder="Gulimi Sumanth" value="Gulimi Sumanth"/>
+          </div>
+          <div class="form-group">
+            <label>Co-Founder Title</label>
+            <input type="text" id="launch_cofounder_title" placeholder="Managing Director" value="Managing Director"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>App / Brand Name</label>
+            <input type="text" id="launch_brand" placeholder="OG SHOOTS" value="OG SHOOTS"/>
+          </div>
+          <div class="form-group">
+            <label>Tagline</label>
+            <input type="text" id="launch_tagline" placeholder="Premium Reels. Real Moments." value="Premium Reels. Real Moments."/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Logo URL (optional — leave blank to use text logo)</label>
+          <input type="text" id="launch_logo" placeholder="https://your-logo-url.com/logo.png"/>
+        </div>
+
+        <!-- FOUNDER PHOTOS -->
+        <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;">
+          <div style="font-size:0.82rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.25rem;"><i class="fas fa-user-circle" style="margin-right:0.4rem;"></i> Founder Photos (shown on launch screen)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Founder Photo</label>
+              <input type="file" id="launch_founder_photo_file" accept="image/*" onchange="previewLaunchPhoto('founder')" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 1rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;width:100%;"/>
+              <div id="launch_founder_photo_preview" style="margin-top:0.75rem;display:none;text-align:center;">
+                <img id="launch_founder_photo_img" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.3);"/>
+              </div>
+              <input type="hidden" id="launch_founder_photo"/>
+            </div>
+            <div class="form-group">
+              <label>Managing Director Photo</label>
+              <input type="file" id="launch_cofounder_photo_file" accept="image/*" onchange="previewLaunchPhoto('cofounder')" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.6rem 1rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;width:100%;"/>
+              <div id="launch_cofounder_photo_preview" style="margin-top:0.75rem;display:none;text-align:center;">
+                <img id="launch_cofounder_photo_img" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;box-shadow:0 0 20px rgba(201,168,76,0.3);"/>
+              </div>
+              <input type="hidden" id="launch_cofounder_photo"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Countdown Duration (seconds)</label>
+            <input type="number" id="launch_duration" value="10" min="3" max="30"/>
+          </div>
+          <div class="form-group">
+            <label>Background Style</label>
+            <select id="launch_bg" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;">
+              <option value="dark-gold" selected>Dark Gold (Default)</option>
+              <option value="red-black">Red &amp; Black</option>
+              <option value="pure-black">Pure Black</option>
+              <option value="deep-red">Deep Red</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-save-about" onclick="saveLaunchConfig()" style="margin-right:0.75rem;"><i class="fas fa-save"></i> Save Launch Settings</button>
+        <button onclick="previewLaunch()" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> Preview Launch Screen</button>
+        <div class="save-toast" id="launchToast"><i class="fas fa-check-circle"></i> Launch settings saved!</div>
+      </div>
+    </div><!-- end tab-opening -->
+
+    <!-- ADMIN FEEDBACK TAB -->
+    <div class="tab-panel" id="tab-admin-feedback">
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-comment-dots" style="color:#c9a84c;margin-right:0.5rem;"></i> Give Feedback to Customer or Staff</h2>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">Send a message or feedback directly to a customer or staff member. They will see it in their dashboard.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Recipient Type</label>
+            <select id="fb_recipient_type" onchange="loadFeedbackRecipients()" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;">
+              <option value="customer">Customer</option>
+              <option value="staff">Staff Member</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Select Recipient</label>
+            <select id="fb_recipient_id" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;"><option value="">Loading...</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Feedback Type</label>
+            <select id="fb_type" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;">
+              <option value="general">General Message</option>
+              <option value="positive">Positive Feedback ⭐</option>
+              <option value="improvement">Needs Improvement</option>
+              <option value="warning">Warning ⚠️</option>
+              <option value="booking">Booking Update</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rating (optional)</label>
+            <select id="fb_rating" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;">
+              <option value="">No rating</option>
+              <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+              <option value="4">⭐⭐⭐⭐ Good</option>
+              <option value="3">⭐⭐⭐ Average</option>
+              <option value="2">⭐⭐ Below Average</option>
+              <option value="1">⭐ Poor</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Message *</label>
+          <textarea id="fb_message" style="min-height:100px;" placeholder="Write your feedback or message here..."></textarea>
+        </div>
+        <button class="btn-save-about" onclick="sendAdminFeedback()"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+        <div class="save-toast" id="adminFbToast"><i class="fas fa-check-circle"></i> Feedback sent!</div>
+      </div>
+
+      <!-- SENT FEEDBACK HISTORY -->
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-history" style="color:#c9a84c;margin-right:0.5rem;"></i> Sent Feedback History</h2>
+          <button onclick="loadAdminFeedbackHistory()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="adminFbHistory"><div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;">No feedback sent yet.</div></div>
+      </div>
+    </div><!-- end tab-admin-feedback -->
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -1775,9 +1907,33 @@
 
     // Hide tabs staff can't access (admin sees all)
     document.querySelectorAll('.tab-btn').forEach(function(btn){
-      var m = btn.getAttribute('onclick').match(/'([^']+)'/);
+      var oc = btn.getAttribute('onclick');
+      if(!oc) return;
+      var m = oc.match(/'([^']+)'/);
       if(m && !hasAccess(m[1])) btn.style.display = 'none';
     });
+
+
+    // ── GIT PUSH ──────────────────────────────────────────────────────
+    function gitPush(){
+      var msg = prompt('Commit message:', 'Admin update: approve shoots & wallet payment');
+      if(!msg) return;
+      var btn = document.querySelector('[onclick="gitPush()"]');
+      if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Pushing...'; }
+      fetch('/git-push', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({message: msg})
+      }).then(function(r){ return r.json(); })
+        .then(function(d){
+          if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-code-branch"></i> Push to Git'; }
+          if(d.ok) showAssignToast('\u2705 Pushed to Git: ' + msg, true);
+          else showAssignToast('\u26a0\ufe0f Git push failed: ' + (d.error||'unknown error'), false);
+        }).catch(function(){
+          if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-code-branch"></i> Push to Git'; }
+          alert('Auto-push not available.\n\nRun manually in terminal:\n\ngit add -A\ngit commit -m \"' + msg + '\"\ngit push');
+        });
+    }
 
     function logout() {
       ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
@@ -1897,8 +2053,29 @@
       const completed = bookings.filter(b=>b.status==='completed').length;
       localStorage.setItem('hs_reels_delivered', 50000+completed);
       localStorage.setItem('hs_reel_makers', 500+Math.floor(completed/2));
-      // Sync to Firebase
-      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status},{ merge:true }); }catch(e){} })();
+      // Sync to Firebase — update booking status so customer sees it in real-time
+      (async()=>{
+        var f=await _fbAdmin(); if(!f) return;
+        try{
+          await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status, statusUpdatedAt: f.s.serverTimestamp()},{ merge:true });
+          // If confirmed, push notification to customer_notifications collection
+          if(status === 'confirmed' || status === 'completed' || status === 'cancelled'){
+            var b = bookings[idx];
+            var custKey = b ? (b.email || b.phone || '') : '';
+            if(custKey){
+              await f.s.addDoc(f.s.collection(f.db,'customer_notifications'),{
+                recipientId: custKey,
+                bookingId: String(id),
+                type: status,
+                title: status==='confirmed' ? '\u2705 Booking Confirmed!' : status==='completed' ? '\uD83C\uDF89 Shoot Completed!' : '\u274C Booking Cancelled',
+                message: status==='confirmed' ? 'Your booking has been confirmed. Please proceed with payment.' : status==='completed' ? 'Your shoot is complete. Thank you!' : 'Your booking has been cancelled. Contact us for help.',
+                read: false,
+                createdAt: f.s.serverTimestamp()
+              });
+            }
+          }
+        }catch(e){ console.error('updateStatus Firebase error:',e); }
+      })();
       loadAll();
     }
 
@@ -2021,39 +2198,43 @@
       currentTab = tab;
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + tab).classList.add('active');
+      if(btn) btn.classList.add('active');
+      var panel = document.getElementById('tab-' + tab);
+      if(panel) panel.classList.add('active');
+      else return; // panel doesn't exist, abort
       if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
       if (tab === 'homepage') loadHomePage();
-      if (tab === 'withdraw') loadWithdrawTab();
-      if (tab === 'testimonial-videos') renderTestiVideos();
+      if (tab === 'withdraw') { if(window.loadWithdrawFromFirebase) loadWithdrawFromFirebase().then(function(){ loadWithdrawTab(); }); else loadWithdrawTab(); }
+      if (tab === 'testimonial-videos') { if(window.loadTestiVideosFromFirebase) loadTestiVideosFromFirebase().then(function(){ renderTestiVideos(); }); else renderTestiVideos(); }
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
-      if (tab === 'opening') loadOpening();
       if (tab === 'razorpay') loadRazorpayTab();
       if (tab === 'about') loadAboutForm();
       if (tab === 'vibe') renderVibeAdmin();
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') fetchAndRenderStaff();
-      if (tab === 'cwallets') renderCustWallets();
+      if (tab === 'cwallets') { if(window.loadCustWalletsFromFirebase) loadCustWalletsFromFirebase().then(function(){ renderCustWallets(); }); else renderCustWallets(); }
       if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'notifications') renderNotifications();
-      if (tab === 'blog') { renderBlogList(); }
-      if (tab === 'press') { renderPressList(); loadPressStats(); }
-      if (tab === 'careers') renderCareerApps();
-      if (tab === 'affiliates') renderAffiliateApps();
+      if (tab === 'blog') { if(window.loadBlogsFromFirebase) loadBlogsFromFirebase().then(function(p){ if(p.length) localStorage.setItem('hs_blogs',JSON.stringify(p)); renderBlogList(); }); else renderBlogList(); }
+      if (tab === 'press') { if(window.loadPressFromFirebase) loadPressFromFirebase().then(function(){ renderPressList(); loadPressStats(); }); else { renderPressList(); loadPressStats(); } }
+      if (tab === 'careers') { if(window.loadCareerAppsFromFirebase) loadCareerAppsFromFirebase().then(function(){ renderCareerApps(); }); else renderCareerApps(); }
+      if (tab === 'affiliates') { if(window.loadAffiliateAppsFromFirebase) loadAffiliateAppsFromFirebase().then(function(){ renderAffiliateApps(); }); else renderAffiliateApps(); }
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
-      if (tab === 'videos') renderStaffVideosAdmin();
+      if (tab === 'videos') { if(window.loadStaffVideosFromFirebase) loadStaffVideosFromFirebase().then(function(){ renderStaffVideosAdmin(); }); else renderStaffVideosAdmin(); }
       if (tab === 'shoot-reels') renderShootReelsAdmin();
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
+      if (tab === 'opening') { loadLaunchConfig(); }
+      if (tab === 'admin-feedback') { loadFeedbackRecipients(); loadAdminFeedbackHistory(); }
     }
 
     // Activate first visible tab
-    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
-    if(firstVisible) firstVisible.click();
+    // Activate bookings tab on load
+    var bookingsBtn = document.querySelector('.tab-btn[onclick*="bookings"]');
+    if(bookingsBtn) switchTab('bookings', bookingsBtn);
 
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
@@ -2116,15 +2297,15 @@
       var tList = document.getElementById('hp_testiList');
       tList.innerHTML = '';
       var testis = hp.testimonials && hp.testimonials.length ? hp.testimonials : [
-        {name:'Srikari Galigari', text:'OG SHOOTS made booking a content maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!'},
-        {name:'Lanka Pravallika', text:'OG SHOOTS is a game-changer! Quick booking, talented content makers, and amazing event coverage. Loved the experience!'},
-        {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! OG SHOOTS made capturing memories effortlessly beautiful.'},
+        {name:'Srikari Galigari', text:'OG Shoots made booking a content maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!'},
+        {name:'Lanka Pravallika', text:'OG Shoots is a game-changer! Quick booking, talented content makers, and amazing event coverage. Loved the experience!'},
+        {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! OG Shoots made capturing memories effortlessly beautiful.'},
         {name:'Rahul Verma', text:'The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.'},
-        {name:'Ananya Reddy', text:'Used OG SHOOTS for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!'},
+        {name:'Ananya Reddy', text:'Used OG Shoots for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!'},
         {name:'Priya Sharma', text:'My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.'},
         {name:'Nikhil Kumar', text:'Amazing experience from start to finish. The content maker was on time, creative, and delivered edited content within minutes!'},
         {name:'Sneha Mehta', text:'Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!'},
-        {name:'Vikram Rao', text:'I was skeptical at first but OG SHOOTS blew me away. Professional, fast, and the reels went viral. 10/10 service!'}
+        {name:'Vikram Rao', text:'I was skeptical at first but OG Shoots blew me away. Professional, fast, and the reels went viral. 10/10 service!'}
       ];
       testis.forEach(function(t){ addTestiRow(t.name, t.text); });
     }
@@ -2219,7 +2400,7 @@
       setTimeout(function(){ toast.style.display='none'; }, 2500);
     }
 
-    // STAFF VIDEOS ADMIN
+    // STAFF VIDEOS ADMIN - Enhanced with real-time sync
     function renderStaffVideosAdmin(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').slice().reverse();
       var staffList = getStaff();
@@ -2232,11 +2413,19 @@
         sel.value = curVal;
       }
       if(curVal) videos = videos.filter(function(v){ return v.staffId == curVal; });
-      var countEl = document.getElementById('staffVideosCount');
-      if(countEl) countEl.textContent = videos.length + ' video(s)';
+      
+      // Force refresh from Firebase if no videos found locally
+      if(!videos.length) {
+        console.log('No staff videos found locally, attempting Firebase sync...');
+        fetchStaffVideosFromFirebase();
+      }
+      
+      document.getElementById('staffVideosCount').textContent = videos.length + ' video(s)';
       var grid = document.getElementById('staffVideosAdminGrid');
-      if(!grid) return;
-      if(!videos.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.</p>'; return; }
+      if(!videos.length){ 
+        grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No videos uploaded yet.<br/><small>Videos will appear here when staff upload them.</small></p>'; 
+        return; 
+      }
       grid.innerHTML = '';
       videos.forEach(function(v){
         var assign = assigns.find(function(a){ return a.id == v.assignId; });
@@ -2547,405 +2736,133 @@
       renderTestiVideos();
     }
 
-    // SHOOT REELS & FEEDBACK ADMIN
-    function renderShootReelsAdmin() {
-      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
-      var staffList = getStaff();
-      var assigns = getAssignedShoots();
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      
-      // Get filter values
-      var staffFilter = document.getElementById('shootReelsFilterStaff')?.value || '';
-      var typeFilter = document.getElementById('shootReelsFilterType')?.value || '';
-      var statusFilter = document.getElementById('shootReelsFilterStatus')?.value || '';
-      var searchTerm = document.getElementById('shootReelsSearch')?.value.toLowerCase() || '';
-      
-      // Populate staff filter dropdown
-      var staffSelect = document.getElementById('shootReelsFilterStaff');
-      if (staffSelect) {
-        var currentStaffValue = staffSelect.value;
-        staffSelect.innerHTML = '<option value="">All Staff</option>';
-        staffList.forEach(function(s) {
-          var option = document.createElement('option');
-          option.value = s.id;
-          option.textContent = s.name;
-          staffSelect.appendChild(option);
+    // Add Firebase sync function for staff videos
+    async function fetchStaffVideosFromFirebase() {
+      try {
+        var f = await _fbAdmin();
+        if (!f) {
+          console.log('Firebase not available');
+          return;
+        }
+        var snap = await f.s.getDocs(f.s.collection(f.db, 'staff_videos'));
+        var fbVideos = [];
+        snap.forEach(function(doc) {
+          var data = doc.data();
+          // Preserve original numeric id if present, else use Firestore doc id
+          if (!data.id) data.id = doc.id;
+          fbVideos.push(data);
         });
-        staffSelect.value = currentStaffValue;
-      }
-      
-      // Filter videos to only show shoot-related ones
-      var shootVideos = videos.filter(function(v) {
-        return v.assignId || v.category === 'Shoot Delivery' || v.category === 'Shoot Feedback' || v.isFeedback;
-      });
-      
-      // Apply filters
-      var filteredVideos = shootVideos.filter(function(v) {
-        // Staff filter
-        if (staffFilter && String(v.staffId) !== String(staffFilter)) return false;
-        
-        // Type filter
-        if (typeFilter === 'shoot' && (v.isFeedback || v.category === 'Shoot Feedback')) return false;
-        if (typeFilter === 'feedback' && !v.isFeedback && v.category !== 'Shoot Feedback') return false;
-        
-        // Status filter (based on associated assignment)
-        if (statusFilter && v.assignId) {
-          var assign = assigns.find(function(a) { return a.id == v.assignId; });
-          if (!assign || assign.status !== statusFilter) return false;
+        if (fbVideos.length > 0) {
+          console.log('Synced', fbVideos.length, 'staff videos from Firebase');
+          // Merge with local instead of overwriting to avoid losing IndexedDB-only videos
+          var local = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+          fbVideos.forEach(function(v) {
+            var idx = local.findIndex(function(x) { return String(x.id) === String(v.id); });
+            if (idx > -1) Object.assign(local[idx], v);
+            else local.push(v);
+          });
+          localStorage.setItem('hs_staff_videos', JSON.stringify(local));
+          renderStaffVideosAdmin();
         }
-        
-        // Search filter
-        if (searchTerm) {
-          var assign = assigns.find(function(a) { return a.id == v.assignId; });
-          var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
-          var searchText = [
-            v.title,
-            v.staffName,
-            assign?.service,
-            assign?.clientName,
-            assign?.city,
-            assign?.location,
-            booking?.name,
-            booking?.city
-          ].filter(Boolean).join(' ').toLowerCase();
-          
-          if (!searchText.includes(searchTerm)) return false;
-        }
-        
-        return true;
-      });
-      
-      // Update stats
-      var totalVideos = shootVideos.length;
-      var shootReels = shootVideos.filter(function(v) { return !v.isFeedback && v.category !== 'Shoot Feedback'; }).length;
-      var feedbackVideos = shootVideos.filter(function(v) { return v.isFeedback || v.category === 'Shoot Feedback'; }).length;
-      var pendingReview = shootVideos.filter(function(v) {
-        var assign = assigns.find(function(a) { return a.id == v.assignId; });
-        return assign && assign.status === 'done';
-      }).length;
-      
-      document.getElementById('shootReelsTotal').textContent = totalVideos;
-      document.getElementById('shootReelsDelivered').textContent = shootReels;
-      document.getElementById('shootReelsFeedback').textContent = feedbackVideos;
-      document.getElementById('shootReelsPending').textContent = pendingReview;
-      
-      // Update count
-      var countEl = document.getElementById('shootReelsCount');
-      if (countEl) countEl.textContent = filteredVideos.length + ' video(s)';
-      
-      // Update notification badge
-      var badge = document.getElementById('shootReelsNotifBadge');
-      if (badge) {
-        badge.textContent = pendingReview;
-        badge.style.display = pendingReview > 0 ? 'inline' : 'none';
-      }
-      
-      // Render grid
-      var grid = document.getElementById('shootReelsAdminGrid');
-      if (!grid) return;
-      
-      if (!filteredVideos.length) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;background:#1a1a1a;border-radius:16px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-film" style="display:block;font-size:2.5rem;opacity:0.2;margin-bottom:1rem;"></i>No shoot videos found.<br/>Videos will appear here when staff upload shoot reels and feedback videos.</div>';
-        return;
-      }
-      
-      grid.innerHTML = '';
-      
-      // Sort by upload date (newest first)
-      filteredVideos.sort(function(a, b) {
-        return new Date(b.uploadedAt) - new Date(a.uploadedAt);
-      });
-      
-      filteredVideos.forEach(function(v) {
-        var assign = assigns.find(function(a) { return a.id == v.assignId; });
-        var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
-        var isShootReel = !v.isFeedback && v.category !== 'Shoot Feedback';
-        var isFeedbackVideo = v.isFeedback || v.category === 'Shoot Feedback';
-        
-        // Determine status and colors
-        var statusInfo = getVideoStatusInfo(v, assign);
-        
-        var card = document.createElement('div');
-        card.className = 'shoot-reel-card';
-        card.style.borderLeftColor = statusInfo.color;
-        
-        // Video preview section
-        var videoPreview = '<div class="shoot-reel-preview" id="srv_' + v.id + '">';
-        videoPreview += '<div style="display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;height:100%;"><i class="fas fa-film"></i></div>';
-        
-        // Add type badge overlay
-        var typeBadge = isShootReel 
-          ? '<div class="shoot-reel-type-badge" style="background:rgba(76,175,80,0.9);color:#fff;"><i class="fas fa-video"></i> REEL</div>'
-          : '<div class="shoot-reel-type-badge" style="background:rgba(156,39,176,0.9);color:#fff;"><i class="fas fa-clipboard-list"></i> FEEDBACK</div>';
-        
-        videoPreview += typeBadge + '</div>';
-        
-        // Info section
-        var infoSection = '<div class="shoot-reel-info">';
-        
-        // Header with title and status
-        infoSection += '<div class="shoot-reel-header">';
-        infoSection += '<div style="flex:1;"><div class="shoot-reel-title">' + (v.title || 'Untitled Video') + '</div>';
-        infoSection += '<div class="shoot-reel-staff"><i class="fas fa-user" style="color:#c9a84c;"></i> ' + v.staffName + '</div></div>';
-        infoSection += '<span class="shoot-reel-status" style="background:' + statusInfo.color + '22;border:1px solid ' + statusInfo.color + '44;color:' + statusInfo.color + ';">' + statusInfo.label + '</span>';
-        infoSection += '</div>';
-        
-        // Assignment details (if available)
-        if (assign) {
-          infoSection += '<div class="shoot-reel-assignment">';
-          infoSection += '<div class="shoot-reel-assignment-title"><i class="fas fa-briefcase"></i> Assignment Details</div>';
-          infoSection += '<div class="shoot-reel-assignment-grid">';
-          infoSection += '<div><span style="color:#9a9080;">Service:</span> <span style="color:#fff;font-weight:600;">' + assign.service + '</span></div>';
-          infoSection += '<div><span style="color:#9a9080;">Client:</span> <span style="color:#fff;font-weight:600;">' + assign.clientName + '</span></div>';
-          infoSection += '<div><span style="color:#9a9080;">Date:</span> <span style="color:#fff;font-weight:600;">' + assign.date + '</span></div>';
-          infoSection += '<div><span style="color:#9a9080;">Location:</span> <span style="color:#fff;font-weight:600;">' + (assign.location || assign.city) + '</span></div>';
-          infoSection += '</div>';
-          if (assign.arrivedAt) {
-            infoSection += '<div style="font-size:0.68rem;color:#4caf50;margin-top:0.4rem;"><i class="fas fa-map-marker-alt"></i> Arrived: ' + assign.arrivedAt + '</div>';
-          }
-          infoSection += '</div>';
-        }
-        
-        // Video metadata
-        infoSection += '<div class="shoot-reel-meta">';
-        infoSection += '<div><i class="fas fa-hdd"></i> ' + v.sizeMB + ' MB</div>';
-        infoSection += '<div><i class="fas fa-clock"></i> ' + v.uploadedAt + '</div>';
-        infoSection += '</div>';
-        
-        // Action buttons
-        infoSection += '<div class="shoot-reel-actions">';
-        
-        if (v.cloudUrl) {
-          infoSection += '<a href="' + v.cloudUrl + '" target="_blank" class="shoot-reel-btn shoot-reel-btn-view"><i class="fas fa-external-link-alt"></i> View</a>';
-        }
-        
-        infoSection += '<button onclick="downloadShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-download"><i class="fas fa-download"></i> Download</button>';
-        
-        if (assign && assign.status === 'done') {
-          infoSection += '<button onclick="approveShootVideo(' + assign.id + ')" class="shoot-reel-btn shoot-reel-btn-approve"><i class="fas fa-check-circle"></i> Approve & Pay</button>';
-        }
-        
-        infoSection += '<button onclick="deleteShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-delete" style="flex:none;width:auto;padding:0.5rem 0.75rem;"><i class="fas fa-trash"></i></button>';
-        
-        infoSection += '</div></div>';
-        
-        card.innerHTML = videoPreview + infoSection;
-        
-        // Load video preview
-        loadVideoPreview(v, 'srv_' + v.id);
-        
-        grid.appendChild(card);
-      });
-    }
-    
-    function getVideoStatusInfo(video, assign) {
-      if (!assign) {
-        return { color: '#9a9080', label: 'No Assignment' };
-      }
-      
-      switch (assign.status) {
-        case 'assigned':
-          return { color: '#ff9800', label: 'In Progress' };
-        case 'done':
-          return { color: '#9c27b0', label: 'Pending Review' };
-        case 'completed':
-          return { color: '#4caf50', label: 'Completed' };
-        case 'paid':
-          return { color: '#2196f3', label: 'Paid' };
-        default:
-          return { color: '#9a9080', label: assign.status };
+      } catch (e) {
+        console.error('Failed to fetch staff videos from Firebase:', e);
       }
     }
-    
-    function loadVideoPreview(video, elementId) {
-      if (video.cloudUrl) {
-        var element = document.getElementById(elementId);
-        if (element) {
-          var videoEl = document.createElement('video');
-          videoEl.src = video.cloudUrl;
-          videoEl.controls = true;
-          videoEl.preload = 'metadata';
-          videoEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;background:#000;';
-          element.innerHTML = '';
-          element.appendChild(videoEl);
-        }
-      } else {
-        // Try to load from IndexedDB
-        openAdminVideoDB(function(db) {
-          if (!db) return;
-          var req = db.transaction('videos', 'readonly').objectStore('videos').get(video.id);
-          req.onsuccess = function() {
-            if (req.result && req.result.blob) {
-              var url = URL.createObjectURL(req.result.blob);
-              var element = document.getElementById(elementId);
-              if (element) {
-                var videoEl = document.createElement('video');
-                videoEl.src = url;
-                videoEl.controls = true;
-                videoEl.preload = 'metadata';
-                videoEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;background:#000;';
-                element.innerHTML = '';
-                element.appendChild(videoEl);
-              }
-            }
-          };
-        });
-      }
-    }
-    
-    function downloadShootVideo(videoId) {
-      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
-      var video = videos.find(function(v) { return v.id === videoId; });
-      if (!video) return;
-      
-      if (video.cloudUrl) {
-        // Download from cloud URL
-        var a = document.createElement('a');
-        a.href = video.cloudUrl;
-        a.download = video.fileName || (video.title + '.mp4');
-        a.target = '_blank';
-        a.click();
-      } else {
-        // Download from IndexedDB
-        openAdminVideoDB(function(db) {
-          if (!db) return;
-          var req = db.transaction('videos', 'readonly').objectStore('videos').get(videoId);
-          req.onsuccess = function() {
-            if (req.result && req.result.blob) {
-              var url = URL.createObjectURL(req.result.blob);
-              var a = document.createElement('a');
-              a.href = url;
-              a.download = video.fileName || (video.title + '.mp4');
-              a.click();
-              setTimeout(function() { URL.revokeObjectURL(url); }, 3000);
-            }
-          };
-        });
-      }
-    }
-    
-    function approveShootVideo(assignId) {
-      if (!confirm('Approve this shoot and release payment to the staff member?')) return;
-      
-      var assigns = getAssignedShoots();
-      var assign = assigns.find(function(a) { return a.id === assignId; });
-      if (!assign) return;
-      
-      // Update assignment status
-      assign.status = 'completed';
-      assign.completedAt = new Date().toLocaleString();
-      assign.approvedBy = localStorage.getItem('hs_admin_name') || 'Admin';
-      
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
-      
-      // Release payment to staff wallet
-      var staffId = assign.staffId;
-      var walletKey = 'hs_wallet_' + staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"pending":0,"transactions":[]}');
-      
-      var paymentAmount = assign.credit || 0;
-      wallet.balance = (wallet.balance || 0) + paymentAmount;
-      wallet.totalEarned = (wallet.totalEarned || 0) + paymentAmount;
-      wallet.pending = Math.max(0, (wallet.pending || 0) - paymentAmount);
-      
-      wallet.transactions = wallet.transactions || [];
-      wallet.transactions.push({
-        type: 'credit',
-        amount: paymentAmount,
-        label: 'Shoot Payment - ' + assign.service,
-        note: 'Client: ' + assign.clientName,
-        date: new Date().toLocaleString()
-      });
-      
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-      
-      // Update assignment status to paid
-      assign.status = 'paid';
-      assign.paidAt = new Date().toLocaleString();
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
-      
-      // Sync to Firebase
-      if (window.fbUpdate) {
-        fbUpdate('assigned_shoots', String(assignId), { status: 'paid', completedAt: assign.completedAt, paidAt: assign.paidAt });
-        fbUpdate('wallets', String(staffId), wallet);
-      }
-      
-      alert('✅ Shoot approved and payment of ₹' + paymentAmount.toLocaleString('en-IN') + ' released to ' + assign.staffName);
-      renderShootReelsAdmin();
-      updateCreatorPendingPayments();
-    }
-    
-    function deleteShootVideo(videoId) {
-      if (!confirm('Delete this video? This action cannot be undone.')) return;
 
-      // Remove from localStorage (String compare to handle number/string mismatch)
-      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
-      var target = videos.find(function(v){ return String(v.id) === String(videoId); });
-      videos = videos.filter(function(v) { return String(v.id) !== String(videoId); });
-      localStorage.setItem('hs_staff_videos', JSON.stringify(videos));
-
-      // Remove from IndexedDB
-      openAdminVideoDB(function(db) {
-        if (db) db.transaction('videos', 'readwrite').objectStore('videos').delete(videoId);
-      });
-
-      // Remove from Firebase so it doesn't reappear after sync
-      if (target && target._fbId && window.fbDelete) {
-        fbDelete('staff_videos', target._fbId).catch(function(e){ console.error('Firebase delete failed:', e); });
-      } else if (window.fbDelete) {
-        fbDelete('staff_videos', String(videoId)).catch(function(e){ console.error('Firebase delete failed:', e); });
+    // Auto-refresh staff videos every 10 seconds
+    setInterval(function() {
+      if (currentTab === 'videos') {
+        fetchStaffVideosFromFirebase();
       }
+    }, 10000);
 
-      renderShootReelsAdmin();
-    }
-    
-    function exportShootReelsData() {
-      var videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
-      var assigns = getAssignedShoots();
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      
-      var shootVideos = videos.filter(function(v) {
-        return v.assignId || v.category === 'Shoot Delivery' || v.category === 'Shoot Feedback' || v.isFeedback;
-      });
-      
-      var exportData = shootVideos.map(function(v) {
-        var assign = assigns.find(function(a) { return a.id == v.assignId; });
-        var booking = assign ? bookings.find(function(b) { return b.id === assign.bookingId; }) : null;
-        
-        return {
-          'Video ID': v.id,
-          'Title': v.title,
-          'Staff Name': v.staffName,
-          'Type': v.isFeedback || v.category === 'Shoot Feedback' ? 'Feedback' : 'Shoot Reel',
-          'Service': assign?.service || '',
-          'Client Name': assign?.clientName || '',
-          'Location': assign?.location || assign?.city || '',
-          'Shoot Date': assign?.date || '',
-          'Upload Date': v.uploadedAt,
-          'File Size (MB)': v.sizeMB,
-          'Status': assign?.status || 'No Assignment',
-          'Cloud URL': v.cloudUrl || 'Local Only'
-        };
-      });
-      
-      // Convert to CSV
-      var csv = 'data:text/csv;charset=utf-8,';
-      var headers = Object.keys(exportData[0] || {});
-      csv += headers.join(',') + '\n';
-      
-      exportData.forEach(function(row) {
-        csv += headers.map(function(header) {
-          var value = row[header] || '';
-          return '"' + String(value).replace(/"/g, '""') + '"';
-        }).join(',') + '\n';
-      });
-      
-      // Download
-      var link = document.createElement('a');
-      link.href = encodeURI(csv);
-      link.download = 'shoot_reels_export_' + new Date().toISOString().split('T')[0] + '.csv';
-      link.click();
-    }
+    // ── FIREBASE REAL-TIME LISTENERS FOR ADMIN ──────────────────────
+    (async function() {
+      try {
+        await new Promise(function(r){ setTimeout(r, 1500); });
+        if (!window.fbListen) return;
+
+        // 1. Staff Videos — real-time sync from Firebase
+        fbListen('staff_videos', function(docs) {
+          if (!docs.length) return;
+          var local = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+          docs.forEach(function(d) {
+            var vid = Object.assign({}, d);
+            // Preserve numeric id if staff saved it as numeric
+            if (!vid.id) vid.id = vid._fbId;
+            delete vid._fbId; delete vid.createdAt;
+            var idx = local.findIndex(function(v) { return String(v.id) === String(vid.id); });
+            if (idx > -1) Object.assign(local[idx], vid);
+            else local.push(vid);
+          });
+          localStorage.setItem('hs_staff_videos', JSON.stringify(local));
+          if (currentTab === 'videos') renderStaffVideosAdmin();
+          if (currentTab === 'shoot-reels') renderShootReelsAdmin();
+        }, 'uploadedAt');
+
+        // 2. Feedback — sync hs_feedbacks from Firebase feedbacks collection
+        fbListen('feedbacks', function(docs) {
+          if (!docs.length) return;
+          var local = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+          docs.forEach(function(d) {
+            var fb = Object.assign({}, d, { _fbId: d._fbId });
+            var idx = local.findIndex(function(x) { return String(x.id) === String(d._fbId) || String(x._fbId) === String(d._fbId); });
+            if (idx > -1) Object.assign(local[idx], fb);
+            else local.push(fb);
+          });
+          localStorage.setItem('hs_feedbacks', JSON.stringify(local));
+          if (currentTab === 'feedback') renderFeedbackAdmin();
+        }, 'createdAt');
+
+        // 3. Creator feedbacks — sync into hs_feedbacks with type='creator'
+        fbListen('creator_feedbacks', function(docs) {
+          if (!docs.length) return;
+          var local = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+          docs.forEach(function(d) {
+            var fb = Object.assign({}, d, { type: 'creator', _fbId: d._fbId });
+            var idx = local.findIndex(function(x) { return String(x._fbId) === String(d._fbId); });
+            if (idx > -1) Object.assign(local[idx], fb);
+            else local.push(fb);
+          });
+          localStorage.setItem('hs_feedbacks', JSON.stringify(local));
+          if (currentTab === 'feedback') renderFeedbackAdmin();
+        }, 'createdAt');
+
+        // 4. Demos — real-time sync so submitted reels show instantly
+        fbListen('demos', function(docs) {
+          if (!docs.length) return;
+          var local = JSON.parse(localStorage.getItem('hs_demos') || '[]');
+          docs.forEach(function(d) {
+            var demo = Object.assign({}, d, { id: d.id || d._fbId });
+            delete demo._fbId; delete demo.createdAt;
+            var idx = local.findIndex(function(x) { return String(x.id) === String(demo.id); });
+            if (idx > -1) Object.assign(local[idx], demo);
+            else local.push(demo);
+          });
+          localStorage.setItem('hs_demos', JSON.stringify(local));
+          if (currentTab === 'demo') renderDemoAdminList();
+          updateDemoNotifBadge();
+        }, 'createdAt');
+
+        // 5. Assigned shoots — sync status changes from staff
+        fbListen('assigned_shoots', function(docs) {
+          if (!docs.length) return;
+          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+          docs.forEach(function(d) {
+            var shoot = Object.assign({}, d, { id: d.id || d._fbId });
+            delete shoot._fbId; delete shoot.createdAt;
+            var idx = local.findIndex(function(x) { return String(x.id) === String(shoot.id); });
+            if (idx > -1) Object.assign(local[idx], shoot);
+            else local.push(shoot);
+          });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
+          if (currentTab === 'assign') renderAssignedList();
+          if (currentTab === 'shoot-reels') renderShootReelsAdmin();
+        }, 'createdAt');
+
+        console.log('[Admin] Firebase real-time sync active');
+      } catch(e) { console.error('Admin Firebase sync error:', e); }
+    })();
 
     // Also define openAdminVideoDB (used by staff videos section)
     function openAdminVideoDB(cb){
@@ -3083,7 +3000,6 @@
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 
-    // ── CUSTOMER PAGE ─────────────────────────────────────────────────
     function saveCustomerPage(){
       var cfg = {};
       ['cp_title','cp_subtitle','cp_banner','cp_labelName','cp_labelPhone','cp_labelCity','cp_labelNotes',
@@ -3096,9 +3012,21 @@
       });
       // Normalize services: strip \r, clean blank lines
       if(cfg.cp_services) cfg.services = cfg.cp_services.replace(/\r/g,'').split('\n').filter(function(s){ return s.trim(); }).join('\n');
+      // Save cities
+      var citiesEl = document.getElementById('cp_cities');
+      if(citiesEl) cfg.cities = citiesEl.value.replace(/\r/g,'').split('\n').map(function(c){return c.trim();}).filter(Boolean);
       localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
       if(window.fbUpdate) fbUpdate('settings', 'customer_page', cfg);
       var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
+    }
+
+    function saveCities(){
+      var citiesEl = document.getElementById('cp_cities');
+      if(!citiesEl) return;
+      var cities = citiesEl.value.replace(/\r/g,'').split('\n').map(function(c){return c.trim();}).filter(Boolean);
+      localStorage.setItem('hs_cities', JSON.stringify(cities));
+      if(window.saveCitiesToFirebase) saveCitiesToFirebase(cities);
+      var t = document.getElementById('citiestoast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },2500); }
     }
 
     function renderCustomerAccounts(){
@@ -3274,6 +3202,16 @@
       ['cp_bannerColor','cp_bannerTextColor','cp_btnColor','cp_btnTextColor','cp_bgColor','cp_cardColor','cp_accentColor'].forEach(function(id){
         var el=document.getElementById(id); if(el && cfg[id]) el.value=cfg[id];
       });
+      // Load cities
+      var citiesEl = document.getElementById('cp_cities');
+      if(citiesEl){
+        var cities = cfg.cities || JSON.parse(localStorage.getItem('hs_cities')||'[]');
+        citiesEl.value = Array.isArray(cities) ? cities.join('\n') : '';
+      }
+      // Also fetch from Firebase in background
+      if(window.loadCitiesFromFirebase) loadCitiesFromFirebase().then(function(cities){
+        if(citiesEl && cities.length) citiesEl.value = cities.join('\n');
+      });
     }
 
     // ── STORE LOAD ────────────────────────────────────────────────────
@@ -3374,56 +3312,78 @@
     function renderCustWallets(){
       var list = document.getElementById('cwList');
       if(!list) return;
+      // Load from Firebase first
+      if(window.getAllCustWalletsFromFirebase){
+        getAllCustWalletsFromFirebase().then(function(fbWallets){
+          fbWallets.forEach(function(w){
+            if(w.email) localStorage.setItem('hs_cw_' + w.email, String(w.balance || 0));
+          });
+          _renderCustWalletsLocal();
+        }).catch(function(){ _renderCustWalletsLocal(); });
+      } else { _renderCustWalletsLocal(); }
+    }
+
+    function _renderCustWalletsLocal(){
+      var list = document.getElementById('cwList');
+      if(!list) return;
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var seen = {};
       var customers = [];
       bookings.forEach(function(b){
-        if(b.name && !seen[b.phone]){
-          seen[b.phone] = true;
-          customers.push({ name: b.name, phone: b.phone });
+        var key = b.email || b.phone;
+        if(b.name && key && !seen[key]){
+          seen[key] = true;
+          customers.push({ name: b.name, phone: b.phone, email: b.email || '' });
         }
       });
       if(!customers.length){ list.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
       list.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
         + '<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.1);">'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Name</th>'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Phone</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Phone / Email</th>'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Balance</th>'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Actions</th>'
         + '</tr></thead><tbody>'
         + customers.map(function(cu){
-            var key = 'hs_cw_' + cu.phone;
-            var bal = parseInt(localStorage.getItem(key) || '0');
+            var lookupKey = cu.email || cu.phone;
+            var bal = parseInt(localStorage.getItem('hs_cw_' + lookupKey) || localStorage.getItem('hs_cw_' + cu.phone) || '0');
             return '<tr style="border-bottom:1px solid rgba(201,168,76,0.05);">'
               + '<td style="padding:0.65rem 0.75rem;font-size:0.88rem;font-weight:600;">' + cu.name + '</td>'
-              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#9a9080;">' + cu.phone + '</td>'
-              + '<td style="padding:0.65rem 0.75rem;font-size:1rem;font-weight:800;color:#4caf50;">₹' + bal + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#9a9080;">' + (cu.email || cu.phone) + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:1rem;font-weight:800;color:#4caf50;">&#8377;' + bal + '</td>'
               + '<td style="padding:0.65rem 0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
               + '<input type="number" id="cw_inp_' + cu.phone + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
-              + '<button onclick="setCustWalletRow(\'' + cu.phone + '\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
-              + '<button onclick="addCustWalletRow(\'' + cu.phone + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
+              + '<button onclick="setCustWalletRow(\'' + cu.phone + '\',\'' + (cu.email||cu.phone) + '\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
+              + '<button onclick="addCustWalletRow(\'' + cu.phone + '\',\'' + (cu.email||cu.phone) + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
               + '</td></tr>';
           }).join('')
         + '</tbody></table>';
     }
 
-    function setCustWalletRow(phone){
+    function setCustWalletRow(phone, email){
       var inp = document.getElementById('cw_inp_' + phone);
       var amt = parseInt(inp.value);
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      var key = email || phone;
+      localStorage.setItem('hs_cw_' + key, amt);
       localStorage.setItem('hs_cw_' + phone, amt);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(key, amt);
       inp.value = '';
-      renderCustWallets();
+      _renderCustWalletsLocal();
     }
 
-    function addCustWalletRow(phone){
+    function addCustWalletRow(phone, email){
       var inp = document.getElementById('cw_inp_' + phone);
       var amt = parseInt(inp.value);
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      var cur = parseInt(localStorage.getItem('hs_cw_' + phone) || '0');
-      localStorage.setItem('hs_cw_' + phone, cur + amt);
+      var key = email || phone;
+      var cur = parseInt(localStorage.getItem('hs_cw_' + key) || localStorage.getItem('hs_cw_' + phone) || '0');
+      var newBal = cur + amt;
+      localStorage.setItem('hs_cw_' + key, newBal);
+      localStorage.setItem('hs_cw_' + phone, newBal);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(key, newBal);
       inp.value = '';
-      renderCustWallets();
+      _renderCustWalletsLocal();
     }
 
     function setCustWallet(){
@@ -3431,9 +3391,10 @@
       var amt = parseInt(document.getElementById('cwAmount').value);
       if(!email){ alert('Enter customer email/username.'); return; }
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      localStorage.setItem('hs_customer_wallet', amt);
-      showCwMsg('Balance set to ₹' + amt + ' for ' + email);
-      renderCustWallets();
+      localStorage.setItem('hs_cw_' + email, amt);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt);
+      showCwMsg('Balance set to \u20b9' + amt + ' for ' + email);
+      _renderCustWalletsLocal();
     }
 
     function addCustWallet(){
@@ -3441,10 +3402,17 @@
       var amt = parseInt(document.getElementById('cwAmount').value);
       if(!email){ alert('Enter customer email/username.'); return; }
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      var cur = parseInt(localStorage.getItem('hs_customer_wallet') || '0');
-      localStorage.setItem('hs_customer_wallet', cur + amt);
-      showCwMsg('Added ₹' + amt + '. New balance: ₹' + (cur + amt));
-      renderCustWallets();
+      if(window.addCustWalletFirebase){
+        addCustWalletFirebase(email, amt).then(function(newBal){
+          if(newBal !== null) showCwMsg('Added \u20b9' + amt + '. New balance: \u20b9' + newBal);
+          _renderCustWalletsLocal();
+        });
+      } else {
+        var cur = parseInt(localStorage.getItem('hs_cw_' + email) || '0');
+        localStorage.setItem('hs_cw_' + email, cur + amt);
+        showCwMsg('Added \u20b9' + amt + '. New balance: \u20b9' + (cur + amt));
+        _renderCustWalletsLocal();
+      }
     }
 
     function showCwMsg(txt){
@@ -3693,16 +3661,18 @@
     }
 
     function renderAssignedList(){
-      var list = getAssignedShoots().slice().reverse();
-      document.getElementById('assignedCount').textContent = list.length + ' assignment(s)';
-      // update stats
-      document.getElementById('as_statTotal').textContent = list.length;
-      document.getElementById('as_statPending').textContent = list.filter(function(a){ return a.status==='assigned'; }).length;
-      document.getElementById('as_statDone').textContent = list.filter(function(a){ return a.status==='done'||a.status==='completed'; }).length;
-      document.getElementById('as_statPaid').textContent = list.filter(function(a){ return a.status==='paid'; }).length;
+      var all = getAssignedShoots().slice().reverse();
+      // Date filter
+      var df = (document.getElementById('assignFilterDate')||{}).value||'';
+      var list = df ? all.filter(function(a){ return a.date === df; }) : all;
+      document.getElementById('assignedCount').textContent = list.length + ' assignment(s)' + (df ? ' on '+df : '');
+      document.getElementById('as_statTotal').textContent = all.length;
+      document.getElementById('as_statPending').textContent = all.filter(function(a){ return a.status==='assigned'; }).length;
+      document.getElementById('as_statDone').textContent = all.filter(function(a){ return a.status==='done'||a.status==='completed'; }).length;
+      document.getElementById('as_statPaid').textContent = all.filter(function(a){ return a.status==='paid'; }).length;
       var el = document.getElementById('assignedList');
       if(!list.length){
-        el.innerHTML = '<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">No shoots assigned yet.</p>';
+        el.innerHTML = '<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;">'+(df?'No shoots assigned on '+df+'.':'No shoots assigned yet.')+'</p>';
         return;
       }
       var statusColors = { assigned:'#ff9800', done:'#9c27b0', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
@@ -3761,26 +3731,41 @@
     }
 
     function adminVideoSection(a){
-      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.assignId == a.id; });
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.assignId == a.id && !v.isFeedback; });
       if(!videos.length) return '<div style="font-size:0.72rem;color:#777;margin-top:0.5rem;"><i class="fas fa-clock"></i> No edited video uploaded yet.</div>';
-      var html = '<div style="margin-top:0.75rem;padding:0.75rem;background:#0a0a0a;border-radius:8px;border:1px solid rgba(76,175,80,0.2);">';
-      html += '<div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-film"></i> Edited Video Uploaded by Staff</div>';
+      var html = '<div style="margin-top:0.85rem;padding:1rem;background:#0a0a0a;border-radius:10px;border:1px solid rgba(76,175,80,0.3);">';
+      html += '<div style="font-size:0.82rem;color:#4caf50;font-weight:800;margin-bottom:0.75rem;"><i class="fas fa-film"></i> Edited Video — Watch &amp; Approve</div>';
       videos.forEach(function(v){
-        html += '<div id="adminVidPlayer_'+v.id+'" style="color:#9a9080;font-size:0.75rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-        openAdminVideoDB(function(db){
-          if(!db) return;
-          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-          req.onsuccess = function(){
-            var el = document.getElementById('adminVidPlayer_'+v.id);
-            if(!el) return;
-            if(req.result && req.result.blob){
-              var url = URL.createObjectURL(req.result.blob);
-              el.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:220px;border-radius:8px;margin-top:0.3rem;"></video>'
-                + '<div style="font-size:0.68rem;color:#9a9080;margin-top:0.3rem;">' + v.staffName + ' &nbsp;·&nbsp; ' + v.sizeMB + ' MB &nbsp;·&nbsp; ' + (v.uploadedAt||'') + '</div>';
-            } else { el.textContent = 'Video not found.'; }
-          };
-        });
+        if(v.cloudUrl){
+          html += '<video src="'+v.cloudUrl+'" controls style="width:100%;max-height:280px;border-radius:8px;background:#000;display:block;margin-bottom:0.4rem;"></video>';
+        } else {
+          html += '<div id="adminVidPlayer_'+v.id+'" style="color:#9a9080;font-size:0.75rem;margin-bottom:0.4rem;"><i class="fas fa-spinner fa-spin"></i> Loading video...</div>';
+          (function(vid){
+            openAdminVideoDB(function(db){
+              if(!db) return;
+              var req = db.transaction('videos','readonly').objectStore('videos').get(vid.id);
+              req.onsuccess = function(){
+                var el2 = document.getElementById('adminVidPlayer_'+vid.id);
+                if(!el2) return;
+                if(req.result && req.result.blob){
+                  var url = URL.createObjectURL(req.result.blob);
+                  el2.innerHTML = '<video src="'+url+'" controls style="width:100%;max-height:280px;border-radius:8px;background:#000;display:block;"></video>';
+                } else { el2.textContent = 'Video not available.'; }
+              };
+            });
+          })(v);
+        }
+        html += '<div style="font-size:0.7rem;color:#9a9080;margin-bottom:0.5rem;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> <strong style="color:#fff;">'+v.staffName+'</strong> &nbsp;·&nbsp; '+v.sizeMB+' MB &nbsp;·&nbsp; '+(v.uploadedAt||'')+'</div>';
       });
+      if(a.status === 'done'){
+        html += '<div style="display:flex;align-items:center;gap:0.65rem;margin-top:0.5rem;flex-wrap:wrap;">'
+          + '<span style="font-size:0.78rem;color:#9a9080;">Payment \u20b9</span>'
+          + '<input type="number" id="creditEdit_'+a.id+'" value="'+a.credit+'" min="0" style="width:90px;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:7px;padding:0.35rem 0.5rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
+          + '<button onclick="approveAndPay('+a.id+')" style="background:linear-gradient(135deg,#4caf50,#2e7d32);border:none;color:#fff;padding:0.55rem 1.25rem;border-radius:8px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check-circle"></i> Approve &amp; Send to Wallet</button>'
+          + '</div>';
+      } else if(a.status === 'paid'){
+        html += '<div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);border-radius:8px;padding:0.5rem 0.85rem;font-size:0.82rem;font-weight:700;color:#2196f3;"><i class="fas fa-check-double"></i> Approved \u2014 \u20b9'+a.credit.toLocaleString('en-IN')+' sent to '+a.staffName+'\'s wallet</div>';
+      }
       html += '</div>';
       return html;
     }
@@ -3801,27 +3786,37 @@
       var list = getAssignedShoots();
       var a = list.find(function(x){ return x.id===id; });
       if(!a) return;
-      // Read edited credit amount if admin changed it
       var inp = document.getElementById('creditEdit_' + id);
       if(inp && inp.value) a.credit = Number(inp.value) || a.credit;
-      if(!confirm('Approve shoot and release \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
-      var walletKey = 'hs_wallet_' + a.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
-      wallet.balance += a.credit;
-      wallet.totalEarned += a.credit;
-      wallet.transactions.push({ type:'credit', amount:a.credit, label:'Payment Released: '+a.service, note:a.clientName+' — '+(a.location||a.city), date:new Date().toLocaleString() });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
+      if(!a.credit || a.credit <= 0){ alert('Please enter a valid payment amount.'); return; }
+      if(!confirm('Approve shoot and send \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '\'s wallet?')) return;
       a.status = 'paid';
       a.paidAt = new Date().toLocaleString();
       a.payoutRequested = false;
       saveAssignedShoots(list);
-      // Push payment release to Firebase so staff wallet updates on any device
+      // Update shoot status in Firebase
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'paid', paidAt:a.paidAt, credit:a.credit});
-      if(window.fbUpdate) fbUpdate('wallets', String(a.staffId), {balance:wallet.balance, totalEarned:wallet.totalEarned, pending:wallet.pending, lastUpdated:new Date().toLocaleString()});
+      // Credit wallet — uses fbCreditWallet which updates Firebase + localStorage atomically
+      var label = 'Payment Released: ' + a.service;
+      var note  = a.clientName + ' \u2014 ' + (a.location||a.city||'');
+      if(window.fbCreditWallet){
+        fbCreditWallet(a.staffId, a.credit, label, note).then(function(ok){
+          if(!ok) console.warn('fbCreditWallet failed, wallet may be out of sync');
+        });
+      } else {
+        // Fallback: localStorage only
+        var walletKey = 'hs_wallet_' + a.staffId;
+        var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+        if(!wallet.transactions) wallet.transactions = [];
+        wallet.pending = Math.max(0, (wallet.pending||0) - a.credit);
+        wallet.balance = (wallet.balance||0) + a.credit;
+        wallet.totalEarned = (wallet.totalEarned||0) + a.credit;
+        wallet.transactions.push({type:'credit', amount:a.credit, label:label, note:note, date:new Date().toLocaleString()});
+        localStorage.setItem(walletKey, JSON.stringify(wallet));
+      }
       renderAssignedList();
       updateCreatorPendingPayments();
-      showAssignToast('\u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      showAssignToast('\u2705 \u20b9' + a.credit.toLocaleString('en-IN') + ' sent to ' + a.staffName + '\'s wallet!', true);
     }
 
     function markShootComplete(id){
@@ -3839,27 +3834,27 @@
       var list = getAssignedShoots();
       var a = list.find(function(x){ return x.id===id; });
       if(!a) return;
-      if(!confirm('Release ₹' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
-
-      // Move from pending to balance in staff wallet
-      var walletKey = 'hs_wallet_' + a.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
-      wallet.balance += a.credit;
-      wallet.totalEarned += a.credit;
-      wallet.transactions.push({
-        type: 'credit', amount: a.credit,
-        label: 'Payment Released: ' + a.service,
-        note: a.clientName + ' — ' + a.city,
-        date: new Date().toLocaleString()
-      });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-
+      if(!confirm('Release \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
       a.status = 'paid';
       a.paidAt = new Date().toLocaleString();
       saveAssignedShoots(list);
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'paid', paidAt:a.paidAt});
+      var label = 'Payment Released: ' + a.service;
+      var note  = a.clientName + ' \u2014 ' + (a.city||'');
+      if(window.fbCreditWallet){
+        fbCreditWallet(a.staffId, a.credit, label, note);
+      } else {
+        var walletKey = 'hs_wallet_' + a.staffId;
+        var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+        if(!wallet.transactions) wallet.transactions = [];
+        wallet.pending = Math.max(0, (wallet.pending||0) - a.credit);
+        wallet.balance = (wallet.balance||0) + a.credit;
+        wallet.totalEarned = (wallet.totalEarned||0) + a.credit;
+        wallet.transactions.push({type:'credit', amount:a.credit, label:label, note:note, date:new Date().toLocaleString()});
+        localStorage.setItem(walletKey, JSON.stringify(wallet));
+      }
       renderAssignedList();
-      showAssignToast('Payment of ₹' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      showAssignToast('\u2705 \u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
     // STAFF WITHDRAW TAB
@@ -3870,8 +3865,13 @@
       document.querySelectorAll('#tab-withdraw .filter-btn').forEach(function(b){ b.classList.remove('active'); });
       var first = document.querySelector('#tab-withdraw .filter-btn');
       if(first) first.classList.add('active');
-      renderWithdrawList();
-      updateWithdrawBadge();
+      // Load from Firebase first, then render
+      if(window.loadWithdrawFromFirebase){
+        loadWithdrawFromFirebase().then(function(){ renderWithdrawList(); updateWithdrawBadge(); });
+      } else {
+        renderWithdrawList();
+        updateWithdrawBadge();
+      }
     }
 
     function filterWithdraw(status, btn){
@@ -3984,11 +3984,11 @@
       var cfg = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       document.getElementById('rp_key_id').value          = cfg.keyId          || '';
       document.getElementById('rp_key_secret').value      = cfg.keySecret      || '';
-      document.getElementById('rp_business_name').value   = cfg.businessName   || 'OG SHOOTS';
+      document.getElementById('rp_business_name').value   = cfg.businessName   || 'OG Shoots';
       document.getElementById('rp_logo').value            = cfg.logo           || '';
       document.getElementById('rp_default_amount').value  = cfg.defaultAmount  || '';
       document.getElementById('rp_currency').value        = cfg.currency       || 'INR';
-      document.getElementById('rp_description').value     = cfg.description    || 'OG SHOOTS — Reel Shoot Booking';
+      document.getElementById('rp_description').value     = cfg.description    || 'OG Shoots — Reel Shoot Booking';
       document.getElementById('rp_enabled').checked       = cfg.enabled        || false;
       populateRpBookingSelect();
       renderPaymentHistory();
@@ -3999,19 +3999,23 @@
       var cfg = {
         keyId:         keyId,
         keySecret:     document.getElementById('rp_key_secret').value.trim(),
-        businessName:  document.getElementById('rp_business_name').value.trim() || 'OG SHOOTS',
+        businessName:  document.getElementById('rp_business_name').value.trim() || 'OG Shoots',
         logo:          document.getElementById('rp_logo').value.trim(),
         defaultAmount: parseInt(document.getElementById('rp_default_amount').value) || 0,
         currency:      document.getElementById('rp_currency').value,
-        description:   document.getElementById('rp_description').value.trim() || 'OG SHOOTS — Booking Payment',
+        description:   document.getElementById('rp_description').value.trim() || 'OG Shoots — Booking Payment',
         enabled:       document.getElementById('rp_enabled').checked
       };
       localStorage.setItem('hs_razorpay', JSON.stringify(cfg));
-      // Sync to Firestore so customers can fetch it cross-device
+      // Sync to Firestore — both collections so customer page always gets it
       (async()=>{
         var f = await _fbAdmin(); if(!f) return;
-        try{ await f.s.setDoc(f.s.doc(f.db,'razorpay_config','config'), cfg, {merge:true}); }catch(e){}
+        try{
+          await f.s.setDoc(f.s.doc(f.db,'razorpay_config','config'), cfg, {merge:true});
+          await f.s.setDoc(f.s.doc(f.db,'razorpay_config','main'), cfg, {merge:true});
+        }catch(e){ console.error('Razorpay Firebase sync error:',e); }
       })();
+      if(window.saveRazorpayToFirebase) saveRazorpayToFirebase(cfg);
       var toast = document.getElementById('rpToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display = 'none'; }, 3000);
@@ -4196,71 +4200,6 @@
         alert('Storage full! Please use smaller photos (the system auto-compresses, but your images may still be too large). Try removing one photo and saving again.');
       }
     }
-    // OPENING SCREEN
-    var _opEnabled = false;
-    var _opSound = true;
-    function loadOpening(){
-      var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
-      _opEnabled = (cfg.enabled !== false);
-      _opSound   = (cfg.countdownSound !== false);
-      var els = {
-        f1n:'op_f1name', f1r:'op_f1role', f1p:'op_f1photo',
-        f2n:'op_f2name', f2r:'op_f2role', f2p:'op_f2photo',
-        bg:'op_bgphoto', pl:'op_place', dt:'op_date', mu:'op_musicurl'
-      };
-      var defs = {
-        f1n:'Boddu Srisanth', f1r:'Founder & CEO', f1p:'srisanth.jpeg',
-        f2n:'Gulimi Sumanth', f2r:'Managing Director', f2p:'sumanth.jpeg',
-        bg:'', pl:'', dt:'', mu:''
-      };
-      var cfgMap = {
-        f1n:'founder1Name', f1r:'founder1Role', f1p:'founder1Photo',
-        f2n:'founder2Name', f2r:'founder2Role', f2p:'founder2Photo',
-        bg:'bgPhoto', pl:'placeText', dt:'dateText', mu:'musicUrl'
-      };
-      Object.keys(els).forEach(function(k){
-        var el=document.getElementById(els[k]);
-        if(el) el.value = cfg[cfgMap[k]] || defs[k];
-      });
-      updateOpToggle();
-      updateOpSoundToggle();
-    }
-    function updateOpToggle(){
-      var t=document.getElementById('op_toggle'),k=document.getElementById('op_knob');
-      if(!t||!k) return;
-      t.style.background=_opEnabled?'#c9a84c':'#333';
-      k.style.transform=_opEnabled?'translateX(24px)':'translateX(0)';
-    }
-    function updateOpSoundToggle(){
-      var t=document.getElementById('op_sound_toggle'),k=document.getElementById('op_sound_knob');
-      if(!t||!k) return;
-      t.style.background=_opSound?'#c9a84c':'#333';
-      k.style.transform=_opSound?'translateX(20px)':'translateX(0)';
-    }
-    function toggleOpening(){ _opEnabled=!_opEnabled; updateOpToggle(); }
-    function toggleOpSound(){ _opSound=!_opSound; updateOpSoundToggle(); }
-    function saveOpening(){
-      var g=function(id){return (document.getElementById(id)||{}).value||'';};
-      var data={
-        enabled:       _opEnabled,
-        countdownSound:_opSound,
-        founder1Name:  g('op_f1name').trim()||'Boddu Srisanth',
-        founder1Role:  g('op_f1role').trim()||'Founder & CEO',
-        founder1Photo: g('op_f1photo').trim()||'srisanth.jpeg',
-        founder2Name:  g('op_f2name').trim()||'Gulimi Sumanth',
-        founder2Role:  g('op_f2role').trim()||'Managing Director',
-        founder2Photo: g('op_f2photo').trim()||'sumanth.jpeg',
-        bgPhoto:       g('op_bgphoto').trim(),
-        placeText:     g('op_place').trim(),
-        dateText:      g('op_date').trim(),
-        musicUrl:      g('op_musicurl').trim()
-      };
-      localStorage.setItem('hs_opening',JSON.stringify(data));
-      var toast=document.getElementById('saveToast');
-      if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
-      else{alert('Saved!');}
-    }
-    document.addEventListener('DOMContentLoaded',function(){loadOpening();});
     // ENQUIRIES
     function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
 
@@ -4405,34 +4344,54 @@
     }
 
     function renderNotifications(){
+      // Load from Firebase first, then render
+      if(window.loadAdminNotificationsFromFirebase){
+        loadAdminNotificationsFromFirebase().then(function(fbNotifs){
+          var local = getNotifications();
+          fbNotifs.forEach(function(n){
+            var id = n._fbId || n.id;
+            var idx = local.findIndex(function(x){ return String(x._fbId)===String(id)||String(x.id)===String(id); });
+            var merged = Object.assign({}, n, { id: id });
+            if(idx > -1) Object.assign(local[idx], merged);
+            else local.push(merged);
+          });
+          saveNotifications(local);
+          _doRenderNotifications();
+        }).catch(function(){ _doRenderNotifications(); });
+      } else { _doRenderNotifications(); }
+    }
+
+    function _doRenderNotifications(){
       var notifs = getNotifications().slice().reverse();
-      // mark all as read
       notifs.forEach(function(n){ n.read = true; });
       saveNotifications(notifs.slice().reverse());
       updateNotifBadge();
-
       document.getElementById('notifCount').textContent = notifs.length + ' notification' + (notifs.length===1?'':'s');
       var el = document.getElementById('notificationsList');
       if(!notifs.length){
         el.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a9080;"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No notifications yet.</div>';
         return;
       }
-      var icons = { payout:'fa-hand-holding-usd', done:'fa-flag-checkered', booking:'fa-calendar-alt', enquiry:'fa-envelope', feedback:'fa-star', reel:'fa-film' };
-      var colors = { payout:'#2196f3', done:'#9c27b0', booking:'#4caf50', enquiry:'#c9a84c', feedback:'#f5a623', reel:'#ff9800' };
+      var icons = { payout:'fa-hand-holding-usd', done:'fa-flag-checkered', booking:'fa-calendar-alt', enquiry:'fa-envelope', feedback:'fa-star', reel:'fa-film', payment:'fa-credit-card', payment_failed:'fa-times-circle' };
+      var colors = { payout:'#2196f3', done:'#9c27b0', booking:'#4caf50', enquiry:'#c9a84c', feedback:'#f5a623', reel:'#ff9800', payment:'#4caf50', payment_failed:'#f44336' };
       el.innerHTML = notifs.map(function(n){
         var icon  = icons[n.type]  || 'fa-bell';
         var color = colors[n.type] || '#c9a84c';
+        var viewBtn = '';
+        if(n.actionTab){
+          viewBtn = '<button onclick="_notifView(\'' + n.actionTab + '\',' + String(n.id) + ')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>';
+        }
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
           + '<div style="display:flex;align-items:flex-start;gap:0.85rem;">'
           + '<div style="width:40px;height:40px;border-radius:10px;background:'+color+'22;border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas '+icon+'" style="color:'+color+';"></i></div>'
           + '<div>'
-          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">'+n.title+'</div>'
-          + '<div style="font-size:0.75rem;color:#9a9080;">'+n.sub+'</div>'
-          + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+n.time+'</div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">'+(n.title||'Notification')+'</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;">'+(n.sub||n.message||'')+'</div>'
+          + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+(n.time||'')+'</div>'
           + '</div></div>'
           + '<div style="display:flex;gap:0.5rem;align-items:center;">'
-          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
-          + '<button onclick="deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + viewBtn
+          + '<button onclick="deleteNotif('+String(n.id)+')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
           + '</div></div>';
       }).join('');
     }
@@ -4440,6 +4399,17 @@
     function deleteNotif(id){
       saveNotifications(getNotifications().filter(function(n){ return n.id !== id; }));
       renderNotifications();
+    }
+
+    function _notifView(tab, notifId){
+      // Find the tab button that matches this tab name and click it
+      var btn = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){
+        var m = b.getAttribute('onclick');
+        return m && m.indexOf("'" + tab + "'") !== -1;
+      });
+      if(btn) switchTab(tab, btn);
+      else if(typeof switchTab === 'function') switchTab(tab, null);
+      if(notifId !== undefined) deleteNotif(notifId);
     }
 
     function clearAllNotifications(){
@@ -4511,7 +4481,14 @@
 
     // CAREER APPS
     function renderCareerApps(){
-      var list = JSON.parse(localStorage.getItem('hs_career_applications')||'[]').slice().reverse();
+      if(window.loadCareerAppsFromFirebase){
+        loadCareerAppsFromFirebase().then(function(list){ _renderCareerList(list); }).catch(function(){
+          _renderCareerList(JSON.parse(localStorage.getItem('hs_career_applications')||'[]'));
+        });
+      } else { _renderCareerList(JSON.parse(localStorage.getItem('hs_career_applications')||'[]')); }
+    }
+    function _renderCareerList(list){
+      list = list.slice().reverse();
       var countEl = document.getElementById('careerAppsCount');
       if(countEl) countEl.textContent = list.length+' application(s)';
       var el = document.getElementById('careerAppsList');
@@ -4520,7 +4497,7 @@
       el.innerHTML = list.map(function(a){
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+' &nbsp;<span style="color:#c9a84c;font-size:0.78rem;">'+a.role+'</span></div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;&middot;&nbsp; '+a.phone+'</div>'
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
           +'</div>';
       }).join('');
@@ -4528,7 +4505,14 @@
 
     // AFFILIATE APPS
     function renderAffiliateApps(){
-      var list = JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]').slice().reverse();
+      if(window.loadAffiliateAppsFromFirebase){
+        loadAffiliateAppsFromFirebase().then(function(list){ _renderAffiliateList(list); }).catch(function(){
+          _renderAffiliateList(JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]'));
+        });
+      } else { _renderAffiliateList(JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]')); }
+    }
+    function _renderAffiliateList(list){
+      list = list.slice().reverse();
       var countEl = document.getElementById('affiliateAppsCount');
       if(countEl) countEl.textContent = list.length+' application(s)';
       var el = document.getElementById('affiliateAppsList');
@@ -4537,7 +4521,7 @@
       el.innerHTML = list.map(function(a){
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+' &nbsp;·&nbsp; '+a.channel+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;&middot;&nbsp; '+a.phone+' &nbsp;&middot;&nbsp; '+a.channel+'</div>'
           +(a.profile?'<div style="font-size:0.72rem;margin-top:0.2rem;"><a href="'+a.profile+'" target="_blank" style="color:#c9a84c;">'+a.profile+'</a></div>':'')
           +(a.audience?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;">'+a.audience+'</div>':'')
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
@@ -4548,7 +4532,12 @@
 
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
-    function saveBlogs(list){ localStorage.setItem('hs_blogs', JSON.stringify(list)); if(window.fbUpdate) fbUpdate('settings','blogs',{items:list}); }
+    function saveBlogs(list){
+      localStorage.setItem('hs_blogs', JSON.stringify(list));
+      // Save to Firebase so blog.html picks it up
+      if(window.saveBlogToFirebase) saveBlogToFirebase(list);
+      else if(window.fbUpdate) fbUpdate('settings','blogs',{items:list});
+    }
     function saveBlogPost(){
       var title = document.getElementById('bl_title').value.trim();
       var desc  = document.getElementById('bl_desc').value.trim();
@@ -4572,7 +4561,15 @@
       renderBlogList();
     }
     function renderBlogList(){
-      var posts = getBlogs().slice().reverse();
+      // Load from Firebase first
+      if(window.loadBlogFromFirebase){
+        loadBlogFromFirebase().then(function(posts){ _renderBlogListLocal(posts); }).catch(function(){
+          _renderBlogListLocal(getBlogs());
+        });
+      } else { _renderBlogListLocal(getBlogs()); }
+    }
+    function _renderBlogListLocal(posts){
+      posts = posts.slice().reverse();
       document.getElementById('blCount').textContent = posts.length+' post(s)';
       var el = document.getElementById('blList');
       if(!posts.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No blog posts yet.</p>'; return; }
@@ -4581,9 +4578,9 @@
           +'<div style="flex:1;">'
           +(p.img?'<img src="'+p.img+'" style="width:60px;height:60px;object-fit:cover;border-radius:8px;float:right;margin-left:0.75rem;"/>':'')
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+p.title+'</div>'
-          +'<div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-bottom:0.2rem;">'+p.category+(p.featured?' &nbsp;·&nbsp; <span style="color:#f5a623;">★ Featured</span>':'')+'</div>'
+          +'<div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-bottom:0.2rem;">'+p.category+(p.featured?' &nbsp;&middot;&nbsp; <span style="color:#f5a623;">★ Featured</span>':'')+'</div>'
           +'<div style="font-size:0.78rem;color:#9a9080;">'+p.desc.slice(0,100)+'...</div>'
-          +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+p.date+' &nbsp;·&nbsp; '+p.read+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+p.date+' &nbsp;&middot;&nbsp; '+p.read+'</div>'
           +'</div>'
           +'<button onclick="deleteBlogPost("+String(p.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
@@ -4597,7 +4594,11 @@
 
     // PRESS
     function getPressItems(){ return JSON.parse(localStorage.getItem('hs_press')||'[]'); }
-    function savePressItems(list){ localStorage.setItem('hs_press', JSON.stringify(list)); if(window.fbUpdate) fbUpdate('settings','press',{items:list}); }
+    function savePressItems(list){
+      localStorage.setItem('hs_press', JSON.stringify(list));
+      if(window.savePressToFirebase) savePressToFirebase(list);
+      else if(window.fbUpdate) fbUpdate('settings','press',{items:list});
+    }
     function savePressItem(){
       var pub   = document.getElementById('pr_pub').value.trim();
       var title = document.getElementById('pr_title').value.trim();
@@ -4628,7 +4629,7 @@
           +'<div style="font-size:0.65rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.3rem;">'+p.pub+'</div>'
           +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+p.title+'</div>'
           +(p.desc?'<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.2rem;">'+p.desc.slice(0,100)+'...</div>':'')
-          +'<div style="font-size:0.65rem;color:#777;">'+p.date+(p.url?' &nbsp;·&nbsp; <a href="'+p.url+'" target="_blank" style="color:#c9a84c;">View Article</a>':'')+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;">'+p.date+(p.url?' &nbsp;&middot;&nbsp; <a href="'+p.url+'" target="_blank" style="color:#c9a84c;">View Article</a>':'')+'</div>'
           +'</div>'
           +'<button onclick="deletePressItem("+String(p.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;flex-shrink:0;"><i class="fas fa-trash"></i></button>'
           +'</div>';
@@ -4647,7 +4648,8 @@
         reels:    document.getElementById('ps_reels').value.trim()
       };
       localStorage.setItem('hs_press_stats', JSON.stringify(stats));
-      if(window.fbUpdate) fbUpdate('settings','press_stats', stats);
+      if(window.savePressStatsToFirebase) savePressStatsToFirebase(stats);
+      else if(window.fbUpdate) fbUpdate('settings','press_stats', stats);
       var t=document.getElementById('psToast'); t.style.display='block'; setTimeout(function(){t.style.display='none';},2500);
     }
     function loadPressStats(){
@@ -4906,6 +4908,51 @@
       } catch(e){ console.log('Firebase admin error:',e); }
     })();
 
+    // ── ADDITIONAL REAL-TIME LISTENERS (payout, notifications, career, affiliate, testimonials) ──
+    (async function(){
+      try {
+        await new Promise(function(r){ setTimeout(r, 2000); });
+        // Payout requests — real-time
+        if(window.listenPayoutRequests){
+          listenPayoutRequests(function(reqs){
+            if(currentTab === 'withdraw') renderWithdrawList();
+            updateWithdrawBadge();
+            // Notify admin of new pending requests
+            var pending = reqs.filter(function(r){ return r.status === 'pending'; });
+            if(pending.length > 0) pushNotif('payout', '\uD83D\uDCB8 Payout Request', pending[pending.length-1].staffName + ' requested \u20b9' + (pending[pending.length-1].amount||0).toLocaleString('en-IN'), 'withdraw');
+          });
+        }
+        // Admin notifications — real-time
+        if(window.listenAdminNotifications){
+          listenAdminNotifications(function(notifs){
+            var unread = notifs.filter(function(n){ return !n.read; }).length;
+            var badge = document.getElementById('notifBadge');
+            if(badge){ badge.textContent = unread; badge.style.display = unread > 0 ? 'inline' : 'none'; }
+            if(currentTab === 'notifications') _doRenderNotifications();
+          });
+        }
+        // Career apps — real-time
+        if(window.listenCareerApps){
+          listenCareerApps(function(apps){
+            if(currentTab === 'careers') _renderCareerList(apps);
+          });
+        }
+        // Affiliate apps — real-time
+        if(window.listenAffiliateApps){
+          listenAffiliateApps(function(apps){
+            if(currentTab === 'affiliates') _renderAffiliateList(apps);
+          });
+        }
+        // Testimonial videos — real-time
+        if(window.listenTestiVideos){
+          listenTestiVideos(function(videos){
+            if(currentTab === 'testimonial-videos') renderTestiVideos();
+          });
+        }
+        console.log('[Admin] Extended Firebase listeners active');
+      } catch(e){ console.error('Extended Firebase listeners error:', e); }
+    })();
+
     // ── ADVANCED DATE PICKER ──────────────────────────────────────────
     var _calYear, _calMonth, _selDate;
     (function(){ var n=new Date(); _calYear=n.getFullYear(); _calMonth=n.getMonth(); })();
@@ -4984,6 +5031,511 @@
       if(!e.target.closest('#as_date_display')&&!e.target.closest('#as_date_picker')){var dp=document.getElementById('as_date_picker');if(dp)dp.style.display='none';}
       if(!e.target.closest('#as_time_display')&&!e.target.closest('#as_time_picker')){var tp=document.getElementById('as_time_picker');if(tp)tp.style.display='none';}
     });
+
+    // ── SHOOT REELS & FEEDBACK TAB ────────────────────────────────────
+    function renderShootReelsAdmin(){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+      var assigns = getAssignedShoots();
+      var staffList = getStaff();
+
+      // Populate staff filter
+      var selStaff = document.getElementById('shootReelsFilterStaff');
+      if(selStaff){
+        var curStaff = selStaff.value;
+        selStaff.innerHTML = '<option value="">All Staff</option>';
+        staffList.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; selStaff.appendChild(o); });
+        selStaff.value = curStaff;
+      }
+
+      // Apply filters
+      var filterStaff  = selStaff ? selStaff.value : '';
+      var filterType   = (document.getElementById('shootReelsFilterType')   || {}).value || '';
+      var filterStatus = (document.getElementById('shootReelsFilterStatus') || {}).value || '';
+      var search       = ((document.getElementById('shootReelsSearch')       || {}).value || '').toLowerCase();
+
+      var filtered = videos.slice().reverse();
+      if(filterStaff)  filtered = filtered.filter(function(v){ return String(v.staffId) === String(filterStaff); });
+      if(filterType === 'shoot')    filtered = filtered.filter(function(v){ return !v.isFeedback; });
+      if(filterType === 'feedback') filtered = filtered.filter(function(v){ return !!v.isFeedback; });
+      if(filterStatus) filtered = filtered.filter(function(v){
+        var a = assigns.find(function(x){ return String(x.id) === String(v.assignId); });
+        return a && a.status === filterStatus;
+      });
+      if(search) filtered = filtered.filter(function(v){
+        var a = assigns.find(function(x){ return String(x.id) === String(v.assignId); });
+        var hay = (v.staffName||'') + ' ' + (v.title||'') + ' ' + (a ? (a.service||'')+(a.clientName||'')+(a.city||a.location||'') : '');
+        return hay.toLowerCase().includes(search);
+      });
+
+      // Stats
+      var allVids = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+      var el_total    = document.getElementById('shootReelsTotal');    if(el_total)    el_total.textContent    = allVids.length;
+      var el_shoot    = document.getElementById('shootReelsDelivered'); if(el_shoot)    el_shoot.textContent    = allVids.filter(function(v){ return !v.isFeedback; }).length;
+      var el_feedback = document.getElementById('shootReelsFeedback'); if(el_feedback) el_feedback.textContent = allVids.filter(function(v){ return !!v.isFeedback; }).length;
+      var el_pending  = document.getElementById('shootReelsPending');  if(el_pending)  el_pending.textContent  = allVids.filter(function(v){
+        var a = assigns.find(function(x){ return String(x.id) === String(v.assignId); });
+        return a && a.status === 'assigned';
+      }).length;
+
+      var countEl = document.getElementById('shootReelsCount');
+      if(countEl) countEl.textContent = filtered.length + ' video(s)';
+
+      var grid = document.getElementById('shootReelsAdminGrid');
+      if(!filtered.length){
+        grid.innerHTML = '<div style="text-align:center;padding:3rem;color:#6a5a40;grid-column:1/-1;"><i class="fas fa-film" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>No videos found.</div>';
+        return;
+      }
+      grid.innerHTML = '';
+      filtered.forEach(function(v){
+        var assign = assigns.find(function(a){ return String(a.id) === String(v.assignId); });
+        var typeLabel = v.isFeedback ? 'Feedback Video' : 'Shoot Reel';
+        var typeColor = v.isFeedback ? '#9c27b0' : '#c9a84c';
+        var statusLabel = assign ? assign.status : 'unknown';
+        var statusColor = {assigned:'#ff9800',done:'#4caf50',completed:'#2196f3',paid:'#2196f3',cancelled:'#f44336'}[statusLabel] || '#777';
+
+        var card = document.createElement('div');
+        card.className = 'shoot-reel-card';
+        var videoHtml = v.cloudUrl
+          ? '<video src="'+v.cloudUrl+'" controls preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>'
+          : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
+
+        card.innerHTML =
+          '<div class="shoot-reel-preview">'
+          + videoHtml
+          + '<span class="shoot-reel-type-badge" style="background:'+typeColor+'22;border:1px solid '+typeColor+'44;color:'+typeColor+'">'+typeLabel+'</span>'
+          + '</div>'
+          + '<div class="shoot-reel-info">'
+          + '<div class="shoot-reel-header">'
+          + '<div><div class="shoot-reel-title">'+(v.title||v.staffName||'Video')+'</div><div class="shoot-reel-staff"><i class="fas fa-user-circle"></i> '+v.staffName+'</div></div>'
+          + '<span class="shoot-reel-status" style="background:'+statusColor+'22;border:1px solid '+statusColor+'44;color:'+statusColor+'">'+statusLabel+'</span>'
+          + '</div>'
+          + (assign ? '<div class="shoot-reel-assignment"><div class="shoot-reel-assignment-title"><i class="fas fa-camera"></i> '+assign.service+'</div><div class="shoot-reel-assignment-grid"><div style="color:#9a9080;"><i class="fas fa-user"></i> '+assign.clientName+'</div><div style="color:#9a9080;"><i class="fas fa-map-marker-alt"></i> '+(assign.location||assign.city||'—')+'</div><div style="color:#9a9080;"><i class="fas fa-calendar"></i> '+assign.date+'</div><div style="color:#9a9080;"><i class="fas fa-clock"></i> '+assign.time+'</div></div></div>' : '')
+          + '<div class="shoot-reel-meta"><span>'+(v.uploadedAt||'')+'</span><span>'+(v.sizeMB||'')+(v.sizeMB?' MB':'')+'</span></div>'
+          + '<div class="shoot-reel-actions">'
+          + (v.cloudUrl ? '<a href="'+v.cloudUrl+'" target="_blank" class="shoot-reel-btn shoot-reel-btn-view"><i class="fas fa-play"></i> View</a>' : '')
+          + (v.cloudUrl ? '<a href="'+v.cloudUrl+'" download class="shoot-reel-btn shoot-reel-btn-download"><i class="fas fa-download"></i> Download</a>' : '')
+          + '<button onclick="adminDeleteShootReel('+JSON.stringify(v.id)+')" class="shoot-reel-btn shoot-reel-btn-delete"><i class="fas fa-trash"></i> Delete</button>'
+          + '</div></div>';
+        grid.appendChild(card);
+      });
+    }
+
+    function adminDeleteShootReel(id){
+      if(!confirm('Delete this video?')) return;
+      localStorage.setItem('hs_staff_videos', JSON.stringify(
+        JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return String(v.id) !== String(id); })
+      ));
+      (async function(){
+        try{ var f=await _fbAdmin(); if(f) await f.s.deleteDoc(f.s.doc(f.db,'staff_videos',String(id))); }catch(e){}
+      })();
+      renderShootReelsAdmin();
+    }
+
+    function refreshStaffVideosFromFirebase(){
+      fetchStaffVideosFromFirebase().then(function(){
+        renderShootReelsAdmin();
+        renderStaffVideosAdmin();
+      });
+    }
+
+    function debugStaffVideoSync(){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+      alert('Staff Videos in localStorage: ' + videos.length + '\n\nIDs: ' + videos.map(function(v){ return v.id; }).join(', '));
+    }
+
+    function exportShootReelsData(){
+      var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+      var assigns = getAssignedShoots();
+      var rows = [['Staff','Title','Type','Service','Client','City','Date','Uploaded At','Cloud URL']];
+      videos.forEach(function(v){
+        var a = assigns.find(function(x){ return String(x.id)===String(v.assignId); });
+        rows.push([v.staffName||'',v.title||'',v.isFeedback?'Feedback':'Shoot',a?a.service:'',a?a.clientName:'',a?(a.location||a.city):'',a?a.date:'',v.uploadedAt||'',v.cloudUrl||'']);
+      });
+      var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+      var a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'shoot_reels_export.csv';
+      a.click();
+    }
+
+
+    // Patch pushNotif to also write to Firestore admin_notifications
+    (function patchPushNotif() {
+      if (typeof pushNotif === 'undefined') { setTimeout(patchPushNotif, 100); return; }
+      var _orig = pushNotif;
+      window.pushNotif = function(type, title, sub, actionTab) {
+        _orig(type, title, sub, actionTab);
+        if (window.pushAdminNotif) pushAdminNotif(type, title, sub, actionTab);
+      };
+    })();
+
+    // Start real-time listeners on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Real-time payout requests badge
+      if (window.listenPayoutRequests) {
+        listenPayoutRequests(function(list) {
+          localStorage.setItem('hs_payout_requests', JSON.stringify(list));
+          if (typeof updateWithdrawBadge === 'function') updateWithdrawBadge();
+        });
+      }
+      // Real-time career & affiliate apps
+      if (window.listenCareerApps) listenCareerApps(function(){ if(typeof renderCareerApps==='function') renderCareerApps(); });
+      if (window.listenAffiliateApps) listenAffiliateApps(function(){ if(typeof renderAffiliateApps==='function') renderAffiliateApps(); });
+      // Real-time admin notifications
+      if (window.listenAdminNotifications) {
+        listenAdminNotifications(function(list) {
+          var unread = list.filter(function(n){ return !n.read; });
+          if (unread.length && typeof pushNotif === 'function') {
+            var n = unread[0];
+            pushNotif(n.type || 'booking', n.title || 'Notification', n.message || '', n.actionTab || '');
+          }
+        });
+      }
+    });
+
+    // ── APP LAUNCH CONFIG ─────────────────────────────────────────────────
+    function loadLaunchConfig(){
+      var cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}');
+      var el = document.getElementById('launch_enabled');
+      if(el) el.checked = !!cfg.enabled;
+      if(document.getElementById('launch_founder')) document.getElementById('launch_founder').value = cfg.founder || 'Boddu Srisanth';
+      if(document.getElementById('launch_founder_title')) document.getElementById('launch_founder_title').value = cfg.founderTitle || 'Founder & CEO';
+      if(document.getElementById('launch_cofounder')) document.getElementById('launch_cofounder').value = cfg.cofounder || 'Gulimi Sumanth';
+      if(document.getElementById('launch_cofounder_title')) document.getElementById('launch_cofounder_title').value = cfg.cofounderTitle || 'Managing Director';
+      if(document.getElementById('launch_brand')) document.getElementById('launch_brand').value = cfg.brand || 'OG SHOOTS';
+      if(document.getElementById('launch_tagline')) document.getElementById('launch_tagline').value = cfg.tagline || 'Premium Reels. Real Moments.';
+      if(document.getElementById('launch_logo')) document.getElementById('launch_logo').value = cfg.logo || '';
+      if(cfg.founderPhoto && document.getElementById('launch_founder_photo')){
+        document.getElementById('launch_founder_photo').value = cfg.founderPhoto;
+        var img = document.getElementById('launch_founder_photo_img');
+        var prev = document.getElementById('launch_founder_photo_preview');
+        if(img && prev){ img.src = cfg.founderPhoto; prev.style.display = 'block'; }
+      }
+      if(cfg.cofounderPhoto && document.getElementById('launch_cofounder_photo')){
+        document.getElementById('launch_cofounder_photo').value = cfg.cofounderPhoto;
+        var img2 = document.getElementById('launch_cofounder_photo_img');
+        var prev2 = document.getElementById('launch_cofounder_photo_preview');
+        if(img2 && prev2){ img2.src = cfg.cofounderPhoto; prev2.style.display = 'block'; }
+      }
+      if(document.getElementById('launch_duration')) document.getElementById('launch_duration').value = cfg.duration || 10;
+      if(document.getElementById('launch_bg')) document.getElementById('launch_bg').value = cfg.bg || 'dark-gold';
+      updateLaunchToggleUI(!!cfg.enabled);
+    }
+
+    function updateLaunchToggleUI(enabled){
+      var track = document.getElementById('launch_toggle_track');
+      var thumb = document.getElementById('launch_toggle_thumb');
+      var badge = document.getElementById('launch_status_badge');
+      if(track) track.style.background = enabled ? '#c9a84c' : '#333';
+      if(thumb) thumb.style.transform = enabled ? 'translateX(22px)' : 'translateX(0)';
+      if(badge){
+        badge.textContent = enabled ? 'ON' : 'OFF';
+        badge.style.background = enabled ? 'rgba(76,175,80,0.15)' : 'rgba(244,67,54,0.15)';
+        badge.style.color = enabled ? '#4caf50' : '#f44336';
+        badge.style.borderColor = enabled ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
+      }
+    }
+
+    function saveLaunchConfig(){
+      var cfg = {
+        enabled:       document.getElementById('launch_enabled').checked,
+        founder:       document.getElementById('launch_founder').value.trim(),
+        founderTitle:  document.getElementById('launch_founder_title').value.trim(),
+        cofounder:     document.getElementById('launch_cofounder').value.trim(),
+        cofounderTitle:document.getElementById('launch_cofounder_title').value.trim(),
+        brand:         document.getElementById('launch_brand').value.trim(),
+        tagline:       document.getElementById('launch_tagline').value.trim(),
+        logo:          document.getElementById('launch_logo').value.trim(),
+        founderPhoto:  document.getElementById('launch_founder_photo').value || '',
+        cofounderPhoto:document.getElementById('launch_cofounder_photo').value || '',
+        duration:      parseInt(document.getElementById('launch_duration').value) || 10,
+        bg:            document.getElementById('launch_bg').value
+      };
+      // Always save to localStorage first so index.html can read it
+      localStorage.setItem('hs_launch_config', JSON.stringify(cfg));
+      // Save to Firestore using direct import (not fbUpdate which adds serverTimestamp)
+      (async function(){
+        try{
+          var m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var s = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = m.getApps().find(function(a){return a.name==='launch-save';}) || m.initializeApp(FB,'launch-save');
+          var db  = s.getFirestore(app);
+          await s.setDoc(s.doc(db,'config','launch'), cfg, {merge:true});
+          console.log('[Launch] Saved to Firestore. enabled='+cfg.enabled);
+        }catch(e){ console.error('[Launch] Firestore save failed:',e); }
+      })();
+      updateLaunchToggleUI(cfg.enabled);
+      var t = document.getElementById('launchToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2500); }
+    }
+
+    function previewLaunchPhoto(who){
+      var fileEl = document.getElementById('launch_'+who+'_photo_file');
+      if(!fileEl || !fileEl.files || !fileEl.files[0]) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var data = e.target.result;
+        document.getElementById('launch_'+who+'_photo').value = data;
+        var img  = document.getElementById('launch_'+who+'_photo_img');
+        var prev = document.getElementById('launch_'+who+'_photo_preview');
+        if(img)  img.src = data;
+        if(prev) prev.style.display = 'block';
+      };
+      reader.readAsDataURL(fileEl.files[0]);
+    }
+
+    function previewLaunch(){
+      var cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}');
+      cfg.founder = document.getElementById('launch_founder').value.trim() || 'Boddu Srisanth';
+      cfg.cofounder = document.getElementById('launch_cofounder').value.trim() || 'Gulimi Sumanth';
+      cfg.brand = document.getElementById('launch_brand').value.trim() || 'OG SHOOTS';
+      cfg.duration = parseInt(document.getElementById('launch_duration').value) || 10;
+      cfg.bg = document.getElementById('launch_bg').value || 'dark-gold';
+      cfg.founderTitle = document.getElementById('launch_founder_title').value.trim() || 'Founder & CEO';
+      cfg.cofounderTitle = document.getElementById('launch_cofounder_title').value.trim() || 'Managing Director';
+      cfg.tagline = document.getElementById('launch_tagline').value.trim() || 'Premium Reels. Real Moments.';
+      cfg.logo = document.getElementById('launch_logo').value.trim();
+      showLaunchScreen(cfg, true);
+    }
+
+    function showLaunchScreen(cfg, isPreview){
+      var bgMap = {
+        'dark-gold': 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.18) 0%, transparent 60%), linear-gradient(180deg,#0a0a0a 0%,#080808 100%)',
+        'red-black': 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.18) 0%, transparent 60%), linear-gradient(180deg,#0a0a0a 0%,#080808 100%)',
+        'pure-black': 'linear-gradient(180deg,#000 0%,#000 100%)',
+        'deep-red':   'radial-gradient(ellipse 100% 80% at 50% 20%, rgba(201,168,76,0.22) 0%, transparent 65%), linear-gradient(180deg,#0a0a0a 0%,#080808 100%)'
+      };
+      var bg  = bgMap[cfg.bg||'dark-gold'];
+      var dur = cfg.duration || 10;
+
+      // Web Audio
+      var audioCtx = null;
+      function getAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+      function playTick(isLast){
+        try{
+          var ctx=getAudio(); var osc=ctx.createOscillator(); var gain=ctx.createGain();
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.type=isLast?'sine':'square';
+          osc.frequency.setValueAtTime(isLast?880:440,ctx.currentTime);
+          if(isLast) osc.frequency.exponentialRampToValueAtTime(1760,ctx.currentTime+0.15);
+          gain.gain.setValueAtTime(isLast?0.35:0.18,ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+(isLast?0.4:0.12));
+          osc.start(ctx.currentTime); osc.stop(ctx.currentTime+(isLast?0.4:0.15));
+        }catch(e){}
+      }
+      function playFanfare(){
+        try{
+          var ctx=getAudio();
+          [523.25,659.25,783.99,1046.5].forEach(function(freq,i){
+            var osc=ctx.createOscillator(); var gain=ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type='sine'; osc.frequency.setValueAtTime(freq,ctx.currentTime+i*0.06);
+            gain.gain.setValueAtTime(0,ctx.currentTime+i*0.06);
+            gain.gain.linearRampToValueAtTime(0.22,ctx.currentTime+i*0.06+0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.06+1.2);
+            osc.start(ctx.currentTime+i*0.06); osc.stop(ctx.currentTime+i*0.06+1.3);
+          });
+          var bass=ctx.createOscillator(); var bg2=ctx.createGain();
+          bass.connect(bg2); bg2.connect(ctx.destination);
+          bass.type='sine'; bass.frequency.setValueAtTime(130,ctx.currentTime);
+          bg2.gain.setValueAtTime(0.4,ctx.currentTime);
+          bg2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
+          bass.start(ctx.currentTime); bass.stop(ctx.currentTime+0.9);
+        }catch(e){}
+      }
+
+      var ov = document.createElement('div');
+      ov.id = 'hs_launch_overlay';
+      ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:'+bg+';font-family:Inter,sans-serif;overflow:hidden;transition:opacity 1.2s ease;';
+
+      var logoHtml = cfg.logo
+        ? '<img src="'+cfg.logo+'" style="height:90px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(201,168,76,0.6));" />'
+        : '<div style="font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#c9a84c,#fff,#c9a84c);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:hsSH 3s linear infinite;">'+(cfg.brand||'OG SHOOTS')+'</div>';
+
+      ov.innerHTML =
+        '<style>'+
+        '@keyframes hsCP2{0%{transform:scale(0.3) rotate(-10deg);opacity:0;}55%{transform:scale(1.3) rotate(3deg);}80%{transform:scale(0.95);}100%{transform:scale(1) rotate(0deg);opacity:1;}}'+
+        '@keyframes hsFU2{from{opacity:0;transform:translateY(50px);}to{opacity:1;transform:translateY(0);}}'+
+        '@keyframes hsSH{0%{background-position:-200% center;}100%{background-position:200% center;}}'+
+        '@keyframes hsCF2{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}'+
+        '@keyframes hsPL2{0%,100%{transform:scale(1);opacity:0.3;}50%{transform:scale(1.25);opacity:0.7;}}'+
+        '@keyframes hsRing2{0%{transform:scale(0.6);opacity:0.8;}100%{transform:scale(2.5);opacity:0;}}'+
+        '@keyframes hsGlow2{0%,100%{text-shadow:0 0 40px rgba(201,168,76,0.4);}50%{text-shadow:0 0 100px rgba(201,168,76,0.9),0 0 200px rgba(201,168,76,0.4);}}'+
+        '</style>'+
+        '<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">'+
+          '<div style="position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%);top:-300px;left:-300px;animation:hsPL2 4s ease-in-out infinite;"></div>'+
+          '<div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);bottom:-200px;right:-200px;animation:hsPL2 5s ease-in-out infinite reverse;"></div>'+
+        '</div>'+
+        '<div id="lc_wrap2" style="text-align:center;animation:hsFU2 0.9s ease;position:relative;z-index:2;">'+
+          '<div style="margin-bottom:1.5rem;">'+logoHtml+'</div>'+
+          '<div style="position:relative;display:inline-block;">'+
+            '<div id="lc_ring2" style="position:absolute;top:50%;left:50%;width:180px;height:180px;margin:-90px 0 0 -90px;border-radius:50%;border:3px solid rgba(201,168,76,0.6);animation:hsRing2 1s ease-out;"></div>'+
+            '<div id="lc_num2" style="font-size:clamp(6rem,20vw,11rem);font-weight:900;color:#c9a84c;line-height:1;animation:hsCP2 0.6s cubic-bezier(0.34,1.56,0.64,1),hsGlow2 1s ease-in-out infinite;">'+dur+'</div>'+
+          '</div>'+
+          '<div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-top:0.75rem;letter-spacing:4px;text-transform:uppercase;">Launching in...</div>'+
+          '<div style="width:220px;height:3px;background:rgba(255,255,255,0.08);border-radius:3px;margin:1.25rem auto 0;overflow:hidden;">'+
+            '<div id="lc_prog2" style="height:100%;background:linear-gradient(90deg,#c9a84c,#fff,#c9a84c);border-radius:3px;width:0%;transition:width 0.9s linear;"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div id="lc_congrats2" style="display:none;text-align:center;animation:hsFU2 1s ease;padding:1.5rem;max-width:580px;position:relative;z-index:2;">'+
+          '<div style="font-size:4rem;margin-bottom:0.5rem;">&#127881;</div>'+
+          '<div style="font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:#fff;margin-bottom:0.3rem;">Congratulations!</div>'+
+          '<div style="font-size:1rem;color:#c9a84c;font-weight:700;margin-bottom:2rem;">'+(cfg.tagline||'Premium Reels. Real Moments.')+'</div>'+
+          '<div style="font-size:0.65rem;color:rgba(201,168,76,0.4);letter-spacing:4px;text-transform:uppercase;margin-bottom:1.25rem;">Proudly Presented By</div>'+
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:1.5rem;">'+
+
+            '<div style="position:relative;background:linear-gradient(145deg,rgba(201,168,76,0.07),rgba(255,255,255,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:20px;padding:1.5rem 0.85rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:0.85rem;overflow:hidden;">'+
+              '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);"></div>'+
+              '<div style="position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07),transparent 70%);"></div>'+
+              '<div style="position:relative;">'+
+                '<div style="position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(#c9a84c 0%,#fff 25%,#c9a84c 50%,#a07830 75%,#c9a84c 100%);animation:hsSH 3s linear infinite;"></div>'+
+                '<div style="position:absolute;inset:-1px;border-radius:50%;background:#080808;"></div>'+
+                '<img src="'+(cfg.founderPhoto||'srisanth.jpeg')+'" style="position:relative;width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;"/>'+
+              '</div>'+
+              '<div style="text-align:center;">'+
+                '<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+(cfg.founder||'Boddu Srisanth')+'</div>'+
+                '<div style="display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:50px;padding:0.2rem 0.7rem;margin-top:0.3rem;">'+
+                  '<div style="font-size:0.58rem;color:#c9a84c;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;">'+(cfg.founderTitle||'Founder & CEO')+'</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div style="position:relative;background:linear-gradient(145deg,rgba(201,168,76,0.07),rgba(255,255,255,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:20px;padding:1.5rem 0.85rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:0.85rem;overflow:hidden;">'+
+              '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);"></div>'+
+              '<div style="position:absolute;top:-30px;left:-30px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07),transparent 70%);"></div>'+
+              '<div style="position:relative;">'+
+                '<div style="position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(#c9a84c 0%,#fff 25%,#c9a84c 50%,#a07830 75%,#c9a84c 100%);animation:hsSH 3s linear infinite reverse;"></div>'+
+                '<div style="position:absolute;inset:-1px;border-radius:50%;background:#080808;"></div>'+
+                '<img src="'+(cfg.cofounderPhoto||'sumanth.jpeg')+'" style="position:relative;width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;"/>'+
+              '</div>'+
+              '<div style="text-align:center;">'+
+                '<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+(cfg.cofounder||'Gulimi Sumanth')+'</div>'+
+                '<div style="display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:50px;padding:0.2rem 0.7rem;margin-top:0.3rem;">'+
+                  '<div style="font-size:0.58rem;color:#c9a84c;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;">'+(cfg.cofounderTitle||'Managing Director')+'</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+          '</div>'+
+          '<div style="font-size:clamp(2.2rem,7vw,4rem);font-weight:900;background:linear-gradient(135deg,#c9a84c,#fff,#c9a84c);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:hsSH 2s linear infinite;margin-bottom:0.5rem;letter-spacing:2px;">'+(cfg.brand||'OG SHOOTS')+'</div>'+
+          '<div style="font-size:1.15rem;color:#4caf50;font-weight:800;">&#128640; is LIVE NOW!</div>'+
+          (isPreview ? '<button onclick="document.getElementById(&quot;hs_launch_overlay&quot;).remove()" style="margin-top:2rem;background:#c9a84c;color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;">Close Preview</button>' : '')+
+        '</div>';
+
+      document.body.appendChild(ov);
+      setTimeout(function(){ var p=document.getElementById('lc_prog2'); if(p){p.style.width='100%';p.style.transition='width '+(dur-0.1)+'s linear';} }, 50);
+      try{ getAudio().resume(); }catch(e){}
+
+      var count = dur;
+      var numEl = document.getElementById('lc_num2');
+      var ringEl = document.getElementById('lc_ring2');
+      var timer = setInterval(function(){
+        count--;
+        playTick(count===0);
+        if(ringEl){ ringEl.style.animation='none'; void ringEl.offsetWidth; ringEl.style.animation='hsRing2 1s ease-out'; }
+        if(count > 0){
+          if(numEl){ numEl.textContent=count; numEl.style.animation='none'; void numEl.offsetWidth; numEl.style.animation='hsCP2 0.6s cubic-bezier(0.34,1.56,0.64,1),hsGlow2 1s ease-in-out infinite'; }
+          if(count<=3){ ov.style.background='radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,'+(0.12*(4-count))+') 0%, transparent 60%), '+bg; }
+        } else {
+          clearInterval(timer);
+          playFanfare();
+          document.getElementById('lc_wrap2').style.display='none';
+          document.getElementById('lc_congrats2').style.display='block';
+          for(var i=0;i<120;i++){
+            var c=document.createElement('div');
+            var cols=['#c9a84c','#fff','#f5d76e','#4caf50','#2196f3','#ff9800','#e8c96a'];
+            var sz=5+Math.random()*10;
+            c.style.cssText='position:fixed;top:-20px;left:'+Math.random()*100+'vw;width:'+sz+'px;height:'+sz+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>0.5?'50%':'2px')+';animation:hsCF2 '+(2+Math.random()*3)+'s linear '+(Math.random()*2)+'s forwards;z-index:100000;pointer-events:none;';
+            ov.appendChild(c);
+          }
+          if(!isPreview) setTimeout(function(){ ov.style.opacity='0'; setTimeout(function(){ if(ov.parentNode) ov.remove(); },1200); },5000);
+        }
+      },1000);
+    }
+
+    // ── ADMIN FEEDBACK ────────────────────────────────────────────────────────
+    function loadFeedbackRecipients(){
+      var type = document.getElementById('fb_recipient_type').value;
+      var sel = document.getElementById('fb_recipient_id');
+      sel.innerHTML = '<option value="">Select...</option>';
+      if(type === 'staff'){
+        var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+        staff.forEach(function(s){ sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+s.role+')</option>'; });
+      } else {
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var seen = {};
+        bookings.forEach(function(b){
+          var key = b.email || b.phone;
+          if(key && !seen[key]){
+            seen[key] = true;
+            sel.innerHTML += '<option value="'+key+'">'+b.name+' ('+key+')</option>';
+          }
+        });
+        if(!Object.keys(seen).length) sel.innerHTML += '<option value="" disabled>No customers found</option>';
+      }
+    }
+
+    async function sendAdminFeedback(){
+      var type = document.getElementById('fb_recipient_type').value;
+      var recipientId = document.getElementById('fb_recipient_id').value;
+      var fbType = document.getElementById('fb_type').value;
+      var rating = document.getElementById('fb_rating').value;
+      var message = document.getElementById('fb_message').value.trim();
+      if(!recipientId || !message){ alert('Please select a recipient and write a message.'); return; }
+      var payload = {
+        recipientType: type,
+        recipientId: recipientId,
+        type: fbType,
+        rating: rating ? parseInt(rating) : null,
+        message: message,
+        from: 'admin',
+        fromName: 'OG Shoots Admin',
+        createdAt: new Date().toISOString(),
+        read: false
+      };
+      // Save to Firestore
+      if(window.fbSave){
+        var col = type === 'staff' ? 'staff_feedback' : 'customer_feedback';
+        await fbSave(col, payload);
+      }
+      // Also save locally
+      var key = type === 'staff' ? 'hs_admin_staff_feedback' : 'hs_admin_customer_feedback';
+      var list = JSON.parse(localStorage.getItem(key)||'[]');
+      list.push(payload);
+      localStorage.setItem(key, JSON.stringify(list));
+      document.getElementById('fb_message').value = '';
+      document.getElementById('fb_recipient_id').value = '';
+      var t = document.getElementById('adminFbToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },2500); }
+      loadAdminFeedbackHistory();
+    }
+
+    async function loadAdminFeedbackHistory(){
+      var el = document.getElementById('adminFbHistory');
+      if(!el) return;
+      var list = [];
+      try {
+        if(window.fbGetAll){
+          var sf = await fbGetAll('staff_feedback');
+          var cf = await fbGetAll('customer_feedback');
+          list = sf.concat(cf).sort(function(a,b){ return (b.createdAt||'') > (a.createdAt||'') ? 1 : -1; });
+        }
+      } catch(e){}
+      if(!list.length) list = JSON.parse(localStorage.getItem('hs_admin_staff_feedback')||'[]').concat(JSON.parse(localStorage.getItem('hs_admin_customer_feedback')||'[]'));
+      if(!list.length){ el.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;">No feedback sent yet.</div>'; return; }
+      var typeColors = { positive:'#4caf50', improvement:'#ff9800', warning:'#f44336', booking:'#2196f3', general:'#c9a84c' };
+      el.innerHTML = list.slice(0,20).map(function(f){
+        var col = typeColors[f.type] || '#c9a84c';
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">'
+          +'<span style="font-size:0.75rem;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:0.5px;">'+f.type+'</span>'
+          +'<span style="font-size:0.72rem;color:#6a5a40;">'+f.recipientType+' · '+(f.createdAt||'').slice(0,10)+'</span>'
+          +'</div>'
+          +'<div style="font-size:0.85rem;color:#d4b870;font-weight:600;margin-bottom:0.25rem;">To: '+f.recipientId+'</div>'
+          +(f.rating ? '<div style="font-size:0.78rem;color:#c9a84c;margin-bottom:0.25rem;">Rating: '+'⭐'.repeat(f.rating)+'</div>' : '')
+          +'<div style="font-size:0.85rem;color:#9a9080;line-height:1.6;">'+f.message+'</div>'
+          +'</div>';
+      }).join('');
+    }
 
   </script>
 </body>

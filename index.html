@@ -3,433 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OG SHOOTS</title>
+  <title>OG Shoots LUXE</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
+  <script src="hs-firebase.js" type="module"></script>
+  <script src="hs-fixes.js"></script>
   <script src="nav.js"></script>
+  <style>
+    @keyframes hsCountPop{0%{transform:scale(0.4);opacity:0;}60%{transform:scale(1.25);}100%{transform:scale(1);opacity:1;}}
+    @keyframes hsFadeUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes hsShimmer{0%{background-position:-200% center;}100%{background-position:200% center;}}
+    @keyframes hsConfetti{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+    @keyframes hsPulse{0%,100%{transform:scale(1);opacity:0.4;}50%{transform:scale(1.2);opacity:0.8;}}
+  </style>
 </head>
 <body>
-
-  <!-- APP LAUNCH SCREEN -->
-  <div id="ogLaunch" style="display:none;"></div>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
-    #ogLaunch{
-      position:fixed;inset:0;z-index:999999;
-      background:#000;
-      flex-direction:column;align-items:center;justify-content:center;
-      overflow:hidden;font-family:'Inter',sans-serif;
-    }
-    #ogLaunch.active{display:flex;}
-
-    /* CINEMATIC BARS */
-    .og-bar-top,.og-bar-bot{
-      position:absolute;left:0;right:0;height:80px;
-      background:#000;z-index:10;
-      transition:height 1.2s cubic-bezier(0.77,0,0.18,1);
-    }
-    .og-bar-top{top:0;}
-    .og-bar-bot{bottom:0;}
-    #ogLaunch.bars-open .og-bar-top,
-    #ogLaunch.bars-open .og-bar-bot{height:0;}
-
-    /* BG */
-    .og-bg-layer{
-      position:absolute;inset:0;z-index:0;
-      background:radial-gradient(ellipse 140% 100% at 50% -10%,rgba(201,168,76,0.22) 0%,transparent 60%),
-                 radial-gradient(ellipse 80% 60% at 80% 80%,rgba(201,168,76,0.08) 0%,transparent 60%),
-                 #050505;
-    }
-    .og-bg-img{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;opacity:0.8;transition:opacity 2s ease;}
-    #ogLaunch.congrats-mode .og-bg-img{opacity:1;}
-
-
-
-
-
-
-
-
-
-
-
-    /* GOLD LINES */
-    .og-lines{
-      position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;
-    }
-    .og-line{
-      position:absolute;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);
-      height:1px;width:100%;
-      animation:ogLineSweep 3s ease-in-out infinite;
-      opacity:0;
-    }
-    .og-line:nth-child(1){top:25%;animation-delay:0s;}
-    .og-line:nth-child(2){top:50%;animation-delay:1s;}
-    .og-line:nth-child(3){top:75%;animation-delay:2s;}
-    @keyframes ogLineSweep{
-      0%{opacity:0;transform:translateX(-100%);}
-      50%{opacity:1;}
-      100%{opacity:0;transform:translateX(100%);}
-    }
-    /* PARTICLES */
-    .og-particles{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
-    .og-pt{
-      position:absolute;border-radius:50%;background:#c9a84c;
-      animation:ogPtRise linear infinite;opacity:0;
-    }
-    @keyframes ogPtRise{
-      0%{transform:translateY(110vh) scale(0);opacity:0;}
-      10%{opacity:0.8;}
-      90%{opacity:0.2;}
-      100%{transform:translateY(-10vh) scale(1.5);opacity:0;}
-    }
-
-    /* CONTENT */
-    .og-content{
-      position:relative;z-index:5;text-align:center;
-      width:100%;max-width:900px;padding:0 1.5rem;
-      opacity:0;transform:translateY(30px);
-      transition:opacity 0.9s 1.3s ease,transform 0.9s 1.3s ease;
-    }
-    #ogLaunch.bars-open .og-content{opacity:1;transform:translateY(0);}
-
-    /* LOGO */
-    .og-logo{
-      font-family:'Playfair Display',serif;
-      font-size:clamp(3rem,10vw,6rem);font-weight:900;
-      letter-spacing:6px;line-height:1;
-      margin-bottom:0.2rem;
-      text-shadow:0 0 80px rgba(201,168,76,0.5);
-    }
-    .og-logo-og{color:#c9a84c;}
-    .og-logo-shoots{color:#fff;}
-    .og-luxe{
-      font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;
-      color:#c9a84c;letter-spacing:10px;text-transform:uppercase;
-      margin-bottom:0.5rem;
-      opacity:0.9;
-    }
-    .og-divider{
-      width:120px;height:1px;
-      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
-      margin:0.8rem auto 2rem;
-    }
-
-    /* COUNTDOWN */
-    .og-count-wrap{
-      margin-bottom:2rem;
-      position:relative;display:inline-block;
-    }
-    .og-count-ring{
-      position:absolute;inset:-16px;
-      border-radius:50%;
-      border:2px solid rgba(201,168,76,0.25);
-      animation:ogRingSpin 10s linear infinite;
-    }
-    .og-count-ring::before{
-      content:'';
-      position:absolute;top:-3px;left:50%;transform:translateX(-50%);
-      width:8px;height:8px;border-radius:50%;
-      background:#c9a84c;
-      box-shadow:0 0 12px #c9a84c;
-    }
-    @keyframes ogRingSpin{to{transform:rotate(360deg);}}
-    .og-count{
-      font-family:'Playfair Display',serif;
-      font-size:clamp(4.5rem,16vw,9rem);font-weight:900;
-      color:#c9a84c;line-height:1;
-      text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);
-      display:block;min-width:120px;
-      transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),opacity 0.15s;
-    }
-    .og-count.pop{transform:scale(1.25);}
-
-    /* FOUNDERS */
-    .og-founders{
-      display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;
-      margin-bottom:2rem;
-    }
-    .og-fcard{
-      position:relative;
-      background:linear-gradient(145deg,rgba(201,168,76,0.08),rgba(0,0,0,0.6));
-      border:1px solid rgba(201,168,76,0.35);
-      border-radius:24px;
-      padding:1.75rem 1.5rem 1.25rem;
-      text-align:center;width:180px;
-      backdrop-filter:blur(20px);
-      box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.1) inset,0 0 40px rgba(201,168,76,0.08);
-      overflow:hidden;
-    }
-    .og-fcard::before{
-      content:'';
-      position:absolute;top:0;left:0;right:0;height:2px;
-      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
-    }
-    .og-fcard-glow{
-      position:absolute;top:-40px;left:50%;transform:translateX(-50%);
-      width:120px;height:120px;
-      background:radial-gradient(circle,rgba(201,168,76,0.2),transparent 70%);
-      pointer-events:none;
-    }
-    .og-fimg{
-      width:110px;height:110px;border-radius:50%;
-      object-fit:cover;object-position:top center;
-      border:3px solid #c9a84c;
-      box-shadow:0 0 0 6px rgba(201,168,76,0.12),0 8px 30px rgba(0,0,0,0.5);
-      margin:0 auto 1rem;display:block;
-      transition:transform 0.4s;
-    }
-    .og-fcard:hover .og-fimg{transform:scale(1.05);}
-    .og-fph{
-      width:110px;height:110px;border-radius:50%;
-      background:linear-gradient(135deg,#c9a84c,#5a3a00);
-      display:flex;align-items:center;justify-content:center;
-      font-size:2.2rem;font-weight:900;color:#fff;
-      border:3px solid #c9a84c;
-      box-shadow:0 0 0 6px rgba(201,168,76,0.12);
-      margin:0 auto 1rem;
-    }
-    .og-fname{font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;letter-spacing:0.5px;}
-    .og-frole{
-      font-size:0.65rem;color:#c9a84c;font-weight:700;
-      letter-spacing:2px;text-transform:uppercase;
-      background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);
-      padding:0.2rem 0.6rem;border-radius:50px;display:inline-block;
-    }
-
-    /* CONGRATS */
-    .og-congrats{
-      font-size:clamp(0.9rem,2.5vw,1.15rem);color:#e8e0d0;
-      font-weight:500;line-height:1.8;
-      max-width:560px;margin:0 auto 1.25rem;
-      opacity:0;transform:translateY(12px);
-      transition:opacity 0.6s ease,transform 0.6s ease;
-    }
-    .og-congrats.show{opacity:1;transform:translateY(0);}
-    .og-congrats strong{color:#c9a84c;font-weight:800;}
-
-    /* LIVE BADGE */
-    .og-live{
-      display:inline-flex;align-items:center;gap:0.6rem;
-      background:rgba(201,168,76,0.12);
-      border:1px solid rgba(201,168,76,0.5);
-      color:#c9a84c;font-size:0.78rem;font-weight:800;
-      padding:0.55rem 1.5rem;border-radius:50px;
-      letter-spacing:3px;text-transform:uppercase;
-      box-shadow:0 0 30px rgba(201,168,76,0.2);
-      opacity:0;transform:scale(0.8);
-      transition:opacity 0.5s ease,transform 0.5s ease;
-    }
-    .og-live.show{opacity:1;transform:scale(1);}
-    .og-live-dot{
-      width:8px;height:8px;border-radius:50%;background:#4caf50;
-      box-shadow:0 0 10px #4caf50,0 0 20px #4caf50;
-      animation:ogDotPulse 0.8s ease infinite;
-    }
-    @keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}
-
-    /* CONFETTI */
-    .og-confetti{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;}
-    .og-cf{
-      position:absolute;
-      animation:ogCfFall linear forwards;
-    }
-    @keyframes ogCfFall{
-      0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1;}
-      100%{transform:translateY(110vh) rotate(900deg) scale(0.5);opacity:0;}
-    }
-
-    /* SKIP */
-    .og-skip{
-      position:absolute;bottom:2rem;right:2rem;z-index:20;
-      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
-      color:rgba(255,255,255,0.4);font-size:0.72rem;font-weight:600;
-      padding:0.4rem 1rem;border-radius:50px;cursor:pointer;
-      font-family:'Inter',sans-serif;letter-spacing:1px;
-      transition:all 0.2s;
-    }
-    .og-skip:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
-  </style>
-  <script>
-  (function(){
-    var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
-    if(cfg.enabled===false){document.body.style.overflow='';return;}
-    var launch=document.getElementById('ogLaunch');
-    if(!launch)return;
-    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background:#000;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;';
-    document.body.style.overflow='hidden';
-    var bgImg=cfg.bgPhoto||'venkateswara.jpg';
-    var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
-    var f2Photo=cfg.founder2Photo||'sumanth.jpeg';
-    var f1Name=cfg.founder1Name||'Boddu Srisanth';
-    var f2Name=cfg.founder2Name||'Gulimi Sumanth';
-    var f1Role=cfg.founder1Role||'Founder & CEO';
-    var f2Role=cfg.founder2Role||'Managing Director';
-    var placeText=cfg.placeText||'';
-    var dateText=cfg.dateText||'';
-    function ini(n){return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
-    function fcard(ph,nm,rl){
-      return '<div style="position:relative;width:200px;height:280px;border-radius:24px;overflow:hidden;border:2px solid rgba(201,168,76,0.6);box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.2);">'
-        +'<img src="'+ph+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" />'
-        +'<div style="width:100%;height:100%;background:linear-gradient(135deg,#c9a84c,#5a3a00);display:none;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:#fff;">'+ini(nm)+'</div>'
-        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.3) 50%,transparent 100%);"></div>'
-        +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>'
-        +'<div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1rem 1.1rem;text-align:center;">'
-          +'<div style="font-size:1.05rem;font-weight:900;color:#fff;margin-bottom:0.4rem;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">'+nm+'</div>'
-          +'<div style="font-size:0.62rem;color:#c9a84c;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);padding:0.25rem 0.7rem;border-radius:50px;display:inline-block;">'+rl+'</div>'
-        +'</div>'
-        +'</div>';
-    }
-    var pts='';
-    for(var i=0;i<40;i++){
-      var s=(Math.random()*3+1.5).toFixed(1),lp=(Math.random()*100).toFixed(1),dp=(Math.random()*8+5).toFixed(1),dlp=(Math.random()*6).toFixed(1);
-      pts+='<div style="position:absolute;border-radius:50%;background:#c9a84c;width:'+s+'px;height:'+s+'px;left:'+lp+'%;animation:ogPtRise '+dp+'s '+dlp+'s linear infinite;opacity:0;"></div>';
-    }
-    var pdText=placeText||dateText?'<div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(201,168,76,0.8);letter-spacing:1px;">'+(placeText?'<i class="fas fa-map-marker-alt"></i> '+placeText+'&nbsp;&nbsp;':'')+(dateText?'<i class="fas fa-calendar-alt"></i> '+dateText:'')+'</div>':'';
-    launch.innerHTML=
-      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse 140% 100% at 50% -10%,rgba(201,168,76,0.22) 0%,transparent 60%),#050505;z-index:0;"></div>'
-      +'<div style="position:absolute;inset:0;background-image:url('+JSON.stringify(bgImg)+');background-size:cover;background-position:center;opacity:0.75;z-index:1;transition:opacity 2s ease;" id="ogBgImg"></div>'
-      +'<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.3) 40%,rgba(0,0,0,0.65) 100%);z-index:2;"></div>'
-      +'<div style="position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;">'+pts+'</div>'
-      +'<div style="position:absolute;top:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarTop"></div>'
-      +'<div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarBot"></div>'
-      +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
-      +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;opacity:0;transform:translateY(30px);transition:opacity 0.9s 1.3s ease,transform 0.9s 1.3s ease;" id="ogContent">'
-        +'<div style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 0 80px rgba(201,168,76,0.5);"><span style="color:#c9a84c;">OG</span> <span style="color:#fff;">SHOOTS</span></div>'
-        +'<div style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:10px;text-transform:uppercase;margin-bottom:0.5rem;">&#10022; LUXE &#10022;</div>'
-        +'<div style="width:120px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 2rem;"></div>'
-        +'<div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">'+fcard(f1Photo,f1Name,f1Role)+fcard(f2Photo,f2Name,f2Role)+'</div>'
-        +'<div id="ogBtnWrap">'
-          +'<button onclick="ogStartCountdown()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-family:Inter,sans-serif;font-size:1rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:50px;padding:1rem 3rem;cursor:pointer;box-shadow:0 0 40px rgba(201,168,76,0.5),0 8px 30px rgba(0,0,0,0.4);">&#9654;&nbsp; LAUNCH APP</button>'
-        +'</div>'
-        +'<div id="ogCountWrap" style="display:none;margin-top:1.5rem;">'
-          +'<span id="ogCount" style="font-family:Georgia,serif;font-size:clamp(4.5rem,16vw,9rem);font-weight:900;color:#c9a84c;line-height:1;text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);display:block;">10</span>'
-        +'</div>'
-        +'<div id="ogCongrats" style="font-size:clamp(0.9rem,2.5vw,1.15rem);color:#e8e0d0;font-weight:500;line-height:1.8;max-width:560px;margin:0 auto 1.25rem;opacity:0;transform:translateY(12px);transition:opacity 0.6s ease,transform 0.6s ease;">&#127881; Congratulations <strong style="color:#c9a84c;">'+f1Name+'</strong> &amp; <strong style="color:#c9a84c;">'+f2Name+'</strong>!<br/>The App <strong style="color:#c9a84c;">OG SHOOTS LUXE</strong> is Live Now!'+pdText+'</div>'
-        +'<div id="ogLive" style="display:inline-flex;align-items:center;gap:0.6rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.5);color:#c9a84c;font-size:0.78rem;font-weight:800;padding:0.55rem 1.5rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;opacity:0;transform:scale(0.8);transition:opacity 0.5s ease,transform 0.5s ease;"><div style="width:8px;height:8px;border-radius:50%;background:#4caf50;box-shadow:0 0 10px #4caf50;animation:ogDotPulse 0.8s ease infinite;"></div> APP IS LIVE</div>'
-      +'</div>'
-      +'<button onclick="ogClose()" style="position:absolute;bottom:2rem;right:2rem;z-index:20;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.4);font-size:0.72rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;cursor:pointer;font-family:Inter,sans-serif;letter-spacing:1px;">SKIP &rsaquo;</button>';
-    var st=document.createElement('style');
-    st.textContent='@keyframes ogPtRise{0%{transform:translateY(110vh) scale(0);opacity:0;}10%{opacity:0.8;}90%{opacity:0.2;}100%{transform:translateY(-10vh) scale(1.5);opacity:0;}}@keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}';
-    document.head.appendChild(st);
-    setTimeout(function(){
-      document.getElementById('ogBarTop').style.height='0';
-      document.getElementById('ogBarBot').style.height='0';
-      document.getElementById('ogContent').style.opacity='1';
-      document.getElementById('ogContent').style.transform='translateY(0)';
-    },300);
-    var musicUrl=cfg.musicUrl||'';
-    var countdownSound=(cfg.countdownSound!==false);
-    var _ac=null;
-    function getAC(){if(!_ac){try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _ac;}
-    function tone(freq,dur,vol,type){
-      if(!countdownSound)return;
-      var ac=getAC();if(!ac)return;
-      try{
-        var o=ac.createOscillator(),g=ac.createGain();
-        o.connect(g);g.connect(ac.destination);
-        o.frequency.value=freq;o.type=type||'sine';
-        g.gain.setValueAtTime(vol||0.25,ac.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
-        o.start();o.stop(ac.currentTime+dur);
-      }catch(e){}
-    }
-    var _musicEl=null;
-    function playMusic(){
-      if(musicUrl){
-        _musicEl=document.createElement('audio');
-        _musicEl.src=musicUrl;
-        _musicEl.loop=true;
-        _musicEl.volume=0.7;
-        _musicEl.play().catch(function(){});
-      } else {
-        // Synthesized Om Namo Venkateshaya
-        var ac=getAC();if(!ac)return;
-        try{
-          var master=ac.createGain();master.gain.value=0.5;master.connect(ac.destination);
-          function drone(freq,vol,start,end){
-            var o=ac.createOscillator(),g=ac.createGain();
-            o.type='sine';o.frequency.value=freq;
-            g.gain.setValueAtTime(0,ac.currentTime+start);
-            g.gain.linearRampToValueAtTime(vol,ac.currentTime+start+0.8);
-            g.gain.setValueAtTime(vol,ac.currentTime+end-0.8);
-            g.gain.linearRampToValueAtTime(0,ac.currentTime+end);
-            o.connect(g);g.connect(master);o.start(ac.currentTime+start);o.stop(ac.currentTime+end);
-          }
-          drone(136.1,0.35,0,8);
-          drone(272.2,0.18,0,8);
-          drone(204.15,0.12,0.5,8);
-          var bells=[392,440,523,494,440,392,349,392];
-          bells.forEach(function(f,i){
-            setTimeout(function(){
-              var ac2=getAC();if(!ac2)return;
-              try{
-                var o=ac2.createOscillator(),g=ac2.createGain();
-                o.type='sine';o.frequency.value=f;
-                g.gain.setValueAtTime(0.4,ac2.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001,ac2.currentTime+1.8);
-                o.connect(g);g.connect(ac2.destination);o.start();o.stop(ac2.currentTime+1.8);
-              }catch(e){}
-            },i*700);
-          });
-        }catch(e){}
-      }
-    }
-    function stopMusic(){
-      if(_musicEl){_musicEl.pause();_musicEl.src='';_musicEl=null;}
-    }
-    function celebrate(){
-      var bi=document.getElementById('ogBgImg');
-      if(bi){bi.style.opacity='1';}
-      playMusic();
-      var cf=document.getElementById('ogCf');
-      var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
-      for(var j=0;j<150;j++){
-        var el=document.createElement('div');
-        var c2=colors[Math.floor(Math.random()*colors.length)];
-        var w=(Math.random()*10+4).toFixed(0),h=(Math.random()*10+4).toFixed(0);
-        var lft=(Math.random()*100).toFixed(1),dr=(Math.random()*3+1.5).toFixed(2),dl2=(Math.random()*2).toFixed(2);
-        el.style.cssText='position:absolute;left:'+lft+'%;top:-20px;width:'+w+'px;height:'+h+'px;background:'+c2+';border-radius:50%;animation:ogCfFall '+dr+'s '+dl2+'s linear forwards;';
-        cf.appendChild(el);
-      }
-      var cst=document.createElement('style');cst.textContent='@keyframes ogCfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(900deg);opacity:0;}}';document.head.appendChild(cst);
-    }
-    window.ogStartCountdown=function(){
-      getAC(); // init AudioContext on user click
-      document.getElementById('ogBtnWrap').style.display='none';
-      document.getElementById('ogCountWrap').style.display='block';
-      var count=10,countEl=document.getElementById('ogCount');
-      tone(880,0.12,0.3,'square');
-      var timer=setInterval(function(){
-        count--;
-        if(count>0){
-          countEl.style.transform='scale(1.25)';
-          setTimeout(function(){countEl.style.transform='scale(1)';},150);
-          countEl.textContent=count;
-          tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
-        }else{
-          clearInterval(timer);
-          document.getElementById('ogCountWrap').style.display='none';
-          celebrate();
-          setTimeout(function(){
-            var cg=document.getElementById('ogCongrats'),lv=document.getElementById('ogLive');
-            if(cg){cg.style.opacity='1';cg.style.transform='translateY(0)';}
-            if(lv){lv.style.opacity='1';lv.style.transform='scale(1)';}
-          },400);
-          setTimeout(function(){ogClose();},8000);
-        }
-      },1000);
-    };
-    window.ogClose=function(){
-      stopMusic();
-      launch.style.transition='opacity 0.9s ease';
-      launch.style.opacity='0';
-      setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
-    };
-  })();
-  </script>
 
   <!-- NAVBAR -->
 
@@ -906,7 +495,7 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG Shoots Branding Included</li>
             </ul>
             <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?plan=Hourly+Plan'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
           </div>
@@ -929,7 +518,7 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG Shoots Branding Included</li>
             </ul>
             <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?plan=Half-Day+Plan'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
           </div>
@@ -1097,7 +686,7 @@
       @media(max-width:480px){.feat-c{flex:0 0 85%;}}
     </style>
 
-    <div class="feat-tag-wrap"><span class="feat-tag-pill"><i class="fas fa-bolt"></i> Get to know OG SHOOTS</span></div>
+    <div class="feat-tag-wrap"><span class="feat-tag-pill"><i class="fas fa-bolt"></i> Get to know OG Shoots</span></div>
     <h2 class="feat-heading">What Makes Us <span>Unique</span></h2>
 
     <div class="feat-slider-wrap">
@@ -1129,7 +718,7 @@
               <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
               <div class="feat-mock-screen">
                 <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div class="fmdl"><div class="fmdlic"><i class="fas fa-cloud-download-alt"></i></div><div><div style="font-size:0.6rem;color:#fff;font-weight:600;">Download Content</div><div style="font-size:0.5rem;color:#555;">From OG SHOOTS Cloud</div></div><i class="fas fa-arrow-down" style="color:#c9a84c;font-size:0.55rem;margin-left:auto;"></i></div>
+                <div class="fmdl"><div class="fmdlic"><i class="fas fa-cloud-download-alt"></i></div><div><div style="font-size:0.6rem;color:#fff;font-weight:600;">Download Content</div><div style="font-size:0.5rem;color:#555;">From OG Shoots Cloud</div></div><i class="fas fa-arrow-down" style="color:#c9a84c;font-size:0.55rem;margin-left:auto;"></i></div>
                 <div style="font-size:0.52rem;color:#555;margin-bottom:0.28rem;">Shoot Details</div>
                 <div class="fmfr"><span>Category</span><span style="color:#ccc;">Wedding Shoot</span></div>
                 <div class="fmfr"><span>Package</span><span style="color:#ccc;">Silver Package</span></div>
@@ -1181,7 +770,7 @@
                   <div style="width:54px;height:54px;background:#071207;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">&#128506;</div>
                 </div>
                 <div style="background:#1a1a1a;border-radius:6px;padding:0.4rem;margin-bottom:0.3rem;">
-                  <div style="display:flex;justify-content:space-between;"><div style="font-size:0.6rem;color:#fff;font-weight:600;">Meet Arjun from OG SHOOTS</div><div style="font-size:0.48rem;color:#888;">24 Oct</div></div>
+                  <div style="display:flex;justify-content:space-between;"><div style="font-size:0.6rem;color:#fff;font-weight:600;">Meet Arjun from OG Shoots</div><div style="font-size:0.48rem;color:#888;">24 Oct</div></div>
                   <div style="font-size:0.5rem;color:#888;margin-top:0.08rem;">&#9679; 3:00 PM <span style="background:#c9a84c;color:#fff;border-radius:2px;padding:0 3px;font-size:0.44rem;">Cancel</span></div>
                   <div style="font-size:0.48rem;color:#555;margin-top:0.18rem;line-height:1.4;">Meet Arjun, he is a well trained and professional content maker working closely with us since 2 years in content creation &amp; editing.</div>
                 </div>
@@ -1205,8 +794,8 @@
                   <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Scale Ques</div></div>
                 </div>
                 <div style="font-size:0.52rem;color:#666;margin-bottom:0.25rem;">&#128100; Account &amp; Preferences</div>
-                <div class="fmfr">Is OG SHOOTS available globally? <span>+</span></div>
-                <div class="fmfr">How OG SHOOTS is so useful? <span>+</span></div>
+                <div class="fmfr">Is OG Shoots available globally? <span>+</span></div>
+                <div class="fmfr">How OG Shoots is so useful? <span>+</span></div>
                 <div class="fmfr">How to verify account? <span>+</span></div>
                 <div class="fmfr">Do I get discount if frequent? <span>+</span></div>
                 <div style="font-size:0.5rem;color:#555;text-align:center;margin-top:0.28rem;">Still not finding an answer?</div>
@@ -1507,7 +1096,7 @@
       <div class="app-cta-text">
         <p class="app-cta-tag">Download the App</p>
         <h2 class="app-cta-title">Book Your Shoot<br/>in <span>Under 2 Minutes</span></h2>
-        <p class="app-cta-desc">Get the OG SHOOTS app and book a certified content maker near you instantly. Available on iOS & Android.</p>
+        <p class="app-cta-desc">Get the OG Shoots app and book a certified content maker near you instantly. Available on iOS & Android.</p>
         <div class="app-btns">
           <a href="#" class="app-btn">
             <i class="fab fa-apple"></i>
@@ -1544,15 +1133,15 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform. Book top shooters near you instantly.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/hashshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -1589,7 +1178,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <p>© 2025 OG Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
         <div class="footer-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
@@ -1860,6 +1449,238 @@
     });
     // Close on Escape
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWeddingPlans(); });
+  </script>
+
+  <!-- APP LAUNCH SCREEN — Premium Gold Edition -->
+  <script type="module">
+    (async function(){
+      var cfg = {};
+      try {
+        var m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var s = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app = m.getApps().find(function(a){return a.name==='launch';}) || m.initializeApp(FB,'launch');
+        var snap = await s.getDoc(s.doc(s.getFirestore(app),'config','launch'));
+        if(snap.exists()){ cfg = snap.data(); localStorage.setItem('hs_launch_config',JSON.stringify(cfg)); }
+        else cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}');
+      } catch(e){ cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}'); }
+
+      if(!cfg.enabled) return;
+
+      var dur   = cfg.duration||10, brand = cfg.brand||'OG SHOOTS';
+      var f1    = cfg.founder||'Boddu Srisanth', f1t = cfg.founderTitle||'Founder & CEO';
+      var f2    = cfg.cofounder||'Gulimi Sumanth', f2t = cfg.cofounderTitle||'Managing Director';
+      var tag   = cfg.tagline||'Premium Reels. Real Moments.';
+      var logo  = cfg.logo||'', fp1 = cfg.founderPhoto||'srisanth.jpeg', fp2 = cfg.cofounderPhoto||'sumanth.jpeg';
+
+      /* ── Audio ── */
+      var _ac = null;
+      function ac(){ if(!_ac) _ac = new (window.AudioContext||window.webkitAudioContext)(); return _ac; }
+      function tone(freq,len,type,vol,t){
+        try{
+          var ctx=ac(), o=ctx.createOscillator(), g=ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.type=type||'sine'; o.frequency.setValueAtTime(freq,t||ctx.currentTime);
+          g.gain.setValueAtTime(vol||0.18,t||ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001,(t||ctx.currentTime)+len);
+          o.start(t||ctx.currentTime); o.stop((t||ctx.currentTime)+len+0.01);
+        }catch(e){}
+      }
+      function tick(n){ var f=400+(dur-n)*35; tone(f,0.07,'square',0.14); tone(f*2,0.05,'sine',0.04); }
+      function fanfare(){
+        var ctx=ac(), t=ctx.currentTime;
+        [[523,0],[659,0.09],[784,0.18],[1047,0.27],[1319,0.36]].forEach(function(p){ tone(p[0],1.4,'sine',0.16,t+p[1]); });
+        tone(262,1.0,'sine',0.22,t);
+        [[2093,0.4],[2637,0.52],[3136,0.64]].forEach(function(p){ tone(p[0],0.25,'sine',0.05,t+p[1]); });
+      }
+
+      /* ── Overlay ── */
+      var ov = document.createElement('div');
+      ov.id = 'hs_prem_ov';
+      ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:url("venkateswara.jpg");background-size:cover;background-position:center top;background-repeat:no-repeat;font-family:Inter,sans-serif;overflow:hidden;transition:opacity 1.5s ease;';
+
+      var logoHtml = logo
+        ? '<img src="'+logo+'" style="height:72px;object-fit:contain;filter:drop-shadow(0 0 24px rgba(201,168,76,0.7));" />'
+        : '<div style="font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,#c9a84c,#fff,#f5d76e,#c9a84c);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:_sh 4s linear infinite;">'+brand+'</div>';
+
+      ov.innerHTML =
+        '<style>'+
+        '@keyframes _sh{0%{background-position:-300% center}100%{background-position:300% center}}'+
+        '@keyframes _rot{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'+
+        '@keyframes _rotR{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}'+
+        '@keyframes _glow{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.18)}}'+
+        '@keyframes _fu{from{opacity:0;transform:translateY(55px)}to{opacity:1;transform:translateY(0)}}'+
+        '@keyframes _pop{0%{transform:scale(.15);opacity:0}60%{transform:scale(1.28)}80%{transform:scale(.94)}100%{transform:scale(1);opacity:1}}'+
+        '@keyframes _ring{0%{transform:translate(-50%,-50%) scale(.5);opacity:.9}100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}}'+
+        '@keyframes _cf{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}'+
+        '@keyframes _pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}'+
+        '@keyframes _scan{0%{top:-5%}100%{top:105%}}'+
+        '@keyframes _blink{0%,100%{opacity:1}50%{opacity:.4}}'+
+        '</style>'+
+
+        /* bg layers */
+        '<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">'+
+          '<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.72) 0%,rgba(6,4,0,0.82) 40%,rgba(6,4,0,0.92) 100%);"></div>'+
+          '<div style="position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 50% 45%,rgba(201,168,76,0.11) 0%,transparent 65%);"></div>'+'
+          '<div style="position:absolute;top:50%;left:50%;width:min(95vw,720px);height:min(95vw,720px);margin:-360px 0 0 -360px;border-radius:50%;border:1px solid rgba(201,168,76,0.07);animation:_rot 35s linear infinite;"></div>'+
+          '<div style="position:absolute;top:50%;left:50%;width:min(70vw,540px);height:min(70vw,540px);margin:-270px 0 0 -270px;border-radius:50%;border:1px solid rgba(201,168,76,0.05);animation:_rotR 22s linear infinite;"></div>'+
+          '<div style="position:absolute;top:50%;left:50%;width:min(45vw,340px);height:min(45vw,340px);margin:-170px 0 0 -170px;border-radius:50%;border:1px solid rgba(201,168,76,0.04);animation:_rot 15s linear infinite;"></div>'+
+          '<div style="position:absolute;top:-180px;left:-180px;width:450px;height:450px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);animation:_glow 5s ease-in-out infinite;"></div>'+
+          '<div style="position:absolute;bottom:-180px;right:-180px;width:450px;height:450px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);animation:_glow 7s ease-in-out infinite reverse;"></div>'+
+          '<div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.12),transparent);animation:_scan 5s linear infinite;"></div>'+
+        '</div>'+
+
+        /* ── COUNTDOWN PANEL ── */
+        '<div id="_lc_c" style="text-align:center;position:relative;z-index:2;animation:_fu .9s ease;padding:1rem;">'+
+
+          /* brand */
+          '<div style="margin-bottom:1.75rem;">'+logoHtml+
+            '<div style="font-size:.6rem;color:rgba(201,168,76,.4);letter-spacing:7px;text-transform:uppercase;margin-top:.4rem;">PREMIUM LAUNCH</div>'+
+          '</div>'+
+
+          /* SVG ring + number */
+          '<div style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:210px;height:210px;">'+
+            '<svg style="position:absolute;top:0;left:0;" width="210" height="210" viewBox="0 0 210 210">'+
+              '<circle cx="105" cy="105" r="95" fill="none" stroke="rgba(201,168,76,.08)" stroke-width="2"/>'+
+              '<circle id="_pr" cx="105" cy="105" r="95" fill="none" stroke="url(#gg)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="597" stroke-dashoffset="597" transform="rotate(-90 105 105)" style="transition:stroke-dashoffset .95s linear;"/>'+
+              '<defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c9a84c"/><stop offset="50%" stop-color="#fff"/><stop offset="100%" stop-color="#c9a84c"/></linearGradient></defs>'+
+            '</svg>'+
+            '<div id="_pr2" style="position:absolute;top:50%;left:50%;width:170px;height:170px;border-radius:50%;border:2px solid rgba(201,168,76,.5);animation:_ring 1s ease-out;"></div>'+
+            '<div id="_num" style="font-size:5.8rem;font-weight:900;color:#c9a84c;line-height:1;text-shadow:0 0 50px rgba(201,168,76,.7),0 0 100px rgba(201,168,76,.25);animation:_pop .55s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:1;">'+dur+'</div>'+
+          '</div>'+
+
+          /* launch button */
+          '<div style="margin-top:2rem;" id="_btn_w">'+
+            '<button id="_lbtn" style="'+
+              'background:linear-gradient(135deg,#c9a84c 0%,#f5d76e 45%,#c9a84c 100%);'+
+              'background-size:200%;'+
+              'color:#000;border:none;border-radius:50px;'+
+              'padding:.95rem 3rem;font-size:1rem;font-weight:900;cursor:pointer;'+
+              'font-family:Inter,sans-serif;letter-spacing:3px;text-transform:uppercase;'+
+              'box-shadow:0 0 40px rgba(201,168,76,.55),0 0 80px rgba(201,168,76,.2),inset 0 1px 0 rgba(255,255,255,.35);'+
+              'animation:_pulse 1.8s ease-in-out infinite,_sh 3s linear infinite;'+
+              'display:inline-flex;align-items:center;gap:.65rem;position:relative;overflow:hidden;'+
+            '">'+
+              '<span style="position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);background-size:200%;animation:_sh 2s linear infinite;border-radius:50px;"></span>'+
+              '<i class="fas fa-rocket" style="position:relative;z-index:1;font-size:1.1rem;"></i>'+
+              '<span style="position:relative;z-index:1;">LAUNCH</span>'+
+            '</button>'+
+          '</div>'+
+
+          '<div style="margin-top:1.25rem;font-size:.68rem;color:rgba(201,168,76,.35);letter-spacing:3px;text-transform:uppercase;">'+tag+'</div>'+
+        '</div>'+
+
+        /* ── CONGRATS PANEL ── */
+        '<div id="_lc_g" style="display:none;text-align:center;position:relative;z-index:2;animation:_fu 1s ease;padding:1.5rem;max-width:580px;width:100%;">'+
+
+          /* live badge */
+          '<div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);border-radius:50px;padding:.4rem 1.1rem;margin-bottom:1.5rem;">'+
+            '<div style="width:8px;height:8px;border-radius:50%;background:#4caf50;box-shadow:0 0 8px #4caf50;animation:_blink 1s ease-in-out infinite;"></div>'+
+            '<span style="font-size:.7rem;font-weight:800;color:#4caf50;letter-spacing:2px;text-transform:uppercase;">LIVE NOW</span>'+
+          '</div>'+
+
+          /* brand */
+          '<div style="font-size:clamp(2.5rem,9vw,5.5rem);font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,#c9a84c,#fff,#f5d76e,#fff,#c9a84c);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:_sh 3s linear infinite;line-height:1;margin-bottom:.25rem;">'+brand+'</div>'+
+          '<div style="font-size:.65rem;color:rgba(201,168,76,.4);letter-spacing:7px;text-transform:uppercase;margin-bottom:2rem;">IS LIVE</div>'+
+
+          /* divider */
+          '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;">'+
+            '<div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25));"></div>'+
+            '<div style="font-size:.6rem;color:rgba(201,168,76,.4);letter-spacing:3px;text-transform:uppercase;white-space:nowrap;">Proudly Presented By</div>'+
+            '<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.25),transparent);"></div>'+
+          '</div>'+
+
+          /* founders — two premium cards side by side */
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;">'+
+
+            /* card 1 — Founder */
+            '<div style="position:relative;background:linear-gradient(145deg,rgba(201,168,76,0.07),rgba(255,255,255,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:22px;padding:1.75rem 1rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;overflow:hidden;">'+
+              '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);"></div>'+
+              '<div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);"></div>'+
+              '<div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%);"></div>'+
+              '<div style="position:relative;">'+
+                '<div style="position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(#c9a84c 0%,#fff 25%,#c9a84c 50%,#a07830 75%,#c9a84c 100%);animation:_rot 4s linear infinite;"></div>'+
+                '<div style="position:absolute;inset:-1px;border-radius:50%;background:#060606;"></div>'+
+                '<img src="'+fp1+'" style="position:relative;width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;"/>'+
+              '</div>'+
+              '<div style="text-align:center;position:relative;">'+
+                '<div style="font-size:1.05rem;font-weight:900;color:#fff;letter-spacing:-.3px;margin-bottom:.3rem;">'+f1+'</div>'+
+                '<div style="display:inline-block;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:.25rem .85rem;">'+
+                  '<div style="font-size:.6rem;color:#c9a84c;font-weight:800;letter-spacing:2px;text-transform:uppercase;">'+f1t+'</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            /* card 2 — MD */
+            '<div style="position:relative;background:linear-gradient(145deg,rgba(201,168,76,0.07),rgba(255,255,255,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:22px;padding:1.75rem 1rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;overflow:hidden;">'+
+              '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);"></div>'+
+              '<div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);"></div>'+
+              '<div style="position:absolute;top:-40px;left:-40px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%);"></div>'+
+              '<div style="position:relative;">'+
+                '<div style="position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(#c9a84c 0%,#fff 25%,#c9a84c 50%,#a07830 75%,#c9a84c 100%);animation:_rotR 4s linear infinite;"></div>'+
+                '<div style="position:absolute;inset:-1px;border-radius:50%;background:#060606;"></div>'+
+                '<img src="'+fp2+'" style="position:relative;width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;"/>'+
+              '</div>'+
+              '<div style="text-align:center;position:relative;">'+
+                '<div style="font-size:1.05rem;font-weight:900;color:#fff;letter-spacing:-.3px;margin-bottom:.3rem;">'+f2+'</div>'+
+                '<div style="display:inline-block;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:.25rem .85rem;">'+
+                  '<div style="font-size:.6rem;color:#c9a84c;font-weight:800;letter-spacing:2px;text-transform:uppercase;">'+f2t+'</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+          '</div>'+
+
+          '<div style="font-size:.7rem;color:rgba(201,168,76,.35);letter-spacing:3px;text-transform:uppercase;">'+tag+'</div>'+
+        '</div>';
+
+      document.body.appendChild(ov);
+
+      /* ── Countdown ── */
+      var count=dur, timer=null, started=false;
+      var numEl=document.getElementById('_num');
+      var ringEl=document.getElementById('_pr2');
+      var progEl=document.getElementById('_pr');
+      var circ=597;
+
+      function startCountdown(){
+        if(started) return; started=true;
+        try{ ac().resume(); }catch(e){}
+        var bw=document.getElementById('_btn_w');
+        if(bw) bw.innerHTML='<div style="font-size:.72rem;color:rgba(201,168,76,.45);letter-spacing:4px;text-transform:uppercase;margin-top:.5rem;">Launching in...</div>';
+        setTimeout(function(){ if(progEl){ progEl.style.strokeDashoffset=0; progEl.style.transition='stroke-dashoffset '+dur+'s linear'; } },50);
+        tick(count);
+        timer=setInterval(function(){
+          count--;
+          if(ringEl){ ringEl.style.animation='none'; void ringEl.offsetWidth; ringEl.style.animation='_ring 1s ease-out'; }
+          if(count>0){
+            tick(count);
+            if(numEl){ numEl.textContent=count; numEl.style.animation='none'; void numEl.offsetWidth; numEl.style.animation='_pop .55s cubic-bezier(.34,1.56,.64,1)'; }
+            if(count<=3 && numEl) numEl.style.textShadow='0 0 '+(70+(3-count)*50)+'px rgba(201,168,76,.95),0 0 '+(140+(3-count)*70)+'px rgba(201,168,76,.4)';
+          } else {
+            clearInterval(timer);
+            fanfare();
+            document.getElementById('_lc_c').style.display='none';
+            document.getElementById('_lc_g').style.display='block';
+            /* confetti */
+            for(var i=0;i<160;i++){
+              var cf=document.createElement('div');
+              var cols=['#c9a84c','#fff','#f5d76e','#4caf50','#2196f3','#ff9800','#e8c96a','#d4b870','#a07830'];
+              var sz=3+Math.random()*11;
+              cf.style.cssText='position:fixed;top:-20px;left:'+Math.random()*100+'vw;width:'+sz+'px;height:'+sz+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>.4?'50%':'2px')+';animation:_cf '+(2+Math.random()*3)+'s linear '+(Math.random()*2)+'s forwards;z-index:100000;pointer-events:none;';
+              ov.appendChild(cf);
+            }
+            setTimeout(function(){ ov.style.opacity='0'; setTimeout(function(){ if(ov.parentNode) ov.remove(); },1500); },6000);
+          }
+        },1000);
+      }
+
+      var btn=document.getElementById('_lbtn');
+      if(btn){
+        btn.addEventListener('click',function(e){ e.stopPropagation(); startCountdown(); });
+        btn.addEventListener('touchstart',function(e){ e.stopPropagation(); startCountdown(); },{passive:true});
+      }
+    })();
   </script>
 
 </body>

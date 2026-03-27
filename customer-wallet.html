@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Wallet - OG SHOOTS</title>
+  <title>My Wallet - OG Shoots</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -36,7 +36,7 @@
 </head>
 <body>
   <nav>
-    <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
     <div class="nav-right">
       <span id="welcomeMsg">Welcome, Customer</span>
       <a href="customer.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
@@ -71,12 +71,37 @@
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
     const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
-    // Get wallet by phone (set by admin per booking phone)
-    var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-    var myBooking = bookings.find(function(b){ return b.name === user; });
-    var phone = myBooking ? myBooking.phone : '';
-    var bal = phone ? (localStorage.getItem('hs_cw_' + phone) || '0') : '0';
-    document.getElementById('walletBal').textContent = bal;
+    var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+
+    async function loadWalletBalance(){
+      var bal = 0;
+      // Try Firebase first
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cw';}) || fbMod.initializeApp(fbCfg,'cw');
+        var db      = fbStore.getFirestore(app);
+        var key     = 'cw_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
+        if(snap.exists()) bal = snap.data().balance || 0;
+        else {
+          // Fallback: check by phone
+          var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var myBooking = bookings.find(function(b){ return b.email===userEmail || b.name===user; });
+          var phone = myBooking ? myBooking.phone : '';
+          if(phone) bal = parseInt(localStorage.getItem('hs_cw_'+phone)||'0');
+        }
+        localStorage.setItem('hs_cw_'+userEmail, String(bal));
+      } catch(e){
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var myBooking = bookings.find(function(b){ return b.name===user; });
+        var phone = myBooking ? myBooking.phone : '';
+        bal = parseInt(localStorage.getItem('hs_cw_'+(userEmail||phone))||'0');
+      }
+      document.getElementById('walletBal').textContent = bal.toLocaleString('en-IN');
+    }
+    loadWalletBalance();
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
   </script>
 </body>

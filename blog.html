@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blog – OG SHOOTS</title>
+  <title>Blog – OG Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -139,6 +139,7 @@
     @media(max-width:580px){ .blog-grid{grid-template-columns:1fr;} .nl-form{flex-direction:column;} }
   </style>
   <script src="nav.js"></script>
+<script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
 
@@ -149,7 +150,7 @@
     <div style="position:relative;z-index:1;">
       <div class="eyebrow"><i class="fas fa-pen-nib"></i> Our Blog</div>
       <h1>Stories, Tips &<br/><em>Insights</em></h1>
-      <p>Behind-the-scenes stories, content creation tips, and the latest from the OG SHOOTS world.</p>
+      <p>Behind-the-scenes stories, content creation tips, and the latest from the OG Shoots world.</p>
     </div>
   </div>
 
@@ -255,7 +256,7 @@
           <div class="blog-card-body">
             <div class="blog-card-tag">Behind the Scenes</div>
             <div class="author-chip"><div class="author-avatar-placeholder">GS</div><div><div class="author-name">Sumanth G.</div><div class="author-role">MD</div></div></div>
-            <h3>What It Takes to Become a Certified OG SHOOTS Creator</h3>
+            <h3>What It Takes to Become a Certified OG Shoots Creator</h3>
             <p>Our 6-step certification process ensures every creator meets the highest standard before going live.</p>
             <div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> Nov 2024</span><span><i class="fas fa-clock"></i> 6 min</span><span><i class="fas fa-eye"></i> 6.9k</span></div>
           </div>
@@ -369,7 +370,7 @@
     <div class="newsletter">
       <div class="eyebrow"><i class="fas fa-envelope"></i> Stay Updated</div>
       <h2>Get Stories Delivered to<br/><span>Your Inbox</span></h2>
-      <p>No spam. Just the best content tips, trends, and OG SHOOTS updates.</p>
+      <p>No spam. Just the best content tips, trends, and OG Shoots updates.</p>
       <div class="nl-form">
         <input type="email" placeholder="your@email.com"/>
         <button class="nl-btn">Subscribe</button>
@@ -383,15 +384,15 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/weareogshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -427,7 +428,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <p>© 2025 OG Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
         <div class="footer-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
@@ -485,22 +486,12 @@
       // Render from localStorage immediately
       var local = JSON.parse(localStorage.getItem('hs_blogs') || '[]');
       renderBlogPosts(local);
-
-      // Fetch from Firebase and re-render
+      // Load fresh from Firestore via shared helper
       (async function(){
         try {
-          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app     = fbMod.getApps().find(function(a){return a.name==='blog';}) || fbMod.initializeApp(fbCfg,'blog');
-          var db      = fbStore.getFirestore(app);
-          var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','blogs'));
-          if(snap.exists() && snap.data().items){
-            var posts = snap.data().items;
-            localStorage.setItem('hs_blogs', JSON.stringify(posts));
-            renderBlogPosts(posts);
-          }
-        } catch(e){ console.log('Blog Firebase load error:',e); }
+          var posts = window.loadBlogFromFirebase ? await loadBlogFromFirebase() : [];
+          if (posts.length) renderBlogPosts(posts);
+        } catch(e) {}
       })();
     })();
   </script>

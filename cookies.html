@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cookie Policy – OG SHOOTS</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <title>Cookie Policy – OG Shoots LUXE – OG Shoots</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -13,189 +12,209 @@
     .page-bg {
       min-height: 100vh;
       background:
-        radial-gradient(ellipse 90% 70% at 50% 10%, rgba(180,20,20,0.55) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120,10,10,0.3) 0%, transparent 70%),
-        linear-gradient(180deg, #2a0505 0%, #150202 40%, #080808 100%);
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a0a 0%, #080808 100%);
     }
-    .logo { font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
-    .logo-flash { color: #c9a84c; }
-    .nav-right { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-app { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
-    .btn-app:hover { border-color: #fff; }
-    .btn-contact { padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; background: #c9a84c; color: #fff; border: none; text-decoration: none; transition: background 0.2s; }
-    .btn-contact:hover { background: #a07830; }
-
-    .hero-section { padding: 9rem 1.5rem 4rem; text-align: center; max-width: 800px; margin: 0 auto; }
-    .pill { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(180,30,30,0.35); border: 1px solid rgba(201,168,76,0.25); color: #e07070; font-size: 0.8rem; font-weight: 600; padding: 0.45rem 1.1rem; border-radius: 50px; margin-bottom: 1.25rem; }
-    .hero-section h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; color: #fff; margin-bottom: 0.75rem; }
-    .hero-section h1 span { color: #c9a84c; }
-    .last-updated { color: #a07070; font-size: 0.85rem; margin-top: 0.5rem; }
-
-    .content-wrap { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 6rem; }
-
-    .highlight-box { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; }
-    .highlight-box h2 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.6rem; }
-    .highlight-box p { color: #d09090; font-size: 0.9rem; line-height: 1.75; margin-bottom: 1rem; }
-    .highlight-box p:last-child { margin-bottom: 0; }
-
-    .key-things { margin-top: 1rem; }
-    .key-things h4 { font-size: 0.82rem; font-weight: 700; color: #e07070; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .policy-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
-    .policy-list li { display: flex; align-items: flex-start; gap: 0.75rem; color: #c09090; font-size: 0.88rem; line-height: 1.65; }
-    .policy-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #c9a84c; flex-shrink: 0; margin-top: 0.5rem; }
-
-    .cookie-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
-    .cookie-card { background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 16px; padding: 1.75rem; transition: border-color 0.2s, transform 0.2s; }
-    .cookie-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-3px); }
-    .cookie-card-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(180,30,30,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 1rem; color: #c9a84c; }
-    .cookie-card h3 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; }
-    .cookie-card .card-desc { font-size: 0.82rem; color: #a07070; line-height: 1.6; margin-bottom: 1rem; }
-    .cookie-card .card-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-    .cookie-card .card-list li { font-size: 0.82rem; color: #c09090; display: flex; align-items: center; gap: 0.5rem; }
-    .cookie-card .card-list li::before { content: '→'; color: #c9a84c; font-size: 0.75rem; flex-shrink: 0; }
-    .cookie-card.essential { border-color: rgba(201,168,76,0.25); }
-    .cookie-card.essential .cookie-card-icon { background: rgba(201,168,76,0.2); }
-
-    .manage-section { background: rgba(80,10,10,0.45); border: 1px solid rgba(180,60,60,0.2); border-radius: 16px; padding: 2rem; }
-    .manage-section h2 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
-    .manage-section > p { font-size: 0.88rem; color: #a07070; line-height: 1.7; margin-bottom: 1.5rem; }
-    .browser-label { font-size: 0.78rem; font-weight: 700; color: #e07070; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
-    .browser-list { display: flex; flex-direction: column; gap: 0.6rem; }
-    .browser-item { display: flex; align-items: center; gap: 0.75rem; background: rgba(180,30,30,0.2); border-radius: 10px; padding: 0.65rem 1rem; }
-    .browser-item i { color: #c9a84c; font-size: 0.9rem; width: 16px; text-align: center; flex-shrink: 0; }
-    .browser-item span { font-size: 0.85rem; color: #c09090; }
-    .browser-item strong { color: #fff; }
-
-    .contact-card { background: rgba(80,10,10,0.45); border: 1px solid rgba(201,168,76,0.25); border-radius: 16px; padding: 2rem; text-align: center; margin-top: 2rem; }
-    .contact-card h3 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
-    .contact-card p { color: #a07070; font-size: 0.88rem; margin-bottom: 1.25rem; }
-    .contact-card a { display: inline-flex; align-items: center; gap: 0.5rem; background: #c9a84c; color: #fff; text-decoration: none; padding: 0.75rem 1.75rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; transition: background 0.2s; }
-    .contact-card a:hover { background: #a07830; }
-
-    .divider { height: 1px; background: rgba(180,30,30,0.2); margin: 2.5rem 0; }
-
-    @media(max-width: 640px) { .cookie-cards { grid-template-columns: 1fr; } }
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,10,0.92);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+      backdrop-filter: blur(12px);
+    }
+    .logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: #c9a84c; }
+    .nav-links { display: flex; gap: 0.75rem; align-items: center; }
+    .nav-links a { padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.82rem; color: #9a9080; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-btn { padding: 0.55rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; background: #c9a84c; color: #000; text-decoration: none; transition: background 0.2s; }
+    .nav-btn:hover { background: #e0b85a; }
+    .hero { padding: 9rem 1.5rem 3.5rem; text-align: center; max-width: 760px; margin: 0 auto; }
+    .badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); color: #c9a84c; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 1.25rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.75rem; }
+    .hero h1 span { color: #c9a84c; }
+    .hero .meta { color: #6a5a40; font-size: 0.85rem; margin-top: 0.5rem; }
+    .content { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+    .intro-box { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.18); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 2.5rem; }
+    .intro-box p { color: #b09060; font-size: 0.88rem; line-height: 1.75; }
+    .intro-box strong { color: #c9a84c; }
+    .section { margin-bottom: 3rem; scroll-margin-top: 90px; }
+    .section-head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem; padding-bottom: 0.85rem; border-bottom: 1px solid rgba(201,168,76,0.1); }
+    .sec-num { width: 34px; height: 34px; border-radius: 9px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; color: #c9a84c; flex-shrink: 0; }
+    .section-head h2 { font-size: 1.1rem; font-weight: 800; color: #fff; }
+    .sec-text { color: #8a7a60; font-size: 0.88rem; line-height: 1.85; margin-bottom: 1rem; }
+    .sec-text strong { color: #d4b870; }
+    .sec-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1rem; }
+    .sec-list li { display: flex; align-items: flex-start; gap: 0.75rem; color: #8a7a60; font-size: 0.87rem; line-height: 1.7; }
+    .sec-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #c9a84c; flex-shrink: 0; margin-top: 0.6rem; }
+    .cookie-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+    .cookie-table th { background: rgba(201,168,76,0.1); color: #c9a84c; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid rgba(201,168,76,0.15); }
+    .cookie-table td { padding: 0.75rem 1rem; font-size: 0.84rem; color: #8a7a60; border-bottom: 1px solid rgba(201,168,76,0.06); vertical-align: top; }
+    .cookie-table tr:last-child td { border-bottom: none; }
+    .cookie-table td strong { color: #d4b870; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.72rem; font-weight: 700; }
+    .tag-essential { background: rgba(76,175,80,0.15); color: #4caf50; }
+    .tag-analytics { background: rgba(33,150,243,0.15); color: #2196f3; }
+    .tag-functional { background: rgba(201,168,76,0.15); color: #c9a84c; }
+    .divider { height: 1px; background: rgba(201,168,76,0.07); margin: 2.5rem 0; }
+    .contact-card { background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.03)); border: 1px solid rgba(201,168,76,0.2); border-radius: 18px; padding: 2.5rem; text-align: center; margin-top: 2rem; }
+    .contact-card .icon { font-size: 2rem; color: #c9a84c; margin-bottom: 1rem; }
+    .contact-card h3 { font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .contact-card p { color: #7a6a50; font-size: 0.87rem; margin-bottom: 1.5rem; line-height: 1.6; }
+    .contact-card a { display: inline-flex; align-items: center; gap: 0.5rem; background: #c9a84c; color: #000; text-decoration: none; padding: 0.8rem 2rem; border-radius: 10px; font-weight: 800; font-size: 0.88rem; transition: background 0.2s; }
+    .contact-card a:hover { background: #e0b85a; }
+    .footer { border-top: 1px solid rgba(201,168,76,0.08); padding: 2rem 1.5rem; text-align: center; color: #4a3a28; font-size: 0.8rem; }
+    .footer a { color: #6a5a40; text-decoration: none; margin: 0 0.5rem; }
+    .footer a:hover { color: #c9a84c; }
+    @media(max-width:600px){ .navbar { padding: 0.85rem 1rem; } .nav-links a { display: none; } .hero { padding: 7rem 1rem 2.5rem; } .content { padding: 0 1rem 4rem; } .cookie-table { font-size: 0.78rem; } }
   </style>
-
-  <script src="nav.js"></script>
 </head>
 <body>
-  <div class="page-bg">
+<div class="page-bg">
 
-  <div class="hero-section">
-    <div class="pill"><i class="fas fa-cookie-bite"></i> Legal</div>
+  <nav class="navbar">
+    <a href="index.html" class="logo">Hash <span>Shoots</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="booking.html" class="nav-btn">Book Now</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="badge"><i class="fas fa-cookie-bite"></i> Legal</div>
     <h1>Cookie <span>Policy</span></h1>
-    <p class="last-updated">Last updated: March 2025 &nbsp;·&nbsp; Effective immediately</p>
+    <p class="meta">Last updated: June 2025 &nbsp;·&nbsp; Effective immediately</p>
   </div>
 
-  <div class="content-wrap">
+  <div class="content">
 
-    <!-- INTRO -->
-    <div class="highlight-box">
-      <h2>Understanding Our Cookies</h2>
-      <p>Cookies help us deliver the best experience on our website. By using OG SHOOTS, you agree to our use of cookies and similar technologies. This policy explains how we use cookies, what types of cookies we use, and how you can control them.</p>
-      <h2 style="margin-top:1.25rem;">What Are Cookies?</h2>
-      <p>Cookies are small text files that are stored on your device when you visit our website. They serve various purposes and help us provide you with a better, more personalised experience.</p>
-      <div class="key-things">
-        <h4>Key Things to Know:</h4>
-        <ul class="policy-list">
-          <li>Cookies are standard practice across the internet</li>
-          <li>They're safe and can't carry viruses</li>
-          <li>You can manage or delete them at any time</li>
-        </ul>
-      </div>
+    <div class="intro-box">
+      <p>This Cookie Policy explains how <strong>OG Shoots Media</strong> uses cookies and similar tracking technologies on our website. By using our site, you consent to the use of cookies as described in this policy.</p>
     </div>
 
-    <!-- COOKIE TYPE CARDS -->
-    <div class="cookie-cards">
-
-      <div class="cookie-card essential">
-        <div class="cookie-card-icon"><i class="fas fa-shield-alt"></i></div>
-        <h3>Essential Cookies</h3>
-        <p class="card-desc">Required for basic site functionality. These cannot be disabled as they are necessary for the website to work properly.</p>
-        <ul class="card-list">
-          <li>Authentication and security</li>
-          <li>Session management</li>
-          <li>Account preferences</li>
-        </ul>
-      </div>
-
-      <div class="cookie-card">
-        <div class="cookie-card-icon"><i class="fas fa-chart-bar"></i></div>
-        <h3>Analytics Cookies</h3>
-        <p class="card-desc">Help us understand how visitors interact with our website, allowing us to improve user experience.</p>
-        <ul class="card-list">
-          <li>Usage patterns and trends</li>
-          <li>Performance monitoring</li>
-          <li>Error tracking</li>
-        </ul>
-      </div>
-
-      <div class="cookie-card">
-        <div class="cookie-card-icon"><i class="fas fa-sliders-h"></i></div>
-        <h3>Functional Cookies</h3>
-        <p class="card-desc">Enable enhanced functionality and personalisation features on our website.</p>
-        <ul class="card-list">
-          <li>Language preferences</li>
-          <li>Location-based content</li>
-          <li>Customised layouts</li>
-        </ul>
-      </div>
-
-      <div class="cookie-card">
-        <div class="cookie-card-icon"><i class="fas fa-bullhorn"></i></div>
-        <h3>Marketing Cookies</h3>
-        <p class="card-desc">Used to track visitors across websites to display relevant advertisements.</p>
-        <ul class="card-list">
-          <li>Ad personalisation</li>
-          <li>Campaign effectiveness</li>
-          <li>Partner integrations</li>
-        </ul>
-      </div>
-
+    <div class="section" id="what">
+      <div class="section-head"><div class="sec-num">1</div><h2>What Are Cookies?</h2></div>
+      <p class="sec-text">Cookies are small text files placed on your device when you visit a website. They help the website remember your preferences, keep you logged in, and understand how you use the site. Cookies cannot run programs or deliver viruses to your device.</p>
     </div>
-
     <div class="divider"></div>
 
-    <!-- MANAGING COOKIES -->
-    <div class="manage-section">
-      <h2>Managing Your Cookie Preferences</h2>
-      <p>You can control and/or delete cookies as you wish. You can delete all cookies that are already on your computer and you can set most browsers to prevent them from being placed.</p>
-      <div class="browser-label">Browser Settings:</div>
-      <div class="browser-list">
-        <div class="browser-item">
-          <i class="fab fa-chrome"></i>
-          <span><strong>Chrome:</strong> Settings → Privacy and Security → Cookies</span>
-        </div>
-        <div class="browser-item">
-          <i class="fab fa-firefox"></i>
-          <span><strong>Firefox:</strong> Options → Privacy &amp; Security → Cookies</span>
-        </div>
-        <div class="browser-item">
-          <i class="fab fa-safari"></i>
-          <span><strong>Safari:</strong> Preferences → Privacy → Cookies</span>
-        </div>
+    <div class="section" id="types">
+      <div class="section-head"><div class="sec-num">2</div><h2>Types of Cookies We Use</h2></div>
+      <table class="cookie-table">
+        <thead>
+          <tr>
+            <th>Cookie Name</th>
+            <th>Type</th>
+            <th>Purpose</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>hs_user</strong></td>
+            <td><span class="tag tag-essential">Essential</span></td>
+            <td>Keeps you logged in to your customer account</td>
+            <td>Session</td>
+          </tr>
+          <tr>
+            <td><strong>hs_staff_id</strong></td>
+            <td><span class="tag tag-essential">Essential</span></td>
+            <td>Identifies staff members for the staff portal</td>
+            <td>Persistent</td>
+          </tr>
+          <tr>
+            <td><strong>hs_razorpay</strong></td>
+            <td><span class="tag tag-functional">Functional</span></td>
+            <td>Stores payment configuration for checkout</td>
+            <td>Session</td>
+          </tr>
+          <tr>
+            <td><strong>hs_cities</strong></td>
+            <td><span class="tag tag-functional">Functional</span></td>
+            <td>Caches available service cities for faster loading</td>
+            <td>7 days</td>
+          </tr>
+          <tr>
+            <td><strong>hs_customer_wallet</strong></td>
+            <td><span class="tag tag-functional">Functional</span></td>
+            <td>Stores your wallet balance locally for display</td>
+            <td>Session</td>
+          </tr>
+          <tr>
+            <td><strong>_ga, _gid</strong></td>
+            <td><span class="tag tag-analytics">Analytics</span></td>
+            <td>Google Analytics — helps us understand site usage</td>
+            <td>2 years / 24 hrs</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sec-text">We primarily use <strong>localStorage</strong> (a browser storage mechanism similar to cookies) to store your preferences and session data. This data stays on your device and is not transmitted to third parties except as described in our Privacy Policy.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="essential">
+      <div class="section-head"><div class="sec-num">3</div><h2>Essential Cookies</h2></div>
+      <p class="sec-text">These cookies are strictly necessary for the website to function. They enable core features like login, booking, and payment. You cannot opt out of these cookies while using our services.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="functional">
+      <div class="section-head"><div class="sec-num">4</div><h2>Functional Cookies</h2></div>
+      <p class="sec-text">Functional cookies allow us to remember your preferences and provide enhanced features. For example, remembering your city selection or wallet balance. Disabling these may affect your experience.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="analytics">
+      <div class="section-head"><div class="sec-num">5</div><h2>Analytics Cookies</h2></div>
+      <p class="sec-text">We use analytics tools to understand how visitors interact with our website. This helps us improve our services. Analytics data is aggregated and anonymised — we cannot identify individual users from this data.</p>
+      <p class="sec-text">We may use <strong>Google Analytics</strong> for this purpose. You can opt out of Google Analytics by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" style="color:#c9a84c;">Google Analytics Opt-out Browser Add-on</a>.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="control">
+      <div class="section-head"><div class="sec-num">6</div><h2>Managing Cookies</h2></div>
+      <p class="sec-text">You can control and delete cookies through your browser settings. Here's how to manage cookies in popular browsers:</p>
+      <ul class="sec-list">
+        <li><strong>Chrome:</strong> Settings → Privacy and Security → Cookies and other site data</li>
+        <li><strong>Firefox:</strong> Options → Privacy & Security → Cookies and Site Data</li>
+        <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+        <li><strong>Edge:</strong> Settings → Cookies and site permissions → Cookies and site data</li>
+      </ul>
+      <p class="sec-text">Please note that disabling cookies may affect the functionality of our website and your ability to use certain features.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="updates">
+      <div class="section-head"><div class="sec-num">7</div><h2>Updates to This Policy</h2></div>
+      <p class="sec-text">We may update this Cookie Policy from time to time to reflect changes in technology or legal requirements. We will notify you of significant changes by posting a notice on our website. Your continued use of our site after any changes constitutes your acceptance of the updated policy.</p>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section" id="contact">
+      <div class="section-head"><div class="sec-num">8</div><h2>Contact Us</h2></div>
+      <div class="contact-card">
+        <div class="icon"><i class="fas fa-cookie"></i></div>
+        <h3>Questions About Cookies?</h3>
+        <p>If you have any questions about our use of cookies or this policy, please contact us. We're happy to help.</p>
+        <a href="mailto:ogshootsmedia@gmail.com"><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</a>
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- CONTACT -->
-    <div class="contact-card">
-      <h3>Questions About Cookies?</h3>
-      <p>If you have any questions about our use of cookies, feel free to reach out.</p>
-      <a href="mailto:hashshootsindia@gmail.com"><i class="fas fa-envelope"></i> hashshootsindia@gmail.com</a>
-    </div>
-
-  </div>
   </div>
 
-  <script>
-    window.addEventListener('scroll', () => {
-      document.querySelector('.navbar').style.background =
-        window.scrollY > 50 ? 'rgba(15,2,2,0.97)' : 'rgba(20,2,2,0.85)';
-    });
-  </script>
+  <div class="footer">
+    <p>© 2025 OG Shoots Media. All rights reserved.</p>
+    <p style="margin-top:0.5rem;">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="cookies.html">Cookie Policy</a>
+      <a href="contact.html">Contact</a>
+    </p>
+  </div>
+
+</div>
 </body>
 </html>

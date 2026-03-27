@@ -1,64 +1,67 @@
-// hs-cloudinary.js — Cloudinary Upload Helper — 1080p High Quality
+// hs-cloudinary.js — OG Shoots Cloudinary Upload Helper
 
 const CLOUD_NAME = 'dqmjfw1qb';
-const UPLOAD_PRESET = 'hs_unsigned';
 
-window.cloudinaryUpload = async function(file, folder, onProgress) {
+// Only these presets are tried — all must be unsigned with NO eager transformations
+const PRESETS_TO_TRY = ['hs_unsigned', 'hs_clean', 'ml_default'];
+
+async function tryUpload(file, folder, preset, onProgress) {
   return new Promise(function(resolve, reject) {
     var formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('folder', 'hashshoots/' + folder);
+    formData.append('upload_preset', preset);
+    // Only append folder — no eager, no transformation params
+    if (folder) formData.append('folder', 'ogshoots/' + folder);
 
-    if (file.type.startsWith('video/')) {
-      // Auto-convert to 1080p max, high quality, keep aspect ratio
-      formData.append('eager', 'w_1920,h_1080,c_limit,q_auto:best,vc_h264');
-      formData.append('eager_async', 'true');
-    } else {
-      // Images — full quality, max 2048px wide
-      formData.append('quality', '95');
-      formData.append('fetch_format', 'auto');
-    }
-
+    var resourceType = file.type && file.type.startsWith('video/') ? 'video' : 'image';
     var xhr = new XMLHttpRequest();
-    var resourceType = file.type.startsWith('video/') ? 'video' : 'image';
     xhr.open('POST', 'https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/' + resourceType + '/upload');
 
-    xhr.upload.onprogress = function(e) {
-      if (e.lengthComputable && onProgress) {
-        onProgress(Math.round((e.loaded / e.total) * 100));
-      }
-    };
+    if (onProgress) {
+      xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+    }
 
     xhr.onload = function() {
       if (xhr.status === 200) {
-        var res = JSON.parse(xhr.responseText);
-        var originalUrl = res.secure_url;
-
-        // Thumbnail from video at 1 second mark
-        var thumbnail = res.resource_type === 'video'
-          ? originalUrl.replace('/upload/', '/upload/so_1,w_400,h_711,c_fill,q_auto/').replace(/\.[^.]+$/, '.jpg')
-          : originalUrl.replace('/upload/', '/upload/w_400,h_711,c_fill,q_auto/');
-
-        resolve({
-          url: originalUrl,
-          publicId: res.public_id,
-          thumbnail: thumbnail,
-          width: res.width,
-          height: res.height,
-          format: res.format,
-          bytes: res.bytes
-        });
+        try {
+          var res = JSON.parse(xhr.responseText);
+          resolve({
+            url: res.secure_url,
+            publicId: res.public_id,
+            thumbnail: res.secure_url,
+            format: res.format || '',
+            bytes: res.bytes || 0
+          });
+        } catch(e) { reject(new Error('Parse error')); }
       } else {
-        var errMsg = xhr.responseText;
-        try { errMsg = JSON.parse(xhr.responseText).error.message; } catch(e) {}
-        reject(new Error(errMsg));
+        var msg = 'Upload failed';
+        try { msg = JSON.parse(xhr.responseText).error.message; } catch(e) {}
+        reject(new Error(msg));
       }
     };
-
-    xhr.onerror = function() { reject(new Error('Network error — check your internet connection')); };
+    xhr.onerror = function() { reject(new Error('Network error')); };
     xhr.send(formData);
   });
+}
+
+window.cloudinaryUpload = async function(file, folder, onProgress) {
+  var lastErr = null;
+  for (var i = 0; i < PRESETS_TO_TRY.length; i++) {
+    try {
+      var result = await tryUpload(file, folder, PRESETS_TO_TRY[i], onProgress);
+      console.log('[Cloudinary] Uploaded with preset:', PRESETS_TO_TRY[i]);
+      return result;
+    } catch(e) {
+      lastErr = e;
+      // If error is about eager/signed params, try next preset
+      // If it's a network error, stop immediately
+      if (e.message && e.message.toLowerCase().indexOf('network') > -1) throw e;
+      console.warn('[Cloudinary] Preset', PRESETS_TO_TRY[i], 'failed:', e.message, '— trying next...');
+    }
+  }
+  throw lastErr || new Error('All upload presets failed');
 };
 
-console.log('[HashShoots] Cloudinary ready — 1080p High Quality Mode — Cloud:', CLOUD_NAME);
+console.log('[OG Shoots] Cloudinary ready — auto-fallback across presets');

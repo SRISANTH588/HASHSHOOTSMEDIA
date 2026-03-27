@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book a Shoot - OG SHOOTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+  <title>Book a Shoot - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -115,13 +115,13 @@
     .plan-preview-price{font-size:2.5rem;font-weight:900;background:linear-gradient(90deg,#c9a84c,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;}
     .plan-preview-desc{font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;}
     .plan-preview-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.6rem;}
-    .btn-plan-continue{background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(229,57,53,0.35);transition:all 0.2s;}
+    .btn-plan-continue{background:linear-gradient(135deg,#c9a84c,#a07830);color:var(--text);border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 25px rgba(201,168,76,0.35);transition:all 0.2s;}
     .btn-plan-continue:hover{transform:translateY(-1px);box-shadow:0 10px 35px rgba(201,168,76,0.5);}
     .btn-plan-back{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     /* PAYMENT T&C MODAL */
     .pay-tnc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10001;align-items:center;justify-content:center;padding:1rem;}
     .pay-tnc-overlay.open{display:flex;}
-    .pay-tnc-box{background:var(--bg);border:1px solid rgba(229,57,53,0.35);border-radius:20px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+    .pay-tnc-box{background:var(--bg);border:1px solid rgba(201,168,76,0.35);border-radius:20px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
     .pay-tnc-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
     .pay-tnc-header h3{font-size:1rem;font-weight:900;color:var(--text);display:flex;align-items:center;gap:0.6rem;}
     .pay-tnc-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;}
@@ -163,12 +163,14 @@
     .btn-terms-proceed{background:var(--gold);color:var(--text);border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.4;pointer-events:none;transition:all 0.2s;}
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
+    @keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
   </style>
 <script type="module" src="hs-firebase.js"></script>
+<script src="hs-fixes.js"></script>
 </head>
 <body>
   <nav>
-    <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:var(--gold);letter-spacing:2px;vertical-align:super;opacity:0.85;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup> <sup style="font-size:0.45em;font-weight:700;color:var(--gold);letter-spacing:2px;vertical-align:super;opacity:0.85;">LUXE</sup></div>
     <div class="nav-right">
       <span id="welcomeMsg">Welcome, Customer</span>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -260,6 +262,12 @@
     <div class="my-bookings" id="orderDetails" style="display:none;">
       <h2 id="bookingsTitle">My Bookings</h2>
       <div id="bookingsList"></div>
+    </div>
+
+    <!-- ADMIN MESSAGES TO CUSTOMER -->
+    <div id="adminMessagesSection" style="display:none;margin:1.5rem 0;">
+      <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-comment-dots" style="color:#c9a84c;"></i> Messages from OG Shoots</h2>
+      <div id="adminMessagesList"></div>
     </div>
 
     <div class="feedback-wrap" id="shootFeedbackSection" style="display:none;">
@@ -549,13 +557,83 @@
     if(c.showBookings === 'no') document.getElementById('orderDetails').style.display = 'none';
     if(c.bookingsTitle) document.getElementById('bookingsTitle').textContent = c.bookingsTitle;
 
-    // Welcome message
-    const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
+    // Load cities from Firebase and convert city field to dropdown if cities are configured
+    (async function loadCityField(){
+      var cities = [];
+      try {
+        if(window.loadCitiesFromFirebase) cities = await loadCitiesFromFirebase();
+        if(!cities.length){
+          var cfg = JSON.parse(localStorage.getItem('hs_customer_page')||'{}');
+          cities = cfg.cities || [];
+        }
+      } catch(e){}
+      if(cities.length > 0){
+        var cityInput = document.getElementById('city');
+        if(cityInput && cityInput.tagName === 'INPUT'){
+          var sel = document.createElement('select');
+          sel.id = 'city';
+          sel.style.cssText = cityInput.style.cssText;
+          sel.className = cityInput.className;
+          sel.innerHTML = '<option value="">Select City</option>' + cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+          cityInput.parentNode.replaceChild(sel, cityInput);
+        }
+      }
+    })();
+
+    // Load Razorpay config from Firebase
+    (async function(){
+      try {
+        if(window.loadRazorpayFromFirebase) await loadRazorpayFromFirebase();
+      } catch(e){}
+    })();
+
+    // Load customer wallet from Firebase
+    (async function(){
+      try {
+        var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+        if(userEmail && window.loadCustWalletFromFirebase){
+          var bal = await loadCustWalletFromFirebase(userEmail);
+          var walletEl = document.getElementById('walletBal');
+          if(walletEl) walletEl.textContent = bal.toLocaleString('en-IN');
+        }
+      } catch(e){}
+    })();
     const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
     // Wallet
     document.getElementById('walletBal').textContent = localStorage.getItem('hs_customer_wallet') || '0';
+
+    // Load admin messages for this customer
+    (async function loadAdminMessages(){
+      try {
+        var msgs = [];
+        if(window.fbGetAll){
+          var all = await fbGetAll('customer_feedback');
+          msgs = all.filter(function(m){ return m.recipientId === userEmail || m.recipientId === localStorage.getItem('hs_customer_phone'); });
+        }
+        if(!msgs.length) return;
+        var sec = document.getElementById('adminMessagesSection');
+        var list = document.getElementById('adminMessagesList');
+        if(!sec || !list) return;
+        sec.style.display = 'block';
+        var typeColors = { positive:'#4caf50', improvement:'#ff9800', warning:'#f44336', booking:'#2196f3', general:'#c9a84c' };
+        var typeIcons  = { positive:'fa-star', improvement:'fa-tools', warning:'fa-exclamation-triangle', booking:'fa-calendar-check', general:'fa-comment-dots' };
+        list.innerHTML = msgs.slice(0,10).map(function(m){
+          var col = typeColors[m.type]||'#c9a84c';
+          var ico = typeIcons[m.type]||'fa-comment-dots';
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+col+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">'
+            +'<i class="fas '+ico+'" style="color:'+col+';font-size:0.85rem;"></i>'
+            +'<span style="font-size:0.75rem;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:0.5px;">'+m.type+'</span>'
+            +(m.rating ? '<span style="margin-left:auto;font-size:0.78rem;color:#c9a84c;">'+'\u2b50'.repeat(m.rating)+'</span>' : '')
+            +'</div>'
+            +'<div style="font-size:0.88rem;color:#d4b870;line-height:1.65;">'+m.message+'</div>'
+            +'<div style="font-size:0.72rem;color:#6a5a40;margin-top:0.4rem;">From OG Shoots Admin · '+(m.createdAt||'').slice(0,10)+'</div>'
+            +'</div>';
+        }).join('');
+      } catch(e){}
+    })();
 
     // Profile
     function loadProfile(){
@@ -705,7 +783,15 @@
     }
 
     function _renderBookings() {
-      const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      const allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      const custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      const custPhone = localStorage.getItem('hs_customer_phone') || '';
+      // SECURITY: Only show this customer's bookings
+      const bookings = allBookings.filter(function(b){
+        if(!custEmail && !custPhone) return false;
+        return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
+               (custPhone && b.phone === custPhone);
+      });
       const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       const list = document.getElementById('bookingsList');
       if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
@@ -820,7 +906,7 @@
         key: rp.keyId,
         amount: amount,
         currency: rp.currency || 'INR',
-        name: rp.businessName || 'OG SHOOTS',
+        name: rp.businessName || 'OG Shoots',
         description: rp.description || (b.service + ' — ' + b.city),
         image: rp.logo || '',
         prefill: { name: b.name, contact: b.phone },
@@ -878,34 +964,59 @@
         var fbApp = fbMod.getApps().find(a=>a.name==='cust')||fbMod.initializeApp(fbCfg,'cust');
         var fbDb = fbStore.getFirestore(fbApp);
         var userEmail = localStorage.getItem('hs_customer_email')||localStorage.getItem('hs_user')||'';
-        // Fetch Razorpay config once
-        var rpSnap = await fbStore.getDocs(fbStore.collection(fbDb,'razorpay_config'));
-        rpSnap.forEach(function(d){ localStorage.setItem('hs_razorpay', JSON.stringify(d.data())); });
-        // Listen for booking status changes in real-time
+        var userPhone = localStorage.getItem('hs_customer_phone')||'';
+        // Fetch Razorpay config from correct doc
+        try{
+          var rpSnap = await fbStore.getDoc(fbStore.doc(fbDb,'razorpay_config','main'));
+          if(rpSnap.exists()){ var cfg=rpSnap.data(); delete cfg.updatedAt; localStorage.setItem('hs_razorpay',JSON.stringify(cfg)); }
+        }catch(e){}
+        // Listen for booking status changes in real-time (only this customer's bookings)
         fbStore.onSnapshot(
           fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')),
           function(snap){
             var fbBookings = [];
             snap.forEach(function(d){
               var data = d.data();
-              if(userEmail && data.email === userEmail) fbBookings.push(Object.assign({id:d.id},data));
+              // Only include bookings belonging to this customer
+              if(userEmail && (data.email === userEmail || data.phone === userEmail)) fbBookings.push(Object.assign({id:d.id},data));
+              else if(userPhone && data.phone === userPhone) fbBookings.push(Object.assign({id:d.id},data));
             });
-            // Always merge with local bookings
             var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            var fbIds = fbBookings.map(b=>String(b.id));
-            // Update status of local bookings from Firestore
+            // Filter local to only this customer's bookings
+            local = local.filter(function(b){
+              return (userEmail && (b.email===userEmail||b.phone===userEmail)) || (userPhone && b.phone===userPhone);
+            });
             local = local.map(function(b){
               var fb = fbBookings.find(function(f){ return String(f.id)===String(b.id); });
               return fb ? Object.assign({},b,fb) : b;
             });
-            // Add Firestore bookings not in local
-            fbBookings.forEach(function(b){ if(!fbIds.includes(String(b.id))&&!local.find(function(l){return String(l.id)===String(b.id);})) local.push(b); });
-            if(local.length){
-              localStorage.setItem('hs_bookings', JSON.stringify(local));
-              _renderBookings();
-            }
+            fbBookings.forEach(function(b){ if(!local.find(function(l){return String(l.id)===String(b.id);})) local.push(b); });
+            if(local.length){ localStorage.setItem('hs_bookings', JSON.stringify(local)); _renderBookings(); }
           }
         );
+        // Listen for customer notifications from admin
+        if(userEmail || userPhone){
+          fbStore.onSnapshot(
+            fbStore.query(fbStore.collection(fbDb,'customer_notifications'),
+              fbStore.where('recipientId','in',[userEmail||'__none__', userPhone||'__none__']),
+              fbStore.orderBy('createdAt','desc')),
+            function(snap){
+              snap.forEach(function(d){
+                var n = d.data();
+                if(!n.read && n.title){
+                  // Show toast notification
+                  var toast = document.createElement('div');
+                  toast.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:#1a1a1a;border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1rem 1.25rem;max-width:320px;box-shadow:0 8px 30px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;';
+                  toast.innerHTML='<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">'+n.title+'</div><div style="font-size:0.8rem;color:#9a9080;">'+n.message+'</div>';
+                  document.body.appendChild(toast);
+                  setTimeout(function(){ toast.remove(); }, 5000);
+                  // Mark as read
+                  fbStore.setDoc(fbStore.doc(fbDb,'customer_notifications',d.id),{read:true},{merge:true}).catch(function(){});
+                }
+              });
+            }
+          );
+        }
       }catch(e){ console.log('realtime listener error:',e); }
     })();
     function getFeedbacks(){ return JSON.parse(localStorage.getItem('hs_feedbacks') || '[]'); }
@@ -1155,19 +1266,19 @@
       </div>
       <div class="terms-body">
         <h4>1. Booking Agreement</h4>
-        By booking a shoot with OG SHOOTS, you agree to provide accurate information. Bookings are subject to creator availability and admin confirmation.
+        By booking a shoot with OG Shoots, you agree to provide accurate information. Bookings are subject to creator availability and admin confirmation.
         <h4>2. Cancellation Policy</h4>
         Cancellations must be made at least 24 hours before the scheduled shoot. Late cancellations may incur a fee.
         <h4>3. Content &amp; Delivery</h4>
-        Edited reels and photos will be delivered within the agreed timeframe. OG SHOOTS retains the right to use content for portfolio purposes unless otherwise agreed.
+        Edited reels and photos will be delivered within the agreed timeframe. OG Shoots retains the right to use content for portfolio purposes unless otherwise agreed.
         <h4>4. Payment</h4>
         Full payment is required before or on the day of the shoot. Wallet credits can be applied at checkout.
         <h4>5. Privacy</h4>
         Your personal information is used solely for booking and communication purposes. We do not share your data with third parties. See our <a href="privacy.html" target="_blank">Privacy Policy</a>.
         <h4>6. Conduct</h4>
-        Both parties agree to maintain professional conduct during shoots. OG SHOOTS reserves the right to cancel bookings due to misconduct.
+        Both parties agree to maintain professional conduct during shoots. OG Shoots reserves the right to cancel bookings due to misconduct.
         <h4>7. Liability</h4>
-        OG SHOOTS is not liable for delays caused by weather, location restrictions, or circumstances beyond our control.
+        OG Shoots is not liable for delays caused by weather, location restrictions, or circumstances beyond our control.
       </div>
       <div class="terms-footer">
         <label class="terms-check">
@@ -1212,7 +1323,7 @@
           <div class="tnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-handshake" style="color:#2196f3;"></i></div>
           <div class="tnc-text">
             <h5>Professional Conduct</h5>
-            <p>Both the client and the creator are expected to maintain respectful and professional behaviour throughout the shoot. OG SHOOTS reserves the right to terminate a session without refund in case of misconduct, harassment, or unsafe conditions.</p>
+            <p>Both the client and the creator are expected to maintain respectful and professional behaviour throughout the shoot. OG Shoots reserves the right to terminate a session without refund in case of misconduct, harassment, or unsafe conditions.</p>
           </div>
         </div>
 
@@ -1228,7 +1339,7 @@
           <div class="tnc-icon" style="background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.25);"><i class="fas fa-film" style="color:#ce93d8;"></i></div>
           <div class="tnc-text">
             <h5>Content &amp; Delivery</h5>
-            <p>Edited reels will be delivered within <strong style="color:#fff;">10 minutes</strong> post-shoot for standard bookings. For events and weddings, delivery timelines will be communicated separately. OG SHOOTS may use delivered content for portfolio and promotional purposes unless a written opt-out is submitted before the shoot.</p>
+            <p>Edited reels will be delivered within <strong style="color:#fff;">10 minutes</strong> post-shoot for standard bookings. For events and weddings, delivery timelines will be communicated separately. OG Shoots may use delivered content for portfolio and promotional purposes unless a written opt-out is submitted before the shoot.</p>
           </div>
         </div>
 
@@ -1236,7 +1347,7 @@
           <div class="tnc-icon" style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.25);"><i class="fas fa-clock" style="color:#f5a623;"></i></div>
           <div class="tnc-text">
             <h5>Punctuality &amp; Delays</h5>
-            <p>The client must be ready at the agreed time. A grace period of <strong style="color:#fff;">15 minutes</strong> is allowed. Delays beyond this may result in a reduced shoot duration without any price adjustment. OG SHOOTS is not liable for delays caused by traffic, weather, or other unforeseen circumstances.</p>
+            <p>The client must be ready at the agreed time. A grace period of <strong style="color:#fff;">15 minutes</strong> is allowed. Delays beyond this may result in a reduced shoot duration without any price adjustment. OG Shoots is not liable for delays caused by traffic, weather, or other unforeseen circumstances.</p>
           </div>
         </div>
 
@@ -1244,7 +1355,7 @@
           <div class="tnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-shield-alt" style="color:#2196f3;"></i></div>
           <div class="tnc-text">
             <h5>Payment &amp; Security</h5>
-            <p>All payments are processed securely via Razorpay. OG SHOOTS does not store your card or banking details. In case of a technical payment failure, please contact support before attempting again to avoid duplicate charges.</p>
+            <p>All payments are processed securely via Razorpay. OG Shoots does not store your card or banking details. In case of a technical payment failure, please contact support before attempting again to avoid duplicate charges.</p>
           </div>
         </div>
 
@@ -1252,7 +1363,7 @@
           <div class="tnc-icon" style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.25);"><i class="fas fa-wallet" style="color:#f44336;"></i></div>
           <div class="tnc-text">
             <h5>Refund Policy</h5>
-            <p>If a booking is cancelled by OG SHOOTS, a full refund will be credited to your wallet within <strong style="color:#fff;">24&ndash;48 hours</strong>. For client-initiated cancellations made 24+ hours in advance, a refund (minus processing fees) will be issued to your wallet.</p>
+            <p>If a booking is cancelled by OG Shoots, a full refund will be credited to your wallet within <strong style="color:#fff;">24&ndash;48 hours</strong>. For client-initiated cancellations made 24+ hours in advance, a refund (minus processing fees) will be issued to your wallet.</p>
           </div>
         </div>
 

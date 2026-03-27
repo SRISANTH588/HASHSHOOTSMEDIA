@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloudinary Upload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #111; color: #fff; }
+        .test-area { background: #222; padding: 20px; border-radius: 10px; margin: 10px 0; }
+        button { background: #c9a84c; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #a07830; }
+        .progress { background: #333; height: 20px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { background: #c9a84c; height: 100%; width: 0%; transition: width 0.3s; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: rgba(76, 175, 80, 0.2); border: 1px solid #4caf50; }
+        .error { background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; }
+        input[type="file"] { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Cloudinary Upload Test</h1>
+    
+    <div class="test-area">
+        <h3>Test Video Upload</h3>
+        <input type="file" id="videoFile" accept="video/*">
+        <button onclick="testUpload()">Upload Video</button>
+        
+        <div class="progress" id="progressWrap" style="display: none;">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script src="hs-cloudinary.js"></script>
+    <script>
+        async function testUpload() {
+            const fileInput = document.getElementById('videoFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showResult('Please select a video file first', 'error');
+                return;
+            }
+            
+            const progressWrap = document.getElementById('progressWrap');
+            const progressBar = document.getElementById('progressBar');
+            const resultDiv = document.getElementById('result');
+            
+            progressWrap.style.display = 'block';
+            resultDiv.innerHTML = '';
+            
+            try {
+                console.log('Starting upload test...');
+                
+                const result = await cloudinaryUpload(file, 'test', function(progress) {
+                    progressBar.style.width = progress + '%';
+                    console.log('Upload progress:', progress + '%');
+                });
+                
+                console.log('Upload successful:', result);
+                
+                showResult(`
+                    ✅ Upload Successful!<br>
+                    URL: <a href="${result.url}" target="_blank">${result.url}</a><br>
+                    Size: ${(result.bytes / 1024 / 1024).toFixed(2)} MB<br>
+                    Format: ${result.format}<br>
+                    Dimensions: ${result.width}x${result.height}
+                `, 'success');
+                
+            } catch (error) {
+                console.error('Upload failed:', error);
+                showResult(`❌ Upload Failed: ${error.message}`, 'error');
+            } finally {
+                progressWrap.style.display = 'none';
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = 'result ' + type;
+        }
+        
+        // Test if Cloudinary script loaded
+        if (typeof cloudinaryUpload === 'function') {
+            console.log('✅ Cloudinary upload function loaded successfully');
+        } else {
+            console.error('❌ Cloudinary upload function not found');
+        }
+    </script>
+</body>
+</html>

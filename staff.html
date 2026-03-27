@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Staff Home - OG SHOOTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+  <title>Staff Home - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -125,7 +125,7 @@
     @keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,0.4);}50%{box-shadow:0 0 0 6px rgba(255,152,0,0);}}
     .demo-step-label{font-size:0.6rem;color:#777;font-weight:600;}
     .demo-step-label.done,.demo-step-label.active{color:#d4c9a8;}
-    .demo-upload-zone{border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(229,57,53,0.02);position:relative;margin-top:0.75rem;}
+    .demo-upload-zone{border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(201,168,76,0.02);position:relative;margin-top:0.75rem;}
     .demo-upload-zone:hover{border-color:var(--gold);background:rgba(201,168,76,0.06);}
     .demo-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
     .demo-upload-zone p{font-size:0.8rem;color:var(--muted);margin-top:0.4rem;}
@@ -145,7 +145,7 @@
 
     /* UPLOAD SECTION */
     .upload-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;}
-    .upload-drop{border:2px dashed rgba(201,168,76,0.3);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(229,57,53,0.03);position:relative;}
+    .upload-drop{border:2px dashed rgba(201,168,76,0.3);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(201,168,76,0.03);position:relative;}
     .upload-drop:hover,.upload-drop.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.1);}
     .upload-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
     .upload-drop-icon{font-size:2.2rem;color:var(--gold);margin-bottom:0.6rem;opacity:0.7;}
@@ -246,12 +246,17 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
+<script src="hs-fixes.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="hs-fixes.js"></script>
+<!-- Razorpay SDK for store payments -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
   <!-- NAV -->
   <nav>
-    <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
     <div class="nav-center"><div class="nav-clock" id="navClock">00:00:00</div></div>
     <div class="nav-badge"><div class="nav-dot"></div><i class="fas fa-users"></i> STAFF PORTAL</div>
   </nav>
@@ -337,7 +342,14 @@
 
     <!-- ASSIGNED SHOOTS -->
     <div class="section active" id="sec-shoots">
-      <div class="sec-title"><i class="fas fa-camera"></i> My Assigned Shoots</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
+        <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-camera"></i> My Assigned Shoots</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+          <input type="month" id="shootsMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by month"/>
+          <input type="date" id="shootsDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by exact date"/>
+          <button onclick="document.getElementById('shootsMonthFilter').value='';document.getElementById('shootsDateFilter').value='';renderAssignedShoots();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+        </div>
+      </div>
       <div id="assignedShootsList"></div>
     </div>
 
@@ -398,7 +410,7 @@
         <div class="cert-grid">
           <div class="cert-card"><div class="cert-icon">🎬</div><h5>Content Maker Pro</h5><p>Complete Reel Editing class</p><span class="cert-status available">Available</span></div>
           <div class="cert-card"><div class="cert-icon">📸</div><h5>Shoot Expert</h5><p>Complete Composition class</p><span class="cert-status locked">Locked</span></div>
-          <div class="cert-card"><div class="cert-icon">⭐</div><h5>Hash Certified</h5><p>Complete all 4 classes</p><span class="cert-status locked">Locked</span></div>
+          <div class="cert-card"><div class="cert-icon">⭐</div><h5>OG Certified</h5><p>Complete all 4 classes</p><span class="cert-status locked">Locked</span></div>
         </div>
       </div>
     </div>
@@ -406,6 +418,13 @@
     <!-- FEEDBACK -->
     <div class="section" id="sec-feedback">
       <div class="sec-title"><i class="fas fa-star"></i> Shoot Feedback</div>
+
+      <!-- DATE FILTER -->
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <input type="month" id="feedbackMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="applyFeedbackFilters()" title="Filter by month"/>
+        <input type="date" id="feedbackDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="applyFeedbackFilters()" title="Filter by exact date"/>
+        <button onclick="document.getElementById('feedbackMonthFilter').value='';document.getElementById('feedbackDateFilter').value='';applyFeedbackFilters();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+      </div>
 
       <!-- SUB TABS -->
       <div style="display:flex;gap:0;border-bottom:1px solid rgba(201,168,76,0.08);margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;">
@@ -495,12 +514,12 @@
 
     <!-- STORE -->
     <div class="section" id="sec-store">
-      <div class="sec-title"><i class="fas fa-store" style="color:#c9a84c;"></i> OG SHOOTS Store</div>
+      <div class="sec-title"><i class="fas fa-store" style="color:#c9a84c;"></i> OG Shoots Store</div>
 
       <!-- BANNER -->
       <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(100,0,0,0.25));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
-          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official OG SHOOTS Merchandise</div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official OG Shoots Merchandise</div>
           <div style="font-size:0.82rem;color:#9a9080;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
         </div>
         <div style="font-size:2rem;">🛍️</div>
@@ -639,7 +658,7 @@
         <!-- Logo Toggle -->
         <div style="display:flex;align-items:center;justify-content:space-between;background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.9rem;margin-top:0.75rem;">
           <div>
-            <div style="font-size:0.8rem;font-weight:800;color:#fff;">💎 OG SHOOTS Luxe Logo</div>
+            <div style="font-size:0.8rem;font-weight:800;color:#fff;">💎 OG Shoots Luxe Logo</div>
             <div style="font-size:0.65rem;color:#9a9080;margin-top:0.1rem;">Burn logo onto every reel</div>
           </div>
           <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
@@ -857,7 +876,7 @@
     const access = JSON.parse(localStorage.getItem('hs_staff_access') || '[]');
 
     document.getElementById('staffNameDisplay').textContent = name;
-    document.getElementById('staffRoleDisplay').textContent = role + ' — OG SHOOTS';
+    document.getElementById('staffRoleDisplay').textContent = role + ' — OG Shoots';
     document.getElementById('sidebarName').textContent = name;
     document.getElementById('sidebarRole').textContent = role;
     document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
@@ -990,22 +1009,15 @@
         var videos = getStaffVideos();
         videos.push(videoData);
         saveStaffVideos(videos);
-        // Save to Firebase so admin sees it - with better error handling
+        // CRITICAL: Save to Firebase so admin sees it immediately
         if(window.fbSave) {
-          fbSave('staff_videos', videoData).then(function(docId) {
-            console.log('Video synced to Firebase with ID:', docId);
-            // Update the video with Firebase ID
-            videoData._fbId = docId;
-            var updatedVideos = getStaffVideos();
-            var videoIndex = updatedVideos.findIndex(v => v.id === videoData.id);
-            if (videoIndex !== -1) {
-              updatedVideos[videoIndex]._fbId = docId;
-              localStorage.setItem('hs_staff_videos', JSON.stringify(updatedVideos));
-            }
-          }).catch(function(error) {
-            console.error('Failed to sync video to Firebase:', error);
-            alert('Video uploaded locally but failed to sync to admin. Please check your internet connection.');
+          fbSave('staff_videos', videoData).then(function(){
+            console.log('Staff video synced to Firebase:', videoData.title);
+          }).catch(function(err){
+            console.error('Firebase sync failed:', err);
           });
+        } else {
+          console.warn('Firebase not available - video only saved locally');
         }
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
@@ -1085,7 +1097,11 @@
 
     // DEMO SESSIONS — creator role full section
     function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
-    function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
+    function saveDemos(list){
+      localStorage.setItem('hs_demos', JSON.stringify(list));
+      // Sync each demo to Firebase so admin sees status changes instantly
+      if(window.fbUpdate) list.forEach(function(d){ fbUpdate('demos', String(d.id), d); });
+    }
 
     var demoFileMap = {}; // demoId -> File object
 
@@ -1315,8 +1331,17 @@
     function renderAssignedShoots(){
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
+      var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var dateFilter  = (document.getElementById('shootsDateFilter')  || {}).value || '';
+      var monthFilter = (document.getElementById('shootsMonthFilter') || {}).value || '';
+
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
         .filter(function(a){ return String(a.staffId) === String(staffId); })
+        .filter(function(a){
+          if(dateFilter)  return a.date === dateFilter;
+          if(monthFilter) return a.date && a.date.slice(0,7) === monthFilter;
+          return true;
+        })
         .slice().reverse();
 
       var badge = document.getElementById('shootsPendingBadge');
@@ -1352,6 +1377,7 @@
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">'
           +'<div>'
           +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+a.service+'</div>'
+          +'<div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-bottom:0.15rem;"><i class="fas fa-user-circle"></i> Creator: '+creatorName+'</div>'
           +'<div style="font-size:0.72rem;color:#9a9080;">Assigned on '+a.assignedAt+'</div>'
           +'</div>'
           +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;">'+a.status.charAt(0).toUpperCase()+a.status.slice(1)+'</span>'
@@ -1456,7 +1482,7 @@
     }
 
     function shootUploadZone(assignId){
-      return '<div style="border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1rem;text-align:center;position:relative;background:rgba(229,57,53,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.25)\'">'
+      return '<div style="border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1rem;text-align:center;position:relative;background:rgba(201,168,76,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.25)\'">'
         +'<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onShootFileSelected(this,'+assignId+')" />'
         +'<i class="fas fa-cloud-upload-alt" style="font-size:1.4rem;color:#c9a84c;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
         +'<div style="font-size:0.75rem;color:#9a9080;">Click or drag to upload edited video</div>'
@@ -1488,54 +1514,77 @@
       var label = document.getElementById('shootProgressLabel_' + assignId);
       if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
       if(prog) prog.style.display='block';
-      if(label) label.textContent='Uploading to cloud...';
-      if(fill) fill.style.width='5%';
-
-      _shootUploadInProgress = true; // BUG 8 FIX
+      if(label) label.textContent='Uploading...';
+      if(fill) fill.style.width='10%';
 
       var videoId   = Date.now();
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
+      var meta = {
+        id: videoId, assignId: Number(assignId),
+        title: (shoot ? shoot.service : 'Shoot') + ' — ' + (shoot ? shoot.clientName : ''),
+        category: 'Shoot Delivery',
+        shootDate: shoot ? shoot.date : '', shootTime: shoot ? shoot.time : '',
+        staffId: staffId, staffName: staffName,
+        fileName: file.name, sizeMB: (file.size/1024/1024).toFixed(1),
+        uploadedAt: new Date().toLocaleString()
+      };
 
-      // BUG 1 FIX: Upload to Cloudinary so cloudUrl is persisted — survives refresh
-      cloudinaryUpload(file, 'shoot_videos', function(pct){
-        if(fill) fill.style.width = Math.min(85, pct) + '%';
-        if(label) label.textContent = 'Uploading... ' + pct + '%';
-      }).then(function(result){
-        if(fill) fill.style.width='95%';
-        if(label) label.textContent='Saving...';
-        var videos = getStaffVideos();
-        var videoData = {
-          id: videoId,
-          assignId: Number(assignId),
-          title: (shoot ? shoot.service : 'Shoot') + ' — ' + (shoot ? shoot.clientName : ''),
-          category: 'Shoot Delivery',
-          shootDate: shoot ? shoot.date : '',
-          shootTime: shoot ? shoot.time : '',
-          staffId: staffId,
-          staffName: staffName,
-          fileName: file.name,
-          sizeMB: (file.size/1024/1024).toFixed(1),
-          uploadedAt: new Date().toLocaleString(),
-          cloudUrl: result.url,
-          thumbnail: result.thumbnail
-        };
-        videos.push(videoData);
-        saveStaffVideos(videos);
-        // Sync to Firebase
-        if(window.fbSave) fbSave('staff_videos', videoData).catch(function(e){ console.error('Firebase sync failed:', e); });
+      function saveLocalAndDone(cloudUrl){
+        if(cloudUrl) meta.cloudUrl = cloudUrl;
+        var videos = getStaffVideos(); videos.push(meta); saveStaffVideos(videos);
+        if(window.fbSave) fbSave('staff_videos', meta);
         if(fill) fill.style.width='100%';
-        if(label) label.textContent='Uploaded!';
+        if(label) label.textContent='Done!';
         delete shootFileMap[String(assignId)];
-        _shootUploadInProgress = false; // BUG 8 FIX
         setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
-      }).catch(function(err){
-        alert('Upload failed: ' + err.message);
-        if(btn){ btn.disabled=false; btn.style.opacity='1'; }
-        _shootUploadInProgress = false; // BUG 8 FIX
-      });
+      }
+
+      // Try Cloudinary first so admin can watch the video
+      if(window.cloudinaryUpload){
+        if(label) label.textContent='Uploading to cloud...';
+        cloudinaryUpload(file, 'shoot_videos', function(pct){
+          if(fill) fill.style.width = Math.max(10, pct*0.9) + '%';
+        }).then(function(res){
+          if(fill) fill.style.width='95%';
+          if(label) label.textContent='Saving...';
+          saveLocalAndDone(res.url);
+        }).catch(function(err){
+          console.warn('Cloudinary failed, saving locally:', err.message);
+          if(label) label.textContent='Saving locally...';
+          if(fill) fill.style.width='60%';
+          // Fallback: IndexedDB only
+          var reader = new FileReader();
+          reader.onload = function(e){
+            var blob = new Blob([e.target.result], {type: file.type});
+            openStaffDB(function(db){
+              if(!db){ saveLocalAndDone(null); return; }
+              var tx = db.transaction('videos','readwrite');
+              tx.objectStore('videos').put({id: videoId, blob: blob});
+              tx.oncomplete = function(){ saveLocalAndDone(null); };
+              tx.onerror = function(){ saveLocalAndDone(null); };
+            });
+          };
+          reader.readAsArrayBuffer(file);
+        });
+      } else {
+        // No Cloudinary — IndexedDB only
+        var reader = new FileReader();
+        reader.onload = function(e){
+          if(fill) fill.style.width='70%';
+          var blob = new Blob([e.target.result], {type: file.type});
+          openStaffDB(function(db){
+            if(!db){ saveLocalAndDone(null); return; }
+            var tx = db.transaction('videos','readwrite');
+            tx.objectStore('videos').put({id: videoId, blob: blob});
+            tx.oncomplete = function(){ saveLocalAndDone(null); };
+            tx.onerror = function(){ saveLocalAndDone(null); };
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      }
     }
 
     function markShootDone(assignId){
@@ -1545,7 +1594,8 @@
       s.status = 'done';
       s.doneAt = new Date().toLocaleString();
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
-      if(window.fbSave) fbSave('shoot_updates', {type:'done', assignId:assignId, staffId:localStorage.getItem('hs_staff_id'), staffName:localStorage.getItem('hs_staff_name'), doneAt:s.doneAt});
+      // Update assigned_shoots doc directly so admin sees 'done' status in real time
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
       renderAssignedShoots();
     }
 
@@ -1586,9 +1636,11 @@
       var assignId = window._pendingArrivedId;
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var s = shoots.find(function(a){ return a.id === assignId; });
-      if(s && !s.arrivedAt){ s.arrivedAt = new Date().toLocaleString(); localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
+      var arrivedAt = new Date().toLocaleString();
+      if(s && !s.arrivedAt){ s.arrivedAt = arrivedAt; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
       localStorage.setItem('hs_arrived_' + assignId, '1');
-      if(window.fbSave) fbSave('shoot_updates', {type:'arrived', assignId:assignId, staffId:localStorage.getItem('hs_staff_id'), staffName:localStorage.getItem('hs_staff_name'), arrivedAt:new Date().toLocaleString()});
+      // Sync arrived status to Firebase assigned_shoots doc
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {arrivedAt: arrivedAt});
       renderAssignedShoots();
     }
 
@@ -1611,10 +1663,26 @@
       if(name === 'customer') renderCreatorFeedback();
     }
 
+    function applyFeedbackFilters(){
+      renderCreatorShootFeedback();
+      renderEventFeedbackCollected();
+      renderCreatorFeedback();
+    }
+
+    function _fbDateMatch(dateStr){
+      var df = (document.getElementById('feedbackDateFilter')  || {}).value || '';
+      var mf = (document.getElementById('feedbackMonthFilter') || {}).value || '';
+      if(df)  return dateStr === df;
+      if(mf)  return dateStr && dateStr.slice(0,7) === mf;
+      return true;
+    }
+
     function renderEventFeedbackCollected(){
       var staffId = localStorage.getItem('hs_staff_id');
+      var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var list = JSON.parse(localStorage.getItem('hs_event_feedbacks') || '[]')
         .filter(function(f){ return String(f.staffId) === String(staffId); })
+        .filter(function(f){ return _fbDateMatch(f.date || ''); })
         .slice().reverse();
       var el = document.getElementById('eventFeedbackCollectedList');
       var badge = document.getElementById('eventFbBadge');
@@ -1631,6 +1699,7 @@
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
           + '<div>'
           + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + (f.service || 'Shoot') + ' — ' + f.clientName + '</div>'
+          + '<div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-top:0.1rem;"><i class="fas fa-user-circle"></i> Creator: ' + creatorName + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (f.city||'') + ' &nbsp;·&nbsp; ' + (f.date||'') + '</div>'
           + '</div>'
           + '<span style="color:'+color+';font-size:1.1rem;letter-spacing:2px;">' + stars + '</span>'
@@ -1664,49 +1733,73 @@
       var label = document.getElementById('fbVidProgressLabel_' + assignId);
       if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
       if(prog) prog.style.display='block';
-      if(label) label.textContent='Uploading to cloud...';
-      if(fill) fill.style.width='5%';
+      if(label) label.textContent='Uploading...';
+      if(fill) fill.style.width='10%';
 
       var videoId   = Date.now();
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var shoots    = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var shoot     = shoots.find(function(a){ return String(a.id) === String(assignId); });
+      var meta = {
+        id: videoId, assignId: Number(assignId), isFeedback: true,
+        title: 'Feedback — ' + (shoot ? shoot.service : 'Shoot'),
+        category: 'Shoot Feedback',
+        shootDate: shoot ? shoot.date : '',
+        staffId: staffId, staffName: staffName,
+        fileName: file.name, sizeMB: (file.size/1024/1024).toFixed(1),
+        uploadedAt: new Date().toLocaleString()
+      };
 
-      // BUG 4 FIX: Upload feedback video to Cloudinary so it persists after refresh
-      cloudinaryUpload(file, 'feedback_videos', function(pct){
-        if(fill) fill.style.width = Math.min(85, pct) + '%';
-        if(label) label.textContent = 'Uploading... ' + pct + '%';
-      }).then(function(result){
-        if(fill) fill.style.width='95%';
-        if(label) label.textContent='Saving...';
-        var videos = getStaffVideos();
-        var videoData = {
-          id: videoId,
-          assignId: Number(assignId),
-          isFeedback: true,
-          title: 'Feedback — ' + (shoot ? shoot.service : 'Shoot'),
-          category: 'Shoot Feedback',
-          shootDate: shoot ? shoot.date : '',
-          staffId: staffId,
-          staffName: staffName,
-          fileName: file.name,
-          sizeMB: (file.size/1024/1024).toFixed(1),
-          uploadedAt: new Date().toLocaleString(),
-          cloudUrl: result.url,
-          thumbnail: result.thumbnail
-        };
-        videos.push(videoData);
-        saveStaffVideos(videos);
-        if(window.fbSave) fbSave('staff_videos', videoData).catch(function(e){ console.error('Firebase sync failed:', e); });
+      function saveLocalAndDone(cloudUrl){
+        if(cloudUrl) meta.cloudUrl = cloudUrl;
+        var videos = getStaffVideos(); videos.push(meta); saveStaffVideos(videos);
+        if(window.fbSave) fbSave('staff_videos', meta);
         if(fill) fill.style.width='100%';
-        if(label) label.textContent='Uploaded!';
+        if(label) label.textContent='Done!';
         delete feedbackVideoFileMap[String(assignId)];
         setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
-      }).catch(function(err){
-        alert('Feedback video upload failed: ' + err.message);
-        if(btn){ btn.disabled=false; btn.style.opacity='1'; }
-      });
+      }
+
+      if(window.cloudinaryUpload){
+        if(label) label.textContent='Uploading to cloud...';
+        cloudinaryUpload(file, 'feedback_videos', function(pct){
+          if(fill) fill.style.width = Math.max(10, pct*0.9) + '%';
+        }).then(function(res){
+          if(fill) fill.style.width='95%';
+          saveLocalAndDone(res.url);
+        }).catch(function(err){
+          console.warn('Cloudinary failed, saving locally:', err.message);
+          if(label) label.textContent='Saving locally...';
+          if(fill) fill.style.width='60%';
+          var reader = new FileReader();
+          reader.onload = function(e){
+            var blob = new Blob([e.target.result], {type: file.type});
+            openStaffDB(function(db){
+              if(!db){ saveLocalAndDone(null); return; }
+              var tx = db.transaction('videos','readwrite');
+              tx.objectStore('videos').put({id: videoId, blob: blob});
+              tx.oncomplete = function(){ saveLocalAndDone(null); };
+              tx.onerror = function(){ saveLocalAndDone(null); };
+            });
+          };
+          reader.readAsArrayBuffer(file);
+        });
+      } else {
+        var reader = new FileReader();
+        reader.onload = function(e){
+          if(fill) fill.style.width='70%';
+          var blob = new Blob([e.target.result], {type: file.type});
+          openStaffDB(function(db){
+            if(!db){ saveLocalAndDone(null); return; }
+            var tx = db.transaction('videos','readwrite');
+            tx.objectStore('videos').put({id: videoId, blob: blob});
+            tx.oncomplete = function(){ saveLocalAndDone(null); };
+            tx.onerror = function(){ saveLocalAndDone(null); };
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      }
     }
 
     // CREATOR FEEDBACK SECTION
@@ -1727,8 +1820,10 @@
 
     function renderCreatorShootFeedback(){
       var staffId = Number(localStorage.getItem('hs_staff_id'));
+      var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]')
-        .filter(function(a){ return a.staffId === staffId && (a.status === 'completed' || a.status === 'paid'); });
+        .filter(function(a){ return a.staffId === staffId && (a.status === 'completed' || a.status === 'paid'); })
+        .filter(function(a){ return _fbDateMatch(a.date || ''); });
       var el = document.getElementById('creatorShootFeedbackList');
       if(!assigned.length){
         el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.82rem;"><i class="fas fa-camera" style="display:block;font-size:1.5rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
@@ -1741,7 +1836,10 @@
           var stars = '\u2605'.repeat(done.rating) + '\u2606'.repeat(5 - done.rating);
           return '<div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">'
+            + '<div>'
             + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
+            + '<div style="font-size:0.7rem;color:#c9a84c;font-weight:700;margin-top:0.1rem;"><i class="fas fa-user-circle"></i> Creator: ' + creatorName + '</div>'
+            + '</div>'
             + '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:50px;"><i class="fas fa-check"></i> Feedback Given</span>'
             + '</div>'
             + '<div style="color:#f5a623;font-size:1rem;letter-spacing:2px;margin-bottom:0.25rem;">' + stars + '</div>'
@@ -1749,7 +1847,8 @@
             + '</div>';
         }
         return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
-          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">' + a.service + ' — ' + a.clientName + '</div>'
+          + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.1rem;">' + a.service + ' — ' + a.clientName + '</div>'
+          + '<div style="font-size:0.7rem;color:#c9a84c;font-weight:700;margin-bottom:0.1rem;"><i class="fas fa-user-circle"></i> Creator: ' + creatorName + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
           + '<div style="display:flex;gap:0.3rem;margin-bottom:0.65rem;">' + [1,2,3,4,5].map(function(v){
               return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#9733;</span>'; // BUG 6 FIX
@@ -1782,12 +1881,17 @@
         submittedAt: new Date().toLocaleString()
       });
       localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
-      if(window.fbSave) fbSave('creator_feedbacks', list[list.length-1]);
+      var fb = list[list.length-1];
+      if(window.fbSave) fbSave('creator_feedbacks', fb);
+      // Also update the assigned shoot doc so admin sees feedback submitted
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {creatorFeedbackSubmitted: true, creatorRating: fb.rating});
       renderCreatorShootFeedback();
     }
 
     function renderCreatorFeedback(){
-      var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+      var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]')
+        .filter(function(f){ return _fbDateMatch(f.date || f.submittedAt || ''); });
       var el = document.getElementById('creatorFeedbackList');
       if(!feedbacks.length){
         el.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-star" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer feedback yet.</div>';
@@ -1803,6 +1907,7 @@
           '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + label + '</div>' +
           '<span style="color:' + color + ';font-size:1rem;letter-spacing:1px;">' + stars + '</span>' +
           '</div>' +
+          '<div style="font-size:0.7rem;color:#c9a84c;font-weight:700;margin-bottom:0.3rem;"><i class="fas fa-user-circle"></i> Creator: ' + creatorName + '</div>' +
           (f.customerName ? '<div style="font-size:0.7rem;color:#9a9080;margin-bottom:0.4rem;"><i class="fas fa-user"></i> ' + f.customerName + '</div>' : '') +
           (f.comment ? '<div style="font-size:0.8rem;color:#e0b0b0;font-style:italic;margin-bottom:0.4rem;">&ldquo;' + f.comment + '&rdquo;</div>' : '') +
           (f.description ? '<div style="font-size:0.8rem;color:#c8a0a0;line-height:1.65;border-left:2px solid rgba(201,168,76,0.3);padding-left:0.65rem;margin-top:0.3rem;">' + f.description + '</div>' : '') +
@@ -1991,12 +2096,15 @@
     }
 
     // STORE
-    function renderStore(){
+    async function renderStore(){
+      // Load Razorpay config from Firebase first
+      if(window.loadRazorpayFromFirebase) await loadRazorpayFromFirebase();
       var store = JSON.parse(localStorage.getItem('hs_store') || '{"tshirts":[],"idcard":{}}');
       var tshirts = store.tshirts || [];
       var idcard  = store.idcard  || {};
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
-      var contactEmail = store.contactEmail || 'hashshootsmedia@gmail.com';
+      var contactEmail = store.contactEmail || 'ogshootsmedia@gmail.com';
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
 
       // T-SHIRTS
       var tGrid = document.getElementById('storeTshirtGrid');
@@ -2005,21 +2113,26 @@
       } else {
         tGrid.innerHTML = tshirts.map(function(t, i){
           var sizes = (t.sizes || []).map(function(s){
-            return '<span style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#d4c9a8;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.1)\';this.style.color=\'#ccc\'">' + s + '</span>';
+            return '<span style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#d4c9a8;cursor:pointer;" onclick="this.parentNode.querySelectorAll(\'span\').forEach(function(x){x.style.borderColor=\'rgba(201,168,76,0.15)\';x.style.color=\'#d4c9a8\';});this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\';window._selectedSize_'+i+'=\''+s+'\';">' + s + '</span>';
           }).join('');
           var imgHTML = t.image
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
-          var mailSubject = encodeURIComponent('T-Shirt Order — ' + t.name + ' — ' + staffName);
-          var mailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: ₹' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
-          return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 16px 40px rgba(201,168,76,0.15)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+          var mailSubject = encodeURIComponent('T-Shirt Order \u2014 ' + t.name + ' \u2014 ' + staffName);
+          var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
+          // Show Pay Now button if Razorpay is enabled
+          var payBtn = (rp.enabled && rp.keyId && t.price)
+            ? '<button onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:0.5rem;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
+            : '';
+          return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">' + t.name + '</div>'
             + (t.description ? '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;line-height:1.5;">' + t.description + '</div>' : '')
-            + '<div style="font-size:1.3rem;font-weight:900;color:#c9a84c;margin-bottom:0.75rem;">₹' + Number(t.price).toLocaleString('en-IN') + '</div>'
-            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Available Sizes</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
-            + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#c9a84c;color:#fff;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#a07830\'" onmouseout="this.style.background=\'#c9a84c\'"><i class="fas fa-shopping-cart"></i> Order via Email</a>'
+            + '<div style="font-size:1.3rem;font-weight:900;color:#c9a84c;margin-bottom:0.75rem;">\u20b9' + Number(t.price).toLocaleString('en-IN') + '</div>'
+            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Select Size</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
+            + payBtn
+            + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(201,168,76,0.1);color:#c9a84c;border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;"><i class="fas fa-envelope"></i> Order via Email</a>'
             + '</div></div>';
         }).join('');
       }
@@ -2027,28 +2140,58 @@
       // ID CARD
       var idEl = document.getElementById('storeIdCard');
       var discountEmail = store.discountEmail || contactEmail;
-      var idMailSubject = encodeURIComponent('ID Card Request — ' + staffName);
-      var idMailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI would like to request my official OG SHOOTS ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
-      var discountMailSubject = encodeURIComponent('ID Card Discount Request — ' + staffName);
-      var discountMailBody = encodeURIComponent('Hi OG SHOOTS Team,\n\nI am writing to request a discount on my official OG SHOOTS ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
+      var idMailSubject = encodeURIComponent('ID Card Request \u2014 ' + staffName);
+      var idMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to request my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
+      var discountMailSubject = encodeURIComponent('ID Card Discount Request \u2014 ' + staffName);
+      var discountMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI am writing to request a discount on my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
+      var idPayBtn = (rp.enabled && rp.keyId && idcard.price)
+        ? '<button onclick="storePayNow(\u0027OG Shoots ID Card\u0027,'+idcard.price+',-1)" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay \u20b9'+Number(idcard.price||0).toLocaleString('en-IN')+'</button>'
+        : '';
 
       idEl.innerHTML = '<div style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:16px;overflow:hidden;">'
         + '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(100,60,0,0.2));padding:1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">'
         + (idcard.image ? '<img src="'+idcard.image+'" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid rgba(245,166,35,0.3);"/>' : '<div style="width:90px;height:90px;background:rgba(245,166,35,0.1);border:2px dashed rgba(245,166,35,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-id-badge" style="font-size:2rem;color:#f5a623;opacity:0.5;"></i></div>')
         + '<div style="flex:1;">'
-        + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">OG SHOOTS Official ID Card</div>'
-        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all OG SHOOTS events and shoots.') + '</div>'
-        + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">₹' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
+        + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">OG Shoots Official ID Card</div>'
+        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all OG Shoots events and shoots.') + '</div>'
+        + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">\u20b9' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
         + '</div></div>'
         + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(201,168,76,0.06);">'
-        + '<div style="background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
-        + '<div style="font-size:0.82rem;font-weight:800;color:#f5a623;margin-bottom:0.3rem;"><i class="fas fa-tag"></i> Get a Discount on Your ID Card</div>'
-        + '<div style="font-size:0.78rem;color:#9a9080;line-height:1.6;">Write to us at <strong style="color:#f5a623;">' + discountEmail + '</strong> explaining why you deserve a discount. Our team will review and respond within 24–48 hours.</div>'
-        + '</div>'
         + '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">'
-        + '<a href="mailto:' + contactEmail + '?subject=' + idMailSubject + '&body=' + idMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#f5a623;color:#000;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'#c8860a\'" onmouseout="this.style.background=\'#f5a623\'"><i class="fas fa-id-card"></i> Request ID Card</a>'
-        + '<a href="mailto:' + discountEmail + '?subject=' + discountMailSubject + '&body=' + discountMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(245,166,35,0.1);color:#f5a623;border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(245,166,35,0.2)\'" onmouseout="this.style.background=\'rgba(245,166,35,0.1)\'"><i class="fas fa-envelope"></i> Write for Discount</a>'
+        + idPayBtn
+        + '<a href="mailto:' + contactEmail + '?subject=' + idMailSubject + '&body=' + idMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#f5a623;color:#000;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:all 0.2s;"><i class="fas fa-id-card"></i> Request ID Card</a>'
+        + '<a href="mailto:' + discountEmail + '?subject=' + discountMailSubject + '&body=' + discountMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(245,166,35,0.1);color:#f5a623;border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;"><i class="fas fa-envelope"></i> Write for Discount</a>'
         + '</div></div></div>';
+    }
+
+    // Razorpay payment for store items
+    function storePayNow(itemName, price, idx){
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      if(!rp.enabled || !rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
+      var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' — ' + staffName;
+      var options = {
+        key: rp.keyId,
+        amount: price * 100,
+        currency: rp.currency || 'INR',
+        name: rp.businessName || 'OG Shoots',
+        description: description,
+        image: rp.logo || '',
+        prefill: { name: staffName },
+        theme: { color: '#c9a84c' },
+        handler: function(response){
+          alert('\u2705 Payment successful! Payment ID: ' + response.razorpay_payment_id + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
+          // Save payment record
+          var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
+          payments.push({ id: Date.now(), item: itemName, size: selectedSize, amount: price, paymentId: response.razorpay_payment_id, staffName: staffName, paidAt: new Date().toLocaleString() });
+          localStorage.setItem('hs_store_payments', JSON.stringify(payments));
+          // Notify admin
+          if(window.fbSave) fbSave('admin_notifications', { type:'payment', title:'Store Purchase', message: staffName + ' paid \u20b9' + price.toLocaleString('en-IN') + ' for ' + itemName, read: false, time: new Date().toLocaleString() });
+        },
+        modal: { ondismiss: function(){ console.log('Payment dismissed'); } }
+      };
+      new Razorpay(options).open();
     }
 
     // BANK
@@ -2063,6 +2206,8 @@
       };
       if(!data.name || !data.bankName || !data.accNo || !data.ifsc){ alert('Please fill all required fields.'); return; }
       localStorage.setItem('hs_bank_' + staffId, JSON.stringify(data));
+      // Sync bank details to Firebase under staff_bank collection
+      if(window.fbUpdate) fbUpdate('staff_bank', String(staffId), Object.assign({staffId: staffId}, data));
       var toast = document.getElementById('bankToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display = 'none'; }, 3000);
@@ -2175,7 +2320,9 @@
       if(window.fbSave) fbSave('event_feedbacks', list[list.length-1]);
       // Mark dress photo saved on shoot
       var s = shoots.find(function(x){ return x.id === efbAssignId; });
-      if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
+      if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+        if(window.fbUpdate) fbUpdate('assigned_shoots', String(efbAssignId), {dressPhotoSaved: true});
+      }
       closeEfb();
       renderAssignedShoots();
       alert('\u2705 Event feedback and dress code photo submitted successfully!');
@@ -2386,6 +2533,33 @@
         fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); });
         fbListenDoc('settings', 'press_stats',   function(data){ localStorage.setItem('hs_press_stats',    JSON.stringify(data)); });
 
+        // Listen to bank details — admin may update them
+        fbListenDoc('staff_bank', staffId, function(data){
+          var key = 'hs_bank_' + staffId;
+          var local = JSON.parse(localStorage.getItem(key) || '{}');
+          var merged = Object.assign({}, local, data);
+          delete merged._fbId; delete merged.updatedAt; delete merged.createdAt;
+          localStorage.setItem(key, JSON.stringify(merged));
+        });
+
+        // Listen to wallet — full sync including transactions
+        fbListenDoc('wallets', staffId, function(data){
+          var key = 'hs_wallet_' + staffId;
+          var local = JSON.parse(localStorage.getItem(key) || '{}');
+          if(data.balance     !== undefined) local.balance     = data.balance;
+          if(data.totalEarned !== undefined) local.totalEarned = data.totalEarned;
+          if(data.pending     !== undefined) local.pending     = data.pending;
+          if(data.withdrawn   !== undefined) local.withdrawn   = data.withdrawn;
+          if(Array.isArray(data.transactions) && data.transactions.length > (local.transactions||[]).length){
+            local.transactions = data.transactions;
+          }
+          localStorage.setItem(key, JSON.stringify(local));
+          renderWallet();
+          renderPayout();
+          var dashBal = document.getElementById('dashWalletBal');
+          if(dashBal) dashBal.textContent = (local.balance||0).toLocaleString('en-IN');
+        });
+
         console.log('[Staff] Firebase two-way sync active');
       } catch(e) { console.error('Staff Firebase sync error:', e); }
     })();
@@ -2423,15 +2597,15 @@
           <div class="stnc-icon" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);"><i class="fas fa-id-badge" style="color:#c9a84c;"></i></div>
           <div class="stnc-text">
             <h5>ID Card — Mandatory</h5>
-            <p>You must carry your official OG SHOOTS ID card at all times during the shoot. The client has the right to verify your identity before the session begins. Shooting without an ID card is strictly prohibited.</p>
+            <p>You must carry your official OG Shoots ID card at all times during the shoot. The client has the right to verify your identity before the session begins. Shooting without an ID card is strictly prohibited.</p>
           </div>
         </div>
 
         <div class="stnc-rule">
           <div class="stnc-icon" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.25);"><i class="fas fa-tshirt" style="color:#2196f3;"></i></div>
           <div class="stnc-text">
-            <h5>OG SHOOTS T-Shirt — Mandatory</h5>
-            <p>You must wear the official OG SHOOTS branded T-shirt during every shoot. This represents our brand and builds client trust. Arriving without the T-shirt may result in the shoot being cancelled.</p>
+            <h5>OG Shoots T-Shirt — Mandatory</h5>
+            <p>You must wear the official OG Shoots branded T-shirt during every shoot. This represents our brand and builds client trust. Arriving without the T-shirt may result in the shoot being cancelled.</p>
           </div>
         </div>
 
@@ -2439,7 +2613,7 @@
           <div class="stnc-icon" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);"><i class="fas fa-shoe-prints" style="color:#4caf50;"></i></div>
           <div class="stnc-text">
             <h5>Proper Footwear — Mandatory</h5>
-            <p>You must wear clean, formal or smart-casual shoes. Slippers, flip-flops, or torn footwear are not allowed. Proper footwear is part of the professional dress code required at all OG SHOOTS events.</p>
+            <p>You must wear clean, formal or smart-casual shoes. Slippers, flip-flops, or torn footwear are not allowed. Proper footwear is part of the professional dress code required at all OG Shoots events.</p>
           </div>
         </div>
 
@@ -2463,7 +2637,7 @@
           <div class="stnc-icon" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.25);"><i class="fas fa-handshake" style="color:#ff9800;"></i></div>
           <div class="stnc-text">
             <h5>Professional Conduct</h5>
-            <p>Maintain respectful, professional behaviour at all times. Do not discuss pricing, personal matters, or OG SHOOTS internal operations with clients. Any misconduct will result in immediate termination and forfeiture of payment.</p>
+            <p>Maintain respectful, professional behaviour at all times. Do not discuss pricing, personal matters, or OG Shoots internal operations with clients. Any misconduct will result in immediate termination and forfeiture of payment.</p>
           </div>
         </div>
 
@@ -2471,11 +2645,11 @@
       <div class="staff-tnc-footer">
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck1" onchange="checkStncProceed()"/>
-          I am wearing my official OG SHOOTS <strong>T-shirt</strong> and carrying my <strong>ID card</strong> right now.
+          I am wearing my official OG Shoots <strong>T-shirt</strong> and carrying my <strong>ID card</strong> right now.
         </label>
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck2" onchange="checkStncProceed()"/>
-          I am wearing proper <strong>shoes</strong> as per the OG SHOOTS dress code.
+          I am wearing proper <strong>shoes</strong> as per the OG Shoots dress code.
         </label>
         <label class="stnc-check">
           <input type="checkbox" id="stncCheck3" onchange="checkStncProceed()"/>

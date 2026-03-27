@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Press – OG SHOOTS</title>
+  <title>Press – OG Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -90,6 +90,7 @@
     @media(max-width:580px){ .coverage-grid{grid-template-columns:1fr;} .press-stats{grid-template-columns:1fr 1fr;} }
   </style>
   <script src="nav.js"></script>
+<script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
 
@@ -99,7 +100,7 @@
   <div class="press-hero">
     <div style="position:relative;z-index:1;">
       <div class="eyebrow"><i class="fas fa-newspaper"></i> Press Room</div>
-      <h1>OG SHOOTS in<br/><em>the News</em></h1>
+      <h1>OG Shoots in<br/><em>the News</em></h1>
       <p>Media coverage, press releases, and resources for journalists and media partners.</p>
     </div>
   </div>
@@ -119,14 +120,14 @@
 
       <!-- COVERAGE -->
       <div class="section-label">Media Coverage</div>
-      <div class="section-title">OG SHOOTS in the <span>Spotlight</span></div>
+      <div class="section-title">OG Shoots in the <span>Spotlight</span></div>
 
       <div class="coverage-grid">
 
         <div class="coverage-card">
           <div class="coverage-pub">YourStory</div>
           <h3>"The Startup Delivering Professional Reels in 10 Minutes Flat"</h3>
-          <p>How OG SHOOTS is disrupting the content creation industry with its on-demand model across India.</p>
+          <p>How OG Shoots is disrupting the content creation industry with its on-demand model across India.</p>
           <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
           <div class="coverage-date">March 2025</div>
         </div>
@@ -134,7 +135,7 @@
         <div class="coverage-card">
           <div class="coverage-pub">Inc42</div>
           <h3>"On-Demand Content Creation: The Next Big Gig Economy Play"</h3>
-          <p>Inc42 features OG SHOOTS as one of the most innovative startups redefining creator services in India.</p>
+          <p>Inc42 features OG Shoots as one of the most innovative startups redefining creator services in India.</p>
           <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
           <div class="coverage-date">February 2025</div>
         </div>
@@ -150,7 +151,7 @@
         <div class="coverage-card">
           <div class="coverage-pub">Entrepreneur India</div>
           <h3>"Meet the Founders Turning Content Creation into a 10-Minute Service"</h3>
-          <p>An exclusive interview with the OG SHOOTS founding team on their vision, challenges, and growth plans.</p>
+          <p>An exclusive interview with the OG Shoots founding team on their vision, challenges, and growth plans.</p>
           <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
           <div class="coverage-date">December 2024</div>
         </div>
@@ -158,7 +159,7 @@
         <div class="coverage-card">
           <div class="coverage-pub">Business Standard</div>
           <h3>"The Rise of Instant Content Platforms in Tier-2 India"</h3>
-          <p>OG SHOOTS is cited as a leading example of how startups are bringing premium services to smaller cities.</p>
+          <p>OG Shoots is cited as a leading example of how startups are bringing premium services to smaller cities.</p>
           <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
           <div class="coverage-date">November 2024</div>
         </div>
@@ -166,7 +167,7 @@
         <div class="coverage-card">
           <div class="coverage-pub">Deccan Chronicle</div>
           <h3>"Andhra Pradesh's Fastest Growing Content Startup"</h3>
-          <p>OG SHOOTS is making waves in Andhra Pradesh with its unique model of certified, on-demand reel creators.</p>
+          <p>OG Shoots is making waves in Andhra Pradesh with its unique model of certified, on-demand reel creators.</p>
           <a href="#" class="coverage-link">Read Article <i class="fas fa-arrow-right"></i></a>
           <div class="coverage-date">October 2024</div>
         </div>
@@ -182,7 +183,7 @@
       <div class="section-title">Press <span>Kit</span></div>
       <div class="presskit">
         <div>
-          <h2>Everything You Need to Cover OG SHOOTS</h2>
+          <h2>Everything You Need to Cover OG Shoots</h2>
           <p>Download our official press kit including logos, brand guidelines, founder photos, company facts, and approved media assets.</p>
           <div class="kit-items">
             <div class="kit-item"><i class="fas fa-check"></i> High-res logos (PNG, SVG)</div>
@@ -194,7 +195,7 @@
         </div>
         <div class="kit-btns">
           <button class="kit-btn-primary"><i class="fas fa-download"></i> Download Press Kit</button>
-          <a href="mailto:hashshootsmedia@gmail.com" class="kit-btn-secondary"><i class="fas fa-envelope"></i> Contact PR Team</a>
+          <a href="mailto:ogshootsmedia@gmail.com" class="kit-btn-secondary"><i class="fas fa-envelope"></i> Contact PR Team</a>
         </div>
       </div>
     </div>
@@ -204,9 +205,9 @@
     <!-- CONTACT -->
     <div class="press-contact">
       <div class="eyebrow"><i class="fas fa-microphone"></i> Media Enquiries</div>
-      <h2>Want to Feature <span>OG SHOOTS?</span></h2>
+      <h2>Want to Feature <span>OG Shoots?</span></h2>
       <p>For interviews, press releases, or media partnerships, reach out to our PR team directly.</p>
-      <a href="mailto:hashshootsmedia@gmail.com" class="press-contact-btn"><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</a>
+      <a href="mailto:ogshootsmedia@gmail.com" class="press-contact-btn"><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</a>
     </div>
 
   </div>
@@ -216,15 +217,15 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/weareogshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -260,7 +261,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <p>© 2025 OG Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
         <div class="footer-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
@@ -302,27 +303,12 @@
 
       // Render from localStorage immediately
       renderPress();
-
-      // Fetch from Firebase and re-render
+      // Load fresh from Firestore via shared helper
       (async function(){
         try {
-          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app     = fbMod.getApps().find(function(a){return a.name==='press';}) || fbMod.initializeApp(fbCfg,'press');
-          var db      = fbStore.getFirestore(app);
-          var [snapPress, snapStats] = await Promise.all([
-            fbStore.getDoc(fbStore.doc(db,'settings','press')),
-            fbStore.getDoc(fbStore.doc(db,'settings','press_stats'))
-          ]);
-          if(snapPress.exists() && snapPress.data().items){
-            localStorage.setItem('hs_press', JSON.stringify(snapPress.data().items));
-          }
-          if(snapStats.exists()){
-            localStorage.setItem('hs_press_stats', JSON.stringify(snapStats.data()));
-          }
+          if (window.loadPressFromFirebase) await loadPressFromFirebase();
           renderPress();
-        } catch(e){ console.log('Press Firebase load error:',e); }
+        } catch(e) {}
       })();
     })();
   </script>

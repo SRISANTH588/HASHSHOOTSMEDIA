@@ -1,21 +1,36 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
+  --gold: #c9a84c;
+  --gold-dark: #a07830;
+  --gold-light: #d4b870;
   --red: #c9a84c;
   --red-dark: #a07830;
-  --bg: #0a0a0a;
+  --red-light: #d4b870;
+  --bg: #080808;
   --bg2: #0f0f0f;
   --bg3: #141414;
   --card: #1a1a1a;
   --border: rgba(201,168,76,0.12);
+  --border-red: rgba(201,168,76,0.2);
   --text: #f0ece0;
   --text-muted: #8a8070;
 }
 
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 100% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 25% at 0% 60%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 25% at 100% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+}
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 .red-text { color: var(--red); }
+.gold-text { color: var(--gold); }
 
 /* NAVBAR */
 .navbar {
