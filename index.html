@@ -314,54 +314,74 @@
       document.getElementById('ogContent').style.opacity='1';
       document.getElementById('ogContent').style.transform='translateY(0)';
     },300);
-    var AC=window.AudioContext||window.webkitAudioContext;
-    function tone(freq,dur,vol,type){if(!AC)return;try{var c=new AC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=freq;o.type=type||'sine';g.gain.setValueAtTime(vol||0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur);}catch(e){}}
+    var musicUrl=cfg.musicUrl||'';
+    var countdownSound=(cfg.countdownSound!==false);
+    var _ac=null;
+    function getAC(){if(!_ac){try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _ac;}
+    function tone(freq,dur,vol,type){
+      if(!countdownSound)return;
+      var ac=getAC();if(!ac)return;
+      try{
+        var o=ac.createOscillator(),g=ac.createGain();
+        o.connect(g);g.connect(ac.destination);
+        o.frequency.value=freq;o.type=type||'sine';
+        g.gain.setValueAtTime(vol||0.25,ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+        o.start();o.stop(ac.currentTime+dur);
+      }catch(e){}
+    }
+    var _musicEl=null;
+    function playMusic(){
+      if(musicUrl){
+        _musicEl=document.createElement('audio');
+        _musicEl.src=musicUrl;
+        _musicEl.loop=true;
+        _musicEl.volume=0.7;
+        _musicEl.play().catch(function(){});
+      } else {
+        // Synthesized Om Namo Venkateshaya
+        var ac=getAC();if(!ac)return;
+        try{
+          var master=ac.createGain();master.gain.value=0.5;master.connect(ac.destination);
+          function drone(freq,vol,start,end){
+            var o=ac.createOscillator(),g=ac.createGain();
+            o.type='sine';o.frequency.value=freq;
+            g.gain.setValueAtTime(0,ac.currentTime+start);
+            g.gain.linearRampToValueAtTime(vol,ac.currentTime+start+0.8);
+            g.gain.setValueAtTime(vol,ac.currentTime+end-0.8);
+            g.gain.linearRampToValueAtTime(0,ac.currentTime+end);
+            o.connect(g);g.connect(master);o.start(ac.currentTime+start);o.stop(ac.currentTime+end);
+          }
+          drone(136.1,0.35,0,8);
+          drone(272.2,0.18,0,8);
+          drone(204.15,0.12,0.5,8);
+          var bells=[392,440,523,494,440,392,349,392];
+          bells.forEach(function(f,i){
+            setTimeout(function(){
+              var ac2=getAC();if(!ac2)return;
+              try{
+                var o=ac2.createOscillator(),g=ac2.createGain();
+                o.type='sine';o.frequency.value=f;
+                g.gain.setValueAtTime(0.4,ac2.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001,ac2.currentTime+1.8);
+                o.connect(g);g.connect(ac2.destination);o.start();o.stop(ac2.currentTime+1.8);
+              }catch(e){}
+            },i*700);
+          });
+        }catch(e){}
+      }
+    }
+    function stopMusic(){
+      if(_musicEl){_musicEl.pause();_musicEl.src='';_musicEl=null;}
+    }
     function celebrate(){
-      // Brighten Tirumala background fully on congrats
       var bi=document.getElementById('ogBgImg');
       if(bi){bi.style.opacity='0.7';bi.style.filter='saturate(0.9) sepia(0.1) brightness(0.85)';}
-      // Om Namo Venkateshaya — rich harmonic chant using Web Audio
-      if(AC){try{
-        var ctx=new AC();
-        var master=ctx.createGain();master.gain.value=0.6;master.connect(ctx.destination);
-        // Deep Om drone — 136.1 Hz (sacred Om frequency)
-        function addDrone(freq,vol,start,end){
-          var o=ctx.createOscillator(),g=ctx.createGain();
-          o.type='sine';o.frequency.value=freq;
-          g.gain.setValueAtTime(0,ctx.currentTime+start);
-          g.gain.linearRampToValueAtTime(vol,ctx.currentTime+start+0.8);
-          g.gain.setValueAtTime(vol,ctx.currentTime+end-0.8);
-          g.gain.linearRampToValueAtTime(0,ctx.currentTime+end);
-          o.connect(g);g.connect(master);o.start(ctx.currentTime+start);o.stop(ctx.currentTime+end);
-        }
-        // Layered harmonics for Om Namo Venkateshaya feel
-        addDrone(136.1,0.35,0,8);   // Root Om
-        addDrone(272.2,0.18,0,8);   // Octave
-        addDrone(204.15,0.12,0.5,8);// Fifth
-        addDrone(340.25,0.08,1,8);  // Higher harmonic
-        // Bell tones — Venkateshaya melody pattern
-        var bells=[392,440,523,494,440,392,349,392];
-        bells.forEach(function(f,i){
-          setTimeout(function(){
-            var o=ctx.createOscillator(),g=ctx.createGain(),rev=ctx.createGain();
-            o.type='sine';o.frequency.value=f;
-            g.gain.setValueAtTime(0.5,ctx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.8);
-            o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+1.8);
-            // Shimmer overtone
-            var o2=ctx.createOscillator(),g2=ctx.createGain();
-            o2.type='sine';o2.frequency.value=f*2;
-            g2.gain.setValueAtTime(0.15,ctx.currentTime);
-            g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.2);
-            o2.connect(g2);g2.connect(master);o2.start();o2.stop(ctx.currentTime+1.2);
-          },i*600);
-        });
-      }catch(e){}}
-      // Confetti burst
+      playMusic();
       var cf=document.getElementById('ogCf');
       var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
       for(var j=0;j<150;j++){
-        var el=document.createElement('div');el.className='og-cf';
+        var el=document.createElement('div');
         var c2=colors[Math.floor(Math.random()*colors.length)];
         var w=(Math.random()*10+4).toFixed(0),h=(Math.random()*10+4).toFixed(0);
         var lft=(Math.random()*100).toFixed(1),dr=(Math.random()*3+1.5).toFixed(2),dl2=(Math.random()*2).toFixed(2);
@@ -371,6 +391,7 @@
       var cst=document.createElement('style');cst.textContent='@keyframes ogCfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(900deg);opacity:0;}}';document.head.appendChild(cst);
     }
     window.ogStartCountdown=function(){
+      getAC(); // init AudioContext on user click
       document.getElementById('ogBtnWrap').style.display='none';
       document.getElementById('ogCountWrap').style.display='block';
       var count=10,countEl=document.getElementById('ogCount');
@@ -378,7 +399,8 @@
       var timer=setInterval(function(){
         count--;
         if(count>0){
-          countEl.style.transform='scale(1.25)';setTimeout(function(){countEl.style.transform='scale(1)';},150);
+          countEl.style.transform='scale(1.25)';
+          setTimeout(function(){countEl.style.transform='scale(1)';},150);
           countEl.textContent=count;
           tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
         }else{
@@ -395,7 +417,9 @@
       },1000);
     };
     window.ogClose=function(){
-      launch.style.transition='opacity 0.9s ease';launch.style.opacity='0';
+      stopMusic();
+      launch.style.transition='opacity 0.9s ease';
+      launch.style.opacity='0';
       setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
     };
   })();

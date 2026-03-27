@@ -191,9 +191,21 @@
         </div>
         <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 2 Photo URL</label><input type="text" id="op_f2photo" placeholder="sumanth.jpeg"/></div>
         <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(default: Tirumala idol)</span></label><input type="text" id="op_bgphoto" placeholder="tirumala-sri-venkateswara-swamy-idol.jpg"/></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div class="form-group"><label>Place / Venue <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_place" placeholder="e.g. Vijayawada, India"/></div>
           <div class="form-group"><label>Launch Date <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_date" placeholder="e.g. 25 Jan 2025"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Congratulations Music URL <span style="color:#888;font-weight:400;">(mp3/ogg direct link — plays on congrats)</span></label>
+          <input type="text" id="op_musicurl" placeholder="https://... direct .mp3 link or leave blank for synthesized chant"/>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+            <div style="position:relative;width:44px;height:24px;">
+              <span id="op_sound_toggle" onclick="toggleOpSound()" style="position:absolute;inset:0;border-radius:50px;cursor:pointer;transition:background 0.3s;display:block;"><span style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.3s;display:block;" id="op_sound_knob"></span></span>
+            </div>
+            <span style="color:#fff;font-weight:600;font-size:0.9rem;">Enable Countdown Beep Sound</span>
+          </label>
         </div>
         <button class="btn-save-about" onclick="saveOpening()"><i class="fas fa-save"></i> Save Opening Settings</button>
       </div>
@@ -4186,59 +4198,69 @@
     }
     // OPENING SCREEN
     var _opEnabled = false;
+    var _opSound = true;
     function loadOpening(){
       var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
       _opEnabled = (cfg.enabled !== false);
-      var f1n = document.getElementById('op_f1name');
-      var f1r = document.getElementById('op_f1role');
-      var f1p = document.getElementById('op_f1photo');
-      var f2n = document.getElementById('op_f2name');
-      var f2r = document.getElementById('op_f2role');
-      var f2p = document.getElementById('op_f2photo');
-      var bg  = document.getElementById('op_bgphoto');
-      var pl  = document.getElementById('op_place');
-      var dt  = document.getElementById('op_date');
-      if(f1n) f1n.value = cfg.founder1Name  || 'Boddu Srisanth';
-      if(f1r) f1r.value = cfg.founder1Role  || 'Founder & CEO';
-      if(f1p) f1p.value = cfg.founder1Photo || 'srisanth.jpeg';
-      if(f2n) f2n.value = cfg.founder2Name  || 'Gulimi Sumanth';
-      if(f2r) f2r.value = cfg.founder2Role  || 'Managing Director';
-      if(f2p) f2p.value = cfg.founder2Photo || 'sumanth.jpeg';
-      if(bg)  bg.value  = cfg.bgPhoto       || '';
-      if(pl)  pl.value  = cfg.placeText     || '';
-      if(dt)  dt.value  = cfg.dateText      || '';
+      _opSound   = (cfg.countdownSound !== false);
+      var els = {
+        f1n:'op_f1name', f1r:'op_f1role', f1p:'op_f1photo',
+        f2n:'op_f2name', f2r:'op_f2role', f2p:'op_f2photo',
+        bg:'op_bgphoto', pl:'op_place', dt:'op_date', mu:'op_musicurl'
+      };
+      var defs = {
+        f1n:'Boddu Srisanth', f1r:'Founder & CEO', f1p:'srisanth.jpeg',
+        f2n:'Gulimi Sumanth', f2r:'Managing Director', f2p:'sumanth.jpeg',
+        bg:'', pl:'', dt:'', mu:''
+      };
+      var cfgMap = {
+        f1n:'founder1Name', f1r:'founder1Role', f1p:'founder1Photo',
+        f2n:'founder2Name', f2r:'founder2Role', f2p:'founder2Photo',
+        bg:'bgPhoto', pl:'placeText', dt:'dateText', mu:'musicUrl'
+      };
+      Object.keys(els).forEach(function(k){
+        var el=document.getElementById(els[k]);
+        if(el) el.value = cfg[cfgMap[k]] || defs[k];
+      });
       updateOpToggle();
+      updateOpSoundToggle();
     }
     function updateOpToggle(){
-      var t = document.getElementById('op_toggle');
-      var k = document.getElementById('op_knob');
+      var t=document.getElementById('op_toggle'),k=document.getElementById('op_knob');
       if(!t||!k) return;
-      t.style.background = _opEnabled ? '#c9a84c' : '#333';
-      k.style.transform  = _opEnabled ? 'translateX(24px)' : 'translateX(0)';
+      t.style.background=_opEnabled?'#c9a84c':'#333';
+      k.style.transform=_opEnabled?'translateX(24px)':'translateX(0)';
     }
-    function toggleOpening(){
-      _opEnabled = !_opEnabled;
-      updateOpToggle();
+    function updateOpSoundToggle(){
+      var t=document.getElementById('op_sound_toggle'),k=document.getElementById('op_sound_knob');
+      if(!t||!k) return;
+      t.style.background=_opSound?'#c9a84c':'#333';
+      k.style.transform=_opSound?'translateX(20px)':'translateX(0)';
     }
+    function toggleOpening(){ _opEnabled=!_opEnabled; updateOpToggle(); }
+    function toggleOpSound(){ _opSound=!_opSound; updateOpSoundToggle(); }
     function saveOpening(){
-      var data = {
-        enabled:      _opEnabled,
-        founder1Name: (document.getElementById('op_f1name').value||'').trim()  || 'Boddu Srisanth',
-        founder1Role: (document.getElementById('op_f1role').value||'').trim()  || 'Founder & CEO',
-        founder1Photo:(document.getElementById('op_f1photo').value||'').trim() || 'srisanth.jpeg',
-        founder2Name: (document.getElementById('op_f2name').value||'').trim()  || 'Gulimi Sumanth',
-        founder2Role: (document.getElementById('op_f2role').value||'').trim()  || 'Managing Director',
-        founder2Photo:(document.getElementById('op_f2photo').value||'').trim() || 'sumanth.jpeg',
-        bgPhoto:      (document.getElementById('op_bgphoto').value||'').trim(),
-        placeText:    (document.getElementById('op_place').value||'').trim(),
-        dateText:     (document.getElementById('op_date').value||'').trim()
+      var g=function(id){return (document.getElementById(id)||{}).value||'';};
+      var data={
+        enabled:       _opEnabled,
+        countdownSound:_opSound,
+        founder1Name:  g('op_f1name').trim()||'Boddu Srisanth',
+        founder1Role:  g('op_f1role').trim()||'Founder & CEO',
+        founder1Photo: g('op_f1photo').trim()||'srisanth.jpeg',
+        founder2Name:  g('op_f2name').trim()||'Gulimi Sumanth',
+        founder2Role:  g('op_f2role').trim()||'Managing Director',
+        founder2Photo: g('op_f2photo').trim()||'sumanth.jpeg',
+        bgPhoto:       g('op_bgphoto').trim(),
+        placeText:     g('op_place').trim(),
+        dateText:      g('op_date').trim(),
+        musicUrl:      g('op_musicurl').trim()
       };
-      localStorage.setItem('hs_opening', JSON.stringify(data));
-      var toast = document.getElementById('saveToast');
-      if(toast){ toast.style.display='block'; setTimeout(function(){toast.style.display='none';},2500); }
-      else { alert('Saved!'); }
+      localStorage.setItem('hs_opening',JSON.stringify(data));
+      var toast=document.getElementById('saveToast');
+      if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
+      else{alert('Saved!');}
     }
-    document.addEventListener('DOMContentLoaded', function(){ loadOpening(); });
+    document.addEventListener('DOMContentLoaded',function(){loadOpening();});
     // ENQUIRIES
     function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
 
