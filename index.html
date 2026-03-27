@@ -1492,26 +1492,134 @@
       var tag   = cfg.tagline||'Premium Reels. Real Moments.';
       var logo  = cfg.logo||'', fp1 = cfg.founderPhoto||'srisanth.jpeg', fp2 = cfg.cofounderPhoto||'sumanth.jpeg';
 
-      /* ── Audio ── */
+      /* ── Audio Engine ── */
       var _ac = null;
-      function ac(){ if(!_ac) _ac = new (window.AudioContext||window.webkitAudioContext)(); return _ac; }
-      function tone(freq,len,type,vol,t){
+      function ac(){
+        if(!_ac) _ac = new (window.AudioContext||window.webkitAudioContext)();
+        if(_ac.state==='suspended') _ac.resume();
+        return _ac;
+      }
+
+      /* Basic tone helper */
+      function tone(freq,len,type,vol,t,vibrato){
         try{
-          var ctx=ac(), o=ctx.createOscillator(), g=ctx.createGain();
+          var ctx=ac();
+          var o=ctx.createOscillator();
+          var g=ctx.createGain();
+          /* gentle reverb via convolver-less delay */
+          var dly=ctx.createDelay(0.4);
+          var dlyGain=ctx.createGain();
+          dly.delayTime.value=0.18;
+          dlyGain.gain.value=0.18;
           o.connect(g); g.connect(ctx.destination);
-          o.type=type||'sine'; o.frequency.setValueAtTime(freq,t||ctx.currentTime);
-          g.gain.setValueAtTime(vol||0.18,t||ctx.currentTime);
+          g.connect(dly); dly.connect(dlyGain); dlyGain.connect(ctx.destination);
+          o.type=type||'sine';
+          o.frequency.setValueAtTime(freq,t||ctx.currentTime);
+          /* subtle vibrato for devotional feel */
+          if(vibrato){
+            var lfo=ctx.createOscillator();
+            var lfoG=ctx.createGain();
+            lfo.frequency.value=5.5;
+            lfoG.gain.value=vibrato;
+            lfo.connect(lfoG); lfoG.connect(o.frequency);
+            lfo.start(t||ctx.currentTime); lfo.stop((t||ctx.currentTime)+len+0.05);
+          }
+          g.gain.setValueAtTime(0,t||ctx.currentTime);
+          g.gain.linearRampToValueAtTime(vol||0.22,(t||ctx.currentTime)+0.04);
+          g.gain.setValueAtTime(vol||0.22,(t||ctx.currentTime)+len*0.7);
           g.gain.exponentialRampToValueAtTime(0.001,(t||ctx.currentTime)+len);
-          o.start(t||ctx.currentTime); o.stop((t||ctx.currentTime)+len+0.01);
+          o.start(t||ctx.currentTime); o.stop((t||ctx.currentTime)+len+0.05);
         }catch(e){}
       }
-      function tick(n){ var f=400+(dur-n)*35; tone(f,0.07,'square',0.14); tone(f*2,0.05,'sine',0.04); }
-      function fanfare(){
-        var ctx=ac(), t=ctx.currentTime;
-        [[523,0],[659,0.09],[784,0.18],[1047,0.27],[1319,0.36]].forEach(function(p){ tone(p[0],1.4,'sine',0.16,t+p[1]); });
-        tone(262,1.0,'sine',0.22,t);
-        [[2093,0.4],[2637,0.52],[3136,0.64]].forEach(function(p){ tone(p[0],0.25,'sine',0.05,t+p[1]); });
+
+      /* ── GOVINDA GOVINDA chant ──────────────────────────────────
+         Melodic pattern of "Go-vin-da  Go-vin-da" from
+         Venkateswara Suprabhatam — Sa Ga Ma Pa Ni Sa rising scale
+         Base: D4=293Hz, F#4=370Hz, A4=440Hz, B4=494Hz, C#5=554Hz, D5=587Hz
+      ─────────────────────────────────────────────────────────── */
+      function playGovindaChant(){
+        try{
+          var ctx = ac();
+          var t   = ctx.currentTime + 0.05;
+          /* "Go" - "vin" - "da"  x2 then rising "Go-vin-DA!" */
+          /* syllable: [freq, start, duration, vol, vibrato] */
+          var chant = [
+            /* Go  - vin - da */
+            [293, 0.00, 0.28, 0.30, 4],
+            [370, 0.30, 0.22, 0.28, 4],
+            [440, 0.54, 0.38, 0.32, 6],
+            /* (breath) */
+            /* Go  - vin - da */
+            [293, 1.05, 0.28, 0.30, 4],
+            [370, 1.35, 0.22, 0.28, 4],
+            [440, 1.59, 0.38, 0.32, 6],
+            /* (breath) */
+            /* Go  - vin - DA  (rising climax) */
+            [370, 2.15, 0.22, 0.28, 4],
+            [440, 2.39, 0.22, 0.30, 5],
+            [494, 2.63, 0.22, 0.32, 5],
+            [554, 2.87, 0.55, 0.38, 7],
+            /* sustained "Govindaaa" */
+            [587, 3.50, 0.90, 0.35, 8],
+            /* gentle fade "...da" */
+            [554, 4.45, 0.55, 0.22, 5],
+            [440, 5.05, 0.70, 0.15, 4]
+          ];
+          chant.forEach(function(n){
+            tone(n[0], n[2], 'sine', n[3], t+n[1], n[4]);
+            /* add harmonics for temple-bell richness */
+            tone(n[0]*2,   n[2]*0.6, 'sine', n[3]*0.08, t+n[1]);
+            tone(n[0]*1.5, n[2]*0.5, 'sine', n[3]*0.05, t+n[1]);
+          });
+          /* temple bell strike at start */
+          playTempleBell(t);
+          playTempleBell(t + 1.05);
+          playTempleBell(t + 2.15);
+          playTempleBell(t + 3.50);
+        }catch(e){}
       }
+
+      /* Temple bell — high metallic ping */
+      function playTempleBell(t){
+        try{
+          var ctx=ac();
+          var o=ctx.createOscillator();
+          var g=ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.type='sine';
+          o.frequency.setValueAtTime(1760,t);
+          o.frequency.exponentialRampToValueAtTime(880,t+0.8);
+          g.gain.setValueAtTime(0.18,t);
+          g.gain.exponentialRampToValueAtTime(0.001,t+1.2);
+          o.start(t); o.stop(t+1.3);
+          /* overtone */
+          var o2=ctx.createOscillator(); var g2=ctx.createGain();
+          o2.connect(g2); g2.connect(ctx.destination);
+          o2.type='sine'; o2.frequency.value=2637;
+          g2.gain.setValueAtTime(0.06,t);
+          g2.gain.exponentialRampToValueAtTime(0.001,t+0.6);
+          o2.start(t); o2.stop(t+0.7);
+        }catch(e){}
+      }
+
+      /* Countdown tick — soft tabla-like click */
+      function tick(n){
+        try{
+          var ctx=ac(), t=ctx.currentTime;
+          var buf=ctx.createBuffer(1,ctx.sampleRate*0.08,ctx.sampleRate);
+          var d=buf.getChannelData(0);
+          for(var i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.015));
+          var src=ctx.createBufferSource(); src.buffer=buf;
+          var g=ctx.createGain(); g.gain.value=0.35;
+          src.connect(g); g.connect(ctx.destination);
+          src.start(t);
+          /* pitch tone on top */
+          tone(n<=3?880:440, 0.06, 'sine', 0.12, t);
+        }catch(e){}
+      }
+
+      /* Launch fanfare — plays Govinda chant */
+      function fanfare(){ playGovindaChant(); }
 
       /* ── Overlay ── */
       var ov = document.createElement('div');
@@ -1665,6 +1773,8 @@
       function startCountdown(){
         if(started) return; started=true;
         try{ ac().resume(); }catch(e){}
+        /* Play Govinda chant immediately on button click */
+        playGovindaChant();
         var bw=document.getElementById('_btn_w');
         if(bw) bw.innerHTML='<div style="font-size:.72rem;color:rgba(201,168,76,.45);letter-spacing:4px;text-transform:uppercase;margin-top:.5rem;">Launching in...</div>';
         setTimeout(function(){ if(progEl){ progEl.style.strokeDashoffset=0; progEl.style.transition='stroke-dashoffset '+dur+'s linear'; } },50);
