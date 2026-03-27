@@ -139,6 +139,7 @@
     </div>
 
     <div class="tabs">
+      <button class="tab-btn" onclick="switchTab('opening',this)"><i class="fas fa-rocket"></i> Opening</button>
       <button class="tab-btn active" onclick="switchTab('bookings',this)"><i class="fas fa-calendar-alt"></i> Bookings</button>
       <button class="tab-btn" onclick="switchTab('about',this)"><i class="fas fa-info-circle"></i> About Us</button>
       <button class="tab-btn" onclick="switchTab('vibe',this)"><i class="fas fa-fire"></i> Discover with Vibe</button>
@@ -164,6 +165,34 @@
       <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
 
+    </div>
+
+    <!-- OPENING TAB -->
+    <div class="tab-panel" id="tab-opening">
+      <div class="about-form">
+        <h2><i class="fas fa-rocket" style="color:#c9a84c;"></i> App Opening Screen</h2>
+        <p style="color:#888;font-size:0.85rem;margin-bottom:1.5rem;">Control the launch screen shown when visitors open the website. Countdown 10→1 with sound, founder cards &amp; confetti celebration.</p>
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+            <div style="position:relative;width:52px;height:28px;">
+              <span id="op_toggle" onclick="toggleOpening()" style="position:absolute;inset:0;border-radius:50px;cursor:pointer;transition:background 0.3s;display:block;" ><span style="position:absolute;left:3px;top:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform 0.3s;display:block;" id="op_knob"></span></span>
+            </div>
+            <span style="color:#fff;font-weight:700;font-size:0.95rem;">Enable Opening Screen</span>
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div class="form-group"><label>Founder 1 Name</label><input type="text" id="op_f1name" placeholder="Boddu Srisanth"/></div>
+          <div class="form-group"><label>Founder 1 Role</label><input type="text" id="op_f1role" placeholder="Founder &amp; CEO"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 1 Photo URL</label><input type="text" id="op_f1photo" placeholder="srisanth.jpeg"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div class="form-group"><label>Founder 2 Name</label><input type="text" id="op_f2name" placeholder="Gulimi Sumanth"/></div>
+          <div class="form-group"><label>Founder 2 Role</label><input type="text" id="op_f2role" placeholder="Managing Director"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 2 Photo URL</label><input type="text" id="op_f2photo" placeholder="sumanth.jpeg"/></div>
+        <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(optional)</span></label><input type="text" id="op_bgphoto" placeholder="https://... or leave blank"/></div>
+        <button class="btn-save-about" onclick="saveOpening()"><i class="fas fa-save"></i> Save Opening Settings</button>
+      </div>
     </div>
 
     <!-- BOOKINGS TAB -->
@@ -4150,6 +4179,48 @@
         alert('Storage full! Please use smaller photos (the system auto-compresses, but your images may still be too large). Try removing one photo and saving again.');
       }
     }
+    // OPENING SCREEN
+    var _opEnabled = false;
+    function loadOpening(){
+      var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
+      _opEnabled = !!cfg.enabled;
+      document.getElementById('op_f1name').value  = cfg.founder1Name  || 'Boddu Srisanth';
+      document.getElementById('op_f1role').value  = cfg.founder1Role  || 'Founder & CEO';
+      document.getElementById('op_f1photo').value = cfg.founder1Photo || 'srisanth.jpeg';
+      document.getElementById('op_f2name').value  = cfg.founder2Name  || 'Gulimi Sumanth';
+      document.getElementById('op_f2role').value  = cfg.founder2Role  || 'Managing Director';
+      document.getElementById('op_f2photo').value = cfg.founder2Photo || 'sumanth.jpeg';
+      document.getElementById('op_bgphoto').value = cfg.bgPhoto       || '';
+      updateOpToggle();
+    }
+    function updateOpToggle(){
+      var t = document.getElementById('op_toggle');
+      var k = document.getElementById('op_knob');
+      if(!t||!k) return;
+      t.style.background = _opEnabled ? '#c9a84c' : '#333';
+      k.style.transform  = _opEnabled ? 'translateX(24px)' : 'translateX(0)';
+    }
+    function toggleOpening(){
+      _opEnabled = !_opEnabled;
+      updateOpToggle();
+    }
+    function saveOpening(){
+      var data = {
+        enabled:      _opEnabled,
+        founder1Name: document.getElementById('op_f1name').value.trim()  || 'Boddu Srisanth',
+        founder1Role: document.getElementById('op_f1role').value.trim()  || 'Founder & CEO',
+        founder1Photo:document.getElementById('op_f1photo').value.trim() || 'srisanth.jpeg',
+        founder2Name: document.getElementById('op_f2name').value.trim()  || 'Gulimi Sumanth',
+        founder2Role: document.getElementById('op_f2role').value.trim()  || 'Managing Director',
+        founder2Photo:document.getElementById('op_f2photo').value.trim() || 'sumanth.jpeg',
+        bgPhoto:      document.getElementById('op_bgphoto').value.trim()
+      };
+      localStorage.setItem('hs_opening', JSON.stringify(data));
+      var toast = document.getElementById('saveToast');
+      toast.style.display='block';
+      setTimeout(function(){toast.style.display='none';},2500);
+    }
+    document.addEventListener('DOMContentLoaded', function(){ loadOpening(); });
     // ENQUIRIES
     function getEnquiries(){ return JSON.parse(localStorage.getItem('hs_enquiries')||'[]'); }
 

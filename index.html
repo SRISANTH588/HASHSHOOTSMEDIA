@@ -12,6 +12,255 @@
 </head>
 <body>
 
+  <!-- APP LAUNCH SCREEN -->
+  <div id="ogLaunch" style="display:none;"></div>
+  <style>
+    #ogLaunch{
+      position:fixed;inset:0;z-index:999999;
+      background:#000;
+      flex-direction:column;align-items:center;justify-content:center;
+      overflow:hidden;
+      font-family:'Inter',sans-serif;
+    }
+    #ogLaunch.active{display:flex;}
+    .og-launch-bg{
+      position:absolute;inset:0;
+      background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(201,168,76,0.18) 0%,transparent 65%),#000;
+      z-index:0;
+    }
+    .og-launch-particles{
+      position:absolute;inset:0;z-index:1;pointer-events:none;
+      overflow:hidden;
+    }
+    .og-particle{
+      position:absolute;border-radius:50%;
+      background:#c9a84c;
+      animation:ogParticleFall linear infinite;
+      opacity:0;
+    }
+    @keyframes ogParticleFall{
+      0%{transform:translateY(-20px) scale(0);opacity:0;}
+      10%{opacity:0.7;}
+      90%{opacity:0.3;}
+      100%{transform:translateY(110vh) scale(1.5);opacity:0;}
+    }
+    .og-launch-content{position:relative;z-index:2;text-align:center;width:100%;padding:0 1.5rem;}
+    .og-launch-logo{
+      font-size:clamp(2.5rem,8vw,4.5rem);font-weight:900;
+      letter-spacing:4px;text-transform:uppercase;
+      margin-bottom:0.3rem;
+      animation:ogLogoIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+      opacity:0;transform:scale(0.7);
+    }
+    @keyframes ogLogoIn{
+      to{opacity:1;transform:scale(1);}
+    }
+    .og-launch-luxe{
+      font-size:clamp(0.7rem,2vw,1rem);font-weight:700;
+      color:#c9a84c;letter-spacing:8px;text-transform:uppercase;
+      margin-bottom:2.5rem;
+      animation:ogFadeUp 0.8s 0.3s ease forwards;opacity:0;transform:translateY(10px);
+    }
+    @keyframes ogFadeUp{to{opacity:1;transform:translateY(0);}}
+    .og-launch-countdown{
+      font-size:clamp(4rem,15vw,8rem);font-weight:900;
+      color:#c9a84c;line-height:1;
+      text-shadow:0 0 60px rgba(201,168,76,0.6),0 0 120px rgba(201,168,76,0.3);
+      animation:ogPulse 1s ease infinite;
+      margin-bottom:2rem;
+    }
+    @keyframes ogPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+    .og-launch-founders{
+      display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;
+      margin-bottom:2rem;
+      animation:ogFadeUp 0.8s 0.5s ease forwards;opacity:0;transform:translateY(20px);
+    }
+    .og-founder-card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(201,168,76,0.3);
+      border-radius:20px;padding:1.25rem 1.5rem;
+      text-align:center;min-width:160px;max-width:200px;
+      backdrop-filter:blur(10px);
+      box-shadow:0 8px 32px rgba(201,168,76,0.15);
+      transition:transform 0.3s;
+    }
+    .og-founder-card:hover{transform:translateY(-4px);}
+    .og-founder-img{
+      width:90px;height:90px;border-radius:50%;
+      object-fit:cover;object-position:top;
+      border:3px solid #c9a84c;
+      box-shadow:0 0 20px rgba(201,168,76,0.4);
+      margin:0 auto 0.75rem;
+      display:block;
+    }
+    .og-founder-img-placeholder{
+      width:90px;height:90px;border-radius:50%;
+      background:linear-gradient(135deg,#c9a84c,#7f5a00);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.8rem;font-weight:900;color:#fff;
+      border:3px solid #c9a84c;
+      margin:0 auto 0.75rem;
+    }
+    .og-founder-name{font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.25rem;}
+    .og-founder-role{font-size:0.7rem;color:#c9a84c;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+    .og-launch-congrats{
+      font-size:clamp(0.85rem,2.5vw,1.1rem);color:#fff;
+      font-weight:600;line-height:1.7;
+      max-width:600px;margin:0 auto 1.5rem;
+      animation:ogFadeUp 0.8s 0.7s ease forwards;opacity:0;transform:translateY(10px);
+    }
+    .og-launch-congrats span{color:#c9a84c;font-weight:800;}
+    .og-launch-live{
+      display:inline-flex;align-items:center;gap:0.5rem;
+      background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);
+      color:#c9a84c;font-size:0.8rem;font-weight:700;
+      padding:0.5rem 1.25rem;border-radius:50px;
+      letter-spacing:2px;text-transform:uppercase;
+      animation:ogFadeUp 0.8s 0.9s ease forwards;opacity:0;
+    }
+    .og-live-dot{
+      width:8px;height:8px;border-radius:50%;background:#4caf50;
+      box-shadow:0 0 8px #4caf50;
+      animation:ogLivePulse 1s ease infinite;
+    }
+    @keyframes ogLivePulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:0.6;}}
+    .og-launch-confetti{
+      position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;
+    }
+    .og-confetti-piece{
+      position:absolute;width:8px;height:8px;
+      animation:ogConfettiFall linear forwards;
+      opacity:0;
+    }
+    @keyframes ogConfettiFall{
+      0%{transform:translateY(-10px) rotate(0deg);opacity:1;}
+      100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+    }
+  </style>
+  <script>
+  (function(){
+    var cfg = JSON.parse(localStorage.getItem('hs_opening') || '{}');
+    if(!cfg.enabled) return;
+
+    var launch = document.getElementById('ogLaunch');
+    launch.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    var bgImg = cfg.bgPhoto || '';
+    var f1Photo = cfg.founder1Photo || 'srisanth.jpeg';
+    var f2Photo = cfg.founder2Photo || 'sumanth.jpeg';
+    var f1Name  = cfg.founder1Name  || 'Boddu Srisanth';
+    var f2Name  = cfg.founder2Name  || 'Gulimi Sumanth';
+    var f1Role  = cfg.founder1Role  || 'Founder & CEO';
+    var f2Role  = cfg.founder2Role  || 'Managing Director';
+
+    var bgStyle = bgImg
+      ? 'position:absolute;inset:0;z-index:0;background:url("'+bgImg+'") center/cover no-repeat;opacity:0.18;'
+      : '';
+
+    // Build particles
+    var particles = '';
+    for(var i=0;i<30;i++){
+      var size = (Math.random()*4+2).toFixed(1);
+      var left = (Math.random()*100).toFixed(1);
+      var dur  = (Math.random()*6+4).toFixed(1);
+      var delay= (Math.random()*4).toFixed(1);
+      particles += '<div class="og-particle" style="width:'+size+'px;height:'+size+'px;left:'+left+'%;animation-duration:'+dur+'s;animation-delay:'+delay+'s;"></div>';
+    }
+
+    launch.innerHTML =
+      '<div class="og-launch-bg"></div>'
+      +(bgImg?'<div style="'+bgStyle+'"></div>':'')
+      +'<div class="og-launch-particles">'+particles+'</div>'
+      +'<div class="og-launch-confetti" id="ogConfetti"></div>'
+      +'<div class="og-launch-content">'
+        +'<div class="og-launch-logo"><span style="color:#c9a84c;">OG</span> <span style="color:#fff;">SHOOTS</span></div>'
+        +'<div class="og-launch-luxe">✦ LUXE ✦</div>'
+        +'<div class="og-launch-countdown" id="ogCount">10</div>'
+        +'<div class="og-launch-founders">'
+          +'<div class="og-founder-card">'
+            +'<img src="'+f1Photo+'" class="og-founder-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
+            +'<div class="og-founder-img-placeholder" style="display:none;">'+f1Name.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>'
+            +'<div class="og-founder-name">'+f1Name+'</div>'
+            +'<div class="og-founder-role">'+f1Role+'</div>'
+          +'</div>'
+          +'<div class="og-founder-card">'
+            +'<img src="'+f2Photo+'" class="og-founder-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
+            +'<div class="og-founder-img-placeholder" style="display:none;">'+f2Name.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>'
+            +'<div class="og-founder-name">'+f2Name+'</div>'
+            +'<div class="og-founder-role">'+f2Role+'</div>'
+          +'</div>'
+        +'</div>'
+        +'<div class="og-launch-congrats" id="ogCongrats" style="display:none;">'
+          +'🎉 Congratulations <span>'+f1Name+'</span> & <span>'+f2Name+'</span>!<br/>'
+          +'The App <span>OG SHOOTS LUXE</span> is Live Now!'
+        +'</div>'
+        +'<div class="og-launch-live" id="ogLiveBadge" style="display:none;"><div class="og-live-dot"></div> APP IS LIVE</div>'
+      +'</div>';
+
+    // Sound — countdown beep using Web Audio API
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    function beep(freq, dur, vol){
+      if(!AudioCtx) return;
+      try{
+        var ctx = new AudioCtx();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(vol||0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + dur);
+      }catch(e){}
+    }
+
+    var count = 10;
+    var countEl = document.getElementById('ogCount');
+    beep(880, 0.15);
+    var timer = setInterval(function(){
+      count--;
+      if(count > 0){
+        countEl.textContent = count;
+        beep(count === 1 ? 1200 : 880, 0.15);
+      } else {
+        clearInterval(timer);
+        // Final celebration
+        countEl.style.display = 'none';
+        document.getElementById('ogCongrats').style.display = 'block';
+        document.getElementById('ogLiveBadge').style.display = 'inline-flex';
+        beep(1047, 0.4, 0.5);
+        setTimeout(function(){ beep(1319, 0.4, 0.5); }, 150);
+        setTimeout(function(){ beep(1568, 0.6, 0.5); }, 300);
+        // Confetti burst
+        var conf = document.getElementById('ogConfetti');
+        var colors = ['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa'];
+        for(var j=0;j<80;j++){
+          var el = document.createElement('div');
+          el.className = 'og-confetti-piece';
+          var color = colors[Math.floor(Math.random()*colors.length)];
+          var left2 = (Math.random()*100).toFixed(1);
+          var dur2 = (Math.random()*2+1.5).toFixed(1);
+          var delay2 = (Math.random()*1).toFixed(2);
+          var shape = Math.random()>0.5 ? '50%' : '2px';
+          el.style.cssText = 'left:'+left2+'%;top:-10px;background:'+color+';border-radius:'+shape+';animation-duration:'+dur2+'s;animation-delay:'+delay2+'s;width:'+(Math.random()*8+4).toFixed(0)+'px;height:'+(Math.random()*8+4).toFixed(0)+'px;';
+          conf.appendChild(el);
+        }
+        // Close after 4s
+        setTimeout(function(){
+          launch.style.transition = 'opacity 0.8s ease';
+          launch.style.opacity = '0';
+          setTimeout(function(){
+            launch.style.display = 'none';
+            document.body.style.overflow = '';
+          }, 800);
+        }, 4000);
+      }
+    }, 1000);
+  })();
+  </script>
+
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
