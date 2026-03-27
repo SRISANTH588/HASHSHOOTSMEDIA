@@ -1459,32 +1459,25 @@
          PHASE 2 → Explosion  (burst + shockwave + flash)
          PHASE 3 → Reveal     (cars scroll in, logo drops, congrats)
       ═══════════════════════════════════════════════════════════ */
-      // Check localStorage immediately — don't wait for Firebase if already cached
+      // Load config — try Firebase first with short timeout, fallback to localStorage
       var cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}');
-
-      // If not enabled in cache, try Firebase (may have been enabled from another device)
-      if(!cfg.enabled){
-        try {
+      try {
+        var _fbProm = (async function(){
           var m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
           var s = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var app = m.getApps().find(function(a){return a.name==='launch';}) || m.initializeApp(FB,'launch');
           var snap = await s.getDoc(s.doc(s.getFirestore(app),'config','launch'));
-          if(snap.exists()){ cfg = snap.data(); localStorage.setItem('hs_launch_config',JSON.stringify(cfg)); }
-        } catch(e){ console.log('[Launch] Firebase fetch failed, using cache'); }
-      } else {
-        // Already enabled from cache — still refresh Firebase in background
-        try {
-          var m2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var s2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var FB2 = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app2 = m2.getApps().find(function(a){return a.name==='launch';}) || m2.initializeApp(FB2,'launch');
-          var snap2 = await s2.getDoc(s2.doc(s2.getFirestore(app2),'config','launch'));
-          if(snap2.exists()){ cfg = snap2.data(); localStorage.setItem('hs_launch_config',JSON.stringify(cfg)); }
-        } catch(e){}
-      }
+          if(snap.exists()) return snap.data();
+          return null;
+        })();
+        var _timeout = new Promise(function(res){ setTimeout(function(){ res(null); }, 3000); });
+        var fbCfg = await Promise.race([_fbProm, _timeout]);
+        if(fbCfg){ cfg = fbCfg; localStorage.setItem('hs_launch_config', JSON.stringify(cfg)); }
+      } catch(e){ console.log('[Launch] Firebase fetch failed, using localStorage'); }
 
-      if(!cfg.enabled) return;
+      // Only skip if explicitly disabled by admin
+      if(cfg.enabled === false) return;
 
       var dur   = cfg.duration||10, brand = cfg.brand||'OG SHOOTS';
       var f1    = cfg.founder||'Boddu Srisanth', f1t = cfg.founderTitle||'Founder & CEO';
