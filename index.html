@@ -254,11 +254,12 @@
   (function(){
     var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
     if(cfg.enabled===false) return;
-    if(sessionStorage.getItem('og_launched')) return;
+    // Only skip if user already interacted with launch this session AND navigated back
+    if(sessionStorage.getItem('og_launched')==='done') return;
     var launch=document.getElementById('ogLaunch');
     launch.classList.add('active');
     document.body.style.overflow='hidden';
-    sessionStorage.setItem('og_launched','1');
+    sessionStorage.setItem('og_launched','done');
     var bgImg=cfg.bgPhoto||'tirumala-sri-venkateswara-swamy-idol.jpg';
     var placeText=cfg.placeText||'';
     var dateText=cfg.dateText||'';
@@ -393,7 +394,7 @@
     };
     window.ogClose=function(){
       launch.style.transition='opacity 0.9s ease';launch.style.opacity='0';
-      setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
+      setTimeout(function(){launch.style.display='none';document.body.style.overflow='';sessionStorage.removeItem('og_launched');},900);
     };
   })();
   </script>

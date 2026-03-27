@@ -2018,6 +2018,7 @@
       if (tab === 'testimonial-videos') renderTestiVideos();
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
+      if (tab === 'opening') loadOpening();
       if (tab === 'razorpay') loadRazorpayTab();
       if (tab === 'about') loadAboutForm();
       if (tab === 'vibe') renderVibeAdmin();
@@ -4187,16 +4188,25 @@
     var _opEnabled = false;
     function loadOpening(){
       var cfg = JSON.parse(localStorage.getItem('hs_opening')||'{}');
-      _opEnabled = !!cfg.enabled;
-      document.getElementById('op_f1name').value  = cfg.founder1Name  || 'Boddu Srisanth';
-      document.getElementById('op_f1role').value  = cfg.founder1Role  || 'Founder & CEO';
-      document.getElementById('op_f1photo').value = cfg.founder1Photo || 'srisanth.jpeg';
-      document.getElementById('op_f2name').value  = cfg.founder2Name  || 'Gulimi Sumanth';
-      document.getElementById('op_f2role').value  = cfg.founder2Role  || 'Managing Director';
-      document.getElementById('op_f2photo').value = cfg.founder2Photo || 'sumanth.jpeg';
-      document.getElementById('op_bgphoto').value = cfg.bgPhoto       || '';
-      document.getElementById('op_place').value   = cfg.placeText     || '';
-      document.getElementById('op_date').value    = cfg.dateText      || '';
+      _opEnabled = (cfg.enabled !== false); // default ON
+      var f1n = document.getElementById('op_f1name');
+      var f1r = document.getElementById('op_f1role');
+      var f1p = document.getElementById('op_f1photo');
+      var f2n = document.getElementById('op_f2name');
+      var f2r = document.getElementById('op_f2role');
+      var f2p = document.getElementById('op_f2photo');
+      var bg  = document.getElementById('op_bgphoto');
+      var pl  = document.getElementById('op_place');
+      var dt  = document.getElementById('op_date');
+      if(f1n) f1n.value = cfg.founder1Name  || 'Boddu Srisanth';
+      if(f1r) f1r.value = cfg.founder1Role  || 'Founder & CEO';
+      if(f1p) f1p.value = cfg.founder1Photo || 'srisanth.jpeg';
+      if(f2n) f2n.value = cfg.founder2Name  || 'Gulimi Sumanth';
+      if(f2r) f2r.value = cfg.founder2Role  || 'Managing Director';
+      if(f2p) f2p.value = cfg.founder2Photo || 'sumanth.jpeg';
+      if(bg)  bg.value  = cfg.bgPhoto       || '';
+      if(pl)  pl.value  = cfg.placeText     || '';
+      if(dt)  dt.value  = cfg.dateText      || '';
       updateOpToggle();
     }
     function updateOpToggle(){
@@ -4213,20 +4223,20 @@
     function saveOpening(){
       var data = {
         enabled:      _opEnabled,
-        founder1Name: document.getElementById('op_f1name').value.trim()  || 'Boddu Srisanth',
-        founder1Role: document.getElementById('op_f1role').value.trim()  || 'Founder & CEO',
-        founder1Photo:document.getElementById('op_f1photo').value.trim() || 'srisanth.jpeg',
-        founder2Name: document.getElementById('op_f2name').value.trim()  || 'Gulimi Sumanth',
-        founder2Role: document.getElementById('op_f2role').value.trim()  || 'Managing Director',
-        founder2Photo:document.getElementById('op_f2photo').value.trim() || 'sumanth.jpeg',
-        bgPhoto:      document.getElementById('op_bgphoto').value.trim(),
-        placeText:    document.getElementById('op_place').value.trim(),
-        dateText:     document.getElementById('op_date').value.trim()
+        founder1Name: (document.getElementById('op_f1name').value||'').trim()  || 'Boddu Srisanth',
+        founder1Role: (document.getElementById('op_f1role').value||'').trim()  || 'Founder & CEO',
+        founder1Photo:(document.getElementById('op_f1photo').value||'').trim() || 'srisanth.jpeg',
+        founder2Name: (document.getElementById('op_f2name').value||'').trim()  || 'Gulimi Sumanth',
+        founder2Role: (document.getElementById('op_f2role').value||'').trim()  || 'Managing Director',
+        founder2Photo:(document.getElementById('op_f2photo').value||'').trim() || 'sumanth.jpeg',
+        bgPhoto:      (document.getElementById('op_bgphoto').value||'').trim(),
+        placeText:    (document.getElementById('op_place').value||'').trim(),
+        dateText:     (document.getElementById('op_date').value||'').trim()
       };
       localStorage.setItem('hs_opening', JSON.stringify(data));
       var toast = document.getElementById('saveToast');
-      toast.style.display='block';
-      setTimeout(function(){toast.style.display='none';},2500);
+      if(toast){ toast.style.display='block'; setTimeout(function(){toast.style.display='none';},2500); }
+      else { alert('Saved!'); }
     }
     document.addEventListener('DOMContentLoaded', function(){ loadOpening(); });
     // ENQUIRIES
