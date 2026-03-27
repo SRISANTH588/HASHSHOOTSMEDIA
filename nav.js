@@ -114,7 +114,7 @@
       @media(max-width:380px){.hs-logo{font-size:1.1rem;}}
     </style>
     <nav class="hs-nav" id="hsNav">
-      <a href="index.html" class="hs-logo">OG SHOOTS</a>
+      <a href="index.html" class="hs-logo">OG SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;opacity:0.85;">LUXE</sup></a>
 
       <div class="hs-nav-center">
         <div id="hsIconGroup" style="display:flex;align-items:center;gap:0;"></div>
