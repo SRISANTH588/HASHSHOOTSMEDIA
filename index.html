@@ -995,7 +995,7 @@
       .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
       .bs-wrap{max-width:1000px;margin:0 auto;padding:0 2rem;}
       .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
-      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;align-items:start;}
+      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
       .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
       .bs-card:hover{transform:translateY(-8px);}
       .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
@@ -1041,7 +1041,8 @@
       .bs-btn:hover::before{transform:translateX(100%);}
       .bs-anim{opacity:0;transform:translateY(40px);transition:opacity 0.6s ease,transform 0.6s ease;}
       .bs-anim.visible{opacity:1;transform:translateY(0);}
-      @media(max-width:680px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:900px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:520px){.bs-grid-4{grid-template-columns:1fr;}}
     </style>
 
     <div class="bs-wrap">
@@ -1111,64 +1112,64 @@
       <!-- WEDDING PLANS -->
       <div class="bs-panel" id="bsPanel_wedding">
         <div class="bs-grid-4">
+
           <!-- BASIC -->
-          <div class="bs-card bs-card-1 bs-anim">
+          <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px 0 0 20px;border-right:none;padding:2rem 1.75rem 2rem;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag"><i class="fas fa-leaf"></i> <span id="w1_tag">Basic</span></div>
-            <div class="bs-name" id="w1_name">Basic</div>
-            <div class="bs-tagline" id="w1_tagline">Essential coverage for intimate ceremonies.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w1_price">&#8377;15,000</div>
-              <div class="bs-per" id="w1_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.5rem;">
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-leaf" style="color:#c9a84c;font-size:1.1rem;"></i></div>
+              <div style="font-size:0.6rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.4rem;">BASIC</div>
+              <div class="bs-name" id="w1_name" style="font-size:1.4rem;">Basic</div>
+              <div class="bs-tagline" id="w1_tagline" style="font-size:0.78rem;margin-bottom:1.25rem;">Essential coverage for intimate ceremonies.</div>
+              <div style="margin-bottom:0.2rem;"><span class="bs-price" id="w1_price" style="font-size:2.4rem;">&#8377;15,000</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w1_per">/ event &nbsp;&middot;&nbsp; + GST</div>
             </div>
-            <div class="bs-gst-note" id="w1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w1_features">
+            <ul class="bs-features" id="w1_features" style="margin-bottom:1.5rem;">
               <li><div class="bs-check"><i class="fas fa-check"></i></div>4 Hours Coverage</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Photographer</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>100 Edited Photos</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Highlight Reel</li>
             </ul>
-            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Book Basic</button>
           </div>
+
           <!-- SILVER -->
-          <div class="bs-card bs-card-silver bs-anim" style="transition-delay:0.1s;">
+          <div class="bs-card bs-card-silver bs-anim" style="border-radius:0;border-right:none;border-left:none;padding:2rem 1.75rem 2rem;transition-delay:0.1s;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag" style="color:#c0c0c0;"><i class="fas fa-medal"></i> <span id="w2_tag">Silver</span></div>
-            <div class="bs-name" id="w2_name">Silver</div>
-            <div class="bs-tagline" id="w2_tagline">Perfect for full-day wedding celebrations.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w2_price" style="background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;25,000</div>
-              <div class="bs-per" id="w2_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.5rem;">
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-medal" style="color:#c0c0c0;font-size:1.1rem;"></i></div>
+              <div style="font-size:0.6rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.4rem;">SILVER</div>
+              <div class="bs-name" id="w2_name" style="font-size:1.4rem;">Silver</div>
+              <div class="bs-tagline" id="w2_tagline" style="font-size:0.78rem;margin-bottom:1.25rem;">Perfect for full-day wedding celebrations.</div>
+              <div style="margin-bottom:0.2rem;"><span class="bs-price" id="w2_price" style="font-size:2.4rem;background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;25,000</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w2_per">/ event &nbsp;&middot;&nbsp; + GST</div>
             </div>
-            <div class="bs-gst-note" id="w2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs Basic</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w2_features">
+            <ul class="bs-features" id="w2_features" style="margin-bottom:1.5rem;">
               <li><div class="bs-check"><i class="fas fa-check"></i></div>8 Hours Coverage</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Photographers</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>300 Edited Photos</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Highlight Reels</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
             </ul>
-            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.4);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.35);color:#c0c0c0;" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Book Silver</button>
           </div>
-          <!-- GOLD -->
-          <div class="bs-card bs-card-gold bs-anim" style="transition-delay:0.2s;">
+
+          <!-- GOLD — featured, taller -->
+          <div class="bs-card bs-card-gold bs-anim" style="border-radius:0;border-right:none;border-left:none;padding:2.5rem 1.75rem;margin-bottom:-1px;position:relative;z-index:2;box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 30px 80px rgba(0,0,0,0.6);transition-delay:0.2s;">
             <div class="bs-glow"></div>
-            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
-            <div class="bs-plan-tag"><i class="fas fa-trophy"></i> <span id="w3_tag">Gold</span></div>
-            <div class="bs-name" id="w3_name">Gold</div>
-            <div class="bs-tagline" id="w3_tagline">Premium coverage for your dream wedding.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w3_price">&#8377;45,000</div>
-              <div class="bs-per" id="w3_per">/ event</div>
+            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:900;padding:0.28rem 1.1rem;border-radius:0 0 10px 10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> MOST POPULAR</div>
+            <div style="text-align:center;margin-bottom:1.5rem;margin-top:0.5rem;">
+              <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 20px rgba(201,168,76,0.2);"><i class="fas fa-trophy" style="color:#c9a84c;font-size:1.3rem;"></i></div>
+              <div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.4rem;">GOLD</div>
+              <div class="bs-name" id="w3_name" style="font-size:1.6rem;">Gold</div>
+              <div class="bs-tagline" id="w3_tagline" style="font-size:0.78rem;margin-bottom:1.25rem;">Premium coverage for your dream wedding.</div>
+              <div style="margin-bottom:0.2rem;"><span class="bs-price" id="w3_price" style="font-size:2.8rem;">&#8377;45,000</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w3_per">/ event &nbsp;&middot;&nbsp; + GST</div>
             </div>
-            <div class="bs-gst-note" id="w3_gstnote">+ GST &nbsp;&middot;&nbsp; Best Value</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w3_features">
+            <ul class="bs-features" id="w3_features" style="margin-bottom:1.5rem;">
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Full Day Coverage</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>3 Photographers</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>500+ Edited Photos</li>
@@ -1176,22 +1177,22 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Pre-shoot Consultation</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
             </ul>
-            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Book Gold</button>
           </div>
+
           <!-- LUXE -->
-          <div class="bs-card bs-card-luxe bs-anim" style="transition-delay:0.3s;">
+          <div class="bs-card bs-card-luxe bs-anim" style="border-radius:0 20px 20px 0;border-left:none;padding:2rem 1.75rem 2rem;transition-delay:0.3s;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag" style="color:#c9a84c;"><i class="fas fa-gem"></i> <span id="w4_tag">Luxe</span></div>
-            <div class="bs-name" id="w4_name">Luxe</div>
-            <div class="bs-tagline" id="w4_tagline">The ultimate luxury wedding experience.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w4_price">&#8377;80,000</div>
-              <div class="bs-per" id="w4_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.5rem;">
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 16px rgba(201,168,76,0.15);"><i class="fas fa-gem" style="color:#e8c96a;font-size:1.1rem;"></i></div>
+              <div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.4rem;">LUXE</div>
+              <div class="bs-name" id="w4_name" style="font-size:1.4rem;">Luxe</div>
+              <div class="bs-tagline" id="w4_tagline" style="font-size:0.78rem;margin-bottom:1.25rem;">The ultimate luxury wedding experience.</div>
+              <div style="margin-bottom:0.2rem;"><span class="bs-price" id="w4_price" style="font-size:2.4rem;">&#8377;80,000</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w4_per">/ event &nbsp;&middot;&nbsp; + GST</div>
             </div>
-            <div class="bs-gst-note" id="w4_gstnote">+ GST &nbsp;&middot;&nbsp; All-Inclusive</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w4_features">
+            <ul class="bs-features" id="w4_features" style="margin-bottom:1.5rem;">
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Multi-Day Coverage</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Dedicated Team</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Unlimited Edited Photos</li>
@@ -1199,8 +1200,9 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Album Design Included</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Priority Support</li>
             </ul>
-            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Book Luxe</button>
           </div>
+
         </div>
       </div>
 
