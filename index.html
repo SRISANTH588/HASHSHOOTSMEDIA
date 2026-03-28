@@ -470,6 +470,7 @@
       }catch(e){}
     }
     var _musicEl=null;
+    var _countTimer=null;
     function playMusic(){
       if(musicUrl){
         _musicEl=document.createElement('audio');
@@ -539,7 +540,7 @@
       document.getElementById('ogCountWrap').style.display='block';
       var count=10,countEl=document.getElementById('ogCount');
       tone(880,0.12,0.3,'square');
-      var timer=setInterval(function(){
+      _countTimer=setInterval(function(){
         count--;
         if(count>0){
           countEl.style.transform='scale(1.25)';
@@ -547,7 +548,7 @@
           countEl.textContent=count;
           tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
         }else{
-          clearInterval(timer);
+          clearInterval(_countTimer);_countTimer=null;
           document.getElementById('ogCountWrap').style.display='none';
           celebrate();
           setTimeout(function(){
@@ -561,6 +562,7 @@
       },1000);
     };
     window.ogClose=function(){
+      if(_countTimer){clearInterval(_countTimer);_countTimer=null;}
       stopMusic();
       if(window._ogStopGrain)window._ogStopGrain();
       launch.style.transition='opacity 0.9s ease';
