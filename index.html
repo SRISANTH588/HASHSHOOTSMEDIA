@@ -302,7 +302,7 @@
       +'<div style="position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;">'+pts+'</div>'
       +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
       +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
-        +'<div id="ogLogoWrap" style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 2px 20px rgba(0,0,0,0.9);display:inline-block;"></div>'
+        +'<div id="ogLogoWrap" style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 2px 20px rgba(0,0,0,0.9);display:block;"></div>'
         +'<div id="ogLuxeTag" style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:10px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">&#10022; LUXE &#10022;</div>'
         +'<div id="ogDivider" style="width:0px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 2rem;transition:width 0.8s ease;"></div>'
         +'<div id="ogBtnWrap" style="opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease;">'
@@ -327,7 +327,8 @@
       +'@keyframes ogBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.55),0 8px 30px rgba(0,0,0,0.4);}60%{box-shadow:0 0 0 18px rgba(201,168,76,0),0 8px 30px rgba(0,0,0,0.4);}}'
       +'@keyframes ogRippleOut{0%{width:0;height:0;opacity:0.5;}100%{width:320px;height:320px;opacity:0;}}'
       +'.og-letter{display:inline-block;opacity:0;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;}'
-      +'.og-word-og{background:linear-gradient(90deg,#a07830,#f5d78e,#c9a84c,#e8c96a,#a07830);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ogShimmer 3.5s linear infinite;}'
+      +'.og-word-og{color:#c9a84c;}'
+      +'.og-letter-gold{background:linear-gradient(90deg,#a07830,#f5d78e,#c9a84c,#e8c96a,#a07830);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards,ogShimmer 3.5s linear 1.2s infinite;display:inline-block;opacity:0;}'
       +'.og-word-shoots{color:#fff;}';
     document.head.appendChild(st);
 
@@ -362,15 +363,15 @@
       var ogLetters='OG'.split('');
       var shootsLetters='SHOOTS'.split('');
       var ogSpan=document.createElement('span');
-      ogSpan.className='og-word-og';
       ogLetters.forEach(function(ch,i){
         var s=document.createElement('span');
-        s.className='og-letter';
+        s.className='og-letter-gold';
         s.style.animationDelay=(0.3+i*0.12)+'s';
         s.textContent=ch;
         ogSpan.appendChild(s);
       });
-      var space=document.createTextNode('\u00a0');
+      var space=document.createElement('span');
+      space.style.cssText='display:inline-block;width:0.35em;';
       var shootsSpan=document.createElement('span');
       shootsSpan.className='og-word-shoots';
       shootsLetters.forEach(function(ch,i){
