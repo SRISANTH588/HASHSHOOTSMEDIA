@@ -258,7 +258,7 @@
     if(cfg.enabled===false){document.body.style.overflow='';return;}
     var launch=document.getElementById('ogLaunch');
     if(!launch)return;
-    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background-image:url("venkateswara.jpg");background-size:cover;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;';
+    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background-image:url("venkateswara.jpg");background-size:110%;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;animation:ogKenBurns 18s ease-in-out infinite alternate;';
     document.body.style.overflow='hidden';
     var bgImg=cfg.bgPhoto||'venkateswara.jpg';
     var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
@@ -296,17 +296,30 @@
     }
     var pdText=placeText||dateText?'<div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(201,168,76,0.8);letter-spacing:1px;">'+(placeText?'<i class="fas fa-map-marker-alt"></i> '+placeText+'&nbsp;&nbsp;':'')+(dateText?'<i class="fas fa-calendar-alt"></i> '+dateText:'')+'</div>':'';
     launch.innerHTML=
-      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,0.78) 100%);z-index:2;pointer-events:none;"></div>'
-      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.30);z-index:1;"></div>'
-      +'<canvas id="ogGrain" style="position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:0.048;"></canvas>'
+      /* deep vignette */
+      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.82) 100%);z-index:2;pointer-events:none;"></div>'
+      /* base dark overlay */
+      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.38);z-index:1;"></div>'
+      /* light beam sweep */
+      +'<div id="ogBeam" style="position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(105deg,transparent 30%,rgba(201,168,76,0.07) 50%,transparent 70%);z-index:3;pointer-events:none;animation:ogBeamSweep 2.2s 0.4s ease-out forwards;opacity:0;"></div>'
+      /* film grain */
+      +'<canvas id="ogGrain" style="position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:0.042;"></canvas>'
+      /* particles */
       +'<div style="position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;">'+pts+'</div>'
+      /* confetti layer */
       +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
+      /* gold border ring */
+      +'<div style="position:absolute;inset:18px;border:1px solid rgba(201,168,76,0;);border-radius:4px;z-index:4;pointer-events:none;opacity:0;transition:opacity 1s 0.8s ease;" id="ogRing"></div>'
+      /* content */
       +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
-        +'<div id="ogLogoWrap" style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 2px 20px rgba(0,0,0,0.9);display:block;"></div>'
-        +'<div id="ogLuxeTag" style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:10px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">&#10022; LUXE &#10022;</div>'
-        +'<div id="ogDivider" style="width:0px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 2rem;transition:width 0.8s ease;"></div>'
+        /* crown icon */
+        +'<div id="ogCrown" style="font-size:clamp(1.4rem,3vw,2rem);color:#c9a84c;margin-bottom:0.6rem;opacity:0;transform:translateY(-12px) scale(0.7);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 12px rgba(201,168,76,0.8));">&#9670;</div>'
+        +'<div id="ogLogoWrap" style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6.5rem);font-weight:900;letter-spacing:8px;line-height:1;margin-bottom:0.2rem;text-shadow:0 0 60px rgba(201,168,76,0.45),0 4px 30px rgba(0,0,0,0.95);display:block;"></div>'
+        +'<div id="ogLuxeTag" style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:12px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">&#10022;&nbsp; LUXE &nbsp;&#10022;</div>'
+        +'<div id="ogDivider" style="width:0px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 1.2rem;transition:width 1s cubic-bezier(0.25,1,0.5,1);"></div>'
+        +'<div id="ogTagline" style="font-size:clamp(0.7rem,1.6vw,0.85rem);color:rgba(240,236,224,0.6);letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:2rem;opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">India&rsquo;s Premium Content Studio</div>'
         +'<div id="ogBtnWrap" style="opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease;">'
-          +'<button id="ogLaunchBtn" onclick="ogStartCountdown()" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-family:Inter,sans-serif;font-size:1rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:50px;padding:1rem 3rem;cursor:pointer;box-shadow:0 0 40px rgba(201,168,76,0.5),0 8px 30px rgba(0,0,0,0.4);">&#9654;&nbsp; LAUNCH APP</button>'
+          +'<button id="ogLaunchBtn" onclick="ogStartCountdown()" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);color:#000;font-family:Inter,sans-serif;font-size:0.95rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;border:none;border-radius:50px;padding:1.1rem 3.5rem;cursor:pointer;box-shadow:0 0 50px rgba(201,168,76,0.45),0 10px 40px rgba(0,0,0,0.5);">&#9654;&nbsp; LAUNCH APP</button>'
         +'</div>'
         /* PHASE 2: Countdown */
         +'<div id="ogCountWrap" style="display:none;margin-top:1.5rem;">'
@@ -324,7 +337,9 @@
       +'@keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}'
       +'@keyframes ogLetterIn{0%{opacity:0;transform:translateY(28px);filter:blur(6px);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}'
       +'@keyframes ogShimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}'
-      +'@keyframes ogBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.55),0 8px 30px rgba(0,0,0,0.4);}60%{box-shadow:0 0 0 18px rgba(201,168,76,0),0 8px 30px rgba(0,0,0,0.4);}}'
+      +'@keyframes ogBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.55),0 10px 40px rgba(0,0,0,0.5);}60%{box-shadow:0 0 0 22px rgba(201,168,76,0),0 10px 40px rgba(0,0,0,0.5);}}'
+      +'@keyframes ogKenBurns{0%{background-size:110%;background-position:50% 50%;}100%{background-size:125%;background-position:52% 48%;}}'
+      +'@keyframes ogBeamSweep{0%{left:-60%;opacity:1;}100%{left:130%;opacity:1;}}'
       +'@keyframes ogRippleOut{0%{width:0;height:0;opacity:0.5;}100%{width:320px;height:320px;opacity:0;}}'
       +'.og-letter{display:inline-block;opacity:0;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;}'
       +'.og-word-og{color:#c9a84c;}'
@@ -389,6 +404,18 @@
       logoWrap.style.opacity='1';
       logoWrap.style.transform='translateY(0)';
 
+      // Crown at 0.2s
+      setTimeout(function(){
+        var cr=document.getElementById('ogCrown');
+        if(cr){cr.style.opacity='1';cr.style.transform='translateY(0) scale(1)';}
+      },200);
+
+      // Gold border ring at 0.8s
+      setTimeout(function(){
+        var ring=document.getElementById('ogRing');
+        if(ring){ring.style.border='1px solid rgba(201,168,76,0.18)';ring.style.opacity='1';}
+      },800);
+
       // Luxe tag at 1.4s
       setTimeout(function(){
         var luxe=document.getElementById('ogLuxeTag');
@@ -398,17 +425,22 @@
       // Divider at 1.65s
       setTimeout(function(){
         var div=document.getElementById('ogDivider');
-        if(div)div.style.width='120px';
+        if(div)div.style.width='160px';
       },1650);
 
-      // Button at 2.0s
+      // Tagline at 1.9s
+      setTimeout(function(){
+        var tl=document.getElementById('ogTagline');
+        if(tl){tl.style.opacity='1';tl.style.transform='translateY(0)';}
+      },1900);
+
+      // Button at 2.3s
       setTimeout(function(){
         var btn=document.getElementById('ogBtnWrap');
         if(btn){btn.style.opacity='1';btn.style.transform='translateY(0)';}
-        // Apply pulse animation after it appears
         var b=document.getElementById('ogLaunchBtn');
         if(b)b.style.animation='ogBtnPulse 2.2s ease-in-out infinite';
-      },2000);
+      },2300);
 
       // Ripple on click
       var launchBtn=document.getElementById('ogLaunchBtn');
