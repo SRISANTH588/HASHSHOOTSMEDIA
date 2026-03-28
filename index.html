@@ -308,8 +308,21 @@
       +'<div style="position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;">'+pts+'</div>'
       /* confetti layer */
       +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
-      /* gold border ring */
-      +'<div style="position:absolute;inset:18px;border:1px solid rgba(201,168,76,0;);border-radius:4px;z-index:4;pointer-events:none;opacity:0;transition:opacity 1s 0.8s ease;" id="ogRing"></div>'
+      /* corner gold marks */
+      +'<div id="ogCorners" style="position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;transition:opacity 1.2s 0.8s ease;">'
+      +'<div style="position:absolute;top:22px;left:22px;width:52px;height:52px;border-top:2px solid #c9a84c;border-left:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;top:22px;left:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;top:22px;right:22px;width:52px;height:52px;border-top:2px solid #c9a84c;border-right:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;top:22px;right:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;bottom:22px;left:22px;width:52px;height:52px;border-bottom:2px solid #c9a84c;border-left:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;bottom:22px;left:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;bottom:22px;right:22px;width:52px;height:52px;border-bottom:2px solid #c9a84c;border-right:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;bottom:22px;right:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);width:1px;height:20px;background:linear-gradient(to bottom,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);width:1px;height:20px;background:linear-gradient(to top,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;left:22px;top:50%;transform:translateY(-50%);height:1px;width:20px;background:linear-gradient(to right,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;right:22px;top:50%;transform:translateY(-50%);height:1px;width:20px;background:linear-gradient(to left,#c9a84c,transparent);"></div>'
+      +'</div>'
       /* content */
       +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
         /* crown icon */
@@ -410,10 +423,10 @@
         if(cr){cr.style.opacity='1';cr.style.transform='translateY(0) scale(1)';}
       },200);
 
-      // Gold border ring at 0.8s
+      // Corner gold marks at 0.8s
       setTimeout(function(){
-        var ring=document.getElementById('ogRing');
-        if(ring){ring.style.border='1px solid rgba(201,168,76,0.18)';ring.style.opacity='1';}
+        var c=document.getElementById('ogCorners');
+        if(c)c.style.opacity='1';
       },800);
 
       // Luxe tag at 1.4s
