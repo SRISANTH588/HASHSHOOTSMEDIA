@@ -18,7 +18,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
     #ogLaunch{
       position:fixed;inset:0;z-index:999999;
-      background:#000;
+      background:transparent;
       flex-direction:column;align-items:center;justify-content:center;
       overflow:hidden;font-family:'Inter',sans-serif;
     }
@@ -258,7 +258,7 @@
     if(cfg.enabled===false){document.body.style.overflow='';return;}
     var launch=document.getElementById('ogLaunch');
     if(!launch)return;
-    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background:#000;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;';
+    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background:transparent;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;';
     document.body.style.overflow='hidden';
     var bgImg=cfg.bgPhoto||'venkateswara.jpg';
     var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
