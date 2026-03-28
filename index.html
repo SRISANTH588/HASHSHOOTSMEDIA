@@ -383,15 +383,8 @@
       if(_musicEl){_musicEl.pause();_musicEl.src='';_musicEl=null;}
     }
     function celebrate(){
-      // Keep venkateswara.jpg visible - just brighten slightly
       var bi=document.getElementById('ogBgImg');
       if(bi){bi.style.filter='brightness(1.15)';}
-      // Play govinda.mp3 ONLY on congratulations
-      _musicEl=document.createElement('audio');
-      _musicEl.src=musicUrl;
-      _musicEl.loop=true;
-      _musicEl.volume=0.8;
-      _musicEl.play().catch(function(){});
       var cf=document.getElementById('ogCf');
       var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
       for(var j=0;j<150;j++){
@@ -406,6 +399,12 @@
     }
     window.ogStartCountdown=function(){
       getAC();
+      // Start govinda.mp3 at countdown start
+      _musicEl=document.createElement('audio');
+      _musicEl.src=musicUrl;
+      _musicEl.loop=true;
+      _musicEl.volume=0.75;
+      _musicEl.play().catch(function(){});
       document.getElementById('ogBtnWrap').style.display='none';
       document.getElementById('ogCountWrap').style.display='block';
       var count=10,countEl=document.getElementById('ogCount');
