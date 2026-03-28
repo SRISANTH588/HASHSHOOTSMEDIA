@@ -289,15 +289,13 @@
     }
     var pdText=placeText||dateText?'<div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(201,168,76,0.8);letter-spacing:1px;">'+(placeText?'<i class="fas fa-map-marker-alt"></i> '+placeText+'&nbsp;&nbsp;':'')+(dateText?'<i class="fas fa-calendar-alt"></i> '+dateText:'')+'</div>':'';
     launch.innerHTML=
-      '<div style="position:absolute;inset:0;background-image:url('+JSON.stringify(bgImg)+');background-size:cover;background-position:center;opacity:1;z-index:0;" id="ogBgImg"></div>'
-      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:1;"></div>'
+      '<div style="position:absolute;inset:0;background-image:url('+JSON.stringify(bgImg)+');background-size:cover;background-position:center;z-index:0;" id="ogBgImg"></div>'
+      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:1;"></div>'
       +'<div style="position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;">'+pts+'</div>'
-      +'<div style="position:absolute;top:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarTop"></div>'
-      +'<div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarBot"></div>'
       +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
-      +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;opacity:0;transform:translateY(30px);transition:opacity 0.9s 1.3s ease,transform 0.9s 1.3s ease;" id="ogContent">'
-        +'<div style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 2px 30px rgba(0,0,0,0.8),0 0 80px rgba(201,168,76,0.5);"><span style="color:#c9a84c;">OG</span> <span style="color:#fff;">SHOOTS</span></div>'
-        +'<div style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:10px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.8);">&#10022; LUXE &#10022;</div>'
+      +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
+        +'<div style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:6px;line-height:1;margin-bottom:0.2rem;text-shadow:0 2px 20px rgba(0,0,0,0.9);"><span style="color:#c9a84c;">OG</span> <span style="color:#fff;">SHOOTS</span></div>'
+        +'<div style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:10px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);">&#10022; LUXE &#10022;</div>'
         +'<div style="width:120px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 2rem;"></div>'
         /* PHASE 1: Just LAUNCH APP button - no founder cards */
         +'<div id="ogBtnWrap">'
@@ -316,12 +314,6 @@
     var st=document.createElement('style');
     st.textContent='@keyframes ogPtRise{0%{transform:translateY(110vh) scale(0);opacity:0;}10%{opacity:0.8;}90%{opacity:0.2;}100%{transform:translateY(-10vh) scale(1.5);opacity:0;}}@keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}';
     document.head.appendChild(st);
-    setTimeout(function(){
-      document.getElementById('ogBarTop').style.height='0';
-      document.getElementById('ogBarBot').style.height='0';
-      document.getElementById('ogContent').style.opacity='1';
-      document.getElementById('ogContent').style.transform='translateY(0)';
-    },300);
     var musicUrl=cfg.musicUrl||'govinda.mp3';
     var countdownSound=(cfg.countdownSound!==false);
     var _ac=null;
