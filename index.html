@@ -289,10 +289,9 @@
     }
     var pdText=placeText||dateText?'<div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(201,168,76,0.8);letter-spacing:1px;">'+(placeText?'<i class="fas fa-map-marker-alt"></i> '+placeText+'&nbsp;&nbsp;':'')+(dateText?'<i class="fas fa-calendar-alt"></i> '+dateText:'')+'</div>':'';
     launch.innerHTML=
-      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse 140% 100% at 50% -10%,rgba(201,168,76,0.22) 0%,transparent 60%),#050505;z-index:0;"></div>'
-      +'<div style="position:absolute;inset:0;background-image:url('+JSON.stringify(bgImg)+');background-size:cover;background-position:center;opacity:0.75;z-index:1;transition:opacity 2s ease;" id="ogBgImg"></div>'
-      +'<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.3) 40%,rgba(0,0,0,0.65) 100%);z-index:2;"></div>'
-      +'<div style="position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;">'+pts+'</div>'
+      '<div style="position:absolute;inset:0;background-image:url('+JSON.stringify(bgImg)+');background-size:cover;background-position:center;opacity:1;z-index:0;" id="ogBgImg"></div>'
+      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:1;"></div>'
+      +'<div style="position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;">'+pts+'</div>'
       +'<div style="position:absolute;top:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarTop"></div>'
       +'<div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:#000;z-index:10;transition:height 1.2s cubic-bezier(0.77,0,0.18,1);" id="ogBarBot"></div>'
       +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
@@ -320,7 +319,7 @@
       document.getElementById('ogContent').style.opacity='1';
       document.getElementById('ogContent').style.transform='translateY(0)';
     },300);
-    var musicUrl=cfg.musicUrl||'';
+    var musicUrl=cfg.musicUrl||'govinda.mp3';
     var countdownSound=(cfg.countdownSound!==false);
     var _ac=null;
     function getAC(){if(!_ac){try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _ac;}
@@ -382,7 +381,7 @@
     }
     function celebrate(){
       var bi=document.getElementById('ogBgImg');
-      if(bi){bi.style.opacity='1';}
+      if(bi){bi.style.opacity='1';bi.style.filter='brightness(1.1)';}
       playMusic();
       var cf=document.getElementById('ogCf');
       var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
@@ -397,7 +396,15 @@
       var cst=document.createElement('style');cst.textContent='@keyframes ogCfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(900deg);opacity:0;}}';document.head.appendChild(cst);
     }
     window.ogStartCountdown=function(){
-      getAC(); // init AudioContext on user click
+      getAC();
+      // Play govinda music immediately on button click
+      if(!_musicEl){
+        _musicEl=document.createElement('audio');
+        _musicEl.src=musicUrl;
+        _musicEl.loop=true;
+        _musicEl.volume=0.75;
+        _musicEl.play().catch(function(){});
+      }
       document.getElementById('ogBtnWrap').style.display='none';
       document.getElementById('ogCountWrap').style.display='block';
       var count=10,countEl=document.getElementById('ogCount');
