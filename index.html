@@ -16,6 +16,22 @@
 </head>
 <body>
 
+  <!-- PROMO BANNER -->
+  <div id="promoBanner" style="position:fixed;top:0;left:0;right:0;z-index:99998;background:linear-gradient(90deg,#1a0a00,#3a1a00,#c9a84c,#3a1a00,#1a0a00);background-size:300% 100%;animation:bannerShimmer 4s linear infinite;padding:0.55rem 1rem;display:flex;align-items:center;justify-content:center;gap:0.75rem;box-shadow:0 2px 20px rgba(201,168,76,0.4);">
+    <style>
+      @keyframes bannerShimmer{0%{background-position:100% 0;}100%{background-position:-100% 0;}}
+      @keyframes phoneBounce{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-4px) rotate(-8deg);}}
+      @keyframes starSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    </style>
+    <span style="font-size:1.1rem;animation:phoneBounce 1.5s ease-in-out infinite;">&#127381;</span>
+    <span style="font-size:0.82rem;font-weight:800;color:#fff;letter-spacing:0.5px;text-shadow:0 1px 8px rgba(0,0,0,0.5);">
+      &#11088; &nbsp;Book a shoot &amp; get a chance to <strong style="color:#fff8e7;">WIN an iPhone!</strong> &nbsp;&#11088;
+    </span>
+    <a href="booking.html" style="background:#fff;color:#000;font-size:0.7rem;font-weight:900;padding:0.3rem 0.85rem;border-radius:50px;text-decoration:none;letter-spacing:0.5px;white-space:nowrap;flex-shrink:0;">Book Now</a>
+    <button onclick="document.getElementById('promoBanner').style.display='none';document.body.style.paddingTop='0';" style="position:absolute;right:0.75rem;background:none;border:none;color:rgba(255,255,255,0.6);font-size:0.85rem;cursor:pointer;line-height:1;padding:0.25rem;">&#10005;</button>
+  </div>
+  <script>document.body.style.paddingTop='38px';</script>
+
   <!-- APP LAUNCH SCREEN -->
   <div id="ogLaunch" style="display:none;"></div>
   <style>
