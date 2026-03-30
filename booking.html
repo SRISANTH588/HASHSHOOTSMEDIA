@@ -417,10 +417,19 @@
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
 
     var planData = {
-      hourly:  { service:'Reel Shoot',          name:'Hourly Plan',   price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      halfday: { service:'Event Coverage',       name:'Half-Day Plan', price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      wedding: { service:'Wedding Photography',  name:'Wedding Plan',  price:'\u20b915,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      custom:  { service:'',                     name:'Custom Plan',   price:'Let\'s Talk', per:'',          features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
+      hourly:         { service:'Reel Shoot',         name:'Hourly Plan',      price:'\u20b91,699',  per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      halfday:        { service:'Event Coverage',      name:'Half-Day Plan',    price:'\u20b93,999',  per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      wedding:        { service:'Wedding Photography', name:'Wedding Plan',     price:'\u20b915,000', per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      wedding_basic:  { service:'Wedding Photography', name:'Wedding — Basic',  price:'\u20b915,000', per:'/ event',   features:['4 Hours Coverage','1 Photographer','100 Edited Photos','1 Highlight Reel'] },
+      wedding_silver: { service:'Wedding Photography', name:'Wedding — Silver', price:'\u20b925,000', per:'/ event',   features:['8 Hours Coverage','2 Photographers','300 Edited Photos','2 Highlight Reels','Same Day Delivery'] },
+      wedding_gold:   { service:'Wedding Photography', name:'Wedding — Gold',   price:'\u20b945,000', per:'/ event',   features:['Full Day Coverage','3 Photographers','500+ Edited Photos','Cinematic Film','Pre-shoot Consultation','Same Day Delivery'] },
+      wedding_luxe:   { service:'Wedding Photography', name:'Wedding — Luxe',   price:'\u20b980,000', per:'/ event',   features:['Multi-Day Coverage','Dedicated Team','Unlimited Edited Photos','Cinematic Film + Drone','Album Design Included','Priority Support'] },
+      reel:           { service:'Reel Shoot',         name:'Reel Shoot',       price:'\u20b9999',    per:'starting',  features:['Quick 60-sec Reel','Shot on Latest iPhone','10 Min Delivery','Trained Content Maker'] },
+      portrait:       { service:'Portrait Session',   name:'Portrait Session', price:'\u20b91,499',  per:'starting',  features:['Professional Headshots','Personal Branding','Lifestyle Portraits','Edited Delivery'] },
+      product:        { service:'Product Shoot',      name:'Product Shoot',    price:'\u20b92,499',  per:'starting',  features:['E-commerce Photography','Brand Product Shoots','Edited Delivery'] },
+      event:          { service:'Event Coverage',     name:'Event Coverage',   price:'\u20b95,999',  per:'starting',  features:['Corporate Events','Parties & Launches','Full Documentation'] },
+      food:           { service:'Food Photography',   name:'Food Photography', price:'\u20b91,999',  per:'starting',  features:['Restaurant & Menu Shoots','Food Brand Photography','Edited Delivery'] },
+      custom:         { service:'',                   name:'Custom Plan',      price:'Let\'s Talk',  per:'',          features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
     };
 
     var selectedPlanKey = null;
@@ -446,9 +455,22 @@
       var serviceParam = params.get('service');
 
       if(planParam){
-        var map = { 'Hourly Plan':'hourly', 'Half-Day Plan':'halfday', 'Wedding':'wedding', 'Custom':'custom' };
+        var map = {
+          'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
+          'Wedding':'wedding', 'Custom':'custom',
+          'Basic':'wedding_basic', 'Silver':'wedding_silver',
+          'Gold':'wedding_gold',   'Luxe':'wedding_luxe',
+          'Reel Shoot':'reel', 'Portrait Session':'portrait',
+          'Product Shoot':'product', 'Event Coverage':'event',
+          'Food Photography':'food'
+        };
         var key = map[planParam] || null;
-        if(key) setTimeout(function(){ pickPlan(key); }, 100);
+        if(key){
+          setTimeout(function(){
+            pickPlan(key);
+            bookSelectedPlan();
+          }, 100);
+        }
       }
 
       if(serviceParam){
