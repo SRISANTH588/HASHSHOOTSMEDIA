@@ -19,7 +19,7 @@
   <!-- APP LAUNCH SCREEN -->
   <div id="ogLaunch" style="display:none;"></div>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Cinzel:wght@700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@1,900&family=Tenor+Sans&display=swap');
     #ogLaunch{
       position:fixed;inset:0;z-index:999999;
       background:transparent;
@@ -415,8 +415,8 @@
       +'@keyframes ogRippleOut{0%{width:0;height:0;opacity:0.5;}100%{width:320px;height:320px;opacity:0;}}'
       +'.og-letter{display:inline-block;opacity:0;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;}'
       +'.og-word-og{color:#c9a84c;}'
-      +'.og-letter-gold{font-family:"Playfair Display",serif;font-size:clamp(8rem,26vw,15rem);font-weight:900;font-style:italic;background:linear-gradient(160deg,#fff8e7 0%,#f5d78e 20%,#e8c96a 45%,#c9a84c 70%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(201,168,76,0.7)) drop-shadow(0 6px 20px rgba(0,0,0,0.95));animation:ogLetterIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;display:inline-block;opacity:0;line-height:0.82;}'
-      +'.og-word-shoots{font-family:"Tenor Sans",sans-serif;font-size:clamp(1.4rem,4.5vw,2.8rem);font-weight:400;color:#e8e0d0;letter-spacing:0.55em;text-transform:uppercase;align-self:flex-end;padding-bottom:0.22em;text-shadow:0 2px 24px rgba(0,0,0,0.9);}';
+      +'.og-letter-gold{font-family:"Playfair Display",serif;font-size:clamp(9rem,28vw,16rem);font-weight:900;font-style:italic;background:linear-gradient(160deg,#fff8e7 0%,#f5d78e 20%,#e8c96a 45%,#c9a84c 70%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(201,168,76,0.7)) drop-shadow(0 6px 20px rgba(0,0,0,0.95));animation:ogLetterIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;display:inline-block;opacity:0;line-height:0.82;}'
+      +'.og-word-shoots{font-family:"Tenor Sans",sans-serif;font-size:clamp(1.2rem,3.8vw,2.4rem);font-weight:400;color:rgba(240,236,224,0.85);letter-spacing:0.65em;text-transform:uppercase;align-self:flex-end;padding-bottom:0.22em;text-shadow:0 2px 24px rgba(0,0,0,0.9);}';
     document.head.appendChild(st);
 
     // Film grain
@@ -449,26 +449,36 @@
       if(!logoWrap)return;
       var ogLetters='OG'.split('');
       var shootsLetters='SHOOTS'.split('');
+      // OG — massive italic gold
       var ogSpan=document.createElement('span');
       ogLetters.forEach(function(ch,i){
         var s=document.createElement('span');
         s.className='og-letter-gold';
-        s.style.animationDelay=(0.3+i*0.12)+'s';
+        s.style.animationDelay=(0.3+i*0.14)+'s';
         s.textContent=ch;
         ogSpan.appendChild(s);
       });
+      // Divider
+      var divider=document.createElement('span');
+      divider.style.cssText='display:inline-block;width:1px;height:0.55em;background:linear-gradient(to bottom,transparent,rgba(201,168,76,0.6),transparent);margin:0 0.18em;align-self:center;opacity:0;transition:opacity 0.5s 0.9s ease;flex-shrink:0;';
+      // SHOOTS — elegant small caps
       var shootsSpan=document.createElement('span');
       shootsSpan.className='og-word-shoots';
-      shootsSpan.style.cssText='opacity:0;transform:translateX(-8px);transition:opacity 0.7s 0.55s ease,transform 0.7s 0.55s cubic-bezier(0.22,1,0.36,1);';
-      shootsLetters.forEach(function(ch,i){
+      shootsSpan.style.cssText='opacity:0;transform:translateX(-10px);transition:opacity 0.7s 0.7s ease,transform 0.7s 0.7s cubic-bezier(0.22,1,0.36,1);';
+      shootsLetters.forEach(function(ch){
         var s=document.createElement('span');
         s.textContent=ch;
         shootsSpan.appendChild(s);
       });
       logoWrap.appendChild(ogSpan);
+      logoWrap.appendChild(divider);
       logoWrap.appendChild(shootsSpan);
-      // Trigger SHOOTS slide in after X
-      setTimeout(function(){shootsSpan.style.opacity='1';shootsSpan.style.transform='translateX(0)';},600);
+      // Animate divider + SHOOTS in after OG lands
+      setTimeout(function(){
+        divider.style.opacity='1';
+        shootsSpan.style.opacity='1';
+        shootsSpan.style.transform='translateX(0)';
+      },700);
 
       // Staggered: logo visible immediately (letters handle their own anim)
       logoWrap.style.opacity='1';
