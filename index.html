@@ -16,21 +16,112 @@
 </head>
 <body>
 
-  <!-- PROMO BANNER -->
-  <div id="promoBanner" style="position:fixed;top:0;left:0;right:0;z-index:99998;background:linear-gradient(90deg,#1a0a00,#3a1a00,#c9a84c,#3a1a00,#1a0a00);background-size:300% 100%;animation:bannerShimmer 4s linear infinite;padding:0.55rem 1rem;display:flex;align-items:center;justify-content:center;gap:0.75rem;box-shadow:0 2px 20px rgba(201,168,76,0.4);">
+<body>
+
+  <!-- PREMIUM PROMO BANNER -->
+  <div id="promoBanner" style="position:fixed;top:0;left:0;right:0;z-index:99998;overflow:hidden;">
     <style>
-      @keyframes bannerShimmer{0%{background-position:100% 0;}100%{background-position:-100% 0;}}
-      @keyframes phoneBounce{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-4px) rotate(-8deg);}}
-      @keyframes starSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+      #promoBanner{
+        background:#000;
+        border-bottom:1px solid rgba(201,168,76,0.3);
+        box-shadow:0 4px 30px rgba(0,0,0,0.8),0 0 60px rgba(201,168,76,0.08);
+      }
+      @keyframes pbShimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+      @keyframes pbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-5px) scale(1.04);}}
+      @keyframes pbFloat2{0%,100%{transform:translateY(0) scale(1) rotate(6deg);}50%{transform:translateY(-7px) scale(1.06) rotate(6deg);}}
+      @keyframes pbFloat3{0%,100%{transform:translateY(0) scale(1) rotate(-4deg);}50%{transform:translateY(-4px) scale(1.03) rotate(-4deg);}}
+      @keyframes pbGlow{0%,100%{opacity:0.4;}50%{opacity:0.9;}}
+      @keyframes pbScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+      @keyframes pbPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.5);}70%{box-shadow:0 0 0 10px rgba(201,168,76,0);}}
+      .pb-inner{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.5rem;gap:1rem;position:relative;z-index:2;}
+      .pb-left{display:flex;align-items:center;gap:1rem;flex-shrink:0;}
+      .pb-phones{display:flex;align-items:flex-end;gap:-0.5rem;position:relative;height:52px;width:90px;flex-shrink:0;}
+      .pb-phone{position:absolute;bottom:0;font-size:2rem;filter:drop-shadow(0 4px 12px rgba(201,168,76,0.5));}
+      .pb-phone-1{left:0;animation:pbFloat 2.2s ease-in-out infinite;z-index:3;}
+      .pb-phone-2{left:22px;animation:pbFloat2 2.6s ease-in-out infinite 0.3s;z-index:2;font-size:1.7rem;opacity:0.85;}
+      .pb-phone-3{left:40px;animation:pbFloat3 2s ease-in-out infinite 0.6s;z-index:1;font-size:1.4rem;opacity:0.6;}
+      .pb-badge{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.55rem;font-weight:900;padding:0.2rem 0.6rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;animation:pbPulse 2s ease-in-out infinite;}
+      .pb-text{flex:1;min-width:0;}
+      .pb-title{font-size:clamp(0.78rem,2vw,0.95rem);font-weight:900;color:#fff;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .pb-title strong{background:linear-gradient(90deg,#f5d78e,#c9a84c,#e8c96a,#f5d78e);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pbShimmer 3s linear infinite;}
+      .pb-sub{font-size:0.68rem;color:rgba(201,168,76,0.7);margin-top:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .pb-right{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;}
+      .pb-cta{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.72rem;font-weight:900;padding:0.45rem 1.1rem;border-radius:50px;text-decoration:none;letter-spacing:0.5px;white-space:nowrap;box-shadow:0 4px 15px rgba(201,168,76,0.4);transition:all 0.2s;}
+      .pb-cta:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.5);}
+      .pb-close{background:none;border:none;color:rgba(255,255,255,0.4);font-size:0.9rem;cursor:pointer;padding:0.25rem 0.4rem;transition:color 0.2s;flex-shrink:0;}
+      .pb-close:hover{color:#fff;}
+      /* Scrolling ticker below main bar */
+      .pb-ticker{background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.12);padding:0.28rem 0;overflow:hidden;white-space:nowrap;}
+      .pb-ticker-inner{display:inline-flex;gap:0;animation:pbScroll 18s linear infinite;}
+      .pb-ticker-item{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.62rem;color:rgba(201,168,76,0.7);font-weight:600;letter-spacing:1px;padding:0 2rem;}
+      .pb-ticker-dot{width:4px;height:4px;border-radius:50%;background:#c9a84c;flex-shrink:0;}
+      /* Glow orbs */
+      .pb-orb{position:absolute;border-radius:50%;pointer-events:none;}
+      .pb-orb-1{width:120px;height:120px;background:radial-gradient(circle,rgba(201,168,76,0.15),transparent 70%);top:-40px;left:80px;animation:pbGlow 3s ease-in-out infinite;}
+      .pb-orb-2{width:80px;height:80px;background:radial-gradient(circle,rgba(201,168,76,0.1),transparent 70%);top:-20px;right:200px;animation:pbGlow 2.5s ease-in-out infinite 1s;}
+      @media(max-width:600px){.pb-sub{display:none;}.pb-phone-2,.pb-phone-3{display:none;}.pb-phones{width:40px;}.pb-title{font-size:0.78rem;}}
     </style>
-    <span style="font-size:1.1rem;animation:phoneBounce 1.5s ease-in-out infinite;">&#127381;</span>
-    <span style="font-size:0.82rem;font-weight:800;color:#fff;letter-spacing:0.5px;text-shadow:0 1px 8px rgba(0,0,0,0.5);">
-      &#11088; &nbsp;Book a shoot &amp; get a chance to <strong style="color:#fff8e7;">WIN an iPhone!</strong> &nbsp;&#11088;
-    </span>
-    <a href="booking.html" style="background:#fff;color:#000;font-size:0.7rem;font-weight:900;padding:0.3rem 0.85rem;border-radius:50px;text-decoration:none;letter-spacing:0.5px;white-space:nowrap;flex-shrink:0;">Book Now</a>
-    <button onclick="document.getElementById('promoBanner').style.display='none';document.body.style.paddingTop='0';" style="position:absolute;right:0.75rem;background:none;border:none;color:rgba(255,255,255,0.6);font-size:0.85rem;cursor:pointer;line-height:1;padding:0.25rem;">&#10005;</button>
+
+    <!-- Glow orbs -->
+    <div class="pb-orb pb-orb-1"></div>
+    <div class="pb-orb pb-orb-2"></div>
+
+    <!-- Main bar -->
+    <div class="pb-inner">
+      <div class="pb-left">
+        <div class="pb-phones">
+          <span class="pb-phone pb-phone-1">&#128241;</span>
+          <span class="pb-phone pb-phone-2">&#128241;</span>
+          <span class="pb-phone pb-phone-3">&#128241;</span>
+        </div>
+        <span class="pb-badge">&#127381; Limited Offer</span>
+      </div>
+      <div class="pb-text">
+        <div class="pb-title">Book a shoot &amp; get a chance to <strong>WIN an iPhone 16 Pro!</strong> &#9670;</div>
+        <div class="pb-sub">Every booking is an entry &nbsp;&#183;&nbsp; More shoots = more chances &nbsp;&#183;&nbsp; Winner announced monthly</div>
+      </div>
+      <div class="pb-right">
+        <a href="booking.html" class="pb-cta"><i class="fas fa-camera"></i> &nbsp;Book Now</a>
+        <button class="pb-close" onclick="closeBanner()">&#10005;</button>
+      </div>
+    </div>
+
+    <!-- Scrolling ticker -->
+    <div class="pb-ticker">
+      <div class="pb-ticker-inner" id="pbTicker">
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> BOOK A SHOOT &nbsp;&#183;&nbsp; WIN iPHONE 16 PRO</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> EVERY BOOKING IS AN ENTRY</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> PROFESSIONAL REELS IN 10 MINUTES</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> CERTIFIED CONTENT MAKERS</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> SHOT ON LATEST iPHONE</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> WINNER ANNOUNCED MONTHLY</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> BOOK A SHOOT &nbsp;&#183;&nbsp; WIN iPHONE 16 PRO</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> EVERY BOOKING IS AN ENTRY</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> PROFESSIONAL REELS IN 10 MINUTES</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> CERTIFIED CONTENT MAKERS</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> SHOT ON LATEST iPHONE</span>
+        <span class="pb-ticker-item"><span class="pb-ticker-dot"></span> WINNER ANNOUNCED MONTHLY</span>
+      </div>
+    </div>
   </div>
-  <script>document.body.style.paddingTop='38px';</script>
+
+  <script>
+    function closeBanner(){
+      var b=document.getElementById('promoBanner');
+      b.style.transition='opacity 0.4s ease,transform 0.4s ease';
+      b.style.opacity='0';b.style.transform='translateY(-100%)';
+      setTimeout(function(){b.style.display='none';document.body.style.paddingTop='0';},400);
+    }
+    // Set body padding to banner height
+    (function(){
+      function setPad(){
+        var b=document.getElementById('promoBanner');
+        if(b&&b.style.display!=='none') document.body.style.paddingTop=b.offsetHeight+'px';
+      }
+      setPad();
+      window.addEventListener('resize',setPad);
+    })();
+  </script>
 
   <!-- APP LAUNCH SCREEN -->
   <div id="ogLaunch" style="display:none;"></div>
