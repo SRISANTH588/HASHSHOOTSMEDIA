@@ -148,64 +148,98 @@
   </div>
 
   <!-- PLAN SELECTION -->
-  <div id="planStep" style="max-width:900px;margin:0 auto;padding:0 2rem 3rem;">
+  <div id="planStep" style="max-width:1100px;margin:0 auto;padding:0 2rem 3rem;">
     <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
-    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a service and click Book to continue</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;" id="servicePlanGrid">
+    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;" id="servicePlanGrid">
+
+      <!-- HOURLY -->
+      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">STARTER</div>
+        <div class="plan-card-name">Hourly Plan</div>
+        <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
+        <div class="plan-card-price" id="price_hourly">&#8377;1,699 <span>/ shoot</span></div>
+        <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+        <ul class="plan-card-features" style="flex:1;">
+          <li><i class="fas fa-check"></i>1 Hour Shoot</li>
+          <li><i class="fas fa-check"></i>1 Edited Reel Delivered</li>
+          <li><i class="fas fa-check"></i>Shot on Latest iPhone</li>
+          <li><i class="fas fa-check"></i>Fast Delivery (10 mins post shoot)</li>
+          <li><i class="fas fa-check"></i>Trained &amp; Certified Content Maker</li>
+          <li><i class="fas fa-check"></i>OG SHOOTS Branding Included</li>
+        </ul>
+      </div>
+
+      <!-- HALF-DAY -->
+      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')" style="display:flex;flex-direction:column;">
+        <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">BEST VALUE</div>
+        <div class="plan-card-name">Half-Day Plan</div>
+        <div class="plan-card-desc">Ideal for events &amp; creators who need more content.</div>
+        <div class="plan-card-price" id="price_halfday">&#8377;3,999 <span>/ session</span></div>
+        <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
+        <ul class="plan-card-features" style="flex:1;">
+          <li><i class="fas fa-check"></i>Up to 3 Hours Shoot</li>
+          <li><i class="fas fa-check"></i>2 Edited Reels Delivered</li>
+          <li><i class="fas fa-check"></i>Shot on Latest iPhone</li>
+          <li><i class="fas fa-check"></i>Fast Delivery (10 mins post shoot)</li>
+          <li><i class="fas fa-check"></i>Trained &amp; Certified Content Maker</li>
+          <li><i class="fas fa-check"></i>OG SHOOTS Branding Included</li>
+        </ul>
+      </div>
 
       <!-- 01 REEL SHOOTS -->
-      <div class="plan-card" id="pc_reel" onclick="pickPlan('reel')">
+      <div class="plan-card" id="pc_reel" onclick="pickPlan('reel')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">01 — REEL SHOOTS</div>
         <div class="plan-card-name">Reel Shoots</div>
         <div class="plan-card-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
         <div class="plan-card-price" id="price_reel">&#8377;999 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
       <!-- 02 PORTRAITS -->
-      <div class="plan-card" id="pc_portrait" onclick="pickPlan('portrait')">
-        <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
+      <div class="plan-card" id="pc_portrait" onclick="pickPlan('portrait')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">02 — PORTRAITS</div>
         <div class="plan-card-name">Portrait Sessions</div>
         <div class="plan-card-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
         <div class="plan-card-price" id="price_portrait">&#8377;1,499 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
       <!-- 03 WEDDINGS -->
-      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')">
+      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">03 — WEDDINGS</div>
         <div class="plan-card-name">Wedding Photography</div>
         <div class="plan-card-desc">Capture every precious moment of your special day with timeless elegance.</div>
-        <div class="plan-card-price" id="price_wedding">&#8377;15,000 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>Same Day Delivery</li><li><i class="fas fa-check"></i>Dedicated Creator</li></ul>
+        <div class="plan-card-price" id="price_wedding">&#8377;14,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>Same Day Delivery</li><li><i class="fas fa-check"></i>Dedicated Creator</li></ul>
       </div>
 
       <!-- 04 PRODUCTS -->
-      <div class="plan-card" id="pc_product" onclick="pickPlan('product')">
+      <div class="plan-card" id="pc_product" onclick="pickPlan('product')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">04 — PRODUCTS</div>
         <div class="plan-card-name">Product Shoots</div>
         <div class="plan-card-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
         <div class="plan-card-price" id="price_product">&#8377;2,499 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
       <!-- 05 EVENTS -->
-      <div class="plan-card" id="pc_event" onclick="pickPlan('event')">
+      <div class="plan-card" id="pc_event" onclick="pickPlan('event')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">05 — EVENTS</div>
         <div class="plan-card-name">Event Coverage</div>
         <div class="plan-card-desc">Corporate events, parties &amp; launches — every moment documented flawlessly.</div>
         <div class="plan-card-price" id="price_event">&#8377;5,999 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
       <!-- 06 FOOD -->
-      <div class="plan-card" id="pc_food" onclick="pickPlan('food')">
+      <div class="plan-card" id="pc_food" onclick="pickPlan('food')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">06 — FOOD</div>
         <div class="plan-card-name">Food Photography</div>
         <div class="plan-card-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
         <div class="plan-card-price" id="price_food">&#8377;1,999 <span>starting price</span></div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
     </div>
@@ -215,15 +249,13 @@
     </div>
   </div>
 
-  <style>@media(max-width:700px){#servicePlanGrid{grid-template-columns:1fr 1fr!important;}}@media(max-width:480px){#servicePlanGrid{grid-template-columns:1fr!important;}}</style>
+  <style>@media(max-width:900px){#servicePlanGrid{grid-template-columns:1fr 1fr!important;}}@media(max-width:480px){#servicePlanGrid{grid-template-columns:1fr!important;}}</style>
 
   <script>
   // Load prices from localStorage (set by admin) then sync from Firebase
   (function(){
     function applyPrices(hp){
       var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
-      var keys = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
-      var hpKeys = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
       Object.keys(map).forEach(function(k){
         var val = hp['price_'+k];
         if(val){
@@ -231,6 +263,9 @@
           if(el) el.innerHTML = val + ' <span>starting price</span>';
         }
       });
+      // Also sync into planData
+      if(hp.bs1_price){ planData.hourly.price = hp.bs1_price; var e=document.getElementById('price_hourly'); if(e) e.innerHTML=hp.bs1_price+' <span>/ shoot</span>'; }
+      if(hp.bs2_price){ planData.halfday.price = hp.bs2_price; var e=document.getElementById('price_halfday'); if(e) e.innerHTML=hp.bs2_price+' <span>/ session</span>'; }
     }
     // 1. Apply from localStorage immediately
     try{ applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
@@ -381,17 +416,19 @@
     document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
 
     var planData = {
-      reel:     { service:'Reel Shoot',         name:'Reel Shoots',          price:'\u20b9999',   per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
-      portrait: { service:'Portrait Session',   name:'Portrait Sessions',    price:'\u20b91,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
-      wedding:  { service:'Wedding Photography',name:'Wedding Photography',  price:'\u20b915,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      product:  { service:'Product Shoot',      name:'Product Shoots',       price:'\u20b92,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
-      event:    { service:'Event Coverage',     name:'Event Coverage',       price:'\u20b95,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      food:     { service:'Food Photography',   name:'Food Photography',     price:'\u20b91,999', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
-      weddingBasic:  { service:'Wedding Photography', name:'Wedding Basic',   price:'\u20b915,000', per:'/ event', features:['Essential Coverage','2 Edited Reels','Shot on Latest iPhone','Same Day Delivery','Certified Content Maker'] },
-      weddingSilver: { service:'Wedding Photography', name:'Wedding Silver',  price:'\u20b925,000', per:'/ event', features:['Full Day Coverage','4 Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker'] },
-      weddingGold:   { service:'Wedding Photography', name:'Wedding Gold',    price:'\u20b945,000', per:'/ event', features:['Full Day Coverage','6 Edited Reels','Shot on Latest iPhone','Priority Delivery','2 Content Makers','Pre-shoot Consultation'] },
-      weddingLuxe:   { service:'Wedding Photography', name:'Wedding Luxe',    price:'\u20b980,000', per:'/ event', features:['Full Day + Pre-event','10+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','3 Content Makers','Drone Coverage','Pre-shoot Consultation'] },
-      custom:        { service:'',               name:'Custom Plan',          price:'Let\'s Talk', per:'',         features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
+      hourly:   { service:'Reel Shoot',         name:'Hourly Plan',       price:'\u20b91,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','Fast Delivery (10 mins post shoot)','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      halfday:  { service:'Event Coverage',     name:'Half-Day Plan',     price:'\u20b93,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','Fast Delivery (10 mins post shoot)','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      reel:     { service:'Reel Shoot',         name:'Reel Shoots',       price:'\u20b9999',   per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      portrait: { service:'Portrait Session',   name:'Portrait Sessions', price:'\u20b91,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      wedding:  { service:'Wedding Photography',name:'Wedding Photography',price:'\u20b914,999',per:'/ event',  features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      product:  { service:'Product Shoot',      name:'Product Shoots',    price:'\u20b92,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      event:    { service:'Event Coverage',     name:'Event Coverage',    price:'\u20b95,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      food:     { service:'Food Photography',   name:'Food Photography',  price:'\u20b91,999', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker','OG SHOOTS Branding Included'] },
+      weddingBasic:  { service:'Wedding Photography', name:'Wedding Basic',   price:'\u20b914,999', per:'/ event', features:['Covers up to one event','3 Reels','Shot on iPhone','Instant reel delivery','Complementary Pictures','SD card for raw content','OG SHOOTS Logo Mandatory'] },
+      weddingSilver: { service:'Wedding Photography', name:'Wedding Silver',  price:'\u20b944,999', per:'/ event', features:['Covers up to three events','10 Reels','Shot on iPhone','Instant reel delivery','Complementary Pictures','SD card for raw content','OG SHOOTS Logo Mandatory'] },
+      weddingGold:   { service:'Wedding Photography', name:'Wedding Gold',    price:'\u20b959,999', per:'/ event', features:['Covers up to four events','15 Reels','Shot on iPhone','Instant reel delivery','Complementary Pictures','SD card for raw content','OG SHOOTS Logo Mandatory'] },
+      weddingLuxe:   { service:'Wedding Photography', name:'Wedding Platinum',price:'\u20b999,999', per:'/ event', features:['Covers whole wedding events','25 Reels','Shot on iPhone','Instant reel delivery','Interaction videos + mobile portraits','SD card for raw content','OG SHOOTS Logo Mandatory'] },
+      custom:        { service:'',               name:'Custom Plan',       price:'Let\'s Talk', per:'',         features:['Flexible Hours','Custom Deliverables','Dedicated Support Team','Priority Booking'] }
     };
 
     var selectedPlanKey = null;
@@ -418,11 +455,11 @@
 
       // Map URL plan names to planData keys
       var planMap = {
-        'Hourly Plan':'reel', 'Half-Day Plan':'event',
+        'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
         'Reel Shoot':'reel', 'Portrait Session':'portrait',
         'Wedding':'wedding', 'Wedding Photography':'wedding',
         'Basic':'weddingBasic', 'Silver':'weddingSilver',
-        'Gold':'weddingGold',   'Luxe':'weddingLuxe',
+        'Gold':'weddingGold', 'Luxe':'weddingLuxe',
         'Product Shoot':'product', 'Event Coverage':'event',
         'Food Photography':'food', 'Custom':'custom'
       };
