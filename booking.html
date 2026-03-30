@@ -149,41 +149,145 @@
   </div>
 
   <!-- PLAN SELECTION -->
-  <div id="planStep" style="max-width:700px;margin:0 auto;padding:0 2rem 3rem;">
+  <div id="planStep" style="max-width:1100px;margin:0 auto;padding:0 2rem 3rem;">
     <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
     <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;" id="servicePlanGrid">
+
+      <!-- HOURLY -->
+      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">STARTER</div>
         <div class="plan-card-name">Hourly Plan</div>
-        <div class="plan-card-price">&#8377;1,699 <span>/ shoot</span></div>
         <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>1 Hour Shoot</li><li><i class="fas fa-check"></i>1 Edited Reel</li><li><i class="fas fa-check"></i>10 Min Delivery</li></ul>
+        <div class="plan-card-price" id="price_hourly">&#8377;1,699 <span>/ shoot</span></div>
+        <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+        <ul class="plan-card-features" style="flex:1;">
+          <li><i class="fas fa-check"></i>1 Hour Shoot</li>
+          <li><i class="fas fa-check"></i>1 Edited Reel Delivered</li>
+          <li><i class="fas fa-check"></i>Shot on Latest iPhone</li>
+          <li><i class="fas fa-check"></i>Fast Delivery (10 mins post shoot)</li>
+          <li><i class="fas fa-check"></i>Trained &amp; Certified Content Maker</li>
+          <li><i class="fas fa-check"></i>OG SHOOTS Branding Included</li>
+        </ul>
       </div>
-      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')">
+
+      <!-- HALF-DAY -->
+      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')" style="display:flex;flex-direction:column;">
         <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">BEST VALUE</div>
         <div class="plan-card-name">Half-Day Plan</div>
-        <div class="plan-card-price">&#8377;3,999 <span>/ session</span></div>
         <div class="plan-card-desc">Ideal for events &amp; creators who need more content.</div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>10 Min Delivery</li></ul>
+        <div class="plan-card-price" id="price_halfday">&#8377;3,999 <span>/ session</span></div>
+        <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
+        <ul class="plan-card-features" style="flex:1;">
+          <li><i class="fas fa-check"></i>Up to 3 Hours Shoot</li>
+          <li><i class="fas fa-check"></i>2 Edited Reels Delivered</li>
+          <li><i class="fas fa-check"></i>Shot on Latest iPhone</li>
+          <li><i class="fas fa-check"></i>Fast Delivery (10 mins post shoot)</li>
+          <li><i class="fas fa-check"></i>Trained &amp; Certified Content Maker</li>
+          <li><i class="fas fa-check"></i>OG SHOOTS Branding Included</li>
+        </ul>
       </div>
-      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')">
-        <div class="plan-card-name">Wedding Plan</div>
-        <div class="plan-card-price">&#8377;15,000 <span>/ event</span></div>
-        <div class="plan-card-desc">Complete wedding coverage with cinematic reels.</div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>5+ Edited Reels</li><li><i class="fas fa-check"></i>Same Day Delivery</li></ul>
+
+      <!-- 01 REEL SHOOTS -->
+      <div class="plan-card" id="pc_reel" onclick="pickPlan('reel')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">01 — REEL SHOOTS</div>
+        <div class="plan-card-name">Reel Shoots</div>
+        <div class="plan-card-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
+        <div class="plan-card-price" id="price_reel">&#8377;999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
-      <div class="plan-card" id="pc_custom" onclick="pickPlan('custom')">
-        <div class="plan-card-name">Custom Plan</div>
-        <div class="plan-card-price" style="font-size:1.1rem;">Let's Talk</div>
-        <div class="plan-card-desc">Have a unique requirement? We'll build a plan just for you.</div>
-        <ul class="plan-card-features"><li><i class="fas fa-check"></i>Flexible Hours</li><li><i class="fas fa-check"></i>Custom Deliverables</li><li><i class="fas fa-check"></i>Dedicated Support</li></ul>
+
+      <!-- 02 PORTRAITS -->
+      <div class="plan-card" id="pc_portrait" onclick="pickPlan('portrait')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">02 — PORTRAITS</div>
+        <div class="plan-card-name">Portrait Sessions</div>
+        <div class="plan-card-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
+        <div class="plan-card-price" id="price_portrait">&#8377;1,499 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
+
+      <!-- 03 WEDDINGS -->
+      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">03 — WEDDINGS</div>
+        <div class="plan-card-name">Wedding Photography</div>
+        <div class="plan-card-desc">Capture every precious moment of your special day with timeless elegance.</div>
+        <div class="plan-card-price" id="price_wedding">&#8377;14,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>Same Day Delivery</li><li><i class="fas fa-check"></i>Dedicated Creator</li></ul>
+      </div>
+
+      <!-- 04 PRODUCTS -->
+      <div class="plan-card" id="pc_product" onclick="pickPlan('product')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">04 — PRODUCTS</div>
+        <div class="plan-card-name">Product Shoots</div>
+        <div class="plan-card-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
+        <div class="plan-card-price" id="price_product">&#8377;2,499 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
+      <!-- 05 EVENTS -->
+      <div class="plan-card" id="pc_event" onclick="pickPlan('event')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">05 — EVENTS</div>
+        <div class="plan-card-name">Event Coverage</div>
+        <div class="plan-card-desc">Corporate events, parties &amp; launches — every moment documented flawlessly.</div>
+        <div class="plan-card-price" id="price_event">&#8377;5,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
+      <!-- 06 FOOD -->
+      <div class="plan-card" id="pc_food" onclick="pickPlan('food')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">06 — FOOD</div>
+        <div class="plan-card-name">Food Photography</div>
+        <div class="plan-card-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
+        <div class="plan-card-price" id="price_food">&#8377;1,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
     </div>
     <div style="margin-top:1.25rem;text-align:center;">
       <button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right"></i> &nbsp;Book Selected Plan</button>
       <div id="planErr" style="display:none;color:#f44336;font-size:0.8rem;margin-top:0.6rem;">Please select a plan first.</div>
     </div>
   </div>
+
+  <style>@media(max-width:900px){#servicePlanGrid{grid-template-columns:1fr 1fr!important;}}@media(max-width:480px){#servicePlanGrid{grid-template-columns:1fr!important;}}</style>
+
+  <script>
+  // Load prices from localStorage (set by admin) then sync from Firebase
+  (function(){
+    function applyPrices(hp){
+      var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
+      Object.keys(map).forEach(function(k){
+        var val = hp['price_'+k];
+        if(val){
+          var el = document.getElementById(map[k]);
+          if(el) el.innerHTML = val + ' <span>starting price</span>';
+        }
+      });
+      // Also sync into planData
+      if(hp.bs1_price){ planData.hourly.price = hp.bs1_price; var e=document.getElementById('price_hourly'); if(e) e.innerHTML=hp.bs1_price+' <span>/ shoot</span>'; }
+      if(hp.bs2_price){ planData.halfday.price = hp.bs2_price; var e=document.getElementById('price_halfday'); if(e) e.innerHTML=hp.bs2_price+' <span>/ session</span>'; }
+    }
+    // 1. Apply from localStorage immediately
+    try{ applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
+    // 2. Fetch from Firebase and re-apply
+    (async function(){
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='bk-hp';})||fbMod.initializeApp(fbCfg,'bk-hp');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','homepage'));
+        if(snap.exists()){
+          var hp = snap.data();
+          localStorage.setItem('hs_homepage', JSON.stringify(hp));
+          applyPrices(hp);
+        }
+      }catch(e){}
+    })();
+  })();
+  </script>
 
   <!-- BOOKING FORM -->
   <div class="form-wrap" id="formStep" style="display:none;">
@@ -324,8 +428,15 @@
     function pickPlan(key) {
       selectedPlanKey = key;
       document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
-      document.getElementById('pc_' + key).classList.add('selected');
+      var card = document.getElementById('pc_' + key);
+      if(card) card.classList.add('selected');
       document.getElementById('planErr').style.display = 'none';
+      // Sync price from displayed element into planData
+      var priceEl = document.getElementById('price_' + key);
+      if(priceEl && planData[key]){
+        var raw = priceEl.textContent.replace('starting price','').trim();
+        if(raw) planData[key].price = raw;
+      }
     }
 
     // Auto-select plan/service from URL params

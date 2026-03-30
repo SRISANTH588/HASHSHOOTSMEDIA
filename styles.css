@@ -483,22 +483,126 @@ body {
 .back-to-top.visible { opacity: 1; pointer-events: all; }
 .back-to-top:hover { transform: translateY(-3px); background: linear-gradient(135deg,#dfc060,#b88a3a); }
 
-/* RESPONSIVE */
+/* ===================== RESPONSIVE ===================== */
+
+/* Tablet — up to 1024px */
+@media (max-width: 1024px) {
+  .nav-icons { gap: 0; }
+  .hero { padding: 6rem 1.25rem 2.5rem; }
+  .phone-frame { width: 240px; }
+  .badge-top { right: -10px; }
+  .badge-bottom { right: -10px; }
+  .badge-left { left: -10px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* Tablet portrait — up to 768px */
 @media (max-width: 768px) {
+  /* Nav */
   .nav-icons, .nav-actions { display: none; }
   .hamburger { display: flex; }
+  .nav-container { padding: 0 1.25rem; }
+
+  /* Hero */
+  .hero { padding: 5.5rem 1.25rem 2rem; }
+  .hero-big { font-size: clamp(3.5rem, 14vw, 6rem); letter-spacing: -2px; }
+  .hero-sub { font-size: 1.1rem; }
+  .phone-frame { width: 220px; }
+  .phone-screen { min-height: 460px; }
+  .float-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
+  .badge-top { top: 40px; right: -8px; }
+  .badge-bottom { bottom: 60px; right: -8px; }
+  .badge-left { display: none; }
+  .hero-pills { gap: 0.5rem; }
+  .hero-pill { font-size: 0.78rem; padding: 0.45rem 1rem; }
+  .hero-btns { gap: 0.75rem; }
+  .btn-book, .btn-partner { font-size: 0.95rem; padding: 0.85rem 1.75rem; }
+  .hero-stats { gap: 1.5rem; }
+  .stat-num { font-size: 1.8rem; }
+
+  /* Sections */
   .portfolio-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
   .portfolio-item.large { grid-row: span 1; }
-  .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .footer-links { grid-template-columns: 1fr 1fr; }
   .steps { flex-direction: column; }
   .step-arrow { transform: rotate(90deg); }
   .booking-form { grid-template-columns: 1fr; }
   .booking-form .btn-full { grid-column: span 1; }
   .chat-widget { bottom: 1rem; right: 1rem; }
+
+  /* Footer */
+  .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-links { grid-template-columns: 1fr 1fr; }
+
+  /* Launch screen */
+  #ogLaunch { background-position: center top !important; }
+  #ogCorners > div:nth-child(1),
+  #ogCorners > div:nth-child(2) { width: 36px !important; height: 36px !important; }
+  #ogCorners > div:nth-child(3),
+  #ogCorners > div:nth-child(4) { width: 36px !important; height: 36px !important; }
+  #ogCorners > div:nth-child(5),
+  #ogCorners > div:nth-child(6) { width: 36px !important; height: 36px !important; }
+  #ogCorners > div:nth-child(7),
+  #ogCorners > div:nth-child(8) { width: 36px !important; height: 36px !important; }
 }
+
+/* Mobile — up to 480px */
 @media (max-width: 480px) {
+  /* Nav */
+  .nav-container { padding: 0 1rem; }
+  .logo { font-size: 1.2rem; }
+
+  /* Hero */
+  .hero { padding: 5rem 1rem 2rem; }
+  .hero-big { font-size: 5rem; letter-spacing: -2px; }
+  .hero-tag { font-size: 0.7rem; }
+  .phone-mockup { transform: scale(0.88); transform-origin: top center; }
+  .badge-top, .badge-bottom, .badge-left { display: none; }
+  .hero-pills { flex-wrap: wrap; justify-content: center; }
+  .hero-btns { flex-direction: column; align-items: center; width: 100%; }
+  .btn-book, .btn-partner { width: 100%; max-width: 320px; justify-content: center; }
+  .hero-stats { gap: 1rem; }
+  .stat-num { font-size: 1.5rem; }
+  .stat-label { font-size: 0.75rem; }
+  .stat-sep { height: 36px; }
+
+  /* Sections */
   .portfolio-grid { grid-template-columns: 1fr; }
   .footer-links { grid-template-columns: 1fr; }
-  .hero-big { font-size: 5rem; }
+  .section-header h2 { font-size: 1.6rem; }
+
+  /* Launch screen — mobile */
+  #ogLaunch { background-size: cover !important; }
+  #ogCrown { font-size: 1.2rem !important; }
+  #ogLogoWrap { font-size: clamp(2.2rem, 12vw, 3.5rem) !important; letter-spacing: 4px !important; }
+  #ogLuxeTag { letter-spacing: 6px !important; }
+  #ogTagline { font-size: 0.65rem !important; letter-spacing: 2px !important; }
+  #ogLaunchBtn { font-size: 0.85rem !important; padding: 0.9rem 2.2rem !important; letter-spacing: 2px !important; }
+  #ogCgTitle { font-size: clamp(1.2rem, 6vw, 1.8rem) !important; }
+  #ogCgNames { font-size: clamp(0.9rem, 4.5vw, 1.3rem) !important; }
+  #ogFounders { gap: 1rem !important; }
+  #ogFounders > div { width: 150px !important; height: 210px !important; }
+  #ogCorners > div { display: none !important; }
+  /* show only the 4 corner L-brackets on mobile, smaller */
+  #ogCorners > div:nth-child(1),
+  #ogCorners > div:nth-child(3),
+  #ogCorners > div:nth-child(5),
+  #ogCorners > div:nth-child(7) { display: block !important; width: 28px !important; height: 28px !important; }
+
+  /* Why us */
+  .whyus-title { white-space: normal !important; font-size: 1.5rem !important; }
+
+  /* Services */
+  .svc-inner { padding: 0 1rem !important; }
+  .svc-sub { white-space: normal !important; }
+
+  /* Bestsellers */
+  .bs-grid-4 { grid-template-columns: 1fr !important; }
+}
+
+/* Small mobile — up to 360px */
+@media (max-width: 360px) {
+  .hero-big { font-size: 4rem; }
+  .phone-mockup { transform: scale(0.78); transform-origin: top center; }
+  #ogLogoWrap { font-size: 2rem !important; letter-spacing: 3px !important; }
+  #ogLaunchBtn { padding: 0.8rem 1.8rem !important; }
 }

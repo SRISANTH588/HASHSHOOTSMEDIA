@@ -456,6 +456,66 @@
     <a href="#" class="hero-cta">Download Partner App &nbsp;→</a>
   </div>
 
+  <script>
+  function highlightRadio(){
+    var yes = document.querySelector('input[name="pf_reel"][value="Yes"]');
+    var no  = document.querySelector('input[name="pf_reel"][value="No"]');
+    document.getElementById('pf_reel_yes_lbl').style.borderColor = yes.checked ? '#c9a84c' : 'rgba(201,168,76,0.15)';
+    document.getElementById('pf_reel_no_lbl').style.borderColor  = no.checked  ? '#c9a84c' : 'rgba(201,168,76,0.15)';
+  }
+
+  async function submitPartnerForm(e){
+    e.preventDefault();
+    var btn = document.getElementById('pf_btn');
+    var err = document.getElementById('pf_error');
+    var suc = document.getElementById('pf_success');
+    err.style.display='none'; suc.style.display='none';
+    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    var data = {
+      name:      document.getElementById('pf_name').value.trim(),
+      email:     document.getElementById('pf_email').value.trim(),
+      phone:     document.getElementById('pf_phone').value.trim(),
+      city:      document.getElementById('pf_city').value.trim(),
+      instagram: document.getElementById('pf_instagram').value.trim(),
+      iphone:    document.getElementById('pf_iphone').value,
+      editedReel:document.querySelector('input[name="pf_reel"]:checked')?.value || 'Not answered',
+      editApp:   document.getElementById('pf_app').value,
+      why:       document.getElementById('pf_why').value.trim(),
+      submittedAt: new Date().toLocaleString()
+    };
+
+    // Save to localStorage
+    var apps = JSON.parse(localStorage.getItem('hs_partner_apps')||'[]');
+    apps.push(Object.assign({id:Date.now()},data));
+    localStorage.setItem('hs_partner_apps', JSON.stringify(apps));
+
+    // Save to Firebase
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='partner-form';})||fbMod.initializeApp(fbCfg,'partner-form');
+      var db      = fbStore.getFirestore(app);
+      await fbStore.addDoc(fbStore.collection(db,'partner_applications'), Object.assign({createdAt:fbStore.serverTimestamp()},data));
+    }catch(e){ console.error('Firebase partner form error:',e); }
+
+    // Send email via Formspree
+    try{
+      var fd = new FormData();
+      Object.keys(data).forEach(function(k){ fd.append(k,data[k]); });
+      fd.append('_subject','New Partner Application — '+data.name+' | '+data.city);
+      fd.append('_replyto', data.email);
+      await fetch('https://formspree.io/f/xpwzgvkd',{method:'POST',body:fd,headers:{Accept:'application/json'}});
+    }catch(e){}
+
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Application';
+    suc.style.display='block';
+    document.getElementById('partnerForm').reset();
+    highlightRadio();
+  }
+  </script>
+
   </div><!-- end page-bg -->
 
   <script>

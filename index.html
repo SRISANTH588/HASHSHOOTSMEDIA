@@ -6,6 +6,10 @@
   <title>OG Shoots LUXE</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="hs-firebase.js" type="module"></script>
   <script src="hs-fixes.js"></script>
@@ -405,14 +409,14 @@
       .bs-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
       .bs-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
       .bs-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
-      .bs-header{text-align:center;margin-bottom:1rem;}
+      .bs-header{text-align:center;margin-bottom:2.5rem;}
       .bs-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
       .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;letter-spacing:-0.5px;}
       .bs-title span{color:#c9a84c;}
       .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
-      .bs-wrap{max-width:1000px;margin:0 auto;padding:0 2rem;}
+      .bs-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
       .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
-      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;align-items:start;}
+      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
       .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
       .bs-card:hover{transform:translateY(-8px);}
       .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
@@ -456,9 +460,10 @@
       .bs-btn-2:hover{box-shadow:0 14px 40px rgba(201,168,76,0.4);transform:translateY(-2px);background:linear-gradient(135deg,#e8c96a,#c9a84c);}
       .bs-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:translateX(-100%);transition:transform 0.5s;}
       .bs-btn:hover::before{transform:translateX(100%);}
-      .bs-anim{opacity:0;transform:translateY(40px);transition:opacity 0.6s ease,transform 0.6s ease;}
+      .bs-anim{opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;}
       .bs-anim.visible{opacity:1;transform:translateY(0);}
-      @media(max-width:680px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:900px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:520px){.bs-grid-4{grid-template-columns:1fr;}}
     </style>
 
     <div class="bs-wrap">
@@ -527,97 +532,109 @@
 
       <!-- WEDDING PLANS -->
       <div class="bs-panel" id="bsPanel_wedding">
-        <div class="bs-grid-4">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
+
           <!-- BASIC -->
-          <div class="bs-card bs-card-1 bs-anim">
+          <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag"><i class="fas fa-leaf"></i> <span id="w1_tag">Basic</span></div>
-            <div class="bs-name" id="w1_name">Basic</div>
-            <div class="bs-tagline" id="w1_tagline">Essential coverage for intimate ceremonies.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w1_price">&#8377;15,000</div>
-              <div class="bs-per" id="w1_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">SINGLE EVENT</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-leaf" style="color:#c9a84c;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w1_name" style="font-size:1.5rem;">Basic</div>
+              <div class="bs-tagline" id="w1_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w1_price" style="font-size:2.4rem;">&#8377;14,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w1_per">+ GST</div>
             </div>
-            <div class="bs-gst-note" id="w1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w1_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>4 Hours Coverage</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Photographer</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>100 Edited Photos</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Highlight Reel</li>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w1_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to one event</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 3 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
             </ul>
-            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Enquire Now</button>
           </div>
+
           <!-- SILVER -->
-          <div class="bs-card bs-card-silver bs-anim" style="transition-delay:0.1s;">
+          <div class="bs-card bs-card-silver bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.1s;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag" style="color:#c0c0c0;"><i class="fas fa-medal"></i> <span id="w2_tag">Silver</span></div>
-            <div class="bs-name" id="w2_name">Silver</div>
-            <div class="bs-tagline" id="w2_tagline">Perfect for full-day wedding celebrations.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w2_price" style="background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;25,000</div>
-              <div class="bs-per" id="w2_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">THREE EVENTS</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-medal" style="color:#c0c0c0;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w2_name" style="font-size:1.5rem;">Silver</div>
+              <div class="bs-tagline" id="w2_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w2_price" style="font-size:2.4rem;background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;44,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w2_per">+ GST</div>
             </div>
-            <div class="bs-gst-note" id="w2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs Basic</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w2_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>8 Hours Coverage</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Photographers</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>300 Edited Photos</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Highlight Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w2_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to three events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 10 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
             </ul>
-            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.4);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.35);color:#c0c0c0;" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Enquire Now</button>
           </div>
+
           <!-- GOLD -->
-          <div class="bs-card bs-card-gold bs-anim" style="transition-delay:0.2s;">
+          <div class="bs-card bs-card-gold bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 30px 80px rgba(0,0,0,0.6);transition-delay:0.2s;">
             <div class="bs-glow"></div>
-            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
-            <div class="bs-plan-tag"><i class="fas fa-trophy"></i> <span id="w3_tag">Gold</span></div>
-            <div class="bs-name" id="w3_name">Gold</div>
-            <div class="bs-tagline" id="w3_tagline">Premium coverage for your dream wedding.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w3_price">&#8377;45,000</div>
-              <div class="bs-per" id="w3_per">/ event</div>
+            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:900;padding:0.28rem 1.1rem;border-radius:0 0 10px 10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> MOST POPULAR</div>
+            <div style="text-align:center;margin-bottom:1.25rem;margin-top:0.5rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">FOUR EVENTS</div>
+              <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 20px rgba(201,168,76,0.2);"><i class="fas fa-trophy" style="color:#c9a84c;font-size:1.3rem;"></i></div>
+              <div class="bs-name" id="w3_name" style="font-size:1.5rem;">Gold</div>
+              <div class="bs-tagline" id="w3_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w3_price" style="font-size:2.4rem;">&#8377;59,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w3_per">+ GST</div>
             </div>
-            <div class="bs-gst-note" id="w3_gstnote">+ GST &nbsp;&middot;&nbsp; Best Value</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w3_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Full Day Coverage</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>3 Photographers</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>500+ Edited Photos</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Cinematic Film</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Pre-shoot Consultation</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Same Day Delivery</li>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w3_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to four events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 15 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
             </ul>
-            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Enquire Now</button>
           </div>
-          <!-- LUXE -->
-          <div class="bs-card bs-card-luxe bs-anim" style="transition-delay:0.3s;">
+
+          <!-- PLATINUM -->
+          <div class="bs-card bs-card-luxe bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.3s;">
             <div class="bs-glow"></div>
-            <div class="bs-plan-tag" style="color:#c9a84c;"><i class="fas fa-gem"></i> <span id="w4_tag">Luxe</span></div>
-            <div class="bs-name" id="w4_name">Luxe</div>
-            <div class="bs-tagline" id="w4_tagline">The ultimate luxury wedding experience.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="w4_price">&#8377;80,000</div>
-              <div class="bs-per" id="w4_per">/ event</div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">COMPLETE WEDDING</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 16px rgba(201,168,76,0.15);"><i class="fas fa-gem" style="color:#e8c96a;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w4_name" style="font-size:1.5rem;">Platinum</div>
+              <div class="bs-tagline" id="w4_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">For couples who want it all — every moment captured with unmatched attention to detail.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w4_price" style="font-size:2.4rem;">&#8377;99,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w4_per">+ GST</div>
             </div>
-            <div class="bs-gst-note" id="w4_gstnote">+ GST &nbsp;&middot;&nbsp; All-Inclusive</div>
             <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="w4_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Multi-Day Coverage</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Dedicated Team</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Unlimited Edited Photos</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Cinematic Film + Drone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Album Design Included</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Priority Support</li>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w4_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers whole wedding events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 25 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Interaction videos + mobile portraits</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
             </ul>
-            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Book Now &nbsp;&rarr;</button>
+            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Enquire Now</button>
           </div>
+
         </div>
       </div>
 
@@ -638,7 +655,9 @@
       document.querySelectorAll('.bs-plan-tab').forEach(function(b){ b.classList.remove('active'); });
       document.querySelectorAll('.bs-panel').forEach(function(p){ p.classList.remove('active'); });
       btn.classList.add('active');
-      document.getElementById('bsPanel_'+panel).classList.add('active');
+      var el = document.getElementById('bsPanel_'+panel);
+      el.classList.add('active');
+      el.querySelectorAll('.bs-anim').forEach(function(c){ c.classList.add('visible'); });
     }
   </script>
 
@@ -867,7 +886,7 @@
       .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
       .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
       .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
-      .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
+      .svc-h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
       .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
       .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.8;max-width:900px;margin:0 auto;white-space:nowrap;}
       .svc-header-cta{display:none;}
@@ -888,7 +907,7 @@
       /* badge */
       .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.55rem;font-weight:700;padding:0.18rem 0.6rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
       /* text */
-      .svc-name{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
+      .svc-name{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
       .svc-desc{font-size:0.82rem;color:#5a5040;line-height:1.85;flex:1;margin-bottom:2.5rem;}
       /* price */
       .svc-price-row{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.06);}
@@ -1415,81 +1434,88 @@
 
         <!-- BASIC -->
         <div class="wp-card wp-card-basic">
-          <div class="wp-tier wp-tier-basic">Basic</div>
+          <div class="wp-tier wp-tier-basic">SINGLE EVENT</div>
           <div class="wp-name" id="wp_w1_name">Basic</div>
-          <div class="wp-tagline" id="wp_w1_tagline">Essential coverage for intimate ceremonies.</div>
-          <div class="wp-price" id="wp_w1_price">&#8377;15,000</div>
-          <div class="wp-per" id="wp_w1_per">/ event</div>
-          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+          <div class="wp-tagline" id="wp_w1_tagline">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
+          <div class="wp-price" id="wp_w1_price">&#8377;14,999</div>
+          <div class="wp-per" id="wp_w1_per">+ GST</div>
+          <div class="wp-gst">No hidden charges</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w1_features">
-            <li><i class="fas fa-check"></i>4 Hours Coverage</li>
-            <li><i class="fas fa-check"></i>1 Photographer</li>
-            <li><i class="fas fa-check"></i>100 Edited Photos</li>
-            <li><i class="fas fa-check"></i>1 Highlight Reel</li>
+            <li><i class="fas fa-check"></i>Covers up to one event</li>
+            <li><i class="fas fa-check"></i>Includes 3 Reels</li>
+            <li><i class="fas fa-check"></i>Shot on iPhone</li>
+            <li><i class="fas fa-check"></i>Instant reel delivery</li>
+            <li><i class="fas fa-check"></i>Complementary Pictures</li>
+            <li><i class="fas fa-check"></i>SD card for raw content</li>
+            <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Basic" class="wp-btn wp-btn-basic"><i class="fas fa-heart"></i> Book Basic</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Basic" class="wp-btn wp-btn-basic"><i class="fas fa-heart"></i> Enquire Now</a>
         </div>
 
         <!-- SILVER -->
         <div class="wp-card wp-card-silver">
-          <div class="wp-tier wp-tier-silver">Silver</div>
+          <div class="wp-tier wp-tier-silver">THREE EVENTS</div>
           <div class="wp-name" id="wp_w2_name">Silver</div>
-          <div class="wp-tagline" id="wp_w2_tagline">Perfect for full-day wedding celebrations.</div>
-          <div class="wp-price wp-price-silver" id="wp_w2_price">&#8377;25,000</div>
-          <div class="wp-per" id="wp_w2_per">/ event</div>
-          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; Save vs Basic</div>
+          <div class="wp-tagline" id="wp_w2_tagline">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+          <div class="wp-price wp-price-silver" id="wp_w2_price">&#8377;44,999</div>
+          <div class="wp-per" id="wp_w2_per">+ GST</div>
+          <div class="wp-gst">No hidden charges</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w2_features">
-            <li><i class="fas fa-check"></i>8 Hours Coverage</li>
-            <li><i class="fas fa-check"></i>2 Photographers</li>
-            <li><i class="fas fa-check"></i>300 Edited Photos</li>
-            <li><i class="fas fa-check"></i>2 Highlight Reels</li>
-            <li><i class="fas fa-check"></i>Same Day Delivery</li>
+            <li><i class="fas fa-check"></i>Covers up to three events</li>
+            <li><i class="fas fa-check"></i>Includes 10 Reels</li>
+            <li><i class="fas fa-check"></i>Shot on iPhone</li>
+            <li><i class="fas fa-check"></i>Instant reel delivery</li>
+            <li><i class="fas fa-check"></i>Complementary Pictures</li>
+            <li><i class="fas fa-check"></i>SD card for raw content</li>
+            <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Silver" class="wp-btn wp-btn-silver"><i class="fas fa-heart"></i> Book Silver</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Silver" class="wp-btn wp-btn-silver"><i class="fas fa-heart"></i> Enquire Now</a>
         </div>
 
         <!-- GOLD -->
         <div class="wp-card wp-card-gold">
           <div class="wp-badge wp-badge-popular"><i class="fas fa-star"></i> Most Popular</div>
-          <div class="wp-tier wp-tier-gold">Gold</div>
+          <div class="wp-tier wp-tier-gold">FOUR EVENTS</div>
           <div class="wp-name" id="wp_w3_name">Gold</div>
-          <div class="wp-tagline" id="wp_w3_tagline">Premium coverage for your dream wedding.</div>
-          <div class="wp-price" id="wp_w3_price">&#8377;45,000</div>
-          <div class="wp-per" id="wp_w3_per">/ event</div>
-          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; Best Value</div>
+          <div class="wp-tagline" id="wp_w3_tagline">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+          <div class="wp-price" id="wp_w3_price">&#8377;59,999</div>
+          <div class="wp-per" id="wp_w3_per">+ GST</div>
+          <div class="wp-gst">Best Value</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w3_features">
-            <li><i class="fas fa-check"></i>Full Day Coverage</li>
-            <li><i class="fas fa-check"></i>3 Photographers</li>
-            <li><i class="fas fa-check"></i>500+ Edited Photos</li>
-            <li><i class="fas fa-check"></i>Cinematic Film</li>
-            <li><i class="fas fa-check"></i>Pre-shoot Consultation</li>
-            <li><i class="fas fa-check"></i>Same Day Delivery</li>
+            <li><i class="fas fa-check"></i>Covers up to four events</li>
+            <li><i class="fas fa-check"></i>Includes 15 Reels</li>
+            <li><i class="fas fa-check"></i>Shot on iPhone</li>
+            <li><i class="fas fa-check"></i>Instant reel delivery</li>
+            <li><i class="fas fa-check"></i>Complementary Pictures</li>
+            <li><i class="fas fa-check"></i>SD card for raw content</li>
+            <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Gold" class="wp-btn wp-btn-gold"><i class="fas fa-trophy"></i> Book Gold</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Gold" class="wp-btn wp-btn-gold"><i class="fas fa-trophy"></i> Enquire Now</a>
         </div>
 
-        <!-- LUXE -->
+        <!-- PLATINUM -->
         <div class="wp-card wp-card-luxe">
-          <div class="wp-badge wp-badge-luxe"><i class="fas fa-gem"></i> Luxe</div>
-          <div class="wp-tier wp-tier-luxe">Luxe</div>
-          <div class="wp-name" id="wp_w4_name">Luxe</div>
-          <div class="wp-tagline" id="wp_w4_tagline">The ultimate luxury wedding experience.</div>
-          <div class="wp-price" id="wp_w4_price">&#8377;80,000</div>
-          <div class="wp-per" id="wp_w4_per">/ event</div>
-          <div class="wp-gst">+ GST &nbsp;&middot;&nbsp; All-Inclusive</div>
+          <div class="wp-badge wp-badge-luxe"><i class="fas fa-gem"></i> Platinum</div>
+          <div class="wp-tier wp-tier-luxe">COMPLETE WEDDING</div>
+          <div class="wp-name" id="wp_w4_name">Platinum</div>
+          <div class="wp-tagline" id="wp_w4_tagline">For couples who want it all &#8212; every moment captured with unmatched attention to detail.</div>
+          <div class="wp-price" id="wp_w4_price">&#8377;99,999</div>
+          <div class="wp-per" id="wp_w4_per">+ GST</div>
+          <div class="wp-gst">All-Inclusive</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w4_features">
-            <li><i class="fas fa-check"></i>Multi-Day Coverage</li>
-            <li><i class="fas fa-check"></i>Dedicated Team</li>
-            <li><i class="fas fa-check"></i>Unlimited Edited Photos</li>
-            <li><i class="fas fa-check"></i>Cinematic Film + Drone</li>
-            <li><i class="fas fa-check"></i>Album Design Included</li>
-            <li><i class="fas fa-check"></i>Priority Support</li>
+            <li><i class="fas fa-check"></i>Covers whole wedding events</li>
+            <li><i class="fas fa-check"></i>Includes 25 Reels</li>
+            <li><i class="fas fa-check"></i>Shot on iPhone</li>
+            <li><i class="fas fa-check"></i>Instant reel delivery</li>
+            <li><i class="fas fa-check"></i>Interaction videos + mobile portraits</li>
+            <li><i class="fas fa-check"></i>SD card for raw content</li>
+            <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Luxe" class="wp-btn wp-btn-luxe"><i class="fas fa-gem"></i> Book Luxe</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Luxe" class="wp-btn wp-btn-luxe"><i class="fas fa-gem"></i> Enquire Now</a>
         </div>
 
       </div>

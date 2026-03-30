@@ -4632,6 +4632,53 @@
       }).join('');
     }
 
+    async function renderPartnerApps(){
+      var countEl = document.getElementById('partnerAppsCount');
+      var el = document.getElementById('partnerAppsList');
+      if(!el) return;
+      el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+      var list = [];
+      // Load from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='pa-admin';})||fbMod.initializeApp(fbCfg,'pa-admin');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'partner_applications'),fbStore.orderBy('createdAt','desc')));
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+      }catch(e){
+        // Fallback to localStorage
+        list = JSON.parse(localStorage.getItem('hs_partner_apps')||'[]').slice().reverse();
+      }
+      if(countEl) countEl.textContent = list.length+' application(s)';
+      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No partner applications yet.</p>'; return; }
+      var fields = [
+        {k:'email',l:'Email'},
+        {k:'phone',l:'WhatsApp'},
+        {k:'city',l:'City & Area'},
+        {k:'instagram',l:'Instagram'},
+        {k:'iphone',l:'iPhone'},
+        {k:'editedReel',l:'Edited Reel?'},
+        {k:'editApp',l:'Edit App'},
+        {k:'why',l:'Why Join'}
+      ];
+      el.innerHTML = list.map(function(a){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+a.name+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;">'+( a.submittedAt||'')+'</div>'
+          +'</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;">'
+          +fields.map(function(f){
+            var val = a[f.k]||'—';
+            return '<div><span style="font-size:0.62rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:1px;text-transform:uppercase;">'+f.l+'</span>'
+              +'<div style="font-size:0.82rem;color:#d0c8b8;margin-top:0.1rem;word-break:break-word;">'+val+'</div></div>';
+          }).join('')
+          +'</div></div>';
+      }).join('');
+    }
+
 
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
