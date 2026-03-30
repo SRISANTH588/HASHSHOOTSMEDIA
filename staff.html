@@ -965,11 +965,12 @@
 
     function setUploadProgress(pct, label){
       var wrap = document.getElementById('uploadProgressWrap');
+      if(pct <= 0){ wrap.style.display = 'none'; return; }
       wrap.style.display = 'block';
       document.getElementById('uploadProgressFill').style.width = pct + '%';
       document.getElementById('uploadProgressLabel').textContent = label;
       document.getElementById('uploadProgressPct').textContent = pct + '%';
-      if(pct >= 100) setTimeout(function(){ wrap.style.display = 'none'; }, 1500);
+      if(pct >= 100) setTimeout(function(){ wrap.style.display = 'none'; }, 2000);
     }
 
     function uploadStaffVideo(){
@@ -977,30 +978,43 @@
       var category = document.getElementById('uploadCategory').value;
       var shootDate = document.getElementById('uploadDate').value;
       var shootTime = document.getElementById('uploadTime').value;
-      if(!selectedVideoFile){ alert('Please select a video file.'); return; }
+      if(!selectedVideoFile){ alert('Please select a video file first.'); return; }
       if(!title){ alert('Please enter a video title.'); return; }
       if(!category){ alert('Please select a category.'); return; }
+
+      // File size check — warn if over 200MB
+      var sizeMB = selectedVideoFile.size / 1024 / 1024;
+      if(sizeMB > 500){ alert('File is too large (' + sizeMB.toFixed(0) + ' MB). Please upload a video under 500 MB.'); return; }
+      if(sizeMB > 200 && !confirm('This video is ' + sizeMB.toFixed(0) + ' MB. Large files may take a while to upload. Continue?')) return;
 
       var btn = document.getElementById('uploadBtn');
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-      setUploadProgress(5, 'Uploading to cloud...');
+      setUploadProgress(2, 'Starting upload...');
 
       var staffId = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
 
+      if(!window.cloudinaryUpload){
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
+        setUploadProgress(0, 'Error');
+        alert('Upload service not ready. Please refresh the page and try again.');
+        return;
+      }
+
       // Upload to Cloudinary
       cloudinaryUpload(selectedVideoFile, 'staff_videos', function(pct){
-        setUploadProgress(pct, 'Uploading... ' + pct + '%');
+        setUploadProgress(pct, pct < 100 ? 'Uploading... ' + pct + '%' : 'Processing...');
       }).then(function(result){
-        setUploadProgress(100, 'Done!');
+        setUploadProgress(100, 'Upload complete!');
         var id = Date.now();
         var videoData = {
           id: id, title: title, category: category,
           shootDate: shootDate, shootTime: shootTime,
           staffId: staffId, staffName: staffName,
           fileName: selectedVideoFile.name,
-          sizeMB: (selectedVideoFile.size/1024/1024).toFixed(1),
+          sizeMB: sizeMB.toFixed(1),
           uploadedAt: new Date().toLocaleString(),
           cloudUrl: result.url,
           thumbnail: result.thumbnail
@@ -1009,15 +1023,11 @@
         var videos = getStaffVideos();
         videos.push(videoData);
         saveStaffVideos(videos);
-        // CRITICAL: Save to Firebase so admin sees it immediately
+        // Sync to Firebase
         if(window.fbSave) {
-          fbSave('staff_videos', videoData).then(function(){
-            console.log('Staff video synced to Firebase:', videoData.title);
-          }).catch(function(err){
+          fbSave('staff_videos', videoData).catch(function(err){
             console.error('Firebase sync failed:', err);
           });
-        } else {
-          console.warn('Firebase not available - video only saved locally');
         }
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
@@ -1032,9 +1042,19 @@
         setTimeout(function(){ toast.style.display = 'none'; }, 3000);
         renderMyVideos();
       }).catch(function(err){
-        alert('Upload failed: ' + err.message);
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
+        setUploadProgress(0, 'Upload failed');
+        var msg = err.message || 'Unknown error';
+        if(msg.toLowerCase().indexOf('preset') > -1 || msg.indexOf('400') > -1){
+          alert('Upload failed: Server configuration issue. Please contact admin.');
+        } else if(msg.toLowerCase().indexOf('network') > -1){
+          alert('Upload failed: No internet connection. Please check your network and try again.');
+        } else if(msg.toLowerCase().indexOf('size') > -1 || msg.toLowerCase().indexOf('large') > -1){
+          alert('Upload failed: File is too large. Try compressing the video first.');
+        } else {
+          alert('Upload failed: ' + msg + '\n\nPlease try again or contact support.');
+        }
       });
     }
 

@@ -133,13 +133,8 @@
       if(window.Tawk_API && window.Tawk_API.maximize){
         window.Tawk_API.maximize();
       } else {
-        var cfg = JSON.parse(localStorage.getItem('hs_tawk_config')||'{}');
-        if(!cfg.propertyId){
-          // Try to open WhatsApp as fallback
-          window.open('https://wa.me/916304279351','_blank');
-        } else {
-          alert('Live chat is loading, please wait a moment and try again.');
-        }
+        // Fallback to WhatsApp silently
+        window.open('https://wa.me/916304279351','_blank');
       }
     }
 
