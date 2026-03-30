@@ -115,10 +115,10 @@
   <h1>Show Your <span>Best Shot</span></h1>
   <p>Submit your best reel or photo, get votes from the community, and win exciting prizes from OG Shoots.</p>
   <div class="ct-hero-btns">
-    <button class="ct-btn ct-btn-gold" onclick="scrollTo('enterContest')">
+    <button class="ct-btn ct-btn-gold" onclick="scrollToSection('enterContest')">
       <i class="fas fa-upload"></i> Enter Now
     </button>
-    <button class="ct-btn ct-btn-outline" onclick="scrollTo('entries')">
+    <button class="ct-btn ct-btn-outline" onclick="scrollToSection('entries')">
       <i class="fas fa-images"></i> View Entries
     </button>
   </div>
@@ -154,7 +154,7 @@
 
 <script>
   // ── Scroll helper ──
-  function scrollTo(id){
+  function scrollToSection(id){
     var el = document.getElementById(id);
     if(!el) return;
     var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
