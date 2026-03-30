@@ -475,9 +475,9 @@
 
       if(serviceParam){
         var svcPlanMap = {
-          'Reel Shoot':'hourly', 'Portrait Session':'hourly', 'Food Photography':'hourly',
+          'Reel Shoot':'reel', 'Portrait Session':'portrait', 'Food Photography':'food',
           'Wedding Photography':'wedding',
-          'Product Shoot':'halfday', 'Event Coverage':'halfday'
+          'Product Shoot':'product', 'Event Coverage':'event'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
