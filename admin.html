@@ -194,6 +194,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div class="form-group"><label>Place / Venue <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_place" placeholder="e.g. Vijayawada, India"/></div>
           <div class="form-group"><label>Launch Date <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_date" placeholder="e.g. 25 Jan 2025"/></div>
+          <div class="form-group"><label>Launch Time <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_time" placeholder="e.g. 6:00 PM"/></div>
         </div>
         <div class="form-group" style="margin-bottom:1rem;">
           <label>Congratulations Music URL <span style="color:#888;font-weight:400;">(mp3/ogg direct link — plays on congrats)</span></label>
@@ -4206,17 +4207,17 @@
       var els = {
         f1n:'op_f1name', f1r:'op_f1role', f1p:'op_f1photo',
         f2n:'op_f2name', f2r:'op_f2role', f2p:'op_f2photo',
-        bg:'op_bgphoto', pl:'op_place', dt:'op_date', mu:'op_musicurl'
+        bg:'op_bgphoto', pl:'op_place', dt:'op_date', tm:'op_time', mu:'op_musicurl'
       };
       var defs = {
         f1n:'Boddu Srisanth', f1r:'Founder & CEO', f1p:'srisanth.jpeg',
         f2n:'Gulimi Sumanth', f2r:'Managing Director', f2p:'sumanth.jpeg',
-        bg:'', pl:'', dt:'', mu:''
+        bg:'', pl:'', dt:'', tm:'', mu:''
       };
       var cfgMap = {
         f1n:'founder1Name', f1r:'founder1Role', f1p:'founder1Photo',
         f2n:'founder2Name', f2r:'founder2Role', f2p:'founder2Photo',
-        bg:'bgPhoto', pl:'placeText', dt:'dateText', mu:'musicUrl'
+        bg:'bgPhoto', pl:'placeText', dt:'dateText', tm:'timeText', mu:'musicUrl'
       };
       Object.keys(els).forEach(function(k){
         var el=document.getElementById(els[k]);
@@ -4253,6 +4254,7 @@
         bgPhoto:       g('op_bgphoto').trim(),
         placeText:     g('op_place').trim(),
         dateText:      g('op_date').trim(),
+        timeText:      g('op_time').trim(),
         musicUrl:      g('op_musicurl').trim()
       };
       localStorage.setItem('hs_opening',JSON.stringify(data));
