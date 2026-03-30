@@ -258,6 +258,21 @@
     if(cfg.enabled===false){document.body.style.overflow='';return;}
     var launch=document.getElementById('ogLaunch');
     if(!launch)return;
+    // Fetch latest opening config from Firebase, then init
+    (async function(){
+      try{
+        var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app=fbMod.getApps().find(function(a){return a.name==='opening-cfg';})||fbMod.initializeApp(fbCfg,'opening-cfg');
+        var db=fbStore.getFirestore(app);
+        var snap=await fbStore.getDoc(fbStore.doc(db,'settings','opening'));
+        if(snap.exists()){cfg=snap.data();localStorage.setItem('hs_opening',JSON.stringify(cfg));}
+      }catch(e){}
+      if(cfg.enabled===false){launch.style.display='none';document.body.style.overflow='';return;}
+      initLaunchScreen(cfg);
+    })();
+    function initLaunchScreen(cfg){
     launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background-image:url("venkateswara.jpg");background-size:110%;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;animation:ogKenBurns 18s ease-in-out infinite alternate;';
     document.body.style.overflow='hidden';
     var bgImg=cfg.bgPhoto||'venkateswara.jpg';
@@ -603,6 +618,7 @@
       launch.style.opacity='0';
       setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
     };
+    } // end initLaunchScreen
   })();
   </script>
 
