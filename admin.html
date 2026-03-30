@@ -167,6 +167,7 @@
       <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
       <button class="tab-btn" onclick="switchTab('admin-feedback',this)"><i class="fas fa-comment-dots"></i> Give Feedback</button>
+      <button class="tab-btn" onclick="switchTab('contest',this)"><i class="fas fa-trophy"></i> Contest</button>
 
     </div>
 
@@ -1781,6 +1782,46 @@
       </div>
     </div><!-- end tab-admin-feedback -->
 
+    <!-- ── CONTEST TAB ── -->
+    <div class="tab-panel" id="tab-contest" style="display:none;">
+      <div class="section-header"><h2><i class="fas fa-trophy" style="color:var(--gold);"></i> Contest Manager</h2></div>
+
+      <!-- Create Contest -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Create / Edit Contest</div>
+        <input type="hidden" id="ct_editId"/>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div><label class="field-label">Contest Title *</label><input class="field-input" id="ct_title" placeholder="e.g. Best Reel of the Month"/></div>
+          <div><label class="field-label">Prize</label><input class="field-input" id="ct_prize" placeholder="e.g. ₹5,000 Cash + Free Shoot"/></div>
+          <div><label class="field-label">Theme / Hashtag</label><input class="field-input" id="ct_theme" placeholder="e.g. #OGShootsContest"/></div>
+          <div><label class="field-label">End Date *</label><input type="date" class="field-input" id="ct_endDate"/></div>
+        </div>
+        <div style="margin-bottom:1rem;"><label class="field-label">Description</label><textarea class="field-input" id="ct_desc" style="min-height:80px;resize:vertical;" placeholder="Describe the contest rules and theme..."></textarea></div>
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <button class="action-btn" onclick="saveContest()"><i class="fas fa-save"></i> Save Contest</button>
+          <button class="action-btn" style="background:rgba(255,255,255,0.06);" onclick="clearContestForm()"><i class="fas fa-times"></i> Clear</button>
+        </div>
+      </div>
+
+      <!-- Contests List -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">All Contests</div>
+        <div id="ctAdminList"></div>
+      </div>
+
+      <div class="save-toast" id="ctAdminToast"></div>
+
+      <!-- Entries -->
+      <div class="card">
+        <div class="card-title">Contest Entries</div>
+        <div style="margin-bottom:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+          <select id="ctFilterContest" class="field-input" style="max-width:280px;" onchange="renderAdminEntries()"><option value="">All Contests</option></select>
+          <input class="field-input" id="ctSearchEntry" placeholder="Search by name..." oninput="renderAdminEntries()" style="max-width:220px;"/>
+        </div>
+        <div id="ctEntriesTable"></div>
+      </div>
+    </div><!-- end tab-contest -->
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2237,6 +2278,7 @@
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
       if (tab === 'opening') { loadLaunchConfig(); }
       if (tab === 'admin-feedback') { loadFeedbackRecipients(); loadAdminFeedbackHistory(); }
+      if (tab === 'contest') { renderAdminContests(); renderAdminEntries(); populateContestFilter(); }
     }
 
     // Activate first visible tab
@@ -5613,6 +5655,178 @@
       }).join('');
     }
 
+  </script>
+
+  <script>
+  // ── CONTEST ADMIN ──
+  function getContests(){ return JSON.parse(localStorage.getItem('hs_contests')||'[]'); }
+  function saveContests(d){ localStorage.setItem('hs_contests',JSON.stringify(d)); }
+  function getEntries(){ return JSON.parse(localStorage.getItem('hs_contest_entries')||'[]'); }
+  function saveEntries(d){ localStorage.setItem('hs_contest_entries',JSON.stringify(d)); }
+
+  function saveContest(){
+    var id      = document.getElementById('ct_editId').value || Date.now().toString();
+    var title   = document.getElementById('ct_title').value.trim();
+    var prize   = document.getElementById('ct_prize').value.trim();
+    var theme   = document.getElementById('ct_theme').value.trim();
+    var endDate = document.getElementById('ct_endDate').value;
+    var desc    = document.getElementById('ct_desc').value.trim();
+    if(!title || !endDate){ alert('Title and End Date are required.'); return; }
+    var contests = getContests();
+    var existing = contests.findIndex(function(c){ return c.id===id; });
+    var obj = { id:id, title:title, prize:prize, theme:theme, endDate:endDate, description:desc, active:true, createdAt:new Date().toLocaleDateString() };
+    if(existing > -1) contests[existing] = obj;
+    else contests.push(obj);
+    saveContests(contests);
+    clearContestForm();
+    renderAdminContests();
+    populateContestFilter();
+    showAdminToast('✅ Contest saved!');
+  }
+
+  function clearContestForm(){
+    ['ct_editId','ct_title','ct_prize','ct_theme','ct_endDate','ct_desc'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+  }
+
+  function editContest(id){
+    var c = getContests().find(function(x){ return x.id===id; });
+    if(!c) return;
+    document.getElementById('ct_editId').value  = c.id;
+    document.getElementById('ct_title').value   = c.title||'';
+    document.getElementById('ct_prize').value   = c.prize||'';
+    document.getElementById('ct_theme').value   = c.theme||'';
+    document.getElementById('ct_endDate').value = c.endDate||'';
+    document.getElementById('ct_desc').value    = c.description||'';
+    document.querySelector('#tab-contest').scrollIntoView({behavior:'smooth'});
+  }
+
+  function toggleContestActive(id){
+    var contests = getContests();
+    var c = contests.find(function(x){ return x.id===id; });
+    if(c) c.active = !c.active;
+    saveContests(contests);
+    renderAdminContests();
+    showAdminToast(c.active ? '✅ Contest activated.' : '⏸️ Contest deactivated.');
+  }
+
+  function deleteContest(id){
+    if(!confirm('Delete this contest and all its entries?')) return;
+    saveContests(getContests().filter(function(c){ return c.id!==id; }));
+    saveEntries(getEntries().filter(function(e){ return e.contestId!==id; }));
+    renderAdminContests();
+    renderAdminEntries();
+    populateContestFilter();
+    showAdminToast('🗑️ Contest deleted.');
+  }
+
+  function markWinner(entryId){
+    var entries = getEntries();
+    var entry = entries.find(function(e){ return e.id===entryId; });
+    if(!entry) return;
+    // Toggle winner
+    entries.forEach(function(e){ if(e.contestId===entry.contestId) e.winner=false; });
+    entry.winner = true;
+    saveEntries(entries);
+    renderAdminEntries();
+    showAdminToast('🏆 Winner marked: '+entry.name);
+  }
+
+  function deleteEntry(entryId){
+    if(!confirm('Delete this entry?')) return;
+    saveEntries(getEntries().filter(function(e){ return e.id!==entryId; }));
+    renderAdminEntries();
+    showAdminToast('🗑️ Entry deleted.');
+  }
+
+  function renderAdminContests(){
+    var list = document.getElementById('ctAdminList');
+    if(!list) return;
+    var contests = getContests();
+    if(!contests.length){ list.innerHTML='<div style="color:rgba(255,255,255,0.2);padding:1.5rem;text-align:center;">No contests yet.</div>'; return; }
+    var entries = getEntries();
+    list.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">'
+      +'<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.15);">'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Title</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Prize</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Ends</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Entries</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Status</th>'
+      +'<th style="padding:0.6rem;"></th>'
+      +'</tr></thead><tbody>'
+      + contests.map(function(c){
+          var cnt = entries.filter(function(e){ return e.contestId===c.id; }).length;
+          var expired = new Date(c.endDate) < new Date();
+          var status = !c.active ? 'Inactive' : expired ? 'Ended' : 'Active';
+          var statusColor = status==='Active' ? '#10b981' : status==='Ended' ? '#f59e0b' : '#9a9080';
+          return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">'
+            +'<td style="padding:0.7rem;">'+c.title+'</td>'
+            +'<td style="padding:0.7rem;color:var(--gold);">'+c.prize+'</td>'
+            +'<td style="padding:0.7rem;color:var(--muted);">'+c.endDate+'</td>'
+            +'<td style="padding:0.7rem;">'+cnt+'</td>'
+            +'<td style="padding:0.7rem;"><span style="color:'+statusColor+';font-weight:700;font-size:0.75rem;">'+status+'</span></td>'
+            +'<td style="padding:0.7rem;"><div style="display:flex;gap:0.4rem;">'
+              +'<button onclick="editContest(\''+c.id+'\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);border-radius:6px;padding:0.3rem 0.7rem;font-size:0.75rem;cursor:pointer;"><i class="fas fa-edit"></i></button>'
+              +'<button onclick="toggleContestActive(\''+c.id+'\')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;border-radius:6px;padding:0.3rem 0.7rem;font-size:0.75rem;cursor:pointer;">'+(c.active?'Deactivate':'Activate')+'</button>'
+              +'<button onclick="deleteContest(\''+c.id+'\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171;border-radius:6px;padding:0.3rem 0.7rem;font-size:0.75rem;cursor:pointer;"><i class="fas fa-trash"></i></button>'
+            +'</div></td>'
+          +'</tr>';
+        }).join('')
+      +'</tbody></table>';
+  }
+
+  function populateContestFilter(){
+    var sel = document.getElementById('ctFilterContest');
+    if(!sel) return;
+    var contests = getContests();
+    sel.innerHTML = '<option value="">All Contests</option>'
+      + contests.map(function(c){ return '<option value="'+c.id+'">'+c.title+'</option>'; }).join('');
+  }
+
+  function renderAdminEntries(){
+    var table = document.getElementById('ctEntriesTable');
+    if(!table) return;
+    var filterContest = (document.getElementById('ctFilterContest')||{}).value||'';
+    var search = ((document.getElementById('ctSearchEntry')||{}).value||'').toLowerCase();
+    var entries = getEntries().filter(function(e){
+      return (!filterContest || e.contestId===filterContest)
+          && (!search || e.name.toLowerCase().includes(search));
+    }).sort(function(a,b){ return b.votes-a.votes; });
+
+    if(!entries.length){ table.innerHTML='<div style="color:rgba(255,255,255,0.2);padding:1.5rem;text-align:center;">No entries found.</div>'; return; }
+    var contests = getContests();
+    table.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">'
+      +'<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.15);">'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Name</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Phone</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Contest</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Votes</th>'
+      +'<th style="padding:0.6rem;text-align:left;color:var(--muted);">Winner</th>'
+      +'<th style="padding:0.6rem;"></th>'
+      +'</tr></thead><tbody>'
+      + entries.map(function(e){
+          var contest = contests.find(function(c){ return c.id===e.contestId; });
+          return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(e.winner?'background:rgba(201,168,76,0.04);':'')+'">' 
+            +'<td style="padding:0.7rem;font-weight:600;">'+e.name+(e.winner?' 🏆':'')+'</td>'
+            +'<td style="padding:0.7rem;color:var(--muted);">'+e.phone+'</td>'
+            +'<td style="padding:0.7rem;color:var(--muted);font-size:0.78rem;">'+(contest?contest.title:'—')+'</td>'
+            +'<td style="padding:0.7rem;color:var(--gold);font-weight:700;">'+e.votes+'</td>'
+            +'<td style="padding:0.7rem;"><span style="color:'+(e.winner?'#f59e0b':'rgba(255,255,255,0.2)')+';font-weight:700;">'+(e.winner?'Winner':'—')+'</span></td>'
+            +'<td style="padding:0.7rem;"><div style="display:flex;gap:0.4rem;">'
+              +'<button onclick="markWinner(\''+e.id+'\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);border-radius:6px;padding:0.3rem 0.7rem;font-size:0.72rem;cursor:pointer;"><i class="fas fa-crown"></i> Winner</button>'
+              +'<button onclick="deleteEntry(\''+e.id+'\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171;border-radius:6px;padding:0.3rem 0.7rem;font-size:0.72rem;cursor:pointer;"><i class="fas fa-trash"></i></button>'
+            +'</div></td>'
+          +'</tr>';
+        }).join('')
+      +'</tbody></table>';
+  }
+
+  function showAdminToast(msg){
+    var t = document.getElementById('ctAdminToast');
+    if(!t) return;
+    t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+    t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 3000);
+  }
   </script>
 </body>
 </html>

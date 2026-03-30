@@ -1066,6 +1066,86 @@
 
 
 
+  <!-- UPCOMING SHOOT EVENT -->
+  <section id="upcomingShootSection" style="display:none;background:#080808;padding:5rem 0;position:relative;overflow:hidden;">
+    <style>
+      .ue-inner{max-width:900px;margin:0 auto;padding:0 2rem;}
+      .ue-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .ue-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;}
+      .ue-title span{color:#c9a84c;}
+      .ue-card{background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:24px;padding:2.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2.5rem;position:relative;overflow:hidden;}
+      .ue-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);}
+      .ue-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.75rem;}
+      .ue-icon{width:56px;height:56px;border-radius:16px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#c9a84c;}
+      .ue-label{font-size:0.65rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:3px;text-transform:uppercase;}
+      .ue-value{font-size:1.2rem;font-weight:800;color:#fff;}
+      .ue-sub{font-size:0.8rem;color:#9a9080;}
+      .ue-title-text{font-size:0.9rem;color:#c9a84c;font-weight:600;margin-bottom:1rem;text-align:center;}
+      @media(max-width:600px){.ue-card{grid-template-columns:1fr;gap:1.5rem;}}
+    </style>
+    <div class="ue-inner">
+      <div style="text-align:center;">
+        <div class="ue-eyebrow"><i class="fas fa-calendar-star"></i> Upcoming Event</div>
+        <h2 class="ue-title">Next <span>Shoot Session</span></h2>
+      </div>
+      <div id="ueShootTitle" class="ue-title-text"></div>
+      <div class="ue-card">
+        <div class="ue-item">
+          <div class="ue-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="ue-label">Place</div>
+          <div class="ue-value" id="uePlace">—</div>
+        </div>
+        <div class="ue-item">
+          <div class="ue-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="ue-label">Date</div>
+          <div class="ue-value" id="ueDate">—</div>
+          <div class="ue-sub" id="ueDay"></div>
+        </div>
+        <div class="ue-item">
+          <div class="ue-icon"><i class="fas fa-clock"></i></div>
+          <div class="ue-label">Time</div>
+          <div class="ue-value" id="ueTime">—</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function(){
+      var demos = JSON.parse(localStorage.getItem('hs_demos') || '[]');
+      var today = new Date(); today.setHours(0,0,0,0);
+      // Find the next upcoming demo (date >= today)
+      var upcoming = demos
+        .filter(function(d){ return d.date && new Date(d.date) >= today; })
+        .sort(function(a,b){ return new Date(a.date) - new Date(b.date); })[0];
+      if(!upcoming) return;
+      var sec = document.getElementById('upcomingShootSection');
+      if(sec) sec.style.display = 'block';
+      // Title
+      var titleEl = document.getElementById('ueShootTitle');
+      if(titleEl && upcoming.title) titleEl.textContent = upcoming.title;
+      // Place
+      var placeEl = document.getElementById('uePlace');
+      if(placeEl) placeEl.textContent = upcoming.place || '—';
+      // Date
+      var d = new Date(upcoming.date);
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var dateEl = document.getElementById('ueDate');
+      var dayEl  = document.getElementById('ueDay');
+      if(dateEl) dateEl.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+      if(dayEl)  dayEl.textContent  = days[d.getDay()];
+      // Time
+      var timeEl = document.getElementById('ueTime');
+      if(timeEl && upcoming.time){
+        var parts = upcoming.time.split(':');
+        var h = parseInt(parts[0]); var m = parts[1];
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        timeEl.textContent = h + ':' + m + ' ' + ampm;
+      }
+    })();
+  </script>
+
   <section class="app-cta-section">
     <style>
       .app-cta-section{background:linear-gradient(135deg,#0a0a0a 0%,#111111 50%,#0a0a0a 100%);padding:5rem 0;position:relative;overflow:hidden;}
@@ -1679,7 +1759,51 @@
 
     var tagline='<div style="font-size:0.62rem;color:rgba(201,168,76,0.4);letter-spacing:3px;text-transform:uppercase;animation:LFU 0.8s ease 0.7s both;">'+tag+'</div>';
 
-    p3.innerHTML = liveBadge + brandHtml + divider + cards + tagline;
+    /* -- UPCOMING SHOOT INFO -- */
+    var eventBlock = '';
+    try {
+      var _demos = JSON.parse(localStorage.getItem('hs_demos')||'[]');
+      var _today = new Date(); _today.setHours(0,0,0,0);
+      var _next = _demos.filter(function(d){ return d.date && new Date(d.date) >= _today; })
+                        .sort(function(a,b){ return new Date(a.date)-new Date(b.date); })[0];
+      if(_next){
+        var _d = new Date(_next.date);
+        var _days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var _dateStr = _days[_d.getDay()]+', '+_d.getDate()+' '+_months[_d.getMonth()]+' '+_d.getFullYear();
+        var _timeStr = '';
+        if(_next.time){
+          var _tp=_next.time.split(':'); var _h=parseInt(_tp[0]); var _m=_tp[1];
+          _timeStr = (_h%12||12)+':'+_m+' '+(_h>=12?'PM':'AM');
+        }
+        var _placeStr = _next.place || '';
+        eventBlock = '<div style="margin:1rem 0 0.75rem;animation:LFU 0.8s ease 0.55s both;">'
+          +(_next.title ? '<div style="font-size:0.72rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">'+_next.title+'</div>' : '')
+          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">'
+            /* Place */
+            +(_placeStr ? '<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
+              +'<div style="font-size:1rem;margin-bottom:0.3rem;">📍</div>'
+              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Place</div>'
+              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_placeStr+'</div>'
+            +'</div>' : '<div></div>')
+            /* Date & Day */
+            +'<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
+              +'<div style="font-size:1rem;margin-bottom:0.3rem;">📅</div>'
+              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Date</div>'
+              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_dateStr+'</div>'
+            +'</div>'
+            /* Time */
+            +(_timeStr ? '<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
+              +'<div style="font-size:1rem;margin-bottom:0.3rem;">🕐</div>'
+              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Time</div>'
+              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_timeStr+'</div>'
+            +'</div>' : '<div></div>')
+          +'</div>'
+        +'</div>';
+      }
+    } catch(e){}
+
+    p3.innerHTML = liveBadge + brandHtml + divider + cards + eventBlock + tagline;
     ov.appendChild(p3);
     document.body.appendChild(ov);
 
