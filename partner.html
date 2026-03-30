@@ -450,11 +450,196 @@
 
   <!-- CTA -->
   <div class="cta-section" id="apply">
-    <div class="pill" style="justify-content:center;"><i class="fas fa-mobile-alt"></i> Get Started</div>
-    <h2>Ready to Start?</h2>
-    <p>Download the OG SHOOTS Partner App and complete your onboarding. All onboarding is done through the app.</p>
-    <a href="#" class="hero-cta">Download Partner App &nbsp;→</a>
+    <div class="pill" style="justify-content:center;"><i class="fas fa-mobile-alt"></i> Apply Now</div>
+    <h2>Join OG SHOOTS</h2>
+    <p style="margin-bottom:2.5rem;">Fill in the form below and our team will get back to you within 24 hours.</p>
+
+    <div style="max-width:620px;margin:0 auto;background:rgba(10,10,10,0.85);border:1px solid rgba(201,168,76,0.2);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.06) inset;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>
+
+      <form id="partnerForm" onsubmit="submitPartnerForm(event)">
+
+        <!-- Full Name -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Full Name <span style="color:#c9a84c;">*</span></label>
+          <input type="text" id="pf_name" required placeholder="Enter your full name"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"/>
+        </div>
+
+        <!-- Email ID -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Email ID <span style="color:#c9a84c;">*</span></label>
+          <input type="email" id="pf_email" required placeholder="your@email.com"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"/>
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">WhatsApp Number <span style="color:#c9a84c;">*</span></label>
+          <input type="tel" id="pf_phone" required placeholder="+91 XXXXX XXXXX"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"/>
+        </div>
+
+        <!-- City & Area -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">City &amp; Area <span style="color:#c9a84c;">*</span></label>
+          <input type="text" id="pf_city" required placeholder="e.g. Vijayawada, Benz Circle"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"/>
+        </div>
+
+        <!-- Instagram / Reel Samples -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Instagram Profile / Reel Samples</label>
+          <input type="text" id="pf_instagram" placeholder="@yourhandle or link to reels"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"/>
+        </div>
+
+        <!-- Which iPhone -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Which iPhone do you use? <span style="color:#c9a84c;">*</span></label>
+          <select id="pf_iphone" required
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;appearance:none;cursor:pointer;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'">
+            <option value="" disabled selected>Select your iPhone model</option>
+            <option>iPhone 16 Pro Max</option>
+            <option>iPhone 16 Pro</option>
+            <option>iPhone 16 Plus</option>
+            <option>iPhone 16</option>
+            <option>iPhone 15 Pro Max</option>
+            <option>iPhone 15 Pro</option>
+            <option>iPhone 15 Plus</option>
+            <option>iPhone 15</option>
+            <option>iPhone 14 Pro Max</option>
+            <option>iPhone 14 Pro</option>
+            <option>iPhone 14</option>
+            <option>iPhone 13 Pro Max</option>
+            <option>iPhone 13 Pro</option>
+            <option>iPhone 13</option>
+            <option>iPhone 12 or older</option>
+            <option>I don't have an iPhone</option>
+          </select>
+        </div>
+
+        <!-- Edited a reel before -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Have you edited a reel before? <span style="color:#c9a84c;">*</span></label>
+          <div style="display:flex;gap:0.75rem;">
+            <label style="flex:1;display:flex;align-items:center;gap:0.6rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;cursor:pointer;font-size:0.9rem;color:#d0c8b8;transition:border-color 0.2s;" id="pf_reel_yes_lbl">
+              <input type="radio" name="pf_reel" value="Yes" required style="accent-color:#c9a84c;" onchange="highlightRadio()"/> Yes
+            </label>
+            <label style="flex:1;display:flex;align-items:center;gap:0.6rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;cursor:pointer;font-size:0.9rem;color:#d0c8b8;transition:border-color 0.2s;" id="pf_reel_no_lbl">
+              <input type="radio" name="pf_reel" value="No" style="accent-color:#c9a84c;" onchange="highlightRadio()"/> No
+            </label>
+          </div>
+        </div>
+
+        <!-- Edit App -->
+        <div style="margin-bottom:1.1rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">What app do you edit with?</label>
+          <select id="pf_app"
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;appearance:none;cursor:pointer;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'">
+            <option value="" selected>Select editing app</option>
+            <option>CapCut</option>
+            <option>Instagram</option>
+            <option>InShot</option>
+            <option>VN Video Editor</option>
+            <option>Adobe Premiere Rush</option>
+            <option>Final Cut Pro</option>
+            <option>iMovie</option>
+            <option>Other</option>
+            <option>I don't edit yet</option>
+          </select>
+        </div>
+
+        <!-- Why join -->
+        <div style="margin-bottom:1.75rem;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.45rem;">Why do you want to join? <span style="color:#c9a84c;">*</span></label>
+          <textarea id="pf_why" required rows="4" placeholder="Tell us about yourself and why you want to be an OG SHOOTS creator..."
+            style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;resize:vertical;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(201,168,76,0.15)'"></textarea>
+        </div>
+
+        <!-- Success msg -->
+        <div id="pf_success" style="display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#4caf50;font-weight:600;font-size:0.9rem;">
+          <i class="fas fa-check-circle"></i> Application submitted! We'll contact you within 24 hours.
+        </div>
+        <div id="pf_error" style="display:none;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#f44336;font-weight:600;font-size:0.9rem;"></div>
+
+        <!-- Submit -->
+        <button type="submit" id="pf_btn"
+          style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1.1rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;letter-spacing:0.3px;">
+          <i class="fas fa-paper-plane"></i> Submit Application
+        </button>
+
+      </form>
+    </div>
   </div>
+
+  <script>
+  function highlightRadio(){
+    var yes = document.querySelector('input[name="pf_reel"][value="Yes"]');
+    var no  = document.querySelector('input[name="pf_reel"][value="No"]');
+    document.getElementById('pf_reel_yes_lbl').style.borderColor = yes.checked ? '#c9a84c' : 'rgba(201,168,76,0.15)';
+    document.getElementById('pf_reel_no_lbl').style.borderColor  = no.checked  ? '#c9a84c' : 'rgba(201,168,76,0.15)';
+  }
+
+  async function submitPartnerForm(e){
+    e.preventDefault();
+    var btn = document.getElementById('pf_btn');
+    var err = document.getElementById('pf_error');
+    var suc = document.getElementById('pf_success');
+    err.style.display='none'; suc.style.display='none';
+    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    var data = {
+      name:      document.getElementById('pf_name').value.trim(),
+      email:     document.getElementById('pf_email').value.trim(),
+      phone:     document.getElementById('pf_phone').value.trim(),
+      city:      document.getElementById('pf_city').value.trim(),
+      instagram: document.getElementById('pf_instagram').value.trim(),
+      iphone:    document.getElementById('pf_iphone').value,
+      editedReel:document.querySelector('input[name="pf_reel"]:checked')?.value || 'Not answered',
+      editApp:   document.getElementById('pf_app').value,
+      why:       document.getElementById('pf_why').value.trim(),
+      submittedAt: new Date().toLocaleString()
+    };
+
+    // Save to localStorage
+    var apps = JSON.parse(localStorage.getItem('hs_partner_apps')||'[]');
+    apps.push(Object.assign({id:Date.now()},data));
+    localStorage.setItem('hs_partner_apps', JSON.stringify(apps));
+
+    // Save to Firebase
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='partner-form';})||fbMod.initializeApp(fbCfg,'partner-form');
+      var db      = fbStore.getFirestore(app);
+      await fbStore.addDoc(fbStore.collection(db,'partner_applications'), Object.assign({createdAt:fbStore.serverTimestamp()},data));
+    }catch(e){ console.error('Firebase partner form error:',e); }
+
+    // Send email via Formspree
+    try{
+      var fd = new FormData();
+      Object.keys(data).forEach(function(k){ fd.append(k,data[k]); });
+      fd.append('_subject','New Partner Application — '+data.name+' | '+data.city);
+      fd.append('_replyto', data.email);
+      await fetch('https://formspree.io/f/xpwzgvkd',{method:'POST',body:fd,headers:{Accept:'application/json'}});
+    }catch(e){}
+
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Application';
+    suc.style.display='block';
+    document.getElementById('partnerForm').reset();
+    highlightRadio();
+  }
+  </script>
 
   </div><!-- end page-bg -->
 

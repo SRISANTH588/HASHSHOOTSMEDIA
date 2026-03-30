@@ -164,6 +164,7 @@
       <button class="tab-btn" onclick="switchTab('press',this)"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+      <button class="tab-btn" onclick="switchTab('partner-apps',this)"><i class="fas fa-users"></i> Partner Apps</button>
 
     </div>
 
@@ -1643,6 +1644,20 @@
       </div>
     </div>
 
+    <!-- PARTNER APPS TAB -->
+    <div class="tab-panel" id="tab-partner-apps">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-users" style="color:#c9a84c;margin-right:0.5rem;"></i> Partner Applications</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#9a9080;" id="partnerAppsCount"></span>
+            <button onclick="renderPartnerApps()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <div id="partnerAppsList"></div>
+      </div>
+    </div>
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2046,6 +2061,7 @@
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
+      if (tab === 'partner-apps') renderPartnerApps();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -4555,6 +4571,53 @@
           +(a.audience?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;">'+a.audience+'</div>':'')
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
           +'</div>';
+      }).join('');
+    }
+
+    async function renderPartnerApps(){
+      var countEl = document.getElementById('partnerAppsCount');
+      var el = document.getElementById('partnerAppsList');
+      if(!el) return;
+      el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+      var list = [];
+      // Load from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='pa-admin';})||fbMod.initializeApp(fbCfg,'pa-admin');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'partner_applications'),fbStore.orderBy('createdAt','desc')));
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+      }catch(e){
+        // Fallback to localStorage
+        list = JSON.parse(localStorage.getItem('hs_partner_apps')||'[]').slice().reverse();
+      }
+      if(countEl) countEl.textContent = list.length+' application(s)';
+      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No partner applications yet.</p>'; return; }
+      var fields = [
+        {k:'email',l:'Email'},
+        {k:'phone',l:'WhatsApp'},
+        {k:'city',l:'City & Area'},
+        {k:'instagram',l:'Instagram'},
+        {k:'iphone',l:'iPhone'},
+        {k:'editedReel',l:'Edited Reel?'},
+        {k:'editApp',l:'Edit App'},
+        {k:'why',l:'Why Join'}
+      ];
+      el.innerHTML = list.map(function(a){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+a.name+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;">'+( a.submittedAt||'')+'</div>'
+          +'</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;">'
+          +fields.map(function(f){
+            var val = a[f.k]||'—';
+            return '<div><span style="font-size:0.62rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:1px;text-transform:uppercase;">'+f.l+'</span>'
+              +'<div style="font-size:0.82rem;color:#d0c8b8;margin-top:0.1rem;word-break:break-word;">'+val+'</div></div>';
+          }).join('')
+          +'</div></div>';
       }).join('');
     }
 
