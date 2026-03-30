@@ -105,6 +105,7 @@
       .ct-active-banner{flex-direction:column;}
       .ct-stats{gap:1.5rem;}
     }
+    #enterContest, #entries, #pastSection { scroll-margin-top: 80px; }
   </style>
 </head>
 <body>
@@ -114,10 +115,10 @@
   <h1>Show Your <span>Best Shot</span></h1>
   <p>Submit your best reel or photo, get votes from the community, and win exciting prizes from OG Shoots.</p>
   <div class="ct-hero-btns">
-    <button class="ct-btn ct-btn-gold" onclick="document.getElementById('enterContest').scrollIntoView({behavior:'smooth'})">
+    <button class="ct-btn ct-btn-gold" onclick="scrollTo('enterContest')">
       <i class="fas fa-upload"></i> Enter Now
     </button>
-    <button class="ct-btn ct-btn-outline" onclick="document.getElementById('entries').scrollIntoView({behavior:'smooth'})">
+    <button class="ct-btn ct-btn-outline" onclick="scrollTo('entries')">
       <i class="fas fa-images"></i> View Entries
     </button>
   </div>
@@ -152,6 +153,14 @@
 <div class="ct-toast" id="ctToast"></div>
 
 <script>
+  // ── Scroll helper ──
+  function scrollTo(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
   // ── Helpers ──
   function getContests(){ return JSON.parse(localStorage.getItem('hs_contests')||'[]'); }
   function saveContests(d){ localStorage.setItem('hs_contests',JSON.stringify(d)); }
