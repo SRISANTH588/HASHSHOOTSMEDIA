@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <script src="nav.js"></script>
@@ -99,7 +101,7 @@
 
     /* LOGO */
     .og-logo{
-      font-family:'Playfair Display',serif;
+      font-family:"Playfair Display",serif;
       font-size:clamp(3rem,10vw,6rem);font-weight:900;
       letter-spacing:6px;line-height:1;
       margin-bottom:0.2rem;
@@ -139,7 +141,7 @@
     }
     @keyframes ogRingSpin{to{transform:rotate(360deg);}}
     .og-count{
-      font-family:'Playfair Display',serif;
+      font-family:"Playfair Display",serif;
       font-size:clamp(4.5rem,16vw,9rem);font-weight:900;
       color:#c9a84c;line-height:1;
       text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);
@@ -366,7 +368,7 @@
       +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
         /* crown icon */
         +'<div id="ogCrown" style="font-size:clamp(1.4rem,3vw,2rem);color:#c9a84c;margin-bottom:0.6rem;opacity:0;transform:translateY(-12px) scale(0.7);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 12px rgba(201,168,76,0.8));">&#9670;</div>'
-        +'<div id="ogLogoWrap" style="display:flex;align-items:center;justify-content:center;gap:0.15em;line-height:1;margin-bottom:0.2rem;"></div>'
+        +'<div id="ogLogoWrap" style="display:flex;align-items:center;justify-content:center;gap:0.08em;line-height:1;margin-bottom:0.2rem;"></div>'
         +'<div id="ogLuxeTag" style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:12px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">&#10022;&nbsp; LUXE &nbsp;&#10022;</div>'
         +'<div id="ogDivider" style="width:0px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 1.2rem;transition:width 1s cubic-bezier(0.25,1,0.5,1);"></div>'
         +'<div id="ogTagline" style="font-size:clamp(0.7rem,1.6vw,0.85rem);color:rgba(240,236,224,0.6);letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:2rem;opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">India&rsquo;s Premium Content Studio</div>'
@@ -413,8 +415,8 @@
       +'@keyframes ogRippleOut{0%{width:0;height:0;opacity:0.5;}100%{width:320px;height:320px;opacity:0;}}'
       +'.og-letter{display:inline-block;opacity:0;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;}'
       +'.og-word-og{color:#c9a84c;}'
-      +'.og-letter-gold{font-family:"Cormorant Garamond",serif;font-size:clamp(5rem,18vw,10rem);font-weight:700;font-style:italic;background:linear-gradient(160deg,#f5d78e 0%,#c9a84c 40%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(201,168,76,0.55));animation:ogLetterIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards;display:inline-block;opacity:0;line-height:0.9;}'
-      +'.og-word-shoots{font-family:"Cormorant Garamond",serif;font-size:clamp(1.6rem,5vw,3.2rem);font-weight:600;color:#f0ece0;letter-spacing:0.35em;text-transform:uppercase;align-self:flex-end;padding-bottom:0.18em;text-shadow:0 2px 20px rgba(0,0,0,0.8);}';
+      +'.og-letter-gold{font-family:"Playfair Display",serif;font-size:clamp(8rem,26vw,15rem);font-weight:900;font-style:italic;background:linear-gradient(160deg,#fff8e7 0%,#f5d78e 20%,#e8c96a 45%,#c9a84c 70%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(201,168,76,0.7)) drop-shadow(0 6px 20px rgba(0,0,0,0.95));animation:ogLetterIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;display:inline-block;opacity:0;line-height:0.82;}'
+      +'.og-word-shoots{font-family:"Tenor Sans",sans-serif;font-size:clamp(1.4rem,4.5vw,2.8rem);font-weight:400;color:#e8e0d0;letter-spacing:0.55em;text-transform:uppercase;align-self:flex-end;padding-bottom:0.22em;text-shadow:0 2px 24px rgba(0,0,0,0.9);}';
     document.head.appendChild(st);
 
     // Film grain
@@ -1496,7 +1498,7 @@
       .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
       .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
       .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
-      .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
+      .svc-h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
       .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
       .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.8;max-width:900px;margin:0 auto;white-space:nowrap;}
       .svc-header-cta{display:none;}
@@ -1517,7 +1519,7 @@
       /* badge */
       .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.55rem;font-weight:700;padding:0.18rem 0.6rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
       /* text */
-      .svc-name{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
+      .svc-name{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
       .svc-desc{font-size:0.82rem;color:#5a5040;line-height:1.85;flex:1;margin-bottom:2.5rem;}
       /* price */
       .svc-price-row{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.06);}
@@ -1762,7 +1764,7 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">X</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform. Book top shooters near you instantly.</p>
           <div class="contact-details">
             <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
