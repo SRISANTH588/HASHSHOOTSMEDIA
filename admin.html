@@ -2459,23 +2459,26 @@ Priority Support</textarea></div>
             : '<button onclick="pushStaffVideoToVibe('+String(v.id)+')" style="background:linear-gradient(135deg,#c9a84c,#a07830);border:none;color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-fire"></i> Push to Vibe</button>')
           +'<button onclick="adminDeleteStaffVideo('+String(v.id)+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
+        grid.appendChild(card);
+        // Append to DOM first, then replace placeholder
         if(v.cloudUrl){
-          var ph = document.getElementById('svp_'+v.id);
+          var ph = card.querySelector('#svp_'+v.id);
           if(ph){ var vid2=document.createElement('video'); vid2.src=v.cloudUrl; vid2.controls=true; vid2.preload='metadata'; vid2.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid2); }
         } else {
-          openAdminVideoDB(function(db){
-            if(!db) return;
-            var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-            req.onsuccess = function(){
-              if(req.result && req.result.blob){
-                var url = URL.createObjectURL(req.result.blob);
-                var placeholder = document.getElementById('svp_'+v.id);
-                if(placeholder){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; placeholder.replaceWith(vid); }
-              }
-            };
-          });
+          (function(videoId){
+            openAdminVideoDB(function(db){
+              if(!db) return;
+              var req = db.transaction('videos','readonly').objectStore('videos').get(videoId);
+              req.onsuccess = function(){
+                if(req.result && req.result.blob){
+                  var url = URL.createObjectURL(req.result.blob);
+                  var placeholder = document.getElementById('svp_'+videoId);
+                  if(placeholder){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; placeholder.replaceWith(vid); }
+                }
+              };
+            });
+          })(v.id);
         }
-        grid.appendChild(card);
       });
     }
 
