@@ -107,6 +107,14 @@
     }
     #enterContest, #entries, #pastSection { scroll-margin-top: 80px; }
   </style>
+  <script>
+    function scrollToSection(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  </script>
 </head>
 <body>
 
@@ -153,14 +161,6 @@
 <div class="ct-toast" id="ctToast"></div>
 
 <script>
-  // ── Scroll helper ──
-  function scrollToSection(id){
-    var el = document.getElementById(id);
-    if(!el) return;
-    var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
-    window.scrollTo({ top: top, behavior: 'smooth' });
-  }
-
   // ── Helpers ──
   function getContests(){ return JSON.parse(localStorage.getItem('hs_contests')||'[]'); }
   function saveContests(d){ localStorage.setItem('hs_contests',JSON.stringify(d)); }
