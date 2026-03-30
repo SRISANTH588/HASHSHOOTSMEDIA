@@ -1987,12 +1987,35 @@ Priority Support</textarea></div>
     function updateStatus(id, status) {
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       const idx = bookings.findIndex(b=>String(b.id)===String(id));
-      if(idx>-1) { bookings[idx].status=status; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); }
+      if(idx === -1) return;
+
+      var payAmount = bookings[idx].payAmount || 0;
+
+      // When confirming, prompt for payment amount
+      if(status === 'confirmed'){
+        var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
+        var defaultAmt = bookings[idx].payAmount || rp.defaultAmount || '';
+        var amtInput = prompt('Enter payment amount (₹) to charge the customer via Razorpay:\n(Leave blank to skip — customer will see "Payment link coming soon")', defaultAmt);
+        if(amtInput === null) return; // cancelled
+        payAmount = parseInt(amtInput, 10) || 0;
+        bookings[idx].payAmount = payAmount;
+        bookings[idx].paymentStatus = 'pending';
+      }
+
+      bookings[idx].status = status;
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
       const completed = bookings.filter(b=>b.status==='completed').length;
       localStorage.setItem('hs_reels_delivered', 50000+completed);
       localStorage.setItem('hs_reel_makers', 500+Math.floor(completed/2));
       // Sync to Firebase
-      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status},{ merge:true }); }catch(e){} })();
+      (async()=>{
+        var f = await _fbAdmin(); if(!f) return;
+        try{
+          var update = {status};
+          if(status === 'confirmed'){ update.payAmount = payAmount; update.paymentStatus = 'pending'; }
+          await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)), update, {merge:true});
+        }catch(e){}
+      })();
       loadAll();
     }
 
@@ -4501,6 +4524,13 @@ Priority Support</textarea></div>
       var q = enquiries.find(function(e){ return String(e.id)===String(id); });
       if(!q || q.accepted) return;
       if(!confirm('Accept this enquiry and add to Bookings?')) return;
+
+      // Prompt admin for payment amount
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
+      var defaultAmt = rp.defaultAmount || '';
+      var amtInput = prompt('Enter payment amount (₹) to charge the customer via Razorpay:\n(Leave blank to skip — customer will see "Payment link coming soon")', defaultAmt);
+      var payAmount = amtInput !== null ? parseInt(amtInput, 10) || 0 : 0;
+
       enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{accepted:true}) : e; });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
       var msg = q.message||'';
@@ -4510,7 +4540,7 @@ Priority Support</textarea></div>
       var plan     = ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim();
       var datePart = ((msg.match(/Date:\s*([^|]+at)/)||[])[1]||'').replace(/\s*at\s*$/,'').trim();
       var timePart = ((msg.match(/at\s+(\S.*)$/)||[])[1]||'').trim();
-      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:q.email||'', service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'confirmed', createdAt:q.submittedAt||new Date().toLocaleString() };
+      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:q.email||'', service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'confirmed', payAmount:payAmount, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       if(!bookings.find(function(b){ return String(b.id)===String(bk.id); })){
         bookings.push(bk);
@@ -4524,12 +4554,12 @@ Priority Support</textarea></div>
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
           var fbDb = fbStore.getFirestore(fbApp);
-          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), {name:bk.name,phone:bk.phone,email:bk.email,service:bk.service,city:bk.city,location:bk.location,date:bk.date,time:bk.time,plan:bk.plan,status:'confirmed',createdAt:fbStore.serverTimestamp()});
+          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), {name:bk.name,phone:bk.phone,email:bk.email,service:bk.service,city:bk.city,location:bk.location,date:bk.date,time:bk.time,plan:bk.plan,status:'confirmed',payAmount:payAmount,paymentStatus:'pending',createdAt:fbStore.serverTimestamp()});
           if(String(id).length > 15) await fbStore.setDoc(fbStore.doc(fbDb,'enquiries',String(id)),{accepted:true},{merge:true});
         } catch(e){ console.error('acceptEnquiry error:',e); }
       })();
       renderEnquiries();
-      alert('Accepted! Now visible in Bookings tab.');
+      alert('Accepted! Booking confirmed' + (payAmount ? ' with payment of ₹' + payAmount.toLocaleString('en-IN') + '. Customer will see Pay Now button.' : '. No payment amount set.'));
     }
 
     function deleteEnquiry(id){
