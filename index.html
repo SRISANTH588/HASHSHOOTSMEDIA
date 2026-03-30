@@ -1167,7 +1167,7 @@
 
       <!-- WEDDING PLANS -->
       <div class="bs-panel" id="bsPanel_wedding">
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
 
           <!-- BASIC -->
           <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;">
@@ -1272,6 +1272,13 @@
 
         </div>
       </div>
+
+    </div>
+  </section>
+  <script>
+    (function(){
+      var cards = document.querySelectorAll('.bs-anim');
+      var io = new IntersectionObserver(function(entries){
         entries.forEach(function(e){
           if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
         });
