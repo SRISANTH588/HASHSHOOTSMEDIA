@@ -280,6 +280,33 @@
       <div id="demoFeedbackList"></div>
     </div>
 
+    <!-- APP FEEDBACK -->
+    <div id="appFeedbackSection" style="display:none;margin-top:2rem;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;">&#128172; Rate the App</h2>
+      <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">How's your experience with OG SHOOTS? Your feedback helps us improve.</p>
+      <div id="appFeedbackDone" style="display:none;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:1.25rem;text-align:center;color:#4caf50;font-weight:700;margin-bottom:1rem;">
+        <i class="fas fa-check-circle" style="font-size:1.5rem;display:block;margin-bottom:0.5rem;"></i>Thanks for your feedback!
+      </div>
+      <div id="appFeedbackForm" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;">
+        <!-- Star rating -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.78rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;">Your Rating</div>
+          <div id="appStarRow" style="display:flex;gap:0.4rem;font-size:2rem;cursor:pointer;">
+            <span class="app-star" data-v="1" style="color:#333;transition:color 0.15s;">&#9733;</span>
+            <span class="app-star" data-v="2" style="color:#333;transition:color 0.15s;">&#9733;</span>
+            <span class="app-star" data-v="3" style="color:#333;transition:color 0.15s;">&#9733;</span>
+            <span class="app-star" data-v="4" style="color:#333;transition:color 0.15s;">&#9733;</span>
+            <span class="app-star" data-v="5" style="color:#333;transition:color 0.15s;">&#9733;</span>
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.78rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">Your Review <span style="color:#4a4030;font-weight:400;">(optional)</span></div>
+          <textarea id="appFeedbackText" placeholder="Tell us what you love or what we can improve..." style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;resize:vertical;min-height:90px;outline:none;"></textarea>
+        </div>
+        <button onclick="submitAppFeedback()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.85rem 2rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:0.5px;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+      </div>
+    </div>
+
     <!-- WALLET -->
     <div id="wallet" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Wallet</h2>
@@ -1034,6 +1061,51 @@
       document.querySelectorAll('.star[data-id="' + id + '"]').forEach(function(s){
         s.classList.toggle('active', Number(s.dataset.val) <= val);
       });
+    }
+
+    // ── APP FEEDBACK ──────────────────────────────────────────
+    var _appStarVal = 0;
+    (function(){
+      document.querySelectorAll('.app-star').forEach(function(s){
+        s.addEventListener('mouseover', function(){
+          var v = parseInt(s.dataset.v);
+          document.querySelectorAll('.app-star').forEach(function(x){
+            x.style.color = parseInt(x.dataset.v) <= v ? '#f5a623' : '#333';
+          });
+        });
+        s.addEventListener('mouseleave', function(){
+          document.querySelectorAll('.app-star').forEach(function(x){
+            x.style.color = parseInt(x.dataset.v) <= _appStarVal ? '#f5a623' : '#333';
+          });
+        });
+        s.addEventListener('click', function(){
+          _appStarVal = parseInt(s.dataset.v);
+          document.querySelectorAll('.app-star').forEach(function(x){
+            x.style.color = parseInt(x.dataset.v) <= _appStarVal ? '#f5a623' : '#333';
+          });
+        });
+      });
+    })();
+
+    function submitAppFeedback(){
+      if(!_appStarVal){ alert('Please select a star rating.'); return; }
+      var user = JSON.parse(localStorage.getItem('hs_customer_session')||'{}');
+      var item = {
+        name: user.name || 'Customer',
+        rating: _appStarVal,
+        text: (document.getElementById('appFeedbackText').value||'').trim(),
+        ts: Date.now()
+      };
+      var list = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]');
+      list.push(item);
+      localStorage.setItem('hs_app_feedback', JSON.stringify(list));
+      document.getElementById('appFeedbackForm').style.display = 'none';
+      document.getElementById('appFeedbackDone').style.display = 'block';
+    }
+
+    function showAppFeedbackSection(){
+      var sec = document.getElementById('appFeedbackSection');
+      if(sec) sec.style.display = 'block';
     }
 
     function renderShootFeedback(){
