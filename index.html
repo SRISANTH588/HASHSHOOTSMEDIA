@@ -1085,85 +1085,1709 @@
 
 
 
-  <!-- UPCOMING SHOOT EVENT -->
-  <section id="upcomingShootSection" style="display:none;background:#080808;padding:5rem 0;position:relative;overflow:hidden;">
+  <!-- APP LAUNCH SCREEN -->
+  <div id="ogLaunch" style="display:none;"></div>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@1,900&family=Tenor+Sans&display=swap');
+    #ogLaunch{
+      position:fixed;inset:0;z-index:999999;
+      background:transparent;
+      flex-direction:column;align-items:center;justify-content:center;
+      overflow:hidden;font-family:'Inter',sans-serif;
+    }
+    #ogLaunch.active{display:flex;}
+
+    /* CINEMATIC BARS */
+    .og-bar-top,.og-bar-bot{
+      position:absolute;left:0;right:0;height:80px;
+      background:#000;z-index:10;
+      transition:height 1.2s cubic-bezier(0.77,0,0.18,1);
+    }
+    .og-bar-top{top:0;}
+    .og-bar-bot{bottom:0;}
+    #ogLaunch.bars-open .og-bar-top,
+    #ogLaunch.bars-open .og-bar-bot{height:0;}
+
+    /* BG */
+    .og-bg-layer{
+      position:absolute;inset:0;z-index:0;
+      background:radial-gradient(ellipse 140% 100% at 50% -10%,rgba(201,168,76,0.22) 0%,transparent 60%),
+                 radial-gradient(ellipse 80% 60% at 80% 80%,rgba(201,168,76,0.08) 0%,transparent 60%),
+                 #050505;
+    }
+    .og-bg-img{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;opacity:0.8;transition:opacity 2s ease;}
+    #ogLaunch.congrats-mode .og-bg-img{opacity:1;}
+
+
+
+
+
+
+
+
+
+
+
+    /* GOLD LINES */
+    .og-lines{
+      position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;
+    }
+    .og-line{
+      position:absolute;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);
+      height:1px;width:100%;
+      animation:ogLineSweep 3s ease-in-out infinite;
+      opacity:0;
+    }
+    .og-line:nth-child(1){top:25%;animation-delay:0s;}
+    .og-line:nth-child(2){top:50%;animation-delay:1s;}
+    .og-line:nth-child(3){top:75%;animation-delay:2s;}
+    @keyframes ogLineSweep{
+      0%{opacity:0;transform:translateX(-100%);}
+      50%{opacity:1;}
+      100%{opacity:0;transform:translateX(100%);}
+    }
+    /* PARTICLES */
+    .og-particles{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+    .og-pt{
+      position:absolute;border-radius:50%;background:#c9a84c;
+      animation:ogPtRise linear infinite;opacity:0;
+    }
+    @keyframes ogPtRise{
+      0%{transform:translateY(110vh) scale(0);opacity:0;}
+      10%{opacity:0.8;}
+      90%{opacity:0.2;}
+      100%{transform:translateY(-10vh) scale(1.5);opacity:0;}
+    }
+
+    /* CONTENT */
+    .og-content{
+      position:relative;z-index:5;text-align:center;
+      width:100%;max-width:900px;padding:0 1.5rem;
+      opacity:0;transform:translateY(30px);
+      transition:opacity 0.9s 1.3s ease,transform 0.9s 1.3s ease;
+    }
+    #ogLaunch.bars-open .og-content{opacity:1;transform:translateY(0);}
+
+    /* LOGO */
+    .og-logo{
+      font-family:"Playfair Display",serif;
+      font-size:clamp(3rem,10vw,6rem);font-weight:900;
+      letter-spacing:6px;line-height:1;
+      margin-bottom:0.2rem;
+      text-shadow:0 0 80px rgba(201,168,76,0.5);
+    }
+    .og-logo-og{color:#c9a84c;}
+    .og-logo-shoots{color:#fff;}
+    .og-luxe{
+      font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;
+      color:#c9a84c;letter-spacing:10px;text-transform:uppercase;
+      margin-bottom:0.5rem;
+      opacity:0.9;
+    }
+    .og-divider{
+      width:120px;height:1px;
+      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
+      margin:0.8rem auto 2rem;
+    }
+
+    /* COUNTDOWN */
+    .og-count-wrap{
+      margin-bottom:2rem;
+      position:relative;display:inline-block;
+    }
+    .og-count-ring{
+      position:absolute;inset:-16px;
+      border-radius:50%;
+      border:2px solid rgba(201,168,76,0.25);
+      animation:ogRingSpin 10s linear infinite;
+    }
+    .og-count-ring::before{
+      content:'';
+      position:absolute;top:-3px;left:50%;transform:translateX(-50%);
+      width:8px;height:8px;border-radius:50%;
+      background:#c9a84c;
+      box-shadow:0 0 12px #c9a84c;
+    }
+    @keyframes ogRingSpin{to{transform:rotate(360deg);}}
+    .og-count{
+      font-family:"Playfair Display",serif;
+      font-size:clamp(4.5rem,16vw,9rem);font-weight:900;
+      color:#c9a84c;line-height:1;
+      text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);
+      display:block;min-width:120px;
+      transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),opacity 0.15s;
+    }
+    .og-count.pop{transform:scale(1.25);}
+
+    /* FOUNDERS */
+    .og-founders{
+      display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;
+      margin-bottom:2rem;
+    }
+    .og-fcard{
+      position:relative;
+      background:linear-gradient(145deg,rgba(201,168,76,0.08),rgba(0,0,0,0.6));
+      border:1px solid rgba(201,168,76,0.35);
+      border-radius:24px;
+      padding:1.75rem 1.5rem 1.25rem;
+      text-align:center;width:180px;
+      backdrop-filter:blur(20px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.1) inset,0 0 40px rgba(201,168,76,0.08);
+      overflow:hidden;
+    }
+    .og-fcard::before{
+      content:'';
+      position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
+    }
+    .og-fcard-glow{
+      position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+      width:120px;height:120px;
+      background:radial-gradient(circle,rgba(201,168,76,0.2),transparent 70%);
+      pointer-events:none;
+    }
+    .og-fimg{
+      width:110px;height:110px;border-radius:50%;
+      object-fit:cover;object-position:top center;
+      border:3px solid #c9a84c;
+      box-shadow:0 0 0 6px rgba(201,168,76,0.12),0 8px 30px rgba(0,0,0,0.5);
+      margin:0 auto 1rem;display:block;
+      transition:transform 0.4s;
+    }
+    .og-fcard:hover .og-fimg{transform:scale(1.05);}
+    .og-fph{
+      width:110px;height:110px;border-radius:50%;
+      background:linear-gradient(135deg,#c9a84c,#5a3a00);
+      display:flex;align-items:center;justify-content:center;
+      font-size:2.2rem;font-weight:900;color:#fff;
+      border:3px solid #c9a84c;
+      box-shadow:0 0 0 6px rgba(201,168,76,0.12);
+      margin:0 auto 1rem;
+    }
+    .og-fname{font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;letter-spacing:0.5px;}
+    .og-frole{
+      font-size:0.65rem;color:#c9a84c;font-weight:700;
+      letter-spacing:2px;text-transform:uppercase;
+      background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);
+      padding:0.2rem 0.6rem;border-radius:50px;display:inline-block;
+    }
+
+    /* CONGRATS */
+    .og-congrats{
+      font-size:clamp(0.9rem,2.5vw,1.15rem);color:#e8e0d0;
+      font-weight:500;line-height:1.8;
+      max-width:560px;margin:0 auto 1.25rem;
+      opacity:0;transform:translateY(12px);
+      transition:opacity 0.6s ease,transform 0.6s ease;
+    }
+    .og-congrats.show{opacity:1;transform:translateY(0);}
+    .og-congrats strong{color:#c9a84c;font-weight:800;}
+
+    /* LIVE BADGE */
+    .og-live{
+      display:inline-flex;align-items:center;gap:0.6rem;
+      background:rgba(201,168,76,0.12);
+      border:1px solid rgba(201,168,76,0.5);
+      color:#c9a84c;font-size:0.78rem;font-weight:800;
+      padding:0.55rem 1.5rem;border-radius:50px;
+      letter-spacing:3px;text-transform:uppercase;
+      box-shadow:0 0 30px rgba(201,168,76,0.2);
+      opacity:0;transform:scale(0.8);
+      transition:opacity 0.5s ease,transform 0.5s ease;
+    }
+    .og-live.show{opacity:1;transform:scale(1);}
+    .og-live-dot{
+      width:8px;height:8px;border-radius:50%;background:#4caf50;
+      box-shadow:0 0 10px #4caf50,0 0 20px #4caf50;
+      animation:ogDotPulse 0.8s ease infinite;
+    }
+    @keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}
+
+    /* CONFETTI */
+    .og-confetti{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;}
+    .og-cf{
+      position:absolute;
+      animation:ogCfFall linear forwards;
+    }
+    @keyframes ogCfFall{
+      0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1;}
+      100%{transform:translateY(110vh) rotate(900deg) scale(0.5);opacity:0;}
+    }
+
+    /* SKIP */
+    .og-skip{
+      position:absolute;bottom:2rem;right:2rem;z-index:20;
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.4);font-size:0.72rem;font-weight:600;
+      padding:0.4rem 1rem;border-radius:50px;cursor:pointer;
+      font-family:'Inter',sans-serif;letter-spacing:1px;
+      transition:all 0.2s;
+    }
+    .og-skip:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
+  </style>
+  <script>
+  (function(){
+    var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
+    if(cfg.enabled===false){document.body.style.overflow='';return;}
+    var launch=document.getElementById('ogLaunch');
+    if(!launch)return;
+    // Fetch latest opening config from Firebase, then init
+    (async function(){
+      try{
+        var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app=fbMod.getApps().find(function(a){return a.name==='opening-cfg';})||fbMod.initializeApp(fbCfg,'opening-cfg');
+        var db=fbStore.getFirestore(app);
+        var snap=await fbStore.getDoc(fbStore.doc(db,'settings','opening'));
+        if(snap.exists()){cfg=snap.data();localStorage.setItem('hs_opening',JSON.stringify(cfg));}
+      }catch(e){}
+      if(cfg.enabled===false){launch.style.display='none';document.body.style.overflow='';return;}
+      initLaunchScreen(cfg);
+    })();
+    function initLaunchScreen(cfg){
+    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background-image:url("venkateswara.jpg");background-size:110%;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;animation:ogKenBurns 18s ease-in-out infinite alternate;';
+    document.body.style.overflow='hidden';
+    var bgImg=cfg.bgPhoto||'venkateswara.jpg';
+    var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
+    var f2Photo=cfg.founder2Photo||'sumanth.jpeg';
+    var f1Name=cfg.founder1Name||'Boddu Srisanth';
+    var f2Name=cfg.founder2Name||'Gulimi Sumanth';
+    var f1Role=cfg.founder1Role||'Founder & CEO';
+    var f2Role=cfg.founder2Role||'Managing Director';
+    var placeText=cfg.placeText||'';
+    var dateText=cfg.dateText||'';
+    var timeText=cfg.timeText||'';
+    function ini(n){return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
+    function fcard(ph,nm,rl){
+      return '<div style="position:relative;width:200px;height:280px;border-radius:24px;overflow:hidden;border:2px solid rgba(201,168,76,0.6);box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.2);">'
+        +'<img src="'+ph+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" />'
+        +'<div style="width:100%;height:100%;background:linear-gradient(135deg,#c9a84c,#5a3a00);display:none;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:#fff;">'+ini(nm)+'</div>'
+        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.3) 50%,transparent 100%);"></div>'
+        +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>'
+        +'<div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1rem 1.1rem;text-align:center;">'
+          +'<div style="font-size:1.05rem;font-weight:900;color:#fff;margin-bottom:0.4rem;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">'+nm+'</div>'
+          +'<div style="font-size:0.62rem;color:#c9a84c;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);padding:0.25rem 0.7rem;border-radius:50px;display:inline-block;">'+rl+'</div>'
+        +'</div>'
+        +'</div>';
+    }
+    var pts='';
+    var ptColors=['#c9a84c','#e8c96a','#a07830','#f5d78e','#c9a84c'];
+    for(var i=0;i<55;i++){
+      var s=(Math.random()*5+1).toFixed(1);
+      var lp=(Math.random()*100).toFixed(1);
+      var dp=(Math.random()*10+6).toFixed(1);
+      var dlp=(Math.random()*8).toFixed(1);
+      var col=ptColors[Math.floor(Math.random()*ptColors.length)];
+      var glowSize=parseFloat(s)>3?Math.round(parseFloat(s)*3):Math.round(parseFloat(s)*1.5);
+      var glowOpacity=(Math.random()*0.5+0.3).toFixed(2);
+      pts+='<div style="position:absolute;border-radius:50%;background:'+col+';width:'+s+'px;height:'+s+'px;left:'+lp+'%;box-shadow:0 0 '+glowSize+'px '+glowSize+'px rgba(201,168,76,'+glowOpacity+');animation:ogPtRise '+dp+'s '+dlp+'s linear infinite;opacity:0;"></div>';
+    }
+    function mkDetailTile(icon,label,val){
+      return '<div style="flex:1;min-width:90px;display:flex;flex-direction:column;align-items:center;gap:0.35rem;padding:0.75rem 0.5rem;">'
+        +'<div style="width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(201,168,76,0.15);"><i class="fas fa-'+icon+'" style="color:#c9a84c;font-size:0.7rem;"></i></div>'
+        +'<div style="font-size:0.48rem;font-weight:800;color:rgba(201,168,76,0.55);letter-spacing:2.5px;text-transform:uppercase;">'+label+'</div>'
+        +'<div style="font-size:0.78rem;font-weight:700;color:#f0ece0;letter-spacing:0.2px;text-align:center;line-height:1.3;">'+val+'</div>'
+        +'</div>';
+    }
+    var pdTiles='';
+    if(placeText) pdTiles+=mkDetailTile('map-marker-alt','Venue',placeText);
+    if(dateText)  pdTiles+=mkDetailTile('calendar-alt','Date',dateText);
+    if(timeText)  pdTiles+=mkDetailTile('clock','Time',timeText);
+    var pdText=pdTiles
+      ?'<div style="position:relative;width:100%;margin-top:1rem;border-radius:16px;overflow:hidden;background:rgba(0,0,0,0.45);border:1px solid rgba(201,168,76,0.2);backdrop-filter:blur(16px);">'
+        +'<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>'
+        +'<div style="display:flex;align-items:stretch;justify-content:center;">'
+        +pdTiles
+        +(placeText&&dateText?'<div style="width:1px;background:linear-gradient(to bottom,transparent,rgba(201,168,76,0.25),transparent);align-self:stretch;margin:0.5rem 0;"></div>':'')
+        +(dateText&&timeText?'<div style="width:1px;background:linear-gradient(to bottom,transparent,rgba(201,168,76,0.25),transparent);align-self:stretch;margin:0.5rem 0;"></div>':'')
+        +'</div>'
+        +'<div style="position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);"></div>'
+        +'</div>'
+      :'';
+    launch.innerHTML=
+      /* deep vignette */
+      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.82) 100%);z-index:2;pointer-events:none;"></div>'
+      /* base dark overlay */
+      +'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.38);z-index:1;"></div>'
+      /* light beam sweep */
+      +'<div id="ogBeam" style="position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(105deg,transparent 30%,rgba(201,168,76,0.07) 50%,transparent 70%);z-index:3;pointer-events:none;animation:ogBeamSweep 2.2s 0.4s ease-out forwards;opacity:0;"></div>'
+      /* film grain */
+      +'<canvas id="ogGrain" style="position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:0.042;"></canvas>'
+      /* particles */
+      +'<div style="position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;">'+pts+'</div>'
+      /* confetti layer */
+      +'<div style="position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;" id="ogCf"></div>'
+      /* corner gold marks */
+      +'<div id="ogCorners" style="position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;transition:opacity 1.2s 0.8s ease;">'
+      +'<div style="position:absolute;top:22px;left:22px;width:52px;height:52px;border-top:2px solid #c9a84c;border-left:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;top:22px;left:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;top:22px;right:22px;width:52px;height:52px;border-top:2px solid #c9a84c;border-right:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;top:22px;right:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;bottom:22px;left:22px;width:52px;height:52px;border-bottom:2px solid #c9a84c;border-left:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;bottom:22px;left:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;bottom:22px;right:22px;width:52px;height:52px;border-bottom:2px solid #c9a84c;border-right:2px solid #c9a84c;"></div>'
+      +'<div style="position:absolute;bottom:22px;right:22px;width:7px;height:7px;background:#c9a84c;border-radius:50%;box-shadow:0 0 10px 4px rgba(201,168,76,0.75);"></div>'
+      +'<div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);width:1px;height:20px;background:linear-gradient(to bottom,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);width:1px;height:20px;background:linear-gradient(to top,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;left:22px;top:50%;transform:translateY(-50%);height:1px;width:20px;background:linear-gradient(to right,#c9a84c,transparent);"></div>'
+      +'<div style="position:absolute;right:22px;top:50%;transform:translateY(-50%);height:1px;width:20px;background:linear-gradient(to left,#c9a84c,transparent);"></div>'
+      +'</div>'
+      /* content */
+      +'<div style="position:relative;z-index:5;text-align:center;width:100%;max-width:900px;padding:0 1.5rem;" id="ogContent">'
+        /* crown icon */
+        +'<div id="ogCrown" style="font-size:clamp(1.4rem,3vw,2rem);color:#c9a84c;margin-bottom:0.6rem;opacity:0;transform:translateY(-12px) scale(0.7);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 12px rgba(201,168,76,0.8));">&#9670;</div>'
+        +'<div id="ogLogoWrap" style="display:flex;align-items:baseline;justify-content:center;gap:0.25em;line-height:1;margin-bottom:0.2rem;"></div>'
+        +'<div id="ogLuxeTag" style="font-size:clamp(0.65rem,1.8vw,0.9rem);font-weight:700;color:#c9a84c;letter-spacing:12px;text-transform:uppercase;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.9);opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">&#10022;&nbsp; LUXE &nbsp;&#10022;</div>'
+        +'<div id="ogDivider" style="width:0px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.8rem auto 1.2rem;transition:width 1s cubic-bezier(0.25,1,0.5,1);"></div>'
+        +'<div id="ogTagline" style="font-size:clamp(0.7rem,1.6vw,0.85rem);color:rgba(240,236,224,0.6);letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:2rem;opacity:0;transform:translateY(8px);transition:opacity 0.6s ease,transform 0.6s ease;">India&rsquo;s Premium Content Studio</div>'
+        +'<div id="ogBtnWrap" style="opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease;">'
+          +'<button id="ogLaunchBtn" onclick="ogStartCountdown()" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);color:#000;font-family:Inter,sans-serif;font-size:0.95rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;border:none;border-radius:50px;padding:1.1rem 3.5rem;cursor:pointer;box-shadow:0 0 50px rgba(201,168,76,0.45),0 10px 40px rgba(0,0,0,0.5);">&#9654;&nbsp; LAUNCH APP</button>'
+        +'</div>'
+        /* PHASE 2: Countdown */
+        +'<div id="ogCountWrap" style="display:none;margin-top:1.5rem;">'
+          +'<span id="ogCount" style="font-family:Georgia,serif;font-size:clamp(4.5rem,16vw,9rem);font-weight:900;color:#c9a84c;line-height:1;text-shadow:0 0 40px rgba(201,168,76,0.7),0 0 100px rgba(201,168,76,0.3);display:block;">10</span>'
+        +'</div>'
+        /* PHASE 3: Founder cards + Congrats */
+        /* PHASE 3: Premium Congrats */
+        +'<div id="ogCongratsWrap" style="display:none;flex-direction:column;align-items:center;gap:0.6rem;width:100%;max-height:72vh;overflow-y:auto;overflow-x:hidden;padding:0.25rem 0.25rem 1.5rem;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;">'
+          +'<style>#ogCongratsWrap::-webkit-scrollbar{width:3px;}#ogCongratsWrap::-webkit-scrollbar-track{background:transparent;}#ogCongratsWrap::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.35);border-radius:10px;}@keyframes ogScrollBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}</style>'
+          /* eyebrow */
+          +'<div id="ogCgEye" style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:5px;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s ease;">&#10022; &nbsp; A New Era Begins &nbsp; &#10022;</div>'
+          /* main title */
+          +'<div id="ogCgTitle" style="font-family:Georgia,serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:#fff;line-height:1.1;text-shadow:0 0 40px rgba(201,168,76,0.4),0 4px 20px rgba(0,0,0,0.9);opacity:0;transform:translateY(16px);transition:opacity 0.6s ease,transform 0.6s ease;">Congratulations</div>'
+          /* names */
+          +'<div id="ogCgNames" style="font-family:Georgia,serif;font-size:clamp(1rem,3.5vw,1.7rem);font-weight:900;background:linear-gradient(90deg,#a07830,#f5d78e,#c9a84c,#e8c96a,#a07830);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ogShimmer 3s linear infinite;opacity:0;transform:translateY(12px);transition:opacity 0.6s ease,transform 0.6s ease;">'+f1Name+' &amp; '+f2Name+'</div>'
+          /* gold rule */
+          +'<div id="ogCgRule" style="width:0;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.2rem auto;transition:width 0.9s cubic-bezier(0.25,1,0.5,1);"></div>'
+          /* founder cards */
+          +'<div id="ogFounders" style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity 0.7s ease,transform 0.7s ease;">'+fcard(f1Photo,f1Name,f1Role)+fcard(f2Photo,f2Name,f2Role)+'</div>'
+          /* launch details card */
+          +(pdText?'<div id="ogCgPlace" style="opacity:0;transform:translateY(8px);transition:opacity 0.5s ease,transform 0.5s ease;width:100%;">'+pdText+'</div>':'')
+          /* app live line */
+          +'<div id="ogCgSub" style="font-size:clamp(0.75rem,2vw,0.88rem);color:rgba(240,236,224,0.65);font-weight:500;letter-spacing:1px;opacity:0;transform:translateY(8px);transition:opacity 0.5s ease,transform 0.5s ease;">The App <span style="color:#c9a84c;font-weight:800;">OG SHOOTS LUXE</span> is officially Live</div>'
+          /* LIVE badge */
+          +'<div id="ogLive" style="display:inline-flex;align-items:center;gap:0.7rem;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.55);color:#c9a84c;font-size:0.72rem;font-weight:900;padding:0.6rem 1.75rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;box-shadow:0 0 30px rgba(201,168,76,0.2),0 0 60px rgba(201,168,76,0.08);opacity:0;transform:scale(0.85) translateY(8px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.34,1.56,0.64,1);"><div style="width:8px;height:8px;border-radius:50%;background:#4caf50;box-shadow:0 0 12px #4caf50,0 0 24px #4caf50;animation:ogDotPulse 0.8s ease infinite;"></div>APP IS LIVE</div>'
+          +'<div id="ogScrollHint" style="opacity:0;transition:opacity 0.5s ease;display:flex;flex-direction:column;align-items:center;gap:0.15rem;"><span style="font-size:0.48rem;color:rgba(201,168,76,0.45);letter-spacing:2px;text-transform:uppercase;font-weight:700;">scroll</span><i class="fas fa-chevron-down" style="color:rgba(201,168,76,0.45);font-size:0.55rem;animation:ogScrollBounce 1.2s ease infinite;"></i></div>'
+        +'</div>'
+      +'</div>'
+      +'<button onclick="ogClose()" style="position:absolute;bottom:2rem;right:2rem;z-index:20;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.4);font-size:0.72rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;cursor:pointer;font-family:Inter,sans-serif;letter-spacing:1px;">SKIP &rsaquo;</button>';
+    var st=document.createElement('style');
+    st.textContent=
+      '@keyframes ogPtRise{0%{transform:translateY(110vh) scale(0);opacity:0;}10%{opacity:0.9;}85%{opacity:0.3;}100%{transform:translateY(-10vh) scale(1.8);opacity:0;}}'
+      +'@keyframes ogDotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}'
+      +'@keyframes ogLetterIn{0%{opacity:0;transform:translateY(28px);filter:blur(6px);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}'
+      +'@keyframes ogShimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}'
+      +'@keyframes ogBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.55),0 10px 40px rgba(0,0,0,0.5);}60%{box-shadow:0 0 0 22px rgba(201,168,76,0),0 10px 40px rgba(0,0,0,0.5);}}'
+      +'@keyframes ogKenBurns{0%{background-size:110%;background-position:50% 50%;}100%{background-size:125%;background-position:52% 48%;}}'
+      +'@keyframes ogBeamSweep{0%{left:-60%;opacity:1;}100%{left:130%;opacity:1;}}'
+      +'@keyframes ogRippleOut{0%{width:0;height:0;opacity:0.5;}100%{width:320px;height:320px;opacity:0;}}'
+      +'.og-letter{display:inline-block;opacity:0;animation:ogLetterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;}'
+      +'.og-word-og{color:#c9a84c;}'
+      +'.og-letter-gold{font-family:"Playfair Display",serif;font-size:clamp(4rem,12vw,7rem);font-weight:900;font-style:italic;background:linear-gradient(160deg,#fff8e7 0%,#f5d78e 20%,#e8c96a 45%,#c9a84c 70%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(201,168,76,0.7)) drop-shadow(0 6px 20px rgba(0,0,0,0.95));animation:ogLetterIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;display:inline-block;opacity:0;line-height:0.82;}'
+      +'.og-word-shoots{font-family:"Tenor Sans",sans-serif;font-size:clamp(2.8rem,8vw,5rem);font-weight:400;color:rgba(240,236,224,0.9);letter-spacing:0.3em;text-transform:uppercase;align-self:baseline;text-shadow:0 2px 24px rgba(0,0,0,0.9);}';
+    document.head.appendChild(st);
+
+    // Film grain
+    (function(){
+      var canvas=document.getElementById('ogGrain');
+      if(!canvas)return;
+      var ctx=canvas.getContext('2d');
+      function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+      resize();
+      window.addEventListener('resize',resize);
+      function drawGrain(){
+        var w=canvas.width,h=canvas.height;
+        var img=ctx.createImageData(w,h);
+        var d=img.data;
+        for(var i=0;i<d.length;i+=4){
+          var v=Math.random()*255|0;
+          d[i]=d[i+1]=d[i+2]=v;
+          d[i+3]=255;
+        }
+        ctx.putImageData(img,0,0);
+      }
+      var grainTimer=setInterval(drawGrain,80);
+      // stop grain after launch closes
+      window._ogStopGrain=function(){clearInterval(grainTimer);};
+    })();
+
+    // Letter-by-letter logo reveal + staggered entrance
+    (function(){
+      var logoWrap=document.getElementById('ogLogoWrap');
+      if(!logoWrap)return;
+      var ogLetters='OG'.split('');
+      var shootsLetters='SHOOTS'.split('');
+      // OG — massive italic gold
+      var ogSpan=document.createElement('span');
+      ogLetters.forEach(function(ch,i){
+        var s=document.createElement('span');
+        s.className='og-letter-gold';
+        s.style.animationDelay=(0.3+i*0.14)+'s';
+        s.textContent=ch;
+        ogSpan.appendChild(s);
+      });
+      // Divider
+      var divider=document.createElement('span');
+      divider.style.cssText='display:inline-block;width:2px;height:0.6em;background:linear-gradient(to bottom,transparent,rgba(201,168,76,0.5),transparent);margin:0 0.1em;align-self:center;opacity:0;transition:opacity 0.5s 0.9s ease;flex-shrink:0;';
+      // SHOOTS — elegant small caps
+      var shootsSpan=document.createElement('span');
+      shootsSpan.className='og-word-shoots';
+      shootsSpan.style.cssText='opacity:0;transform:translateX(-10px);transition:opacity 0.7s 0.7s ease,transform 0.7s 0.7s cubic-bezier(0.22,1,0.36,1);';
+      shootsLetters.forEach(function(ch){
+        var s=document.createElement('span');
+        s.textContent=ch;
+        shootsSpan.appendChild(s);
+      });
+      logoWrap.appendChild(ogSpan);
+      logoWrap.appendChild(divider);
+      logoWrap.appendChild(shootsSpan);
+      // Animate divider + SHOOTS in after OG lands
+      setTimeout(function(){
+        divider.style.opacity='1';
+        shootsSpan.style.opacity='1';
+        shootsSpan.style.transform='translateX(0)';
+      },700);
+
+      // Staggered: logo visible immediately (letters handle their own anim)
+      logoWrap.style.opacity='1';
+      logoWrap.style.transform='translateY(0)';
+
+      // Crown at 0.2s
+      setTimeout(function(){
+        var cr=document.getElementById('ogCrown');
+        if(cr){cr.style.opacity='1';cr.style.transform='translateY(0) scale(1)';}
+      },200);
+
+      // Corner gold marks at 0.8s
+      setTimeout(function(){
+        var c=document.getElementById('ogCorners');
+        if(c)c.style.opacity='1';
+      },800);
+
+      // Luxe tag at 1.4s
+      setTimeout(function(){
+        var luxe=document.getElementById('ogLuxeTag');
+        if(luxe){luxe.style.opacity='1';luxe.style.transform='translateY(0)';}
+      },1400);
+
+      // Divider at 1.65s
+      setTimeout(function(){
+        var div=document.getElementById('ogDivider');
+        if(div)div.style.width='160px';
+      },1650);
+
+      // Tagline at 1.9s
+      setTimeout(function(){
+        var tl=document.getElementById('ogTagline');
+        if(tl){tl.style.opacity='1';tl.style.transform='translateY(0)';}
+      },1900);
+
+      // Button at 2.3s
+      setTimeout(function(){
+        var btn=document.getElementById('ogBtnWrap');
+        if(btn){btn.style.opacity='1';btn.style.transform='translateY(0)';}
+        var b=document.getElementById('ogLaunchBtn');
+        if(b)b.style.animation='ogBtnPulse 2.2s ease-in-out infinite';
+      },2300);
+
+      // Ripple on click
+      var launchBtn=document.getElementById('ogLaunchBtn');
+      if(launchBtn){
+        launchBtn.addEventListener('click',function(e){
+          var ripple=document.createElement('span');
+          ripple.style.cssText='position:absolute;border-radius:50%;background:rgba(255,255,255,0.32);width:0;height:0;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:ogRippleOut 0.55s ease-out forwards;';
+          launchBtn.appendChild(ripple);
+          setTimeout(function(){if(ripple.parentNode)ripple.parentNode.removeChild(ripple);},600);
+        });
+      }
+    })();
+    var musicUrl=cfg.musicUrl||'govinda.mp3';
+    var countdownSound=(cfg.countdownSound!==false);
+    var _ac=null;
+    function getAC(){if(!_ac){try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _ac;}
+    function tone(freq,dur,vol,type){
+      if(!countdownSound)return;
+      var ac=getAC();if(!ac)return;
+      try{
+        var o=ac.createOscillator(),g=ac.createGain();
+        o.connect(g);g.connect(ac.destination);
+        o.frequency.value=freq;o.type=type||'sine';
+        g.gain.setValueAtTime(vol||0.25,ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+        o.start();o.stop(ac.currentTime+dur);
+      }catch(e){}
+    }
+    var _musicEl=null;
+    var _countTimer=null;
+    function playMusic(){
+      if(musicUrl){
+        _musicEl=document.createElement('audio');
+        _musicEl.src=musicUrl;
+        _musicEl.loop=true;
+        _musicEl.volume=0.7;
+        _musicEl.play().catch(function(){});
+      } else {
+        // Synthesized Om Namo Venkateshaya
+        var ac=getAC();if(!ac)return;
+        try{
+          var master=ac.createGain();master.gain.value=0.5;master.connect(ac.destination);
+          function drone(freq,vol,start,end){
+            var o=ac.createOscillator(),g=ac.createGain();
+            o.type='sine';o.frequency.value=freq;
+            g.gain.setValueAtTime(0,ac.currentTime+start);
+            g.gain.linearRampToValueAtTime(vol,ac.currentTime+start+0.8);
+            g.gain.setValueAtTime(vol,ac.currentTime+end-0.8);
+            g.gain.linearRampToValueAtTime(0,ac.currentTime+end);
+            o.connect(g);g.connect(master);o.start(ac.currentTime+start);o.stop(ac.currentTime+end);
+          }
+          drone(136.1,0.35,0,8);
+          drone(272.2,0.18,0,8);
+          drone(204.15,0.12,0.5,8);
+          var bells=[392,440,523,494,440,392,349,392];
+          bells.forEach(function(f,i){
+            setTimeout(function(){
+              var ac2=getAC();if(!ac2)return;
+              try{
+                var o=ac2.createOscillator(),g=ac2.createGain();
+                o.type='sine';o.frequency.value=f;
+                g.gain.setValueAtTime(0.4,ac2.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001,ac2.currentTime+1.8);
+                o.connect(g);g.connect(ac2.destination);o.start();o.stop(ac2.currentTime+1.8);
+              }catch(e){}
+            },i*700);
+          });
+        }catch(e){}
+      }
+    }
+    function stopMusic(){
+      if(_musicEl){_musicEl.pause();_musicEl.src='';_musicEl=null;}
+    }
+    function celebrate(){
+      launch.style.filter='brightness(1.1)';
+      var cf=document.getElementById('ogCf');
+      var colors=['#c9a84c','#fff','#f5a623','#4caf50','#ff6b6b','#a78bfa','#38bdf8'];
+      for(var j=0;j<150;j++){
+        var el=document.createElement('div');
+        var c2=colors[Math.floor(Math.random()*colors.length)];
+        var w=(Math.random()*10+4).toFixed(0),h=(Math.random()*10+4).toFixed(0);
+        var lft=(Math.random()*100).toFixed(1),dr=(Math.random()*3+1.5).toFixed(2),dl2=(Math.random()*2).toFixed(2);
+        el.style.cssText='position:absolute;left:'+lft+'%;top:-20px;width:'+w+'px;height:'+h+'px;background:'+c2+';border-radius:50%;animation:ogCfFall '+dr+'s '+dl2+'s linear forwards;';
+        cf.appendChild(el);
+      }
+      var cst=document.createElement('style');cst.textContent='@keyframes ogCfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(900deg);opacity:0;}}';document.head.appendChild(cst);
+    }
+    window.ogStartCountdown=function(){
+      getAC();
+      // Start govinda.mp3 at countdown start
+      _musicEl=document.createElement('audio');
+      _musicEl.src=musicUrl;
+      _musicEl.loop=true;
+      _musicEl.volume=0.75;
+      _musicEl.play().catch(function(){});
+      document.getElementById('ogBtnWrap').style.display='none';
+      document.getElementById('ogCountWrap').style.display='block';
+      var count=10,countEl=document.getElementById('ogCount');
+      tone(880,0.12,0.3,'square');
+      _countTimer=setInterval(function(){
+        count--;
+        if(count>0){
+          countEl.style.transform='scale(1.25)';
+          setTimeout(function(){countEl.style.transform='scale(1)';},150);
+          countEl.textContent=count;
+          tone(count<=3?1047:880,0.12,count<=3?0.4:0.25,'square');
+        }else{
+          clearInterval(_countTimer);_countTimer=null;
+          document.getElementById('ogCountWrap').style.display='none';
+          celebrate();
+          // Premium staggered congrats reveal
+          var wrap=document.getElementById('ogCongratsWrap');
+          if(wrap)wrap.style.display='flex';
+          setTimeout(function(){var e=document.getElementById('ogCgEye');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},300);
+          setTimeout(function(){var e=document.getElementById('ogCgTitle');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},550);
+          setTimeout(function(){var e=document.getElementById('ogCgNames');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},800);
+          setTimeout(function(){var e=document.getElementById('ogCgRule');if(e)e.style.width='200px';},1000);
+          setTimeout(function(){var e=document.getElementById('ogFounders');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},1200);
+          setTimeout(function(){var e=document.getElementById('ogCgPlace');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},1500);
+          setTimeout(function(){var e=document.getElementById('ogCgSub');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},1750);
+          setTimeout(function(){var e=document.getElementById('ogLive');if(e){e.style.opacity='1';e.style.transform='scale(1) translateY(0)';}},2000);
+          setTimeout(function(){var e=document.getElementById('ogScrollHint');if(e)e.style.opacity='1';},2350);
+          setTimeout(function(){ogClose();},8000);
+        }
+      },1000);
+    };
+    window.ogClose=function(){
+      if(_countTimer){clearInterval(_countTimer);_countTimer=null;}
+      stopMusic();
+      if(window._ogStopGrain)window._ogStopGrain();
+      launch.style.transition='opacity 0.9s ease';
+      launch.style.opacity='0';
+      setTimeout(function(){launch.style.display='none';document.body.style.overflow='';},900);
+    };
+    } // end initLaunchScreen
+  })();
+  </script>
+
+  <!-- NAVBAR -->
+
+  <!-- DISCOVER WITH VIBE -->
+  <section class="vibe-section" id="vibe" style="display:none;">
     <style>
-      .ue-inner{max-width:900px;margin:0 auto;padding:0 2rem;}
-      .ue-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .ue-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;}
-      .ue-title span{color:#c9a84c;}
-      .ue-card{background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:24px;padding:2.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2.5rem;position:relative;overflow:hidden;}
-      .ue-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);}
-      .ue-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.75rem;}
-      .ue-icon{width:56px;height:56px;border-radius:16px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#c9a84c;}
-      .ue-label{font-size:0.65rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:3px;text-transform:uppercase;}
-      .ue-value{font-size:1.2rem;font-weight:800;color:#fff;}
-      .ue-sub{font-size:0.8rem;color:#9a9080;}
-      .ue-title-text{font-size:0.9rem;color:#c9a84c;font-weight:600;margin-bottom:1rem;text-align:center;}
-      @media(max-width:600px){.ue-card{grid-template-columns:1fr;gap:1.5rem;}}
+      .vibe-section{background:#0a0a0a;padding:5rem 0 4rem;}
+      .vibe-header{text-align:center;margin-bottom:2rem;}
+      .vibe-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:0.4rem;}
+      .vibe-title span{color:#c9a84c;}
+      .vibe-subtitle{color:#706050;font-size:0.95rem;}
+      .vibe-cats{display:flex;gap:0.6rem;justify-content:flex-start;flex-wrap:nowrap;padding:0 1.5rem;margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+      .vibe-cats::-webkit-scrollbar{display:none;}
+      .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+      .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:transparent;}
+      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+      .vibe-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
+      .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(201,168,76,0.2);}
+      .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#0a0a0a;}
+      .vibe-thumb-placeholder{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,#181818,#0a0a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#3a1a1a;}
+      .vibe-thumb-placeholder i{font-size:2.5rem;}
+      .vibe-thumb-placeholder span{font-size:0.75rem;}
+      .vibe-info{padding:0.85rem 1rem;}
+      .vibe-info-title{font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .vibe-info-cat{font-size:0.72rem;color:#c9a84c;font-weight:600;}
+      .vibe-empty{text-align:center;padding:4rem 1.5rem;color:#484030;grid-column:1/-1;}
+      .vibe-empty i{font-size:2.5rem;display:block;margin-bottom:0.75rem;opacity:0.4;}
+      /* Lightbox */
+      .vibe-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;}
+      .vibe-lightbox.open{display:flex;}
+      .vibe-lb-inner{position:relative;max-width:400px;width:90%;}
+      .vibe-lb-video{width:100%;border-radius:16px;max-height:80vh;}
+      .vibe-lb-img{width:100%;border-radius:16px;max-height:80vh;object-fit:contain;}
+      .vibe-lb-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;background:#c9a84c;border:none;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
     </style>
-    <div class="ue-inner">
-      <div style="text-align:center;">
-        <div class="ue-eyebrow"><i class="fas fa-calendar-star"></i> Upcoming Event</div>
-        <h2 class="ue-title">Next <span>Shoot Session</span></h2>
-      </div>
-      <div id="ueShootTitle" class="ue-title-text"></div>
-      <div class="ue-card">
-        <div class="ue-item">
-          <div class="ue-icon"><i class="fas fa-map-marker-alt"></i></div>
-          <div class="ue-label">Place</div>
-          <div class="ue-value" id="uePlace">—</div>
-        </div>
-        <div class="ue-item">
-          <div class="ue-icon"><i class="fas fa-calendar-alt"></i></div>
-          <div class="ue-label">Date</div>
-          <div class="ue-value" id="ueDate">—</div>
-          <div class="ue-sub" id="ueDay"></div>
-        </div>
-        <div class="ue-item">
-          <div class="ue-icon"><i class="fas fa-clock"></i></div>
-          <div class="ue-label">Time</div>
-          <div class="ue-value" id="ueTime">—</div>
-        </div>
+    <div class="vibe-header">
+      <h2 class="vibe-title">Discover with <span>Vibe</span></h2>
+      <p class="vibe-subtitle">Explore trending reels from our creators</p>
+    </div>
+    <div class="vibe-cats">
+      <button class="vibe-cat active" data-cat="all">All</button>
+      <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star"></i> Testimonials</button>
+      <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
+      <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
+      <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
+      <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
+      <button class="vibe-cat" data-cat="Concerts">Concerts</button>
+      <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
+      <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
+    </div>
+    <div class="vibe-grid" id="vibeGrid"></div>
+    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
+    <!-- Lightbox -->
+    <div class="vibe-lightbox" id="vibeLightbox">
+      <div class="vibe-lb-inner">
+        <button class="vibe-lb-close" id="vibeLbClose"><i class="fas fa-times"></i></button>
+        <div id="vibeLbContent"></div>
       </div>
     </div>
   </section>
   <script>
     (function(){
-      var demos = JSON.parse(localStorage.getItem('hs_demos') || '[]');
-      var today = new Date(); today.setHours(0,0,0,0);
-      // Find the next upcoming demo (date >= today)
-      var upcoming = demos
-        .filter(function(d){ return d.date && new Date(d.date) >= today; })
-        .sort(function(a,b){ return new Date(a.date) - new Date(b.date); })[0];
-      if(!upcoming) return;
-      var sec = document.getElementById('upcomingShootSection');
-      if(sec) sec.style.display = 'block';
-      // Title
-      var titleEl = document.getElementById('ueShootTitle');
-      if(titleEl && upcoming.title) titleEl.textContent = upcoming.title;
-      // Place
-      var placeEl = document.getElementById('uePlace');
-      if(placeEl) placeEl.textContent = upcoming.place || '—';
-      // Date
-      var d = new Date(upcoming.date);
-      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var dateEl = document.getElementById('ueDate');
-      var dayEl  = document.getElementById('ueDay');
-      if(dateEl) dateEl.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-      if(dayEl)  dayEl.textContent  = days[d.getDay()];
-      // Time
-      var timeEl = document.getElementById('ueTime');
-      if(timeEl && upcoming.time){
-        var parts = upcoming.time.split(':');
-        var h = parseInt(parts[0]); var m = parts[1];
-        var ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        timeEl.textContent = h + ':' + m + ' ' + ampm;
+      var currentCat = 'all';
+      var _vibeItems = [];
+
+      async function loadVibeFromFirestore(){
+        try {
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
+          var db  = fbStore.getFirestore(app);
+          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
+            _vibeItems = [];
+            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
+            renderVibe();
+          });
+        } catch(e){ console.error('Vibe index load error:',e); }
       }
+
+      function renderVibe(){
+        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
+        var grid = document.getElementById('vibeGrid');
+        if(!filtered.length){
+          grid.innerHTML='<div class="vibe-empty"><i class="fas fa-photo-video"></i>No content yet. Check back soon!</div>';
+          return;
+        }
+        grid.innerHTML = filtered.map(function(item,idx){
+          var thumb = item.thumbnail
+            ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
+            : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
+          return '<div class="vibe-card" onclick="openVibeLb(\''+idx+'\')">' + thumb + '<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div><div class="vibe-info-cat">'+item.category+'</div></div></div>';
+        }).join('');
+      }
+      document.querySelectorAll('.vibe-cat').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          document.querySelectorAll('.vibe-cat').forEach(function(b){b.classList.remove('active');});
+          btn.classList.add('active');
+          currentCat = btn.dataset.cat;
+          if(currentCat === 'Testimonials'){
+            document.getElementById('vibeGrid').style.display = 'none';
+            document.getElementById('vibeTestiPanel').style.display = 'block';
+            renderTestimonials();
+          } else {
+            document.getElementById('vibeGrid').style.display = 'grid';
+            document.getElementById('vibeTestiPanel').style.display = 'none';
+            renderVibe();
+          }
+        });
+      });
+
+      function renderTestimonials(){
+        var panel = document.getElementById('vibeTestiPanel');
+        var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+        var textTestis = hp.testimonials || [];
+        var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
+
+        if(!textTestis.length && !videoMeta.length){
+          panel.innerHTML = '<div class="vibe-empty"><i class="fas fa-star"></i>No testimonials yet. Check back soon!</div>';
+          return;
+        }
+
+        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">';
+
+        // Text testimonials from admin Home Page editor
+        textTestis.forEach(function(t){
+          var initials = (t.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          html += '<div class="vibe-card" style="padding:1.5rem;cursor:default;">'
+            +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">'
+            +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#fff;flex-shrink:0;">'+initials+'</div>'
+            +'<div><div style="font-size:0.92rem;font-weight:700;color:#fff;">'+t.name+'</div>'
+            +'<div style="color:#f5a623;font-size:0.8rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>'
+            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
+            +'</div>';
+        });
+
+        // Video testimonials from admin Testimonial Videos tab
+        videoMeta.forEach(function(v){
+          html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
+            +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-spinner fa-spin"></i></div>'
+            +'<div class="vibe-info"><div class="vibe-info-title">'+(v.clientName||v.title||'Testimonial')+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
+            +'</div>';
+        });
+
+        html += '</div>';
+        panel.innerHTML = html;
+
+        // Load testimonial videos using Cloudinary URLs
+        videoMeta.forEach(function(v){
+          var videoUrl = v.cloudUrl || v.url || '';
+          var ph = document.getElementById('vtpi_'+v.id);
+          if(!ph) return;
+          if(videoUrl){
+            var vid = document.createElement('video');
+            vid.src = videoUrl; vid.controls = true; vid.preload = 'metadata';
+            vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;';
+            ph.replaceWith(vid);
+          }
+        });
+      }
+
+      window.openVibeLb = function(idx){
+        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
+        var item = filtered[idx];
+        var videoUrl = item.url || item.cloudUrl || '';
+        var html = '';
+        if(videoUrl){
+          html = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
+        } else if(item.thumbnail){
+          html = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
+        } else {
+          html = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
+        }
+        document.getElementById('vibeLbContent').innerHTML = html;
+        document.getElementById('vibeLightbox').classList.add('open');
+      };
+      document.getElementById('vibeLbClose').addEventListener('click',function(){
+        document.getElementById('vibeLightbox').classList.remove('open');
+        document.getElementById('vibeLbContent').innerHTML='';
+      });
+      document.getElementById('vibeLightbox').addEventListener('click',function(e){
+        if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
+      });
+      loadVibeFromFirestore();
     })();
   </script>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <p class="hero-tag">The Future of Instant Content Creation</p>
+      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
+      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
+
+      <div class="phone-mockup">
+        <div class="phone-glow"></div>
+        <div class="phone-frame" id="phoneFrame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-status">
+              <span>9:41</span>
+              <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+            </div>
+            <div class="phone-body">
+              <div class="phone-header anim-slide-down">
+                <div>
+                  <p class="phone-city">Mumbai ▾</p>
+                  <p class="phone-greeting">Hey, there</p>
+                  <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
+                </div>
+                <div class="phone-bell"><i class="fas fa-bell"></i></div>
+              </div>
+              <div class="phone-actions anim-slide-up" style="animation-delay:0.2s">
+                <div class="phone-action"><div class="phone-action-icon red pulse-red"><i class="fas fa-plus"></i></div><span>Book Now</span></div>
+                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-box"></i></div><span>Packages</span></div>
+                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-wallet"></i></div><span>My Wallet</span></div>
+                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-cog spin-slow"></i></div><span>Settings</span></div>
+              </div>
+              <div class="phone-banner anim-fade-in" style="animation-delay:0.4s">
+                <div class="phone-banner-text">REELS CREATED<br/>AND DELIVERED<br/><strong>ON THE SPOT</strong></div>
+                <div class="phone-banner-img"><i class="fas fa-user-circle"></i></div>
+                <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+              </div>
+              <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
+              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
+              </div>
+              <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
+                <i class="fas fa-home active"></i>
+                <i class="fas fa-th"></i>
+                <i class="fas fa-wallet"></i>
+                <i class="fas fa-user"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating badges -->
+        <div class="float-badge badge-top"><i class="fas fa-bolt"></i> 10 Min Delivery</div>
+        <div class="float-badge badge-bottom"><i class="fas fa-star"></i> 4.9 Rating</div>
+        <div class="float-badge badge-left"><i class="fas fa-camera"></i> Live Now</div>
+      </div>
+
+      <!-- Below Phone -->
+      <div class="below-phone">
+        <div class="hero-pills">
+          <div class="hero-pill"><i class="fab fa-apple"></i> Shot on iPhone</div>
+          <div class="hero-pill"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
+          <div class="hero-pill">🎞️ Content Maker</div>
+        </div>
+        <div class="hero-btns">
+          <a href="booking.html" class="btn btn-book">Book Now</a>
+          <a href="partner.html" class="btn btn-partner">Become a Partner</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
+          <div class="stat-sep"></div>
+          <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
+          <div class="stat-sep"></div>
+          <div class="hero-stat"><span class="stat-num" id="statMakers">0</span><span class="stat-label">Content Makers</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chat Widget -->
+  </section>
+
+  <!-- WHY US -->
+  <section class="whyus-section">
+    <style>
+      .whyus-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
+      .whyus-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .whyus-section::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:800px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .whyus-header{text-align:center;max-width:700px;margin:0 auto 4rem;padding:0 2rem;}
+      .whyus-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem;}
+      .whyus-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;margin-bottom:0.75rem;line-height:1.15;white-space:nowrap;}
+      .whyus-title span{color:#c9a84c;}
+      .whyus-desc{color:#9a9080;font-size:0.95rem;line-height:1.8;}
+      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .whyus-card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);cursor:default;}
+      .whyus-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.1);}
+      .whyus-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
+      .whyus-icon-wrap{width:52px;height:52px;border-radius:14px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;transition:all 0.35s;flex-shrink:0;}
+      .whyus-card:hover .whyus-icon-wrap{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);box-shadow:0 0 20px rgba(201,168,76,0.15);}
+      .whyus-icon-wrap i{font-size:1.3rem;color:#c9a84c;}
+      .whyus-badge{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.58rem;font-weight:800;padding:0.2rem 0.6rem;border-radius:50px;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;}
+      .whyus-text h3{font-size:1rem;font-weight:800;color:#f0ece0;margin-bottom:0.5rem;line-height:1.3;}
+      .whyus-text p{color:#9a9080;font-size:0.82rem;line-height:1.7;}
+      .whyus-number{position:absolute;bottom:1rem;right:1.25rem;font-size:3.5rem;font-weight:900;color:rgba(201,168,76,0.05);line-height:1;pointer-events:none;transition:color 0.35s;}
+      .whyus-card:hover .whyus-number{color:rgba(201,168,76,0.1);}
+      .whyus-card.featured-card{border-color:rgba(201,168,76,0.25);background:#141414;}
+      @media(max-width:900px){.whyus-grid{grid-template-columns:1fr 1fr;}}
+      @media(max-width:580px){.whyus-grid{grid-template-columns:1fr;}}
+    </style>
+
+    <div class="whyus-header">
+      <div class="whyus-eyebrow"><i class="fas fa-star"></i> Why Choose Us</div>
+      <h2 class="whyus-title">Not Just Instant Delivery, <span>But..</span></h2>
+      <p class="whyus-desc">We go beyond just delivering reels — here's what makes us different from everyone else.</p>
+    </div>
+
+    <div class="whyus-grid">
+
+      <div class="whyus-card featured-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-certificate"></i></div>
+          <span class="whyus-badge">Verified</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Our Trained and Certified Reel Creators</h3>
+          <p>Every creator goes through a strict 6-step screening process to ensure top-tier quality.</p>
+        </div>
+        <div class="whyus-number">01</div>
+      </div>
+
+      <div class="whyus-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
+          <span class="whyus-badge">Simple</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Easy Booking</h3>
+          <p>Stop struggling with complex booking procedures. Book your shoot in under 2 minutes.</p>
+        </div>
+        <div class="whyus-number">02</div>
+      </div>
+
+      <div class="whyus-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-rupee-sign"></i></div>
+          <span class="whyus-badge">Affordable</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Unbelievable Pricing</h3>
+          <p>Each Reel starts ₹1,999/-. No hidden charges, no surprises. Pay only for what you need.</p>
+        </div>
+        <div class="whyus-number">03</div>
+      </div>
+
+      <div class="whyus-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+          <span class="whyus-badge">Trusted</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Safe &amp; Secure</h3>
+          <p>You &amp; your data is safe and secured. End-to-end encrypted payments and verified profiles.</p>
+        </div>
+        <div class="whyus-number">04</div>
+      </div>
+
+      <div class="whyus-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-bolt"></i></div>
+          <span class="whyus-badge">Fast</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Instant Reels, Seamless Editing</h3>
+          <p>Transparent pricing, secure payments, and a smooth checkout — no surprises, ever.</p>
+        </div>
+        <div class="whyus-number">05</div>
+      </div>
+
+      <div class="whyus-card">
+        <div class="whyus-card-top">
+          <div class="whyus-icon-wrap"><i class="fas fa-female"></i></div>
+          <span class="whyus-badge">Safe</span>
+        </div>
+        <div class="whyus-text">
+          <h3>Women's Safety &amp; Comfort First</h3>
+          <p>Clients can choose a female reel creator for a more comfortable experience. Your safety and trust are always our priority.</p>
+        </div>
+        <div class="whyus-number">06</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BESTSELLERS -->
+  <section class="bs-section">
+    <style>
+      .bs-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
+      .bs-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
+      .bs-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
+      .bs-header{text-align:center;margin-bottom:2.5rem;}
+      .bs-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;letter-spacing:-0.5px;}
+      .bs-title span{color:#c9a84c;}
+      .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
+      .bs-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
+      .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
+      .bs-card:hover{transform:translateY(-8px);}
+      .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
+      .bs-card-1:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
+      .bs-card-2{background:#141414;border:1px solid rgba(201,168,76,0.35);box-shadow:0 0 0 1px rgba(201,168,76,0.08);}
+      .bs-card-2:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.12),0 0 0 1px rgba(201,168,76,0.4);border-color:rgba(201,168,76,0.5);}
+      .bs-card-silver{background:#111;border:1px solid rgba(192,192,192,0.25);}
+      .bs-card-silver:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(192,192,192,0.3);border-color:rgba(192,192,192,0.4);}
+      .bs-card-gold{background:#141410;border:1px solid rgba(201,168,76,0.4);}
+      .bs-card-gold:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.6);}
+      .bs-card-luxe{background:linear-gradient(145deg,#0f0f0f,#1a1408);border:1px solid rgba(201,168,76,0.6);box-shadow:0 0 30px rgba(201,168,76,0.08);}
+      .bs-card-luxe:hover{box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.8);}
+      .bs-plan-tabs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:2.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:5px;max-width:360px;margin-left:auto;margin-right:auto;}
+      .bs-plan-tab{flex:1;padding:0.6rem 1rem;border-radius:10px;border:none;background:none;color:#5a5040;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.25s;}
+      .bs-plan-tab.active{background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(160,120,48,0.12));color:#c9a84c;border:1px solid rgba(201,168,76,0.3);}
+      .bs-panel{display:none;}
+      .bs-panel.active{display:block;}
+      .bs-glow{position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;pointer-events:none;}
+      .bs-card-1 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);}
+      .bs-card-2 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 70%);}
+      .bs-popular-pill{position:absolute;top:1.5rem;right:1.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.6rem;font-weight:800;padding:0.3rem 0.9rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 15px rgba(201,168,76,0.3);animation:pillFloat 2s ease-in-out infinite;}
+      @keyframes pillFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+      .bs-plan-tag{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;margin-bottom:1.25rem;letter-spacing:0.5px;}
+      .bs-name{font-size:1.9rem;font-weight:900;color:#f0ece0;margin-bottom:0.25rem;letter-spacing:-0.5px;}
+      .bs-tagline{font-size:0.85rem;color:#9a9080;margin-bottom:2rem;}
+      .bs-price-wrap{display:flex;align-items:flex-end;gap:0.5rem;margin-bottom:0.3rem;}
+      .bs-price{font-size:3.5rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+      .bs-per{font-size:0.85rem;color:#9a9080;margin-bottom:0.5rem;}
+      .bs-gst-note{font-size:0.75rem;color:#6a6050;margin-bottom:2rem;}
+      .bs-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent);margin-bottom:1.75rem;}
+      .bs-features-label{font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;opacity:0.8;}
+      .bs-features{list-style:none;margin-bottom:2rem;display:flex;flex-direction:column;gap:0.55rem;}
+      .bs-features li{display:flex;align-items:center;gap:0.85rem;font-size:0.88rem;color:#b8b0a0;transition:all 0.2s;padding:0.35rem 0.5rem;border-radius:8px;}
+      .bs-features li:hover{background:rgba(201,168,76,0.04);color:#f0ece0;padding-left:0.85rem;}
+      .bs-check{width:20px;height:20px;border-radius:6px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+      .bs-check i{font-size:0.6rem;color:#c9a84c;}
+      .bs-btn{width:100%;border:none;border-radius:12px;padding:1.1rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.75rem;transition:all 0.3s;position:relative;overflow:hidden;letter-spacing:0.5px;}
+      .bs-btn-1{background:rgba(201,168,76,0.08);color:#c9a84c;border:1px solid rgba(201,168,76,0.25);}
+      .bs-btn-1:hover{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);transform:translateY(-2px);box-shadow:0 8px 25px rgba(201,168,76,0.15);}
+      .bs-btn-2{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;box-shadow:0 8px 25px rgba(201,168,76,0.25);}
+      .bs-btn-2:hover{box-shadow:0 14px 40px rgba(201,168,76,0.4);transform:translateY(-2px);background:linear-gradient(135deg,#e8c96a,#c9a84c);}
+      .bs-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:translateX(-100%);transition:transform 0.5s;}
+      .bs-btn:hover::before{transform:translateX(100%);}
+      .bs-anim{opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;}
+      .bs-anim.visible{opacity:1;transform:translateY(0);}
+      @media(max-width:900px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:520px){.bs-grid-4{grid-template-columns:1fr;}}
+    </style>
+
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-eyebrow"><i class="fas fa-fire"></i> Our Plans</div>
+        <h2 class="bs-title">Our <span>Bestsellers</span></h2>
+        <p class="bs-sub">Simple pricing. No hidden fees. Just great content.</p>
+      </div>
+
+      <!-- PLAN TYPE TABS -->
+      <div class="bs-plan-tabs">
+        <button class="bs-plan-tab active" onclick="bsTab('general',this)"><i class="fas fa-camera"></i> General</button>
+        <button class="bs-plan-tab" onclick="bsTab('wedding',this)"><i class="fas fa-heart"></i> Wedding</button>
+      </div>
+
+      <!-- GENERAL PLANS -->
+      <div class="bs-panel active" id="bsPanel_general">
+        <div class="bs-grid">
+          <div class="bs-card bs-card-1 bs-anim">
+            <div class="bs-glow"></div>
+            <div class="bs-plan-tag"><i class="fas fa-bolt"></i> <span id="bs1_tag">Starter</span></div>
+            <div class="bs-name" id="bs1_name">Hourly Plan</div>
+            <div class="bs-tagline" id="bs1_tagline">Perfect for a single, fast, high-quality reel.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="bs1_price">&#8377;1,699</div>
+              <div class="bs-per" id="bs1_per">/ shoot</div>
+            </div>
+            <div class="bs-gst-note" id="bs1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="bs1_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?plan=Hourly+Plan'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+          <div class="bs-card bs-card-2 bs-anim" style="transition-delay:0.15s;">
+            <div class="bs-glow"></div>
+            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
+            <div class="bs-plan-tag"><i class="fas fa-crown"></i> <span id="bs2_tag">Best Value</span></div>
+            <div class="bs-name" id="bs2_name">Half-Day Plan</div>
+            <div class="bs-tagline" id="bs2_tagline">Ideal for events &amp; creators who need more content.</div>
+            <div class="bs-price-wrap">
+              <div class="bs-price" id="bs2_price">&#8377;3,999</div>
+              <div class="bs-per" id="bs2_per">/ session</div>
+            </div>
+            <div class="bs-gst-note" id="bs2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
+            <div class="bs-divider"></div>
+            <div class="bs-features-label">What's Included</div>
+            <ul class="bs-features" id="bs2_features">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?plan=Half-Day+Plan'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEDDING PLANS -->
+      <div class="bs-panel" id="bsPanel_wedding">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
+
+          <!-- BASIC -->
+          <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;">
+            <div class="bs-glow"></div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">SINGLE EVENT</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-leaf" style="color:#c9a84c;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w1_name" style="font-size:1.5rem;">Basic</div>
+              <div class="bs-tagline" id="w1_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w1_price" style="font-size:2.4rem;">&#8377;14,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w1_per">+ GST</div>
+            </div>
+            <div class="bs-divider"></div>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w1_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to one event</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 3 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Enquire Now</button>
+          </div>
+
+          <!-- SILVER -->
+          <div class="bs-card bs-card-silver bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.1s;">
+            <div class="bs-glow"></div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">THREE EVENTS</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-medal" style="color:#c0c0c0;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w2_name" style="font-size:1.5rem;">Silver</div>
+              <div class="bs-tagline" id="w2_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w2_price" style="font-size:2.4rem;background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;44,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w2_per">+ GST</div>
+            </div>
+            <div class="bs-divider"></div>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w2_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to three events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 10 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
+            </ul>
+            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.35);color:#c0c0c0;" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Enquire Now</button>
+          </div>
+
+          <!-- GOLD -->
+          <div class="bs-card bs-card-gold bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 30px 80px rgba(0,0,0,0.6);transition-delay:0.2s;">
+            <div class="bs-glow"></div>
+            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:900;padding:0.28rem 1.1rem;border-radius:0 0 10px 10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> MOST POPULAR</div>
+            <div style="text-align:center;margin-bottom:1.25rem;margin-top:0.5rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">FOUR EVENTS</div>
+              <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 20px rgba(201,168,76,0.2);"><i class="fas fa-trophy" style="color:#c9a84c;font-size:1.3rem;"></i></div>
+              <div class="bs-name" id="w3_name" style="font-size:1.5rem;">Gold</div>
+              <div class="bs-tagline" id="w3_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w3_price" style="font-size:2.4rem;">&#8377;59,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w3_per">+ GST</div>
+            </div>
+            <div class="bs-divider"></div>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w3_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to four events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 15 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Enquire Now</button>
+          </div>
+
+          <!-- PLATINUM -->
+          <div class="bs-card bs-card-luxe bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.3s;">
+            <div class="bs-glow"></div>
+            <div style="text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">COMPLETE WEDDING</div>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 16px rgba(201,168,76,0.15);"><i class="fas fa-gem" style="color:#e8c96a;font-size:1.1rem;"></i></div>
+              <div class="bs-name" id="w4_name" style="font-size:1.5rem;">Platinum</div>
+              <div class="bs-tagline" id="w4_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">For couples who want it all — every moment captured with unmatched attention to detail.</div>
+              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w4_price" style="font-size:2.4rem;">&#8377;99,999</span></div>
+              <div style="font-size:0.72rem;color:#6a6050;" id="w4_per">+ GST</div>
+            </div>
+            <div class="bs-divider"></div>
+            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
+            <ul class="bs-features" id="w4_features" style="margin-bottom:1.5rem;flex:1;">
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers whole wedding events</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 25 Reels</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>Interaction videos + mobile portraits</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
+            </ul>
+            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Enquire Now</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <script>
+    (function(){
+      var cards = document.querySelectorAll('.bs-anim');
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+      },{threshold:0.15});
+      cards.forEach(function(c){ io.observe(c); });
+    })();
+
+    function bsTab(panel, btn){
+      document.querySelectorAll('.bs-plan-tab').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.bs-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      var el = document.getElementById('bsPanel_'+panel);
+      el.classList.add('active');
+      el.querySelectorAll('.bs-anim').forEach(function(c){ c.classList.add('visible'); });
+    }
+  </script>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section">
+    <style>
+      .features-section{background:#0a0a0a;padding:5rem 0;overflow:hidden;}
+      .feat-tag-wrap{display:flex;justify-content:center;margin-bottom:1.5rem;}
+      .feat-tag-pill{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.78rem;font-weight:600;padding:0.45rem 1.2rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.5rem;}
+      .feat-heading{text-align:center;font-size:clamp(2rem,4.5vw,3rem);font-weight:900;color:#fff;margin-bottom:3rem;}
+      .feat-heading span{color:#c9a84c;}
+      .feat-slider-wrap{position:relative;max-width:1380px;margin:0 auto;padding:0 3.5rem;}
+      .feat-slider{display:flex;gap:1rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
+      .feat-c{background:#0f0f0f;border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.75rem 1.5rem 1.5rem;flex:0 0 calc(25% - 0.75rem);min-width:0;}
+      .feat-c-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:0.45rem;}
+      .feat-c-desc{font-size:0.82rem;color:#484030;line-height:1.7;margin-bottom:1.5rem;}
+      .feat-mockup{display:flex;justify-content:center;}
+      .feat-mock-frame{width:185px;background:#0a0a0a;border-radius:34px;border:2px solid rgba(255,255,255,0.09);overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,0.95);}
+      .feat-mock-top{height:22px;background:#000;display:flex;justify-content:center;align-items:flex-end;padding-bottom:3px;}
+      .feat-mock-pill{width:65px;height:5px;background:#1a1a1a;border-radius:3px;}
+      .feat-mock-screen{background:#111;padding:0.7rem;min-height:320px;}
+      .fms{display:flex;justify-content:space-between;font-size:0.5rem;color:#666;margin-bottom:0.45rem;}
+      .fmr{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+      .fmr:last-child{border-bottom:none;}
+      .fmav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:#fff;font-weight:700;flex-shrink:0;}
+      .fmnm{font-size:0.63rem;color:#fff;font-weight:600;}
+      .fmmt{font-size:0.5rem;color:#555;}
+      .fmst{color:#f5a623;font-size:0.5rem;}
+      .fmred{background:#a07830;border-radius:7px;padding:0.55rem;text-align:center;font-size:0.6rem;font-weight:800;color:#fff;line-height:1.5;margin-bottom:0.35rem;}
+      .fmbox{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:0.4rem 0.55rem;margin-bottom:0.35rem;}
+      .fmmap{background:#071207;border-radius:6px;height:58px;display:flex;align-items:center;justify-content:center;color:#4caf50;font-size:0.6rem;gap:0.3rem;margin-top:0.3rem;}
+      .fmdl{display:flex;align-items:center;gap:0.45rem;background:rgba(201,168,76,0.1);border-radius:7px;padding:0.45rem;margin-bottom:0.35rem;}
+      .fmdlic{width:22px;height:22px;background:#c9a84c;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;flex-shrink:0;}
+      .fmfr{display:flex;justify-content:space-between;padding:0.28rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.55rem;color:#666;}
+      .fmfr:last-child{border-bottom:none;}
+      .fmchat{width:100%;background:#c9a84c;border:none;border-radius:6px;padding:0.38rem;font-size:0.58rem;font-weight:700;color:#fff;text-align:center;margin-top:0.35rem;}
+      .fmg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:0.35rem;}
+      .fmg3i{background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:5px;padding:0.3rem;text-align:center;}
+      .feat-arr{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(8,0,0,0.95);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10;}
+      .feat-arr:hover{border-color:rgba(201,168,76,0.4);color:#c9a84c;}
+      .feat-arr-l{left:0;}
+      .feat-arr-r{right:0;}
+      @media(max-width:1024px){.feat-c{flex:0 0 calc(33.33% - 0.67rem);}}
+      @media(max-width:700px){.feat-c{flex:0 0 calc(50% - 0.5rem);}}
+      @media(max-width:480px){.feat-c{flex:0 0 85%;}}
+    </style>
+
+    <div class="feat-tag-wrap"><span class="feat-tag-pill"><i class="fas fa-bolt"></i> Get to know OG SHOOTS</span></div>
+    <h2 class="feat-heading">What Makes Us <span>Unique</span></h2>
+
+    <div class="feat-slider-wrap">
+      <button class="feat-arr feat-arr-l" id="fL"><i class="fas fa-chevron-left"></i></button>
+      <div style="overflow:hidden;">
+        <div class="feat-slider" id="fS">
+
+          <div class="feat-c">
+            <div class="feat-c-title">Pick a Partner</div>
+            <div class="feat-c-desc">Personalized Partner Selection for Every Shoot.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div style="font-size:0.55rem;color:#777;margin-bottom:0.2rem;">&larr; Starter Plan</div>
+                <div style="font-size:0.68rem;color:#fff;font-weight:700;margin-bottom:0.55rem;">Let's see we have<br/>got here for you!</div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#c9a84c,#a07830)">KM</div><div><div class="fmnm">Kiran Madireddy</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 5+ Years</div></div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#1565c0,#0d47a1)">TH</div><div><div class="fmnm">Thomas</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 7+ Years</div></div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">KK</div><div><div class="fmnm">Koushik K</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 7+ Years</div></div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#2e7d32,#1b5e20)">AR</div><div><div class="fmnm">Arjun R</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Reels | 3+ Years</div></div></div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="feat-c">
+            <div class="feat-c-title">Content Storage</div>
+            <div class="feat-c-desc">We securely store your content for up to 6 months, so you can download, revisit, or share it whenever you are ready no rush, no worries.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div class="fmdl"><div class="fmdlic"><i class="fas fa-cloud-download-alt"></i></div><div><div style="font-size:0.6rem;color:#fff;font-weight:600;">Download Content</div><div style="font-size:0.5rem;color:#555;">From OG SHOOTS Cloud</div></div><i class="fas fa-arrow-down" style="color:#c9a84c;font-size:0.55rem;margin-left:auto;"></i></div>
+                <div style="font-size:0.52rem;color:#555;margin-bottom:0.28rem;">Shoot Details</div>
+                <div class="fmfr"><span>Category</span><span style="color:#ccc;">Wedding Shoot</span></div>
+                <div class="fmfr"><span>Package</span><span style="color:#ccc;">Silver Package</span></div>
+                <div class="fmfr"><span>Price</span><span style="color:#c9a84c;">&#8377;20,499</span></div>
+                <div class="fmfr"><span>Shoot on</span><span style="color:#ccc;">Wed, Sep 4th</span></div>
+                <div class="fmfr"><span>Time</span><span style="color:#ccc;">9:00 am - 3:00 pm</span></div>
+                <div style="font-size:0.52rem;color:#555;margin-top:0.3rem;">Add On Details</div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="feat-c">
+            <div class="feat-c-title">Instant Booking</div>
+            <div class="feat-c-desc">No more waiting! Get immediate confirmation as soon as you book &mdash; fast, simple, and hassle-free.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div style="font-size:0.54rem;color:#777;">Hi, Shreyak</div>
+                <div style="font-size:0.65rem;color:#fff;font-weight:700;margin:0.18rem 0 0.38rem;">You are just in</div>
+                <div class="fmbox">
+                  <div style="font-size:0.6rem;color:#fff;font-weight:700;">&#128278; Your Booking Confirmed</div>
+                  <div style="font-size:0.5rem;color:#888;margin-top:0.1rem;">Kumar &nbsp;|&nbsp; 04:30 PM <span style="color:#c9a84c;float:right;">Edit</span></div>
+                </div>
+                <div class="fmred">REELS CREATED<br/>AND DELIVERED<br/>ON THE SPOT</div>
+                <div style="font-size:0.52rem;color:#777;margin-bottom:0.28rem;">Discover with Vibe</div>
+                <div class="fmg3">
+                  <div class="fmg3i"><div style="font-size:0.95rem;">&#128663;</div><div style="font-size:0.42rem;color:#888;">Car</div></div>
+                  <div class="fmg3i"><div style="font-size:0.95rem;">&#127867;</div><div style="font-size:0.42rem;color:#888;">Party</div></div>
+                  <div class="fmg3i"><div style="font-size:0.95rem;">&#127909;</div><div style="font-size:0.42rem;color:#888;">Reel</div></div>
+                </div>
+                <div style="display:flex;justify-content:space-around;padding:0.3rem 0;border-top:1px solid #1c1c1c;font-size:0.72rem;color:#444;margin-top:0.2rem;">
+                  <i class="fas fa-home"></i><i class="fas fa-th"></i><i class="fas fa-wallet"></i><i class="fas fa-user"></i>
+                </div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="feat-c">
+            <div class="feat-c-title">Live Tracking</div>
+            <div class="feat-c-desc">Know where your content maker is, in real-time. Stay updated from arrival to final wrap.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:0.52rem;margin-bottom:0.35rem;"><span style="color:#4caf50;">&#9679; Booking accepted</span><span style="color:#777;">Info</span></div>
+                <div style="display:flex;gap:0.4rem;margin-bottom:0.35rem;">
+                  <div style="flex:1;"><div style="font-size:0.63rem;color:#fff;font-weight:700;line-height:1.3;">Just be relax your partner</div><div style="font-size:0.5rem;color:#777;margin-top:0.12rem;">will reach you in next 45mins</div><div style="font-size:0.52rem;color:#c9a84c;margin-top:0.2rem;">Track Partner &rarr;</div></div>
+                  <div style="width:54px;height:54px;background:#071207;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">&#128506;</div>
+                </div>
+                <div style="background:#1a1a1a;border-radius:6px;padding:0.4rem;margin-bottom:0.3rem;">
+                  <div style="display:flex;justify-content:space-between;"><div style="font-size:0.6rem;color:#fff;font-weight:600;">Meet Arjun from OG SHOOTS</div><div style="font-size:0.48rem;color:#888;">24 Oct</div></div>
+                  <div style="font-size:0.5rem;color:#888;margin-top:0.08rem;">&#9679; 3:00 PM <span style="background:#c9a84c;color:#fff;border-radius:2px;padding:0 3px;font-size:0.44rem;">Cancel</span></div>
+                  <div style="font-size:0.48rem;color:#555;margin-top:0.18rem;line-height:1.4;">Meet Arjun, he is a well trained and professional content maker working closely with us since 2 years in content creation &amp; editing.</div>
+                </div>
+                <div class="fmmap"><i class="fas fa-map-marker-alt"></i> Live Location Active</div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="feat-c">
+            <div class="feat-c-title">Customer Support</div>
+            <div class="feat-c-desc">24/7 support to keep your day running smoothly. Anytime help, just a message or call away.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div style="font-size:0.54rem;color:#777;">&larr; &nbsp;Hi, Shreyak</div>
+                <div style="font-size:0.66rem;color:#fff;font-weight:700;margin:0.22rem 0 0.45rem;">We are here to help you!</div>
+                <div class="fmg3" style="margin-bottom:0.4rem;">
+                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Getting Started</div></div>
+                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Creating Articles</div></div>
+                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Scale Ques</div></div>
+                </div>
+                <div style="font-size:0.52rem;color:#666;margin-bottom:0.25rem;">&#128100; Account &amp; Preferences</div>
+                <div class="fmfr">Is OG SHOOTS available globally? <span>+</span></div>
+                <div class="fmfr">How OG SHOOTS is so useful? <span>+</span></div>
+                <div class="fmfr">How to verify account? <span>+</span></div>
+                <div class="fmfr">Do I get discount if frequent? <span>+</span></div>
+                <div style="font-size:0.5rem;color:#555;text-align:center;margin-top:0.28rem;">Still not finding an answer?</div>
+                <div class="fmchat">Chat with Us</div>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="feat-c">
+            <div class="feat-c-title">Female Content Maker</div>
+            <div class="feat-c-desc">Female users can now confidently get skilled female content makers for their shoots.</div>
+            <div class="feat-mockup"><div class="feat-mock-frame">
+              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
+              <div class="feat-mock-screen">
+                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+                <div style="font-size:0.52rem;color:#777;margin-bottom:0.3rem;">Based on your request</div>
+                <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);border-radius:6px;padding:0.38rem 0.5rem;margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center;">
+                  <div style="font-size:0.58rem;color:#fff;font-weight:600;">Opt for a Female Content Maker</div>
+                  <div style="width:11px;height:11px;border:1.5px solid #c9a84c;border-radius:2px;flex-shrink:0;"></div>
+                </div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#880e4f,#4a0030)">PR</div><div style="flex:1;"><div class="fmnm">Priya R</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Reels | 4+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,999</div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">AN</div><div style="flex:1;"><div class="fmnm">Ananya N</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 3+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,699</div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#1565c0,#0d47a1)">SM</div><div style="flex:1;"><div class="fmnm">Sneha M</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Portrait | 5+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;2,199</div></div>
+              </div>
+            </div></div>
+          </div>
+
+        </div>
+      </div>
+      <button class="feat-arr feat-arr-r" id="fR"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </section>
+  <script>
+    (function(){
+      var s=document.getElementById('fS');
+      var l=document.getElementById('fL');
+      var r=document.getElementById('fR');
+      var idx=0;
+      function vis(){return window.innerWidth<=480?1:window.innerWidth<=700?2:window.innerWidth<=1024?3:4;}
+      function tot(){return s.children.length;}
+      function go(){var gap=16;var w=s.children[0].offsetWidth+gap;s.style.transform='translateX(-'+(idx*w)+'px)';}
+      r.onclick=function(){if(idx<tot()-vis()){idx++;go();}};
+      l.onclick=function(){if(idx>0){idx--;go();}};
+      var sx,down=false;
+      s.addEventListener('mousedown',function(e){down=true;sx=e.pageX;});
+      document.addEventListener('mouseup',function(){down=false;});
+      document.addEventListener('mousemove',function(e){
+        if(!down)return;
+        if(Math.abs(e.pageX-sx)>60){
+          if(e.pageX<sx&&idx<tot()-vis())idx++;
+          else if(e.pageX>sx&&idx>0)idx--;
+          down=false;go();
+        }
+      });
+      setInterval(function(){if(idx<tot()-vis())idx++;else idx=0;go();},3000);
+    })();
+  </script>
+
+  <!-- SERVICES -->
+  <section class="svc-section">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
+      .svc-section{background:#060606;padding:9rem 0;position:relative;overflow:hidden;}
+      .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none;}
+      .svc-inner{max-width:1200px;margin:0 auto;padding:0 3rem;position:relative;z-index:1;}
+      /* HEADER */
+      .svc-header{text-align:center;margin-bottom:5rem;padding-bottom:3rem;border-bottom:1px solid rgba(201,168,76,0.08);}
+      .svc-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;justify-content:center;}
+      .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
+      .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
+      .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
+      .svc-h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
+      .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+      .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.8;max-width:900px;margin:0 auto;white-space:nowrap;}
+      .svc-header-cta{display:none;}
+      .svc-header-right{display:none;}
+      /* GRID */
+      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+      .svc-card{background:#0d0d0d;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:2.75rem 2.25rem;position:relative;display:flex;flex-direction:column;transition:transform 0.4s,border-color 0.4s,box-shadow 0.4s;overflow:hidden;}
+      .svc-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,#c9a84c,#e8c96a);transition:width 0.6s cubic-bezier(0.25,0.46,0.45,0.94);border-radius:16px 16px 0 0;}
+      .svc-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.3);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.08);}
+      .svc-card:hover::before,.svc-card.pop::before{width:100%;}
+      .svc-card.pop{background:#111;border-color:rgba(201,168,76,0.25);box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(201,168,76,0.06);}
+      /* number */
+      .svc-num{font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.2);letter-spacing:4px;margin-bottom:2.5rem;transition:color 0.4s;}
+      .svc-card:hover .svc-num,.svc-card.pop .svc-num{color:rgba(201,168,76,0.5);}
+      /* icon */
+      .svc-icon-wrap{width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:rgba(201,168,76,0.4);margin-bottom:1.75rem;transition:color 0.4s,transform 0.4s;}
+      .svc-card:hover .svc-icon-wrap,.svc-card.pop .svc-icon-wrap{color:#c9a84c;transform:translateY(-3px);}
+      /* badge */
+      .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.55rem;font-weight:700;padding:0.18rem 0.6rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
+      /* text */
+      .svc-name{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
+      .svc-desc{font-size:0.82rem;color:#5a5040;line-height:1.85;flex:1;margin-bottom:2.5rem;}
+      /* price */
+      .svc-price-row{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.06);}
+      .svc-price{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a 0%,#c9a84c 50%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block;margin-bottom:0.2rem;}
+      .svc-price-label{font-size:0.65rem;color:#4a4030;letter-spacing:2px;text-transform:uppercase;}
+      /* cta */
+      .svc-btn{display:inline-flex;align-items:center;gap:0;color:rgba(201,168,76,0.5);font-size:0.65rem;font-weight:700;text-decoration:none;letter-spacing:3px;text-transform:uppercase;transition:all 0.4s;}
+      .svc-btn::after{content:'';display:inline-block;width:20px;height:1px;background:currentColor;margin-left:0.75rem;transition:width 0.4s;}
+      .svc-card:hover .svc-btn,.svc-card.pop .svc-btn{color:#c9a84c;}
+      .svc-card:hover .svc-btn::after,.svc-card.pop .svc-btn::after{width:36px;}
+      @media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-header{padding-bottom:2rem;margin-bottom:3rem;}}
+      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-inner{padding:0 1.5rem;}}
+    </style>
+    <div class="svc-inner">
+      <div class="svc-header">
+        <div class="svc-eyebrow"><span class="svc-eyebrow-line"></span><span class="svc-eyebrow-text">What We Offer</span><span class="svc-eyebrow-line right"></span></div>
+        <h2 class="svc-h2">Services Built for <em>Every Shoot</em></h2>
+        <p class="svc-sub">From portraits to grand weddings &mdash; crafted with precision, delivered with excellence.</p>
+      </div>
+      <div class="svc-grid" id="svcGrid">
+        <div class="svc-card">
+          <div class="svc-num">01 &mdash; REEL SHOOTS</div>
+          <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
+          <div class="svc-name">Reel Shoots</div>
+          <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_reel">&#8377;999</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="booking.html?service=Reel+Shoot" class="svc-btn">Book Now</a>
+        </div>
+        <div class="svc-card pop">
+          <div class="svc-num">02 &mdash; PORTRAITS</div>
+          <div class="svc-pop-badge"><i class="fas fa-star"></i>&nbsp; Most Popular</div>
+          <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
+          <div class="svc-name">Portrait Sessions</div>
+          <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_portrait">&#8377;1,499</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="booking.html?service=Portrait+Session" class="svc-btn">Book Now</a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">03 &mdash; WEDDINGS</div>
+          <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
+          <div class="svc-name">Wedding Photography</div>
+          <div class="svc-desc">Capture every precious moment of your special day with timeless elegance.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_wedding">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="#" onclick="openWeddingPlans();return false;" class="svc-btn">View Plans</a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">04 &mdash; PRODUCTS</div>
+          <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
+          <div class="svc-name">Product Shoots</div>
+          <div class="svc-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_product">&#8377;2,499</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="booking.html?service=Product+Shoot" class="svc-btn">Book Now</a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">05 &mdash; EVENTS</div>
+          <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
+          <div class="svc-name">Event Coverage</div>
+          <div class="svc-desc">Corporate events, parties &amp; launches &mdash; every moment documented flawlessly.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_event">&#8377;5,999</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="booking.html?service=Event+Coverage" class="svc-btn">Book Now</a>
+        </div>
+        <div class="svc-card">
+          <div class="svc-num">06 &mdash; FOOD</div>
+          <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
+          <div class="svc-name">Food Photography</div>
+          <div class="svc-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
+          <div class="svc-price-row"><span class="svc-price" id="svcPrice_food">&#8377;1,999</span><span class="svc-price-label">Starting Price</span></div>
+          <a href="booking.html?service=Food+Photography" class="svc-btn">Book Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="hiw-section" id="how-it-works">
+    <style>
+      .hiw-section{background:#080808;padding:8rem 0;position:relative;overflow:hidden;}
+      .hiw-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .hiw-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
+      .hiw-bg-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
+      .hiw-inner{max-width:1100px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+      .hiw-header{text-align:center;margin-bottom:5rem;}
+      .hiw-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
+      .hiw-title{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;line-height:1.15;}
+      .hiw-title span{color:#c9a84c;}
+      .hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;}
+      /* connector line */
+      .hiw-grid::before{content:'';position:absolute;top:52px;left:calc(16.66% + 1rem);right:calc(16.66% + 1rem);height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.4),rgba(201,168,76,0.15),rgba(201,168,76,0.4));z-index:0;}
+      .hiw-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 2rem;position:relative;z-index:1;}
+      .hiw-step-top{display:flex;flex-direction:column;align-items:center;margin-bottom:2rem;}
+      .hiw-num-wrap{position:relative;margin-bottom:0;}
+      .hiw-num-ring{width:104px;height:104px;border-radius:50%;border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;background:#0d0d0d;transition:all 0.4s;position:relative;}
+      .hiw-step:hover .hiw-num-ring{border-color:rgba(201,168,76,0.5);box-shadow:0 0 40px rgba(201,168,76,0.12);background:#111;}
+      .hiw-num-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(201,168,76,0.08);transition:all 0.4s;}
+      .hiw-step:hover .hiw-num-ring::before{border-color:rgba(201,168,76,0.2);}
+      .hiw-icon{font-size:1.6rem;color:rgba(201,168,76,0.5);transition:color 0.4s,transform 0.4s;}
+      .hiw-step:hover .hiw-icon{color:#c9a84c;transform:scale(1.1);}
+      .hiw-step-num{position:absolute;top:-6px;right:-6px;width:26px;height:26px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:900;color:#000;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(201,168,76,0.3);}
+      .hiw-step-body{}
+      .hiw-step-title{font-size:1.05rem;font-weight:800;color:#f0ece0;margin-bottom:0.6rem;transition:color 0.3s;}
+      .hiw-step:hover .hiw-step-title{color:#c9a84c;}
+      .hiw-step-desc{font-size:0.83rem;color:#6a6050;line-height:1.8;max-width:220px;margin:0 auto;}
+      .hiw-step-tag{display:inline-flex;align-items:center;gap:0.3rem;margin-top:1.25rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);color:rgba(201,168,76,0.5);font-size:0.6rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.3s;}
+      .hiw-step:hover .hiw-step-tag{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);color:#c9a84c;}
+      .hiw-cta{text-align:center;margin-top:4.5rem;}
+      .hiw-cta-btn{display:inline-flex;align-items:center;gap:0.75rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.9rem;font-weight:800;padding:1rem 2.5rem;border-radius:12px;text-decoration:none;letter-spacing:0.5px;transition:all 0.3s;box-shadow:0 8px 25px rgba(201,168,76,0.2);}
+      .hiw-cta-btn:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);box-shadow:0 14px 40px rgba(201,168,76,0.35);transform:translateY(-2px);}
+      @media(max-width:768px){
+        .hiw-grid{grid-template-columns:1fr;gap:3rem;}
+        .hiw-grid::before{display:none;}
+        .hiw-step{padding:0;}
+      }
+    </style>
+    <div class="hiw-bg-glow"></div>
+    <div class="hiw-inner">
+      <div class="hiw-header">
+        <div class="hiw-eyebrow"><i class="fas fa-bolt"></i> Simple Process</div>
+        <h2 class="hiw-title">Book a Shoot in <span>3 Easy Steps</span></h2>
+      </div>
+      <div class="hiw-grid">
+
+        <div class="hiw-step">
+          <div class="hiw-step-top">
+            <div class="hiw-num-wrap">
+              <div class="hiw-num-ring"><i class="fas fa-search-location hiw-icon"></i></div>
+              <div class="hiw-step-num">01</div>
+            </div>
+          </div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Choose &amp; Book</div>
+            <p class="hiw-step-desc">Select your service, city, date &amp; time. Browse verified creator profiles.</p>
+            <span class="hiw-step-tag"><i class="fas fa-clock"></i> Under 2 mins</span>
+          </div>
+        </div>
+
+        <div class="hiw-step">
+          <div class="hiw-step-top">
+            <div class="hiw-num-wrap">
+              <div class="hiw-num-ring"><i class="fas fa-camera hiw-icon"></i></div>
+              <div class="hiw-step-num">02</div>
+            </div>
+          </div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Get Clicked</div>
+            <p class="hiw-step-desc">Your assigned creator arrives on time and captures stunning content.</p>
+            <span class="hiw-step-tag"><i class="fas fa-map-marker-alt"></i> Live tracked</span>
+          </div>
+        </div>
+
+        <div class="hiw-step">
+          <div class="hiw-step-top">
+            <div class="hiw-num-wrap">
+              <div class="hiw-num-ring"><i class="fas fa-cloud-download-alt hiw-icon"></i></div>
+              <div class="hiw-step-num">03</div>
+            </div>
+          </div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Receive &amp; Download</div>
+            <p class="hiw-step-desc">Edited reels delivered to your dashboard in just 10 minutes.</p>
+            <span class="hiw-step-tag"><i class="fas fa-bolt"></i> 10 min delivery</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="hiw-cta">
+        <a href="booking.html" class="hiw-cta-btn"><i class="fas fa-camera"></i> Book Your Shoot Now</a>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
 
   <section class="app-cta-section">
     <style>
@@ -1195,7 +2819,7 @@
       <div class="app-cta-text">
         <p class="app-cta-tag">Download the App</p>
         <h2 class="app-cta-title">Book Your Shoot<br/>in <span>Under 2 Minutes</span></h2>
-        <p class="app-cta-desc">Get the OG Shoots app and book a certified content maker near you instantly. Available on iOS & Android.</p>
+        <p class="app-cta-desc">Get the OG SHOOTS app and book a certified content maker near you instantly. Available on iOS & Android.</p>
         <div class="app-btns">
           <a href="#" class="app-btn">
             <i class="fab fa-apple"></i>
@@ -1232,15 +2856,15 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform. Book top shooters near you instantly.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
+            <div><i class="fas fa-envelope"></i> hashshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/hashshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/wearehashoots/" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -1277,7 +2901,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 OG Shoots. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
         <div class="footer-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
@@ -1555,394 +3179,6 @@
     });
     // Close on Escape
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWeddingPlans(); });
-  </script>
-
-  <!-- APP LAUNCH SCREEN - Premium Gold Edition -->
-  <script>
-  (function(){
-    var cfg = JSON.parse(localStorage.getItem('hs_launch_config')||'{}');
-    if(cfg.enabled === false) return;
-
-    var dur = cfg.duration||10;
-    var brand = cfg.brand||'OG SHOOTS';
-    var f1  = cfg.founder||'Boddu Srisanth';
-    var f1t = cfg.founderTitle||'Founder & CEO';
-    var f2  = cfg.cofounder||'Gulimi Sumanth';
-    var f2t = cfg.cofounderTitle||'Managing Director';
-    var tag = cfg.tagline||'Premium Reels. Real Moments.';
-    var fp1 = cfg.founderPhoto||'srisanth.jpeg';
-    var fp2 = cfg.cofounderPhoto||'sumanth.jpeg';
-    var logo = cfg.logo||'';
-
-    /* -- AUDIO -- */
-    var _ac=null;
-    function AC(){
-      if(!_ac) _ac=new (window.AudioContext||window.webkitAudioContext)();
-      if(_ac.state==='suspended') _ac.resume();
-      return _ac;
-    }
-    function tn(f,l,v,t){
-      try{
-        var c=AC(),o=c.createOscillator(),g=c.createGain();
-        o.connect(g);g.connect(c.destination);
-        o.type='sine';o.frequency.value=f;
-        g.gain.setValueAtTime(0,t);
-        g.gain.linearRampToValueAtTime(v,t+0.04);
-        g.gain.exponentialRampToValueAtTime(0.001,t+l);
-        o.start(t);o.stop(t+l+0.05);
-      }catch(e){}
-    }
-    function bell(t){
-      try{
-        var c=AC(),o=c.createOscillator(),g=c.createGain();
-        o.connect(g);g.connect(c.destination);
-        o.type='sine';
-        o.frequency.setValueAtTime(1760,t);
-        o.frequency.exponentialRampToValueAtTime(880,t+1.2);
-        g.gain.setValueAtTime(0.25,t);
-        g.gain.exponentialRampToValueAtTime(0.001,t+1.8);
-        o.start(t);o.stop(t+1.9);
-        var o2=c.createOscillator(),g2=c.createGain();
-        o2.connect(g2);g2.connect(c.destination);
-        o2.type='sine';o2.frequency.value=2637;
-        g2.gain.setValueAtTime(0.08,t);
-        g2.gain.exponentialRampToValueAtTime(0.001,t+0.7);
-        o2.start(t);o2.stop(t+0.8);
-      }catch(e){}
-    }
-    function govinda(){
-      try{
-        var c=AC(),t=c.currentTime+0.1;
-        var n=[[293,0,0.28,0.32],[370,0.30,0.22,0.30],[440,0.54,0.42,0.34],
-               [293,1.08,0.28,0.32],[370,1.38,0.22,0.30],[440,1.62,0.42,0.34],
-               [370,2.18,0.20,0.30],[440,2.40,0.20,0.32],[494,2.62,0.20,0.34],
-               [554,2.84,0.52,0.40],[587,3.40,0.95,0.38],[554,4.40,0.55,0.24],[440,5.00,0.75,0.16]];
-        n.forEach(function(x){tn(x[0],x[2],x[3],t+x[1]);tn(x[0]*2,x[2]*0.5,x[3]*0.07,t+x[1]);});
-        bell(t);bell(t+1.08);bell(t+2.18);bell(t+3.40);
-      }catch(e){}
-    }
-    function tickSnd(n){try{tn(n<=3?1047:523,0.09,0.18,AC().currentTime);}catch(e){}}
-
-    /* -- STYLES -- */
-    var st=document.createElement('style');
-    st.textContent=[
-      '@keyframes LSH{0%{background-position:-300% center}100%{background-position:300% center}}',
-      '@keyframes LROT{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}',
-      '@keyframes LROTR{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}',
-      '@keyframes LFU{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}',
-      '@keyframes LPOP{0%{transform:scale(0.1);opacity:0}55%{transform:scale(1.3)}80%{transform:scale(0.92)}100%{transform:scale(1);opacity:1}}',
-      '@keyframes LRING{0%{transform:translate(-50%,-50%) scale(0.4);opacity:1}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}',
-      '@keyframes LGLOW{0%,100%{opacity:0.25;transform:scale(1)}50%{opacity:0.75;transform:scale(1.25)}}',
-      '@keyframes LSCAN{0%{top:-1%}100%{top:101%}}',
-      '@keyframes LBLINK{0%,100%{opacity:1}50%{opacity:0.2}}',
-      '@keyframes LCF{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(115vh) rotate(800deg);opacity:0}}',
-      '@keyframes LPULSE{0%,100%{transform:scale(1);box-shadow:0 0 35px rgba(201,168,76,0.6),0 0 70px rgba(201,168,76,0.2)}50%{transform:scale(1.06);box-shadow:0 0 60px rgba(201,168,76,1),0 0 120px rgba(201,168,76,0.4)}}',
-      '@keyframes LSLIDEL{from{opacity:0;transform:translateX(-100px) scale(0.9)}to{opacity:1;transform:translateX(0) scale(1)}}',
-      '@keyframes LSLIDER{from{opacity:0;transform:translateX(100px) scale(0.9)}to{opacity:1;transform:translateX(0) scale(1)}}',
-      '@keyframes LDROP{from{opacity:0;transform:translateY(-80px) scale(0.7)}to{opacity:1;transform:translateY(0) scale(1)}}',
-      '@keyframes LSHINE{0%{left:-100%}100%{left:200%}}',
-      '@keyframes LEXP{0%{transform:scale(0);opacity:1}100%{transform:scale(40);opacity:0}}',
-      '.lcard-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}',
-      '.lcard-img-wrap{width:100%;overflow:hidden;position:relative;}',
-      '.lcard-img-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,0.85) 100%);}',
-      '.lcard-name{position:absolute;bottom:0;left:0;right:0;padding:0.75rem;z-index:1;text-align:center;}',
-    ].join('');
-    document.head.appendChild(st);
-
-    /* -- OVERLAY -- */
-    var ov=document.createElement('div');
-    ov.id='hs_launch_ov';
-    ov.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:url("venkateswara.jpg") center top/cover no-repeat;font-family:Inter,sans-serif;overflow:hidden;transition:opacity 1.2s ease;';
-
-    /* bg overlays */
-    var bgd=document.createElement('div');
-    bgd.style.cssText='position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.78) 0%,rgba(3,1,0,0.88) 45%,rgba(3,1,0,0.96) 100%);pointer-events:none;z-index:0;';
-    ov.appendChild(bgd);
-
-    var bgr=document.createElement('div');
-    bgr.style.cssText='position:absolute;inset:0;background:radial-gradient(ellipse 65% 45% at 50% 50%,rgba(201,168,76,0.14) 0%,transparent 70%);pointer-events:none;z-index:0;';
-    ov.appendChild(bgr);
-
-    /* rotating rings */
-    [700,520,340].forEach(function(s,i){
-      var r=document.createElement('div');
-      var half=s/2;
-      r.style.cssText='position:absolute;top:50%;left:50%;width:'+s+'px;height:'+s+'px;margin:-'+half+'px 0 0 -'+half+'px;border-radius:50%;border:1px solid rgba(201,168,76,'+(0.08-i*0.02)+');animation:'+(i%2===0?'LROT':'LROTR')+' '+(28+i*8)+'s linear infinite;pointer-events:none;z-index:0;';
-      ov.appendChild(r);
-    });
-
-    /* scan line */
-    var sc=document.createElement('div');
-    sc.style.cssText='position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);animation:LSCAN 4s linear infinite;pointer-events:none;z-index:0;';
-    ov.appendChild(sc);
-
-    /* corner accents */
-    ['top:0;left:0;border-top:2px solid;border-left:2px solid',
-     'top:0;right:0;border-top:2px solid;border-right:2px solid',
-     'bottom:0;left:0;border-bottom:2px solid;border-left:2px solid',
-     'bottom:0;right:0;border-bottom:2px solid;border-right:2px solid'
-    ].forEach(function(s){
-      var c=document.createElement('div');
-      c.style.cssText='position:absolute;'+s+';border-color:rgba(201,168,76,0.4);width:40px;height:40px;pointer-events:none;z-index:1;';
-      ov.appendChild(c);
-    });
-
-    /* -- PHASE 1: COUNTDOWN -- */
-    var p1=document.createElement('div');
-    p1.id='lp1';
-    p1.style.cssText='text-align:center;position:relative;z-index:2;animation:LFU 0.9s ease;padding:1rem;';
-
-    var logoHtml = logo
-      ? '<img src="'+logo+'" style="height:68px;object-fit:contain;filter:drop-shadow(0 0 25px rgba(201,168,76,0.9));margin-bottom:0.4rem;" />'
-      : '<div style="font-size:clamp(2rem,6vw,3rem);font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#c9a84c,#fff,#f5d76e,#c9a84c);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:LSH 3s linear infinite;margin-bottom:0.4rem;">'+brand+'</div>';
-
-    p1.innerHTML = logoHtml
-      +'<div style="font-size:0.55rem;color:rgba(201,168,76,0.45);letter-spacing:9px;text-transform:uppercase;margin-bottom:1.75rem;">PREMIUM LAUNCH</div>'
-
-      /* SVG ring */
-      +'<div style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:210px;height:210px;">'
-        +'<svg style="position:absolute;top:0;left:0;" width="210" height="210" viewBox="0 0 210 210">'
-          +'<circle cx="105" cy="105" r="92" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="2"/>'
-          +'<circle id="lpr" cx="105" cy="105" r="92" fill="none" stroke="url(#lg1)" stroke-width="4" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 105 105)"/>'
-          +'<defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a07830"/><stop offset="50%" stop-color="#fff"/><stop offset="100%" stop-color="#a07830"/></linearGradient></defs>'
-        +'</svg>'
-        +'<div id="lring" style="position:absolute;top:50%;left:50%;width:165px;height:165px;border-radius:50%;border:2px solid rgba(201,168,76,0.6);"></div>'
-        +'<div id="lnum" style="font-size:6.5rem;font-weight:900;color:#c9a84c;line-height:1;text-shadow:0 0 50px rgba(201,168,76,0.9),0 0 100px rgba(201,168,76,0.3);position:relative;z-index:1;animation:LPOP 0.5s cubic-bezier(0.34,1.56,0.64,1);">'+dur+'</div>'
-      +'</div>'
-
-      /* LAUNCH button */
-      +'<div id="lbtnw" style="margin-top:2rem;">'
-        +'<button id="lbtn" style="position:relative;overflow:hidden;background:linear-gradient(135deg,#a07830,#c9a84c,#f5d76e,#c9a84c,#a07830);background-size:300%;color:#000;border:none;border-radius:50px;padding:1.1rem 4rem;font-size:1.1rem;font-weight:900;cursor:pointer;font-family:Inter,sans-serif;letter-spacing:4px;text-transform:uppercase;animation:LPULSE 1.6s ease-in-out infinite;display:inline-flex;align-items:center;gap:0.7rem;">'
-          +'<span style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:LSHINE 2s linear infinite;"></span>'
-          +'<i class="fas fa-rocket" style="position:relative;z-index:1;font-size:1.2rem;"></i>'
-          +'<span style="position:relative;z-index:1;">LAUNCH</span>'
-        +'</button>'
-      +'</div>'
-
-      +'<div style="margin-top:1.1rem;font-size:0.62rem;color:rgba(201,168,76,0.35);letter-spacing:3px;text-transform:uppercase;">'+tag+'</div>';
-
-    ov.appendChild(p1);
-
-    /* -- PHASE 2: EXPLOSION -- */
-    var p2=document.createElement('div');
-    p2.id='lp2';
-    p2.style.cssText='display:none;position:absolute;inset:0;z-index:10;align-items:center;justify-content:center;';
-    var expDot=document.createElement('div');
-    expDot.id='lexp';
-    expDot.style.cssText='width:24px;height:24px;border-radius:50%;background:radial-gradient(circle,#fff 0%,#f5d76e 40%,#c9a84c 70%,transparent 100%);box-shadow:0 0 80px 40px rgba(201,168,76,0.95);';
-    p2.appendChild(expDot);
-    ov.appendChild(p2);
-
-    /* -- PHASE 3: CONGRATS -- */
-    var p3=document.createElement('div');
-    p3.id='lp3';
-    p3.style.cssText='display:none;text-align:center;position:relative;z-index:2;padding:1.25rem;width:100%;max-width:640px;';
-
-    /* LIVE badge */
-    var liveBadge='<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.35);border-radius:50px;padding:0.4rem 1.2rem;margin-bottom:1.25rem;animation:LFU 0.6s ease;">'
-      +'<div style="width:9px;height:9px;border-radius:50%;background:#4caf50;box-shadow:0 0 10px #4caf50;animation:LBLINK 1s infinite;"></div>'
-      +'<span style="font-size:0.68rem;font-weight:800;color:#4caf50;letter-spacing:3px;text-transform:uppercase;">LIVE NOW</span>'
-    +'</div>';
-
-    /* Brand */
-    var brandHtml='<div style="font-size:clamp(2.5rem,9vw,5rem);font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#a07830,#c9a84c,#fff,#f5d76e,#fff,#c9a84c,#a07830);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:LSH 2.5s linear infinite,LDROP 0.8s ease;line-height:1;margin-bottom:0.2rem;">'+brand+'</div>'
-      +'<div style="font-size:0.6rem;color:rgba(201,168,76,0.45);letter-spacing:9px;text-transform:uppercase;margin-bottom:1.5rem;animation:LFU 0.8s ease 0.2s both;">IS LIVE</div>';
-
-    /* Divider */
-    var divider='<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;animation:LFU 0.8s ease 0.3s both;">'
-      +'<div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4));"></div>'
-      +'<span style="font-size:0.58rem;color:rgba(201,168,76,0.5);letter-spacing:3px;text-transform:uppercase;white-space:nowrap;">Proudly Presented By</span>'
-      +'<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.4),transparent);"></div>'
-    +'</div>';
-
-    /* Founder cards -- FULL SQUARE IMAGE */
-    function makeCard(photo, name, title, animClass){
-      return '<div style="position:relative;border-radius:16px;overflow:hidden;border:2px solid rgba(201,168,76,0.5);box-shadow:0 0 30px rgba(201,168,76,0.2),0 20px 60px rgba(0,0,0,0.7);animation:'+animClass+' 0.9s cubic-bezier(0.34,1.2,0.64,1) 0.4s both;">'
-        /* full square image */
-        +'<div style="width:100%;aspect-ratio:1/1;overflow:hidden;position:relative;">'
-          +'<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.background=\'linear-gradient(135deg,#1a1408,#0a0a0a)\'" />'
-          /* gradient overlay on image */
-          +'<div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.92) 100%);"></div>'
-          /* gold top bar */
-          +'<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#c9a84c,#fff,#c9a84c,transparent);"></div>'
-          /* spinning gold ring overlay on top-right */
-          +'<div style="position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,168,76,0.3);animation:LROT 6s linear infinite;"></div>'
-        +'</div>'
-        /* name & title over image bottom */
-        +'<div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 0.85rem 0.85rem;text-align:center;">'
-          +'<div style="font-size:1rem;font-weight:900;color:#fff;letter-spacing:0.3px;text-shadow:0 2px 8px rgba(0,0,0,0.8);margin-bottom:0.35rem;">'+name+'</div>'
-          +'<div style="display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,0.25),rgba(160,120,48,0.15));border:1px solid rgba(201,168,76,0.5);border-radius:50px;padding:0.22rem 0.85rem;backdrop-filter:blur(4px);">'
-            +'<span style="font-size:0.58rem;color:#f5d76e;font-weight:800;letter-spacing:2px;text-transform:uppercase;">'+title+'</span>'
-          +'</div>'
-        +'</div>'
-      +'</div>';
-    }
-
-    var cards='<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">'
-      +makeCard(fp1,f1,f1t,'LSLIDEL')
-      +makeCard(fp2,f2,f2t,'LSLIDER')
-    +'</div>';
-
-    var tagline='<div style="font-size:0.62rem;color:rgba(201,168,76,0.4);letter-spacing:3px;text-transform:uppercase;animation:LFU 0.8s ease 0.7s both;">'+tag+'</div>';
-
-    /* -- UPCOMING SHOOT INFO -- */
-    var eventBlock = '';
-    try {
-      var _demos = JSON.parse(localStorage.getItem('hs_demos')||'[]');
-      var _today = new Date(); _today.setHours(0,0,0,0);
-      var _next = _demos.filter(function(d){ return d.date && new Date(d.date) >= _today; })
-                        .sort(function(a,b){ return new Date(a.date)-new Date(b.date); })[0];
-      if(_next){
-        var _d = new Date(_next.date);
-        var _days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        var _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var _dateStr = _days[_d.getDay()]+', '+_d.getDate()+' '+_months[_d.getMonth()]+' '+_d.getFullYear();
-        var _timeStr = '';
-        if(_next.time){
-          var _tp=_next.time.split(':'); var _h=parseInt(_tp[0]); var _m=_tp[1];
-          _timeStr = (_h%12||12)+':'+_m+' '+(_h>=12?'PM':'AM');
-        }
-        var _placeStr = _next.place || '';
-        eventBlock = '<div style="margin:1rem 0 0.75rem;animation:LFU 0.8s ease 0.55s both;">'
-          +(_next.title ? '<div style="font-size:0.72rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">'+_next.title+'</div>' : '')
-          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">'
-            /* Place */
-            +(_placeStr ? '<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
-              +'<div style="font-size:1rem;margin-bottom:0.3rem;">📍</div>'
-              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Place</div>'
-              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_placeStr+'</div>'
-            +'</div>' : '<div></div>')
-            /* Date & Day */
-            +'<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
-              +'<div style="font-size:1rem;margin-bottom:0.3rem;">📅</div>'
-              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Date</div>'
-              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_dateStr+'</div>'
-            +'</div>'
-            /* Time */
-            +(_timeStr ? '<div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;">'
-              +'<div style="font-size:1rem;margin-bottom:0.3rem;">🕐</div>'
-              +'<div style="font-size:0.5rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.25rem;">Time</div>'
-              +'<div style="font-size:0.68rem;font-weight:700;color:#fff;line-height:1.3;">'+_timeStr+'</div>'
-            +'</div>' : '<div></div>')
-          +'</div>'
-        +'</div>';
-      }
-    } catch(e){}
-
-    p3.innerHTML = liveBadge + brandHtml + divider + cards + eventBlock + tagline;
-    ov.appendChild(p3);
-    document.body.appendChild(ov);
-
-    /* -- COUNTDOWN LOGIC -- */
-    var count=dur, started=false, timer=null;
-    var numEl=document.getElementById('lnum');
-    var ringEl=document.getElementById('lring');
-    var progEl=document.getElementById('lpr');
-
-    function animRing(){
-      if(!ringEl) return;
-      ringEl.style.animation='none';
-      void ringEl.offsetWidth;
-      ringEl.style.animation='LRING 0.85s ease-out forwards';
-    }
-
-    function startCountdown(){
-      if(started) return;
-      started=true;
-      try{AC().resume();}catch(e){}
-      govinda();
-
-      var bw=document.getElementById('lbtnw');
-      if(bw) bw.innerHTML='<div style="font-size:0.68rem;color:rgba(201,168,76,0.55);letter-spacing:5px;text-transform:uppercase;margin-top:0.5rem;animation:LBLINK 1.2s infinite;">Launching in...</div>';
-
-      setTimeout(function(){
-        if(progEl){
-          progEl.style.transition='stroke-dashoffset '+dur+'s linear';
-          progEl.style.strokeDashoffset='0';
-        }
-      },60);
-
-      animRing();
-      tickSnd(count);
-
-      timer=setInterval(function(){
-        count--;
-        animRing();
-        if(count>0){
-          tickSnd(count);
-          if(numEl){
-            numEl.textContent=count;
-            numEl.style.animation='none';
-            void numEl.offsetWidth;
-            numEl.style.animation='LPOP 0.5s cubic-bezier(0.34,1.56,0.64,1)';
-          }
-          if(count<=3 && numEl){
-            numEl.style.color='#fff';
-            numEl.style.textShadow='0 0 '+(50+(3-count)*50)+'px rgba(201,168,76,1),0 0 '+(100+(3-count)*80)+'px rgba(201,168,76,0.5)';
-          }
-        } else {
-          clearInterval(timer);
-          doExplosion();
-        }
-      },1000);
-    }
-
-    /* -- EXPLOSION -- */
-    function doExplosion(){
-      var p1el=document.getElementById('lp1');
-      var p2el=document.getElementById('lp2');
-      if(p1el) p1el.style.display='none';
-      if(p2el){ p2el.style.display='flex'; }
-
-      /* expand dot */
-      var exp=document.getElementById('lexp');
-      if(exp){
-        exp.style.transition='transform 0.6s ease-out, opacity 0.6s ease-out';
-        exp.style.transform='scale(80)';
-        exp.style.opacity='0';
-      }
-
-      /* white flash */
-      var flash=document.createElement('div');
-      flash.style.cssText='position:absolute;inset:0;background:#fff;z-index:20;opacity:0.95;transition:opacity 0.4s ease;';
-      ov.appendChild(flash);
-      setTimeout(function(){ flash.style.opacity='0'; setTimeout(function(){ if(flash.parentNode) flash.remove(); },400); },80);
-
-      /* confetti */
-      var cols=['#c9a84c','#fff','#f5d76e','#4caf50','#ff9800','#e8c96a','#a07830','#2196f3','#ffeb3b'];
-      for(var i=0;i<200;i++){
-        var cf=document.createElement('div');
-        var sz=3+Math.random()*12;
-        cf.style.cssText='position:fixed;top:-20px;left:'+Math.random()*100+'vw;width:'+sz+'px;height:'+sz+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>0.4?'50%':'2px')+';animation:LCF '+(2.5+Math.random()*3)+'s linear '+(Math.random()*1.5)+'s forwards;z-index:100001;pointer-events:none;';
-        ov.appendChild(cf);
-      }
-
-      govinda();
-
-      /* show phase 3 */
-      setTimeout(function(){
-        if(p2el) p2el.style.display='none';
-        /* restore bg */
-        ov.style.background='url("venkateswara.jpg") center top/cover no-repeat';
-        var p3el=document.getElementById('lp3');
-        if(p3el) p3el.style.display='block';
-      },750);
-
-      /* auto dismiss */
-      setTimeout(function(){
-        ov.style.opacity='0';
-        setTimeout(function(){ if(ov.parentNode) ov.remove(); },1300);
-      },8000);
-    }
-
-    /* bind button */
-    var btn=document.getElementById('lbtn');
-    if(btn){
-      btn.addEventListener('click',function(e){ e.stopPropagation(); startCountdown(); });
-      btn.addEventListener('touchstart',function(e){ e.stopPropagation(); startCountdown(); },{passive:true});
-    }
-
-  })();
   </script>
 
 </body>
