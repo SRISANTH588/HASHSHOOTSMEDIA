@@ -144,6 +144,31 @@
       req.onerror = function(){ cb(null); };
     }
 
+    // ── Firebase real-time sync for bookings ──
+    (async function(){
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+        var db      = fbStore.getFirestore(app);
+        // Listen for real-time booking changes
+        fbStore.onSnapshot(fbStore.collection(db,'bookings'), function(snap){
+          var fbBookings = [];
+          snap.forEach(function(d){ fbBookings.push(Object.assign({id:d.id},d.data())); });
+          // Merge with localStorage — Firebase is source of truth
+          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          fbBookings.forEach(function(fb){
+            var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id); });
+            if(idx > -1) local[idx] = Object.assign(local[idx], fb);
+            else local.push(fb);
+          });
+          localStorage.setItem('hs_bookings', JSON.stringify(local));
+          loadBookings();
+        });
+      }catch(e){ console.log('Firebase sync error:',e); loadBookings(); }
+    })();
+
     function loadBookings(){
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
