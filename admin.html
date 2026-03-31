@@ -2378,21 +2378,25 @@ Priority Support</textarea></div>
     var _appFeedbackFilter = 'all';
 
     function renderAppFeedback(){
-      var items = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]').slice().reverse();
-      var filtered = items.filter(function(i){
-        if(_appFeedbackFilter==='all') return true;
-        if(_appFeedbackFilter==='5') return i.rating===5;
-        if(_appFeedbackFilter==='4') return i.rating===4;
-        if(_appFeedbackFilter==='low') return i.rating<=2;
+      var allItems = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]').slice().reverse();
+      var f = _appFeedbackFilter;
+      var typeList = ['Bug','Suggestion','Complaint','Compliment','Other'];
+      var filtered = allItems.filter(function(i){
+        if(f==='all') return true;
+        if(f==='5') return i.rating===5;
+        if(f==='4') return i.rating===4;
+        if(f==='low') return i.rating<=2;
+        if(typeList.indexOf(f)>=0) return i.type===f;
         return true;
       });
-      document.getElementById('af_total').textContent = items.length;
-      var avg = items.length ? (items.reduce(function(s,i){return s+(i.rating||0);},0)/items.length).toFixed(1) : '0.0';
+      // stats always from full list
+      document.getElementById('af_total').textContent = allItems.length;
+      var avg = allItems.length ? (allItems.reduce(function(s,i){return s+(i.rating||0);},0)/allItems.length).toFixed(1) : '0.0';
       document.getElementById('af_avg').textContent = avg;
-      document.getElementById('af_five').textContent = items.filter(function(i){return i.rating===5;}).length;
-      document.getElementById('af_low').textContent  = items.filter(function(i){return i.rating<=2;}).length;
+      document.getElementById('af_five').textContent = allItems.filter(function(i){return i.rating===5;}).length;
+      document.getElementById('af_low').textContent  = allItems.filter(function(i){return i.rating<=2;}).length;
       var badge = document.getElementById('appFeedbackBadge');
-      if(badge){ badge.textContent=items.length; badge.style.display=items.length?'inline':'none'; }
+      if(badge){ badge.textContent=allItems.length; badge.style.display=allItems.length?'inline':'none'; }
       var list = document.getElementById('appFeedbackList');
       if(!filtered.length){
         list.innerHTML='<div style="color:#6a6050;text-align:center;padding:3rem;"><i class="fas fa-comment-slash" style="font-size:2rem;display:block;margin-bottom:0.75rem;opacity:0.4;"></i>No feedback found.</div>';
@@ -2400,9 +2404,10 @@ Priority Support</textarea></div>
       }
       var typeColors={'Bug':'#f44336','Suggestion':'#2196f3','Complaint':'#ff9800','Compliment':'#c9a84c','Other':'#9a9080'};
       list.innerHTML = filtered.map(function(item){
-        var stars = '';
-        for(var i=1;i<=5;i++) stars += '<span style="color:'+(i<=item.rating?'#f5a623':'#333')+';">&#9733;</span>';
-        var typeColor = typeColors[item.type]||'#9a9080';
+        var stars='';
+        for(var i=1;i<=5;i++) stars+='<span style="color:'+(i<=(item.rating||0)?'#f5a623':'#333')+';">&#9733;</span>';
+        var typeColor=typeColors[item.type]||'#9a9080';
+        var desc = item.text || item.desc || '';
         return '<div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:1.1rem 0;display:flex;gap:1rem;align-items:flex-start;">'
           +'<div style="width:40px;height:40px;border-radius:10px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">&#128172;</div>'
           +'<div style="flex:1;min-width:0;">'
@@ -2411,13 +2416,13 @@ Priority Support</textarea></div>
               +(item.type?'<span style="font-size:0.62rem;font-weight:800;padding:0.15rem 0.6rem;border-radius:50px;background:'+typeColor+'22;color:'+typeColor+';border:1px solid '+typeColor+'44;">'+escHtml(item.type)+'</span>':'')
               +(item.page?'<span style="font-size:0.68rem;color:#6a6050;">&#128279; '+escHtml(item.page)+'</span>':'')
             +'</div>'
-            +'<div style="font-size:0.82rem;margin-bottom:0.35rem;">'+stars+'</div>'
-            +(item.text?'<div style="font-size:0.82rem;color:#9a9080;line-height:1.6;font-style:italic;">&ldquo;'+escHtml(item.text)+'&rdquo;</div>':'')
+            +'<div style="font-size:0.82rem;margin-bottom:0.4rem;">'+stars+'</div>'
+            +(desc?'<div style="font-size:0.85rem;color:#d0c8b8;line-height:1.65;background:rgba(255,255,255,0.03);border-left:2px solid rgba(201,168,76,0.3);padding:0.5rem 0.75rem;border-radius:0 8px 8px 0;margin-top:0.2rem;">&ldquo;'+escHtml(desc)+'&rdquo;</div>':'')
           +'</div>'
           +'<div style="font-size:0.7rem;color:#4a4030;white-space:nowrap;flex-shrink:0;">'+new Date(item.ts||Date.now()).toLocaleDateString()+'</div>'
           +'</div>';
       }).join('');
-      // also load from Firebase
+      // sync from Firebase
       (async function(){
         try{
           var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -2442,29 +2447,6 @@ Priority Support</textarea></div>
       btn.classList.add('active');
       renderAppFeedback();
     }
-
-    // also filter by type in renderAppFeedback
-    var _afTypeFilters = ['Bug','Suggestion','Complaint','Compliment','Other'];
-    // patch renderAppFeedback filter to handle type
-    var _origRenderAF = renderAppFeedback;
-    renderAppFeedback = function(){
-      var items = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]').slice().reverse();
-      var f = _appFeedbackFilter;
-      var filtered = items.filter(function(i){
-        if(f==='all') return true;
-        if(f==='5') return i.rating===5;
-        if(f==='4') return i.rating===4;
-        if(f==='low') return i.rating<=2;
-        if(_afTypeFilters.indexOf(f)>=0) return i.type===f;
-        return true;
-      });
-      _appFeedbackFilter = f; // keep
-      // delegate to original but swap items
-      var orig = localStorage.getItem('hs_app_feedback');
-      localStorage.setItem('hs_app_feedback', JSON.stringify(filtered));
-      _origRenderAF();
-      localStorage.setItem('hs_app_feedback', orig);
-    };
 
     function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
