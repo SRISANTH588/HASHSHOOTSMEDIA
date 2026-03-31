@@ -1422,6 +1422,7 @@
               + '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:700;"><i class="fas fa-check-circle"></i> Arrived at Location</div>'
               + (a.dressPhotoSaved ? '<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);color:#f5a623;border-radius:10px;padding:0.45rem 0.85rem;font-size:0.75rem;font-weight:700;"><i class="fas fa-camera"></i> Dress Code Photo Saved</div>' : '<button onclick="openDressPhotoUpload('+a.id+')" style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#f5a623;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-camera"></i> Upload Dress Code Photo</button>')
               + '<button onclick="openEventFeedback('+a.id+')" style="background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-clipboard-list"></i> Collect Event Feedback</button>'
+              + buildNoShowBtn(a)
               + '</div>'
             : '<button onclick="markArrived('+a.id+')" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,152,0,0.22)\'" onmouseout="this.style.background=\'rgba(255,152,0,0.12)\'"><i class="fas fa-map-marker-alt"></i> Mark Arrived at Location</button>';
         }
@@ -1659,8 +1660,85 @@
       var arrivedAt = new Date().toLocaleString();
       if(s && !s.arrivedAt){ s.arrivedAt = arrivedAt; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots)); }
       localStorage.setItem('hs_arrived_' + assignId, '1');
+      // Store arrived timestamp for no-show 15-min countdown
+      localStorage.setItem('hs_arrived_time_' + assignId, Date.now().toString());
       // Sync arrived status to Firebase assigned_shoots doc
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {arrivedAt: arrivedAt});
+      renderAssignedShoots();
+    }
+
+    // ── NO SHOW ──
+    function buildNoShowBtn(a){
+      if(a.noShow) return '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-user-slash"></i> No Show Reported</div>';
+      var arrivedTime = parseInt(localStorage.getItem('hs_arrived_time_' + a.id)||'0', 10);
+      if(!arrivedTime) return '';
+      var elapsed = Date.now() - arrivedTime; // ms
+      var wait = 15 * 60 * 1000; // 15 minutes
+      var remaining = Math.max(0, wait - elapsed);
+      if(remaining > 0){
+        var mins = Math.ceil(remaining / 60000);
+        return '<button id="noShowBtn_'+a.id+'" disabled style="background:rgba(244,67,54,0.05);border:1px solid rgba(244,67,54,0.15);color:rgba(244,67,54,0.4);border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:not-allowed;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-user-slash"></i> No Show <span id="noShowTimer_'+a.id+'">('+mins+'m left)</span></button>';
+      }
+      return '<button onclick="markNoShow('+a.id+')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:10px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(244,67,54,0.2)\'" onmouseout="this.style.background=\'rgba(244,67,54,0.1)\'"><i class="fas fa-user-slash"></i> Mark No Show</button>';
+    }
+
+    // Countdown ticker — updates no-show button timers every 30s
+    setInterval(function(){
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      shoots.forEach(function(a){
+        if(a.noShow || a.status !== 'assigned') return;
+        var arrivedTime = parseInt(localStorage.getItem('hs_arrived_time_' + a.id)||'0', 10);
+        if(!arrivedTime) return;
+        var remaining = Math.max(0, 15*60*1000 - (Date.now() - arrivedTime));
+        var timerEl = document.getElementById('noShowTimer_' + a.id);
+        var btnEl   = document.getElementById('noShowBtn_' + a.id);
+        if(remaining <= 0 && btnEl){
+          // Unlock — replace disabled button with active one
+          btnEl.disabled = false;
+          btnEl.style.background = 'rgba(244,67,54,0.1)';
+          btnEl.style.border = '1px solid rgba(244,67,54,0.3)';
+          btnEl.style.color = '#f44336';
+          btnEl.style.cursor = 'pointer';
+          btnEl.setAttribute('onclick', 'markNoShow('+a.id+')');
+          btnEl.innerHTML = '<i class="fas fa-user-slash"></i> Mark No Show';
+        } else if(timerEl){
+          var mins = Math.ceil(remaining / 60000);
+          timerEl.textContent = '(' + mins + 'm left)';
+        }
+      });
+    }, 30000);
+
+    async function markNoShow(assignId){
+      if(!confirm('Report this customer as No Show? This will notify the admin.')) return;
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var s = shoots.find(function(a){ return a.id === assignId; });
+      if(!s) return;
+      s.noShow = true;
+      s.noShowAt = new Date().toLocaleString();
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      // Sync to Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='staff-app';})||fbMod.initializeApp(fbCfg,'staff-app');
+        var db      = fbStore.getFirestore(app);
+        // Update assigned shoot
+        await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{noShow:true,noShowAt:s.noShowAt},{merge:true});
+        // Notify admin
+        await fbStore.addDoc(fbStore.collection(db,'notifications'),{
+          type: 'no_show',
+          title: '\u26A0\uFE0F Customer No Show',
+          body: 'Staff '+( localStorage.getItem('hs_staff_name')||'Creator' )+' reported no show for '+s.service+' — '+s.clientName+' ('+s.clientPhone+') at '+(s.location||s.city||''),
+          assignId: String(assignId),
+          staffName: localStorage.getItem('hs_staff_name')||'',
+          clientName: s.clientName||'',
+          clientPhone: s.clientPhone||'',
+          service: s.service||'',
+          read: false,
+          createdAt: fbStore.serverTimestamp()
+        });
+      }catch(e){ console.error('No show sync error:',e); }
       renderAssignedShoots();
     }
 
