@@ -1063,45 +1063,72 @@
       });
     }
 
-    // ── APP FEEDBACK ──────────────────────────────────────────
-    var _appStarVal = 0;
-    (function(){
-      document.querySelectorAll('.app-star').forEach(function(s){
-        s.addEventListener('mouseover', function(){
+    // ── APP FEEDBACK MODAL ─────────────────────────────────────
+    var _afStarVal = 0;
+    var _afType = 'Compliment';
+
+    function openAppFeedbackModal(){
+      _afStarVal = 0; _afType = 'Compliment';
+      document.getElementById('afForm').style.display = 'block';
+      document.getElementById('afDone').style.display = 'none';
+      document.getElementById('afName').value = '';
+      document.getElementById('afPage').value = '';
+      document.getElementById('afDesc').value = '';
+      document.querySelectorAll('.af-type-chip').forEach(function(c){ c.classList.toggle('active', c.dataset.type==='Compliment'); });
+      document.querySelectorAll('.af-star').forEach(function(s){ s.classList.remove('lit'); });
+      var modal = document.getElementById('appFeedbackModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      // bind stars
+      document.querySelectorAll('.af-star').forEach(function(s){
+        s.onmouseover = function(){
           var v = parseInt(s.dataset.v);
-          document.querySelectorAll('.app-star').forEach(function(x){
-            x.style.color = parseInt(x.dataset.v) <= v ? '#f5a623' : '#333';
-          });
-        });
-        s.addEventListener('mouseleave', function(){
-          document.querySelectorAll('.app-star').forEach(function(x){
-            x.style.color = parseInt(x.dataset.v) <= _appStarVal ? '#f5a623' : '#333';
-          });
-        });
-        s.addEventListener('click', function(){
-          _appStarVal = parseInt(s.dataset.v);
-          document.querySelectorAll('.app-star').forEach(function(x){
-            x.style.color = parseInt(x.dataset.v) <= _appStarVal ? '#f5a623' : '#333';
-          });
-        });
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=v); });
+        };
+        s.onmouseleave = function(){
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=_afStarVal); });
+        };
+        s.onclick = function(){
+          _afStarVal = parseInt(s.dataset.v);
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=_afStarVal); });
+        };
       });
-    })();
+    }
+
+    function closeAppFeedbackModal(){
+      document.getElementById('appFeedbackModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function afSelectType(btn){
+      _afType = btn.dataset.type;
+      document.querySelectorAll('.af-type-chip').forEach(function(c){ c.classList.remove('active'); });
+      btn.classList.add('active');
+    }
 
     function submitAppFeedback(){
-      if(!_appStarVal){ alert('Please select a star rating.'); return; }
+      var desc = (document.getElementById('afDesc').value||'').trim();
+      if(!desc){ alert('Please describe the issue or suggestion.'); return; }
       var user = JSON.parse(localStorage.getItem('hs_customer_session')||'{}');
       var item = {
-        name: user.name || 'Customer',
-        rating: _appStarVal,
-        text: (document.getElementById('appFeedbackText').value||'').trim(),
+        name: (document.getElementById('afName').value||'').trim() || user.name || 'Anonymous',
+        type: _afType,
+        rating: _afStarVal,
+        page: (document.getElementById('afPage').value||'').trim(),
+        text: desc,
         ts: Date.now()
       };
       var list = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]');
       list.push(item);
       localStorage.setItem('hs_app_feedback', JSON.stringify(list));
-      document.getElementById('appFeedbackForm').style.display = 'none';
-      document.getElementById('appFeedbackDone').style.display = 'block';
+      if(window.fbSave) fbSave('app_feedback', item);
+      document.getElementById('afForm').style.display = 'none';
+      document.getElementById('afDone').style.display = 'block';
+      setTimeout(closeAppFeedbackModal, 2200);
     }
+
+    // close on backdrop click
+    document.getElementById('appFeedbackModal').addEventListener('click', function(e){ if(e.target===this) closeAppFeedbackModal(); });
 
     function showAppFeedbackSection(){
       var sec = document.getElementById('appFeedbackSection');
