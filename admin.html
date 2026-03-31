@@ -4662,6 +4662,10 @@ Priority Support</textarea></div>
       el.innerHTML = notifs.map(function(n){
         var icon  = icons[n.type]  || 'fa-bell';
         var color = colors[n.type] || '#c9a84c';
+        var viewBtn = '';
+        if(n.actionTab){
+          viewBtn = '<button onclick="notifView(\''+n.actionTab+'\','+String(n.id)+')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>';
+        }
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
           + '<div style="display:flex;align-items:flex-start;gap:0.85rem;">'
           + '<div style="width:40px;height:40px;border-radius:10px;background:'+color+'22;border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas '+icon+'" style="color:'+color+';"></i></div>'
@@ -4671,10 +4675,18 @@ Priority Support</textarea></div>
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">'+n.time+'</div>'
           + '</div></div>'
           + '<div style="display:flex;gap:0.5rem;align-items:center;">'
-          + (n.actionTab ? '<button onclick="switchTab(\'' + n.actionTab + '\',document.querySelector(\"[onclick*=\'" + n.actionTab + "\']\")); deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>' : '')
-          + '<button onclick="deleteNotif("+String(n.id)+")" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
+          + viewBtn
+          + '<button onclick="deleteNotif('+String(n.id)+')" style="background:rgba(201,168,76,0.06);border:none;color:#777;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-times"></i></button>'
           + '</div></div>';
       }).join('');
+    }
+
+    function notifView(tab, id){
+      var btn = document.querySelector('[onclick*="switchTab(\''+tab+'\'"]') ||
+                document.querySelector('[onclick*="switchTab(\''+tab+'\')"]') ||
+                document.querySelector('[onclick*="\''+tab+'\'"]');
+      if(btn) switchTab(tab, btn);
+      deleteNotif(id);
     }
 
     function deleteNotif(id){
