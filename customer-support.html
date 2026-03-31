@@ -99,32 +99,21 @@
     </div>
   </div>
 
-  <script>
-    // ===== TAWK.TO — load config from Firebase first, fallback to localStorage =====
-    (async function(){
-      var cfg = JSON.parse(localStorage.getItem('hs_tawk_config') || '{}');
-      // Try Firebase for latest config
-      try {
-        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app = fbMod.getApps().find(function(a){return a.name==='tawk-load';}) || fbMod.initializeApp(FB,'tawk-load');
-        var db  = fbStore.getFirestore(app);
-        var snap = await fbStore.getDoc(fbStore.doc(db,'settings','tawk_config'));
-        if(snap.exists()){ cfg = snap.data(); localStorage.setItem('hs_tawk_config', JSON.stringify(cfg)); }
-      } catch(e){ console.log('[Tawk] Firebase load failed, using localStorage'); }
-      if(cfg.propertyId && cfg.widgetId){
-        window.Tawk_API = window.Tawk_API || {};
-        window.Tawk_LoadStart = new Date();
-        var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/' + cfg.propertyId + '/' + cfg.widgetId;
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-      }
-    })();
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 
+  <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
     const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
@@ -133,7 +122,6 @@
       if(window.Tawk_API && window.Tawk_API.maximize){
         window.Tawk_API.maximize();
       } else {
-        // Fallback to WhatsApp silently
         window.open('https://wa.me/916304279351','_blank');
       }
     }
