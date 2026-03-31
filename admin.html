@@ -4489,6 +4489,17 @@ Priority Support</textarea></div>
         musicUrl:      g('op_musicurl').trim()
       };
       localStorage.setItem('hs_opening',JSON.stringify(data));
+      // Sync to Firebase so ALL devices get the updated setting immediately
+      (async function(){
+        try{
+          var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app=fbMod.getApps().find(function(a){return a.name==='admin-opening';})||fbMod.initializeApp(fbCfg,'admin-opening');
+          var db=fbStore.getFirestore(app);
+          await fbStore.setDoc(fbStore.doc(db,'settings','opening'),data);
+        }catch(e){console.error('Opening sync to Firebase failed:',e);}
+      })();
       var toast=document.getElementById('saveToast');
       if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},2500);}
       else{alert('Saved!');}

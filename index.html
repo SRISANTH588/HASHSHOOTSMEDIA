@@ -1317,10 +1317,9 @@
   <script>
   (function(){
     var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
-    if(cfg.enabled===false){document.body.style.overflow='';return;}
     var launch=document.getElementById('ogLaunch');
     if(!launch)return;
-    // Fetch latest opening config from Firebase, then init
+    // ALWAYS fetch from Firebase first so admin toggle works across all devices
     (async function(){
       try{
         var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -1330,7 +1329,7 @@
         var db=fbStore.getFirestore(app);
         var snap=await fbStore.getDoc(fbStore.doc(db,'settings','opening'));
         if(snap.exists()){cfg=snap.data();localStorage.setItem('hs_opening',JSON.stringify(cfg));}
-      }catch(e){}
+      }catch(e){ /* fallback to localStorage cfg already set above */ }
       if(cfg.enabled===false){launch.style.display='none';document.body.style.overflow='';return;}
       initLaunchScreen(cfg);
     })();
