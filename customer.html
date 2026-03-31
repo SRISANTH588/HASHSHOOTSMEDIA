@@ -184,6 +184,7 @@
     <a class="ctab" href="customer-support.html"><i class="fas fa-headset"></i> Support</a>
     <a class="ctab" href="customer-wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
     <a class="ctab" id="testiTab" onclick="showTab('testimonials',this);return false;" href="#"><i class="fas fa-play-circle"></i> Testimonials</a>
+    <button class="ctab" onclick="showTab('feedback',this)"><i class="fas fa-comment-dots"></i> Feedback</button>
     <a class="ctab" href="customer-profile.html"><i class="fas fa-user"></i> Profile</a>
   </div>
 
@@ -280,11 +281,15 @@
       <div id="demoFeedbackList"></div>
     </div>
 
-    <!-- APP FEEDBACK -->
-    <div id="appFeedbackSection" style="margin-top:2rem;text-align:center;padding:1.5rem 0;">
-      <button onclick="openAppFeedbackModal()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:50px;padding:0.9rem 2.5rem;font-size:0.95rem;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:1px;box-shadow:0 4px 20px rgba(201,168,76,0.35);display:inline-flex;align-items:center;gap:0.6rem;">
-        <i class="fas fa-comment-dots"></i> Give App Feedback
-      </button>
+    <!-- FEEDBACK TAB -->
+    <div class="tab-section" id="tab-feedback" style="display:none;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;">&#128172; App Feedback</h2>
+      <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">Share your experience with OG SHOOTS. Your feedback helps us improve.</p>
+      <div style="text-align:center;padding:1rem 0;">
+        <button onclick="openAppFeedbackModal()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:50px;padding:0.9rem 2.5rem;font-size:0.95rem;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:1px;box-shadow:0 4px 20px rgba(201,168,76,0.35);display:inline-flex;align-items:center;gap:0.6rem;">
+          <i class="fas fa-comment-dots"></i> Give App Feedback
+        </button>
+      </div>
     </div>
 
     <!-- APP FEEDBACK MODAL -->
