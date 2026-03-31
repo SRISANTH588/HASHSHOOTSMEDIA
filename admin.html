@@ -5166,6 +5166,21 @@ Priority Support</textarea></div>
           });
         });
 
+        // Real-time customer cancellation & reschedule notifications
+        onSnapshot(query(collection(fbDb,'notifications'), orderBy('createdAt','desc')), function(snap){
+          snap.docChanges().forEach(function(change){
+            if(change.type==='added'){
+              var data = change.doc.data();
+              if(!data.read){
+                var tab = data.type==='cancellation' ? 'bookings' : 'bookings';
+                pushNotif(data.type||'booking', data.title||'Customer Action', data.body||'', tab);
+                // Mark as read so it doesn't re-fire
+                fbStore.setDoc(fbStore.doc(fbDb,'notifications',change.doc.id),{read:true},{merge:true}).catch(function(){});
+              }
+            }
+          });
+        });
+
       } catch(e){ console.log('Firebase admin error:',e); }
     })();
 

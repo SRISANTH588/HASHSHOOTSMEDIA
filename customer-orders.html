@@ -40,6 +40,34 @@
     .cancel-notice-title{font-size:0.82rem;font-weight:800;color:#f44336;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.4rem;}
     .cancel-notice-body{font-size:0.78rem;color:var(--muted);line-height:1.65;}
     .empty{color:var(--muted);font-size:0.875rem;text-align:center;padding:3rem;}
+    /* Action buttons */
+    .action-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.85rem;}
+    .btn-reschedule{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .btn-reschedule:hover{background:rgba(201,168,76,0.18);border-color:#c9a84c;}
+    .btn-cancel-booking{background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;transition:all 0.2s;}
+    .btn-cancel-booking:hover{background:rgba(244,67,54,0.18);border-color:#f44336;}
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:1rem;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:#141414;border:1px solid rgba(201,168,76,0.2);border-radius:18px;padding:2rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+    .modal-title{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;}
+    .modal-sub{font-size:0.8rem;color:#9a9080;margin-bottom:1.5rem;}
+    .modal-label{font-size:0.75rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem;display:block;}
+    .modal-input{width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s;}
+    .modal-input:focus{border-color:#c9a84c;}
+    .modal-btns{display:flex;gap:0.75rem;margin-top:0.5rem;}
+    .modal-btn-primary{flex:1;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;}
+    .modal-btn-secondary{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;border-radius:10px;padding:0.75rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    /* Cancel policy box */
+    .policy-box{background:rgba(244,67,54,0.05);border:1px solid rgba(244,67,54,0.2);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1.25rem;}
+    .policy-row{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem;}
+    .policy-row:last-child{border-bottom:none;}
+    .policy-row span:first-child{color:#9a9080;}
+    .tag-full{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:50px;}
+    .tag-partial{background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:50px;}
+    .tag-none{background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:50px;}
+    .toast-notif{position:fixed;bottom:24px;right:24px;background:#1a1a1a;border:1px solid rgba(201,168,76,0.3);color:#fff;padding:0.75rem 1.25rem;border-radius:12px;font-size:0.85rem;font-weight:600;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.3s;}
+    .toast-notif.show{transform:translateY(0);opacity:1;}
   </style>
 </head>
 <body>
@@ -57,6 +85,50 @@
     <p class="subtitle">Track all your bookings, assigned creator & delivered reels</p>
     <div id="bookingsList"><div class="empty">Loading...</div></div>
   </div>
+
+  <!-- RESCHEDULE MODAL -->
+  <div class="modal-overlay" id="rescheduleModal">
+    <div class="modal-box">
+      <div class="modal-title"><i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i> Reschedule Booking</div>
+      <div class="modal-sub">Change your shoot date and time. Free rescheduling with 12+ hours notice.</div>
+      <label class="modal-label">New Date</label>
+      <input type="date" id="newDate" class="modal-input"/>
+      <label class="modal-label">New Time</label>
+      <input type="time" id="newTime" class="modal-input"/>
+      <div class="modal-btns">
+        <button class="modal-btn-secondary" onclick="closeModal('rescheduleModal')">Cancel</button>
+        <button class="modal-btn-primary" onclick="confirmReschedule()"><i class="fas fa-check"></i> Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANCEL MODAL -->
+  <div class="modal-overlay" id="cancelModal">
+    <div class="modal-box">
+      <div class="modal-title"><i class="fas fa-times-circle" style="color:#f44336;margin-right:0.5rem;"></i> Cancel Booking</div>
+      <div class="modal-sub">Please review our cancellation policy before proceeding.</div>
+      <div class="policy-box">
+        <div style="font-size:0.75rem;font-weight:800;color:#f44336;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:1px;"><i class="fas fa-info-circle"></i> Cancellation & Refund Policy</div>
+        <div class="policy-row"><span>More than 24 hrs before shoot</span><span class="tag-full">100% Refund</span></div>
+        <div class="policy-row"><span>12 – 24 hrs before shoot</span><span class="tag-partial">50% Wallet Credit</span></div>
+        <div class="policy-row"><span>Less than 12 hrs before shoot</span><span class="tag-none">No Refund</span></div>
+        <div class="policy-row"><span>After shoot has started</span><span class="tag-none">No Refund</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;font-size:0.82rem;color:#9a9080;">
+        <i class="fas fa-bookmark" style="color:#c9a84c;margin-right:0.4rem;"></i>
+        Booking: <strong id="cancelBookingLabel" style="color:#fff;"></strong>
+      </div>
+      <label class="modal-label">Reason for cancellation (optional)</label>
+      <textarea id="cancelReason" class="modal-input" rows="3" placeholder="Let us know why you're cancelling..."></textarea>
+      <a href="cancellation.html" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;color:#c9a84c;font-size:0.78rem;font-weight:600;text-decoration:none;margin-bottom:1.25rem;"><i class="fas fa-external-link-alt"></i> View Full Cancellation Policy</a>
+      <div class="modal-btns">
+        <button class="modal-btn-secondary" onclick="closeModal('cancelModal')">Go Back</button>
+        <button class="modal-btn-danger" onclick="confirmCancel()"><i class="fas fa-times"></i> Yes, Cancel Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-notif" id="toastNotif"></div>
 
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
@@ -168,6 +240,12 @@
           + creatorCard
           + videoSection
           + cancelNotice
+          + (b.status !== 'cancelled' && b.status !== 'completed'
+            ? '<div class="action-row">'
+              + '<button class="btn-reschedule" onclick="openReschedule(\'' + b.id + '\')" ><i class="fas fa-calendar-alt"></i> Reschedule</button>'
+              + '<button class="btn-cancel-booking" onclick="openCancel(\'' + b.id + '\')" ><i class="fas fa-times"></i> Cancel Booking</button>'
+              + '</div>'
+            : '')
           + '</div>';
       }).join('');
 
@@ -207,6 +285,125 @@
 
     loadBookings();
     setInterval(loadBookings, 4000);
+
+    // ── Toast ──
+    function showToast(msg, isErr){
+      var t = document.getElementById('toastNotif');
+      t.textContent = msg;
+      t.style.borderColor = isErr ? 'rgba(244,67,54,0.4)' : 'rgba(201,168,76,0.3)';
+      t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 3000);
+    }
+
+    function closeModal(id){
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // ── RESCHEDULE ──
+    var _rescheduleId = null;
+    function openReschedule(bookingId){
+      _rescheduleId = bookingId;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var b = bookings.find(function(x){ return String(x.id)===String(bookingId); });
+      if(!b) return;
+      document.getElementById('newDate').value = b.date || '';
+      document.getElementById('newTime').value = b.time || '';
+      document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+      document.getElementById('rescheduleModal').classList.add('open');
+    }
+
+    function confirmReschedule(){
+      var newDate = document.getElementById('newDate').value;
+      var newTime = document.getElementById('newTime').value;
+      if(!newDate || !newTime){ showToast('Please select both date and time.', true); return; }
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var idx = bookings.findIndex(function(x){ return String(x.id)===String(_rescheduleId); });
+      if(idx === -1) return;
+      var b = bookings[idx];
+      var oldDate = b.date; var oldTime = b.time;
+      bookings[idx].date = newDate;
+      bookings[idx].time = newTime;
+      bookings[idx].rescheduled = true;
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+      // Sync to Firebase
+      (async function(){
+        try{
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+          var db = fbStore.getFirestore(app);
+          // Update booking
+          await fbStore.setDoc(fbStore.doc(db,'bookings',String(_rescheduleId)),{date:newDate,time:newTime,rescheduled:true},{merge:true});
+          // Send admin notification
+          await fbStore.addDoc(fbStore.collection(db,'notifications'),{
+            type:'reschedule',
+            title:'\uD83D\uDCC5 Booking Rescheduled',
+            body: b.name + ' rescheduled ' + b.service + ' from ' + oldDate + ' ' + oldTime + ' \u2192 ' + newDate + ' ' + newTime,
+            bookingId: String(_rescheduleId),
+            customerName: b.name,
+            customerPhone: b.phone,
+            read: false,
+            createdAt: fbStore.serverTimestamp()
+          });
+        }catch(e){ console.error(e); }
+      })();
+      closeModal('rescheduleModal');
+      showToast('\u2705 Booking rescheduled to ' + newDate + ' at ' + newTime);
+      loadBookings();
+    }
+
+    // ── CANCEL ──
+    var _cancelId = null;
+    function openCancel(bookingId){
+      _cancelId = bookingId;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var b = bookings.find(function(x){ return String(x.id)===String(bookingId); });
+      if(!b) return;
+      document.getElementById('cancelBookingLabel').textContent = b.service + ' \u2014 ' + (b.date||'') + (b.time?' at '+b.time:'');
+      document.getElementById('cancelReason').value = '';
+      document.getElementById('cancelModal').classList.add('open');
+    }
+
+    function confirmCancel(){
+      var reason = document.getElementById('cancelReason').value.trim();
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var idx = bookings.findIndex(function(x){ return String(x.id)===String(_cancelId); });
+      if(idx === -1) return;
+      var b = bookings[idx];
+      bookings[idx].status = 'cancelled';
+      bookings[idx].cancelledAt = new Date().toLocaleString();
+      bookings[idx].cancelReason = reason || 'No reason provided';
+      bookings[idx].cancelledBy = 'customer';
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+      // Sync to Firebase + send admin notification
+      (async function(){
+        try{
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+          var db = fbStore.getFirestore(app);
+          // Update booking status
+          await fbStore.setDoc(fbStore.doc(db,'bookings',String(_cancelId)),{status:'cancelled',cancelledAt:new Date().toISOString(),cancelReason:reason||'No reason provided',cancelledBy:'customer'},{merge:true});
+          // Send admin notification
+          await fbStore.addDoc(fbStore.collection(db,'notifications'),{
+            type:'cancellation',
+            title:'\u274C Booking Cancelled by Customer',
+            body: b.name + ' (' + b.phone + ') cancelled ' + b.service + ' on ' + (b.date||'') + (b.time?' at '+b.time:'') + (reason ? '. Reason: ' + reason : ''),
+            bookingId: String(_cancelId),
+            customerName: b.name,
+            customerPhone: b.phone,
+            reason: reason || 'No reason provided',
+            read: false,
+            createdAt: fbStore.serverTimestamp()
+          });
+        }catch(e){ console.error(e); }
+      })();
+      closeModal('cancelModal');
+      showToast('\uD83D\uDDD1\uFE0F Booking cancelled. Refund will be processed per policy.');
+      loadBookings();
+    }
 
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
   </script>
