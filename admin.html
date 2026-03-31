@@ -162,6 +162,7 @@
       <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('testimonial-videos',this)"><i class="fas fa-video"></i> Client Testimonials</button>
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn"><i class="fas fa-edit"></i> Order Edits <span id="orderEditsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('blog',this)"><i class="fas fa-pen-nib"></i> Blog</button>
       <button class="tab-btn" onclick="switchTab('press',this)"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
@@ -1717,6 +1718,50 @@ Priority Support</textarea></div>
       </div>
     </div><!-- end tab-notifications -->
 
+    <!-- ORDER EDITS TAB -->
+    <div class="tab-panel" id="tab-order-edits">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:800;color:#fff;"><i class="fas fa-edit" style="color:#c9a84c;margin-right:0.5rem;"></i> Order Edits</h2>
+          <p style="font-size:0.82rem;color:#9a9080;margin-top:0.2rem;">Customer reschedule &amp; cancellation requests. Edit date/time directly from here.</p>
+        </div>
+        <button onclick="loadOrderEdits()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.5rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div class="stat-card"><div class="num" id="oe_totalEdits" style="color:#c9a84c;">0</div><div class="lbl">Total Requests</div></div>
+        <div class="stat-card"><div class="num" id="oe_reschedules" style="color:#ff9800;">0</div><div class="lbl">Reschedules</div></div>
+        <div class="stat-card"><div class="num" id="oe_cancellations" style="color:#f44336;">0</div><div class="lbl">Cancellations</div></div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <button class="filter-btn active" id="oeFilter_all" onclick="filterOrderEdits('all',this)">All</button>
+        <button class="filter-btn" id="oeFilter_reschedule" onclick="filterOrderEdits('reschedule',this)">Reschedules</button>
+        <button class="filter-btn" id="oeFilter_cancellation" onclick="filterOrderEdits('cancellation',this)">Cancellations</button>
+      </div>
+
+      <div id="orderEditsList"></div>
+
+      <!-- Inline Edit Date/Time Modal -->
+      <div id="oeEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+        <div style="background:#141414;border:1px solid rgba(201,168,76,0.25);border-radius:18px;padding:2rem;width:100%;max-width:440px;">
+          <div style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><i class="fas fa-calendar-edit" style="color:#c9a84c;margin-right:0.5rem;"></i> Edit Booking Date &amp; Time</div>
+          <div style="font-size:0.8rem;color:#9a9080;margin-bottom:1.5rem;">Changes will sync to Firebase and notify the customer.</div>
+          <div id="oeEditBookingInfo" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;font-size:0.85rem;color:#c9a84c;"></div>
+          <label style="font-size:0.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:0.4rem;">New Date</label>
+          <input type="date" id="oeNewDate" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1rem;"/>
+          <label style="font-size:0.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:0.4rem;">New Time</label>
+          <input type="time" id="oeNewTime" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1.5rem;"/>
+          <div style="display:flex;gap:0.75rem;">
+            <button onclick="document.getElementById('oeEditModal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
+            <button onclick="confirmOeEdit()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- end tab-order-edits -->
+
     <!-- CAREERS TAB -->
     <div class="tab-panel" id="tab-careers">
       <div class="about-form">
@@ -2162,6 +2207,7 @@ Priority Support</textarea></div>
       if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'notifications') renderNotifications();
+      if (tab === 'order-edits') loadOrderEdits();
       if (tab === 'blog') { renderBlogList(); }
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
@@ -4653,6 +4699,123 @@ Priority Support</textarea></div>
       var unread = notifs.filter(function(n){ return !n.read; }).length;
       var badge = document.getElementById('notifBadge');
       if(badge){ badge.textContent = unread; badge.style.display = unread > 0 ? 'inline' : 'none'; }
+    }
+
+    // ── ORDER EDITS TAB ──────────────────────────────────────────
+    var _oeItems = [];
+    var _oeFilter = 'all';
+    var _oeEditId = null;
+
+    async function loadOrderEdits(){
+      var list = document.getElementById('orderEditsList');
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'notifications'),fbStore.orderBy('createdAt','desc')));
+        _oeItems = [];
+        snap.forEach(function(d){ _oeItems.push(Object.assign({_id:d.id},d.data())); });
+      }catch(e){
+        // Fallback: read from allBookings for rescheduled/cancelled by customer
+        _oeItems = allBookings.filter(function(b){ return b.rescheduled || b.cancelledBy==='customer'; }).map(function(b){
+          return { _id:b.id, type: b.cancelledBy==='customer'?'cancellation':'reschedule', title: b.cancelledBy==='customer'?'Cancelled by Customer':'Rescheduled by Customer', body: b.name+' — '+b.service, customerName:b.name, customerPhone:b.phone, bookingId:String(b.id), reason:b.cancelReason||'', createdAt:b.cancelledAt||b.createdAt };
+        });
+      }
+      renderOrderEdits();
+    }
+
+    function filterOrderEdits(f, btn){
+      _oeFilter = f;
+      document.querySelectorAll('#tab-order-edits .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderOrderEdits();
+    }
+
+    function renderOrderEdits(){
+      var items = _oeFilter==='all' ? _oeItems : _oeItems.filter(function(i){ return i.type===_oeFilter; });
+      var reschedules   = _oeItems.filter(function(i){ return i.type==='reschedule'; }).length;
+      var cancellations = _oeItems.filter(function(i){ return i.type==='cancellation'; }).length;
+      document.getElementById('oe_totalEdits').textContent    = _oeItems.length;
+      document.getElementById('oe_reschedules').textContent   = reschedules;
+      document.getElementById('oe_cancellations').textContent = cancellations;
+      // Update badge
+      var badge = document.getElementById('orderEditsBadge');
+      if(_oeItems.length > 0){ badge.textContent=_oeItems.length; badge.style.display='inline-block'; } else { badge.style.display='none'; }
+      var list = document.getElementById('orderEditsList');
+      if(!items.length){
+        list.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a9080;"><i class="fas fa-inbox" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>No order edit requests yet.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function(item){
+        var isCancel = item.type==='cancellation';
+        var accentColor = isCancel ? '#f44336' : '#ff9800';
+        var icon = isCancel ? 'fa-times-circle' : 'fa-calendar-alt';
+        var booking = allBookings.find(function(b){ return String(b.id)===String(item.bookingId); });
+        var dateStr = item.createdAt && item.createdAt.seconds ? new Date(item.createdAt.seconds*1000).toLocaleString() : (item.createdAt||'');
+        return '<div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+accentColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;align-items:center;gap:0.75rem;">'
+          +'<div style="width:36px;height:36px;border-radius:10px;background:rgba('+( isCancel?'244,67,54':'255,152,0' )+',0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas '+icon+'" style="color:'+accentColor+';"></i></div>'
+          +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+item.title+'</div><div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;">'+dateStr+'</div></div>'
+          +'</div>'
+          +'<span style="background:rgba('+( isCancel?'244,67,54':'255,152,0' )+',0.12);border:1px solid rgba('+( isCancel?'244,67,54':'255,152,0' )+',0.3);color:'+accentColor+';font-size:0.68rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:50px;text-transform:uppercase;letter-spacing:1px;">'+(isCancel?'Cancellation':'Reschedule')+'</span>'
+          +'</div>'
+          +'<div style="font-size:0.85rem;color:#b0a090;margin-bottom:0.75rem;">'+item.body+'</div>'
+          +(item.reason ? '<div style="font-size:0.8rem;color:#9a9080;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;"><i class="fas fa-comment" style="color:#c9a84c;margin-right:0.4rem;"></i>'+item.reason+'</div>' : '')
+          +'<div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">'
+          +(item.customerPhone ? '<a href="tel:'+item.customerPhone+'" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;text-decoration:none;"><i class="fas fa-phone"></i> Call</a>' : '')
+          +(!isCancel && booking ? '<button onclick="openOeEdit(\'' + String(item.bookingId) + '\')" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-calendar-edit"></i> Edit Date/Time</button>' : '')
+          +(isCancel && booking && booking.status!=='cancelled' ? '<button onclick="adminCancelBooking(\'' + String(item.bookingId) + '\')" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Confirm Cancel</button>' : '')
+          +(isCancel && booking && booking.status==='cancelled' ? '<span style="color:#4caf50;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Already Cancelled</span>' : '')
+          +'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    function openOeEdit(bookingId){
+      _oeEditId = bookingId;
+      var b = allBookings.find(function(x){ return String(x.id)===String(bookingId); });
+      if(!b) return;
+      document.getElementById('oeEditBookingInfo').innerHTML = '<i class="fas fa-user"></i> <strong>'+b.name+'</strong> &nbsp;|&nbsp; '+b.service+' &nbsp;|&nbsp; '+b.city;
+      document.getElementById('oeNewDate').value = b.date||'';
+      document.getElementById('oeNewTime').value = b.time||'';
+      document.getElementById('oeNewDate').min = new Date().toISOString().split('T')[0];
+      document.getElementById('oeEditModal').style.display = 'flex';
+    }
+
+    async function confirmOeEdit(){
+      var newDate = document.getElementById('oeNewDate').value;
+      var newTime = document.getElementById('oeNewTime').value;
+      if(!newDate||!newTime){ alert('Please select both date and time.'); return; }
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var idx = bookings.findIndex(function(x){ return String(x.id)===String(_oeEditId); });
+      if(idx>-1){ bookings[idx].date=newDate; bookings[idx].time=newTime; bookings[idx].adminEdited=true; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); allBookings=bookings; }
+      var f = await _fbAdmin();
+      if(f){
+        try{
+          await f.s.setDoc(f.s.doc(f.db,'bookings',String(_oeEditId)),{date:newDate,time:newTime,adminEdited:true},{merge:true});
+          // Notify customer
+          await f.s.addDoc(f.s.collection(f.db,'notifications'),{type:'admin_edit',title:'\uD83D\uDCC5 Booking Updated by Admin',body:'Your booking has been rescheduled to '+newDate+' at '+newTime,bookingId:String(_oeEditId),read:false,createdAt:f.s.serverTimestamp()});
+        }catch(e){ console.error(e); }
+      }
+      document.getElementById('oeEditModal').style.display='none';
+      renderTable();
+      loadOrderEdits();
+      alert('\u2705 Booking updated to '+newDate+' at '+newTime);
+    }
+
+    async function adminCancelBooking(bookingId){
+      if(!confirm('Confirm cancellation of this booking?')) return;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var idx = bookings.findIndex(function(x){ return String(x.id)===String(bookingId); });
+      if(idx>-1){ bookings[idx].status='cancelled'; localStorage.setItem('hs_bookings',JSON.stringify(bookings)); allBookings=bookings; }
+      var f = await _fbAdmin();
+      if(f) try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(bookingId)),{status:'cancelled'},{merge:true}); }catch(e){}
+      renderTable();
+      loadOrderEdits();
     }
 
     function renderNotifications(){
