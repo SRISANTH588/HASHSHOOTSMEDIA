@@ -280,6 +280,15 @@
   </div>
 
   <script>
+    // Seed default customer account: sai / sai
+    (function(){
+      var customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
+      if(!customers.find(function(c){ return c.username==='sai'; })){
+        customers.push({name:'Sai',username:'sai',email:'sai@ogshoots.com',phone:'',password:'sai',joined:new Date().toISOString()});
+        localStorage.setItem('hs_customers',JSON.stringify(customers));
+      }
+    })();
+
     // Floating particles
     const container = document.getElementById('particles');
     for(let i=0;i<25;i++){
