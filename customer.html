@@ -281,29 +281,65 @@
     </div>
 
     <!-- APP FEEDBACK -->
-    <div id="appFeedbackSection" style="display:none;margin-top:2rem;">
-      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;">&#128172; Rate the App</h2>
-      <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">How's your experience with OG SHOOTS? Your feedback helps us improve.</p>
-      <div id="appFeedbackDone" style="display:none;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:1.25rem;text-align:center;color:#4caf50;font-weight:700;margin-bottom:1rem;">
-        <i class="fas fa-check-circle" style="font-size:1.5rem;display:block;margin-bottom:0.5rem;"></i>Thanks for your feedback!
-      </div>
-      <div id="appFeedbackForm" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;">
-        <!-- Star rating -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.78rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;">Your Rating</div>
-          <div id="appStarRow" style="display:flex;gap:0.4rem;font-size:2rem;cursor:pointer;">
-            <span class="app-star" data-v="1" style="color:#333;transition:color 0.15s;">&#9733;</span>
-            <span class="app-star" data-v="2" style="color:#333;transition:color 0.15s;">&#9733;</span>
-            <span class="app-star" data-v="3" style="color:#333;transition:color 0.15s;">&#9733;</span>
-            <span class="app-star" data-v="4" style="color:#333;transition:color 0.15s;">&#9733;</span>
-            <span class="app-star" data-v="5" style="color:#333;transition:color 0.15s;">&#9733;</span>
+    <div id="appFeedbackSection" style="margin-top:2rem;text-align:center;padding:1.5rem 0;">
+      <button onclick="openAppFeedbackModal()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:50px;padding:0.9rem 2.5rem;font-size:0.95rem;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:1px;box-shadow:0 4px 20px rgba(201,168,76,0.35);display:inline-flex;align-items:center;gap:0.6rem;">
+        <i class="fas fa-comment-dots"></i> Give App Feedback
+      </button>
+    </div>
+
+    <!-- APP FEEDBACK MODAL -->
+    <div id="appFeedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99999;align-items:flex-end;justify-content:center;">
+      <div style="background:#1a1a1a;border-radius:24px 24px 0 0;width:100%;max-width:480px;overflow:hidden;animation:afSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);">
+        <style>
+          @keyframes afSlideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+          .af-type-chip{padding:0.45rem 1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#9a9080;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.18s;white-space:nowrap;}
+          .af-type-chip.active{background:rgba(201,168,76,0.18);border-color:#c9a84c;color:#c9a84c;}
+          .af-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:0.9rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;box-sizing:border-box;}
+          .af-input:focus{border-color:rgba(201,168,76,0.4);}
+          .af-star{font-size:2.2rem;cursor:pointer;color:#2a2a2a;transition:color 0.15s;line-height:1;}
+          .af-star.lit{color:#c9a84c;}
+        </style>
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;align-items:center;gap:0.85rem;">
+            <div style="width:44px;height:44px;background:#222;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">&#128172;</div>
+            <div>
+              <div style="font-size:1.05rem;font-weight:900;color:#fff;">App Feedback</div>
+              <div style="font-size:0.75rem;color:#6a6050;">Help us improve OG Shoots</div>
+            </div>
+          </div>
+          <button onclick="closeAppFeedbackModal()" style="background:none;border:none;color:#6a6050;font-size:1.3rem;cursor:pointer;padding:0.25rem;">&#10005;</button>
+        </div>
+        <!-- Body -->
+        <div style="padding:1.5rem;overflow-y:auto;max-height:70vh;">
+          <div id="afDone" style="display:none;text-align:center;padding:2rem 0;">
+            <div style="font-size:3rem;margin-bottom:0.75rem;">&#9989;</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Thank you!</div>
+            <div style="font-size:0.85rem;color:#9a9080;">Your feedback has been sent to the team.</div>
+          </div>
+          <div id="afForm">
+            <div style="font-size:0.7rem;font-weight:800;color:#6a6050;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">TYPE</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">
+              <button class="af-type-chip" data-type="Bug" onclick="afSelectType(this)">&#129442; Bug</button>
+              <button class="af-type-chip" data-type="Suggestion" onclick="afSelectType(this)">&#128161; Suggestion</button>
+              <button class="af-type-chip" data-type="Complaint" onclick="afSelectType(this)">&#128548; Complaint</button>
+              <button class="af-type-chip active" data-type="Compliment" onclick="afSelectType(this)">&#127775; Compliment</button>
+              <button class="af-type-chip" data-type="Other" onclick="afSelectType(this)">&#128203; Other</button>
+            </div>
+            <div style="font-size:0.7rem;font-weight:800;color:#6a6050;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">YOUR RATING</div>
+            <div style="display:flex;gap:0.3rem;margin-bottom:1.5rem;" id="afStarRow">
+              <span class="af-star" data-v="1">&#9733;</span>
+              <span class="af-star" data-v="2">&#9733;</span>
+              <span class="af-star" data-v="3">&#9733;</span>
+              <span class="af-star" data-v="4">&#9733;</span>
+              <span class="af-star" data-v="5">&#9733;</span>
+            </div>
+            <input class="af-input" id="afName" placeholder="Your name (optional)" style="margin-bottom:0.75rem;"/>
+            <input class="af-input" id="afPage" placeholder="Page / Feature (e.g. Booking, Home)" style="margin-bottom:0.75rem;"/>
+            <textarea class="af-input" id="afDesc" placeholder="Describe the issue or suggestion *" style="min-height:110px;resize:vertical;margin-bottom:1.5rem;"></textarea>
+            <button onclick="submitAppFeedback()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:14px;padding:1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;"><i class="fas fa-paper-plane"></i> Send Feedback</button>
           </div>
         </div>
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.78rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">Your Review <span style="color:#4a4030;font-weight:400;">(optional)</span></div>
-          <textarea id="appFeedbackText" placeholder="Tell us what you love or what we can improve..." style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;resize:vertical;min-height:90px;outline:none;"></textarea>
-        </div>
-        <button onclick="submitAppFeedback()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.85rem 2rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:0.5px;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
       </div>
     </div>
 
