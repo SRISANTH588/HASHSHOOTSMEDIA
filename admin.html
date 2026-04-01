@@ -139,34 +139,34 @@
     </div>
 
     <div class="tabs">
-      <button class="tab-btn" onclick="switchTab('opening',this)"><i class="fas fa-rocket"></i> Opening</button>
+      <button class="tab-btn" onclick="switchTab('opening',this)" id="openingTabBtn"><i class="fas fa-rocket"></i> Opening</button>
       <button class="tab-btn active" onclick="switchTab('bookings',this)" id="bookingsTabBtn"><i class="fas fa-calendar-alt"></i> Bookings</button>
-      <button class="tab-btn" onclick="switchTab('about',this)"><i class="fas fa-info-circle"></i> About Us</button>
-      <button class="tab-btn" onclick="switchTab('vibe',this)"><i class="fas fa-fire"></i> Discover with Vibe</button>
-      <button class="tab-btn" onclick="switchTab('customer',this)"><i class="fas fa-user"></i> Customer Page</button>
-      <button class="tab-btn" onclick="switchTab('staff',this)"><i class="fas fa-users-cog"></i> Staff & Access</button>
+      <button class="tab-btn" onclick="switchTab('about',this)" id="aboutTabBtn"><i class="fas fa-info-circle"></i> About Us</button>
+      <button class="tab-btn" onclick="switchTab('vibe',this)" id="vibeTabBtn"><i class="fas fa-fire"></i> Discover with Vibe</button>
+      <button class="tab-btn" onclick="switchTab('customer',this)" id="customerTabBtn"><i class="fas fa-user"></i> Customer Page</button>
+      <button class="tab-btn" onclick="switchTab('staff',this)" id="staffTabBtn"><i class="fas fa-users-cog"></i> Staff & Access</button>
       <button class="tab-btn" onclick="switchTab('demo',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span id="demoNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Feedback <span id="feedbackNotifBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
+      <button class="tab-btn" onclick="switchTab('videos',this)" id="videosTabBtn"><i class="fas fa-photo-video"></i> Staff Videos</button>
     <button class="tab-btn" onclick="switchTab('shoot-reels',this)" id="shootReelsTabBtn"><i class="fas fa-film"></i> Shoot Reels & Feedback <span class="notif" id="shootReelsNotifBadge" style="display:none;">0</span></button>
       <button class="tab-btn" onclick="switchTab('assign',this)" id="assignTabBtn"><i class="fas fa-tasks"></i> Assign Shoots</button>
-      <button class="tab-btn" onclick="switchTab('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
-      <button class="tab-btn" onclick="switchTab('wedding-plans',this)"><i class="fas fa-heart"></i> Wedding Plans</button>
+      <button class="tab-btn" onclick="switchTab('homepage',this)" id="homepageTabBtn"><i class="fas fa-home"></i> Home Page</button>
+      <button class="tab-btn" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn"><i class="fas fa-heart"></i> Wedding Plans</button>
       <button class="tab-btn" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn"><i class="fas fa-comment-dots"></i> App Feedback <span id="appFeedbackBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
+      <button class="tab-btn" onclick="switchTab('store',this)" id="storeTabBtn"><i class="fas fa-store"></i> Store</button>
       <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('razorpay',this)"><i class="fas fa-credit-card"></i> Razorpay</button>
-      <button class="tab-btn" onclick="switchTab('tawk',this)"><i class="fas fa-comments"></i> Tawk.to</button>
-      <button class="tab-btn" onclick="switchTab('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
-      <button class="tab-btn" onclick="switchTab('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
+      <button class="tab-btn" onclick="switchTab('razorpay',this)" id="razorpayTabBtn"><i class="fas fa-credit-card"></i> Razorpay</button>
+      <button class="tab-btn" onclick="switchTab('tawk',this)" id="tawkTabBtn"><i class="fas fa-comments"></i> Tawk.to</button>
+      <button class="tab-btn" onclick="switchTab('settings',this)" id="settingsTabBtn"><i class="fas fa-sliders-h"></i> Settings</button>
+      <button class="tab-btn" onclick="switchTab('cwallets',this)" id="cwalletsTabBtn"><i class="fas fa-wallet"></i> Customer Wallets</button>
       <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('testimonial-videos',this)" id="testiVideosTabBtn"><i class="fas fa-video"></i> Client Testimonials</button>
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn"><i class="fas fa-edit"></i> Order Edits <span id="orderEditsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('blog',this)"><i class="fas fa-pen-nib"></i> Blog</button>
-      <button class="tab-btn" onclick="switchTab('press',this)"><i class="fas fa-newspaper"></i> Press</button>
-      <button class="tab-btn" onclick="switchTab('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
-      <button class="tab-btn" onclick="switchTab('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+      <button class="tab-btn" onclick="switchTab('blog',this)" id="blogTabBtn"><i class="fas fa-pen-nib"></i> Blog</button>
+      <button class="tab-btn" onclick="switchTab('press',this)" id="pressTabBtn"><i class="fas fa-newspaper"></i> Press</button>
+      <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
+      <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
 
     </div>
 
@@ -4860,7 +4860,13 @@ Priority Support</textarea></div>
         'assign': 'assignTabBtn', 'bookings': 'bookingsTabBtn', 'enquiries': 'enquiriesTabBtn',
         'notifications': 'notifTabBtn', 'order-edits': 'orderEditsTabBtn', 'feedback': 'feedbackTabBtn',
         'demo': 'demoTabBtn', 'shoot-reels': 'shootReelsTabBtn', 'app-feedback': 'appFeedbackTabBtn',
-        'withdraw': 'withdrawTabBtn', 'testimonial-videos': 'testiVideosTabBtn'
+        'withdraw': 'withdrawTabBtn', 'testimonial-videos': 'testiVideosTabBtn',
+        'opening': 'openingTabBtn', 'about': 'aboutTabBtn', 'vibe': 'vibeTabBtn',
+        'customer': 'customerTabBtn', 'staff': 'staffTabBtn', 'videos': 'videosTabBtn',
+        'homepage': 'homepageTabBtn', 'wedding-plans': 'weddingPlansTabBtn', 'store': 'storeTabBtn',
+        'razorpay': 'razorpayTabBtn', 'tawk': 'tawkTabBtn', 'settings': 'settingsTabBtn',
+        'cwallets': 'cwalletsTabBtn', 'blog': 'blogTabBtn', 'press': 'pressTabBtn',
+        'careers': 'careersTabBtn', 'affiliates': 'affiliatesTabBtn'
       };
       var btnId = tabBtnIds[tab];
       var btn = btnId ? document.getElementById(btnId) : document.querySelector('.tab-btn[onclick*="\''+tab+'\'"]');

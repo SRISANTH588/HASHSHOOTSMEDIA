@@ -2552,6 +2552,19 @@
         if (!window.fbListen) return;
         var staffId = localStorage.getItem('hs_staff_id');
 
+        // Sync bookings from Firebase so staff can see booking details
+        fbListen('bookings', function(docs) {
+          var local = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+          docs.forEach(function(d) {
+            var idx = local.findIndex(function(x) { return String(x.id) === String(d._fbId || d.id); });
+            var merged = Object.assign({}, d, { id: d._fbId || d.id });
+            delete merged._fbId;
+            if (idx > -1) { Object.assign(local[idx], merged); }
+            else { local.push(merged); }
+          });
+          localStorage.setItem('hs_bookings', JSON.stringify(local));
+        }, 'createdAt');
+
         // Listen to assigned shoots — admin assigns/updates
         fbListen('assigned_shoots', function(docs) {
           var myDocs = docs.filter(function(d) { return String(d.staffId) === String(staffId); });

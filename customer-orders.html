@@ -156,7 +156,6 @@
         fbStore.onSnapshot(fbStore.collection(db,'bookings'), function(snap){
           var fbBookings = [];
           snap.forEach(function(d){ fbBookings.push(Object.assign({id:d.id},d.data())); });
-          // Merge with localStorage — Firebase is source of truth
           var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
           fbBookings.forEach(function(fb){
             var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id); });
@@ -166,6 +165,19 @@
           localStorage.setItem('hs_bookings', JSON.stringify(local));
           loadBookings();
         });
+        // Sync assigned_shoots so creator card shows on any device
+        fbStore.onSnapshot(fbStore.collection(db,'assigned_shoots'), function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(Object.assign({},d.data())); });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+          loadBookings();
+        });
+        // Sync staff list so creator name/phone/email shows correctly
+        fbStore.getDocs(fbStore.collection(db,'staff')).then(function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          if(list.length){ localStorage.setItem('hs_staff', JSON.stringify(list)); loadBookings(); }
+        }).catch(function(){});
       }catch(e){ console.log('Firebase sync error:',e); loadBookings(); }
     })();
 
