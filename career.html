@@ -367,25 +367,28 @@
       <h2>Apply for Role</h2>
       <p class="role-label" id="roleLabel"></p>
       <form id="careerForm">
+        <input type="hidden" name="_subject" id="fsSubject" value="New Career Application"/>
+        <input type="hidden" name="role" id="fsRole" value=""/>
+        <input type="hidden" name="_replyto" id="fsReplyto" value=""/>
         <div class="form-group">
           <label>Full Name</label>
-          <input type="text" placeholder="Your full name" required/>
+          <input type="text" name="name" placeholder="Your full name" required/>
         </div>
         <div class="form-group">
           <label>Phone Number</label>
-          <input type="tel" placeholder="+91 XXXXX XXXXX" required/>
+          <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required/>
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" placeholder="you@example.com" required/>
+          <input type="email" name="email" placeholder="you@example.com" required/>
         </div>
         <div class="form-group">
           <label>Portfolio / LinkedIn / Instagram (optional)</label>
-          <input type="url" placeholder="https://"/>
+          <input type="url" name="portfolio" placeholder="https://"/>
         </div>
         <div class="form-group">
           <label>Why do you want to join OG Shoots?</label>
-          <textarea placeholder="Tell us a bit about yourself..."></textarea>
+          <textarea name="message" placeholder="Tell us a bit about yourself..."></textarea>
         </div>
         <button type="submit" class="submit-btn">Submit Application &nbsp;<i class="fas fa-arrow-right"></i></button>
       </form>
@@ -400,6 +403,8 @@
   <script>
     function openModal(role) {
       document.getElementById('roleLabel').textContent = role;
+      document.getElementById('fsRole').value = role;
+      document.getElementById('fsSubject').value = 'New Career Application – ' + role;
       document.getElementById('careerForm').style.display = 'block';
       document.getElementById('careerSuccess').style.display = 'none';
       document.getElementById('modalOverlay').classList.add('open');
@@ -411,15 +416,25 @@
     }
     document.getElementById('careerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      var inputs = this.querySelectorAll('input, textarea');
+      var form = this;
       var data = {
-        name: document.getElementById('careerForm').querySelector('input[type=text]').value.trim(),
-        phone: document.getElementById('careerForm').querySelector('input[type=tel]').value.trim(),
-        email: document.getElementById('careerForm').querySelector('input[type=email]').value.trim(),
-        role: document.getElementById('roleLabel').textContent,
-        type: 'career_application',
+        name:  form.querySelector('input[name=name]').value.trim(),
+        phone: form.querySelector('input[name=phone]').value.trim(),
+        email: form.querySelector('input[name=email]').value.trim(),
+        role:  document.getElementById('roleLabel').textContent,
+        type:  'career_application',
         submittedAt: new Date().toLocaleString()
       };
+      // Set reply-to for Formspree
+      document.getElementById('fsReplyto').value = data.email;
+      // Send via Formspree (email notification)
+      try {
+        await fetch('https://formspree.io/f/mnjozpao', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+      } catch(err){ console.error('Formspree error:', err); }
       // Save to localStorage
       var apps = JSON.parse(localStorage.getItem('hs_career_applications')||'[]');
       apps.push(data); localStorage.setItem('hs_career_applications', JSON.stringify(apps));
@@ -428,12 +443,11 @@
         var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var apps2 = fbMod.getApps();
-        var fbApp = apps2.find(function(a){return a.name==='career';}) || fbMod.initializeApp(fbCfg,'career');
+        var fbApp = fbMod.getApps().find(function(a){return a.name==='career';}) || fbMod.initializeApp(fbCfg,'career');
         var fbDb = fbStore.getFirestore(fbApp);
         await fbStore.addDoc(fbStore.collection(fbDb,'career_applications'), Object.assign({},data,{createdAt:fbStore.serverTimestamp()}));
       } catch(err){ console.error('Firebase career error:',err); }
-      this.style.display = 'none';
+      form.style.display = 'none';
       document.getElementById('careerSuccess').style.display = 'block';
     });
     window.addEventListener('scroll', () => {
