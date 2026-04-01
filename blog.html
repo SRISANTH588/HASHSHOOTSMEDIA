@@ -385,11 +385,75 @@
       <div class="eyebrow"><i class="fas fa-envelope"></i> Stay Updated</div>
       <h2>Get Stories Delivered to<br/><span>Your Inbox</span></h2>
       <p>No spam. Just the best content tips, trends, and OG Shoots updates.</p>
-      <div class="nl-form">
-        <input type="email" placeholder="your@email.com"/>
-        <button class="nl-btn">Subscribe</button>
+      <div class="nl-form" id="nlForm">
+        <input type="email" id="nlEmail" placeholder="your@email.com" required/>
+        <button class="nl-btn" id="nlBtn" onclick="subscribeNewsletter()">Subscribe</button>
       </div>
+      <div id="nlSuccess" style="display:none;margin-top:1rem;color:#4caf50;font-size:0.9rem;font-weight:600;"><i class="fas fa-check-circle"></i> You're subscribed! Welcome to the OG Shoots community.</div>
+      <div id="nlError" style="display:none;margin-top:1rem;color:#f44336;font-size:0.85rem;"></div>
+      <div id="nlDuplicate" style="display:none;margin-top:1rem;color:#c9a84c;font-size:0.85rem;"><i class="fas fa-info-circle"></i> This email is already subscribed!</div>
     </div>
+
+    <script>
+    async function subscribeNewsletter() {
+      var email = document.getElementById('nlEmail').value.trim();
+      var btn   = document.getElementById('nlBtn');
+      var errEl = document.getElementById('nlError');
+      var sucEl = document.getElementById('nlSuccess');
+      var dupEl = document.getElementById('nlDuplicate');
+
+      errEl.style.display = 'none';
+      sucEl.style.display = 'none';
+      dupEl.style.display = 'none';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='nl';}) || fbMod.initializeApp(fbCfg,'nl');
+        var db      = fbStore.getFirestore(app);
+
+        // Check for duplicate
+        var q = fbStore.query(fbStore.collection(db,'newsletter_subscribers'), fbStore.where('email','==',email));
+        var snap = await fbStore.getDocs(q);
+        if (!snap.empty) {
+          dupEl.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = 'Subscribe';
+          return;
+        }
+
+        // Save subscriber
+        await fbStore.addDoc(fbStore.collection(db,'newsletter_subscribers'), {
+          email: email,
+          source: 'blog',
+          subscribedAt: fbStore.serverTimestamp()
+        });
+
+        document.getElementById('nlForm').style.display = 'none';
+        sucEl.style.display = 'block';
+      } catch(e) {
+        errEl.textContent = 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = 'Subscribe';
+      }
+    }
+
+    // Allow Enter key
+    document.getElementById('nlEmail').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') subscribeNewsletter();
+    });
+    </script>
 
   </div>
 
