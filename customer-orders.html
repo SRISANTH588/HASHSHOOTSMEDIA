@@ -167,17 +167,16 @@
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
         var db      = fbStore.getFirestore(app);
-        // Listen for real-time booking changes
+        // Listen for real-time booking changes — Firestore is source of truth
         fbStore.onSnapshot(fbStore.collection(db,'bookings'), function(snap){
           var fbBookings = [];
-          snap.forEach(function(d){ fbBookings.push(Object.assign({id:d.id},d.data())); });
-          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          fbBookings.forEach(function(fb){
-            var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id); });
-            if(idx > -1) local[idx] = Object.assign(local[idx], fb);
-            else local.push(fb);
+          snap.forEach(function(d){
+            var data = d.data();
+            fbBookings.push(Object.assign({id:d.id}, data, {
+              createdAt: data.createdAt ? new Date(data.createdAt.seconds*1000).toLocaleString() : (data.createdAt||new Date().toLocaleString())
+            }));
           });
-          localStorage.setItem('hs_bookings', JSON.stringify(local));
+          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
           loadBookings();
         });
         // Sync assigned_shoots so creator card shows on any device
@@ -201,13 +200,15 @@
         }).catch(function(){});
         // Sync enquiries from Firestore so accepted ones are hidden and booking shows instead
         fbStore.onSnapshot(fbStore.collection(db,'enquiries'), function(snap){
-          var custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+          var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+          var custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
           var myEnqs = [];
           snap.forEach(function(d){
             var data = d.data();
-            if(data.email === custEmail || data.phone === custEmail){
-              if(!data.accepted) myEnqs.push(Object.assign({id:d.id}, data));
-            }
+            var bEmail = (data.email||'').toLowerCase().trim();
+            var bPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
+            var ismine = (custEmail && bEmail === custEmail) || (custPhone && custPhone.length===10 && bPhone === custPhone);
+            if(ismine && !data.accepted) myEnqs.push(Object.assign({id:d.id}, data));
           });
           localStorage.setItem('hs_customer_enquiries_' + custEmail, JSON.stringify(myEnqs.map(function(q){
             return { id:q.id, message: q.message || (q.service ? 'Service: '+q.service : ''), submittedAt: q.createdAt ? new Date(q.createdAt.seconds*1000).toLocaleString() : new Date().toLocaleString() };
@@ -219,13 +220,15 @@
 
     function loadBookings(){
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      var custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-      var custPhone = localStorage.getItem('hs_customer_phone') || '';
-      // SECURITY: Only show bookings belonging to this customer
+      var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+      var custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
+      // Match by email OR last 10 digits of phone
       var bookings = allBookings.filter(function(b){
         if(!custEmail && !custPhone) return false;
-        return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
-               (custPhone && b.phone === custPhone);
+        var bEmail = (b.email||'').toLowerCase().trim();
+        var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
+        return (custEmail && bEmail === custEmail) ||
+               (custPhone && custPhone.length===10 && bPhone === custPhone);
       });
       var enquiries = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
       var allVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
