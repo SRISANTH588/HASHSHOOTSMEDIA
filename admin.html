@@ -2757,11 +2757,11 @@ Priority Support</textarea></div>
           +'<div style="padding:0.85rem;">'
           +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+v.clientName+'</div>'
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
-          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+v.sizeMB+' MB &nbsp;·&nbsp; '+v.uploadedBy+' &nbsp;·&nbsp; '+v.uploadedAt+'</div>'
+          +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+(v.sizeMB||'')+(v.sizeMB?' MB &nbsp;&middot;&nbsp; ':'')+v.uploadedBy+' &nbsp;&middot;&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
-          +'<button onclick="openTestiVidEdit("+String(v.id)+")" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
-          +'<button onclick="downloadTestiVideo('+v.id+',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
-          +'<button onclick="deleteTestiVideo("+String(v.id)+")" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
+          +'<button onclick="openTestiVidEdit(\''+String(v.id)+'\')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
+          +'<button onclick="downloadTestiVideo(\''+String(v.id)+'\',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
+          +'<button onclick="deleteTestiVideo(\''+String(v.id)+'\')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         openTestiVideoDB(function(db){
           if(!db) return;
@@ -2778,13 +2778,12 @@ Priority Support</textarea></div>
     }
 
     function openTestiVidEdit(id){
-      var v = getTestiVideosMeta().find(function(x){ return x.id===id; });
+      var v = getTestiVideosMeta().find(function(x){ return String(x.id)===String(id); });
       if(!v) return;
-      document.getElementById('tv_editId').value = id;
+      document.getElementById('tv_editId').value = String(id);
       document.getElementById('tv_editName').value = v.clientName;
       document.getElementById('tv_editCaption').value = v.caption||'';
-      var modal = document.getElementById('testiVidEditModal');
-      modal.style.display='flex';
+      document.getElementById('testiVidEditModal').style.display='flex';
     }
 
     function closeTestiVidEdit(){
@@ -2792,21 +2791,31 @@ Priority Support</textarea></div>
     }
 
     function saveTestiVidEdit(){
-      var id = Number(document.getElementById('tv_editId').value);
+      var id = document.getElementById('tv_editId').value;
       var name = document.getElementById('tv_editName').value.trim();
       var caption = document.getElementById('tv_editCaption').value.trim();
       if(!name){ alert('Client name is required.'); return; }
       var meta = getTestiVideosMeta();
-      var idx = meta.findIndex(function(x){ return x.id===id; });
+      var idx = meta.findIndex(function(x){ return String(x.id)===String(id); });
       if(idx>-1){ meta[idx].clientName=name; meta[idx].caption=caption; saveTestiVideosMeta(meta); }
+      // Sync to Firestore
+      if(window.fbUpdate) fbUpdate('testimonial_videos', String(id), {clientName:name, caption:caption});
       closeTestiVidEdit();
       renderTestiVideos();
     }
 
     function downloadTestiVideo(id, name){
+      var v = getTestiVideosMeta().find(function(x){ return String(x.id)===String(id); });
+      // Try cloudUrl first (works on any device)
+      if(v && v.cloudUrl){
+        var a = document.createElement('a');
+        a.href = v.cloudUrl; a.download = (name||'testimonial')+'_video.mp4';
+        a.target = '_blank'; a.click(); return;
+      }
+      // Fallback: IndexedDB blob (same device only)
       openTestiVideoDB(function(db){
         if(!db) return;
-        var req = db.transaction('videos','readonly').objectStore('videos').get(id);
+        var req = db.transaction('videos','readonly').objectStore('videos').get(Number(id)||id);
         req.onsuccess = function(){
           if(!req.result) return;
           var url = URL.createObjectURL(req.result.blob);
@@ -2819,10 +2828,14 @@ Priority Support</textarea></div>
 
     function deleteTestiVideo(id){
       if(!confirm('Delete this testimonial video?')) return;
+      // Delete from IndexedDB (local blob)
       openTestiVideoDB(function(db){
-        if(db) db.transaction('videos','readwrite').objectStore('videos').delete(id);
+        if(db) db.transaction('videos','readwrite').objectStore('videos').delete(Number(id)||id);
       });
-      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return v.id!==id; }));
+      // Delete from localStorage meta
+      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return String(v.id)!==String(id); }));
+      // Delete from Firestore
+      if(window.fbDelete) fbDelete('testimonial_videos', String(id));
       renderTestiVideos();
     }
 
