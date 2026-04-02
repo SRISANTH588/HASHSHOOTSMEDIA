@@ -1933,7 +1933,7 @@ Priority Support</textarea></div>
 
     function loadAll() {
       var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      if(stored.length > allBookings.length) allBookings = stored;
+      allBookings = stored;
       updateStats();
       renderTable();
       updateCreatorPendingPayments();
@@ -5151,7 +5151,32 @@ Priority Support</textarea></div>
           var fbBookings = [];
           snap.forEach(function(d){
             var data = d.data();
-            fbBookings.push({ id:d.id, name:data.name||'', phone:data.phone||'', email:data.email||'', service:data.service||'', city:data.city||'', location:data.location||'', date:data.date||'', time:data.time||'', notes:data.notes||'', plan:data.plan||'', status:data.status||'pending', createdAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            fbBookings.push({
+              id: d.id,
+              name: data.name||'',
+              phone: data.phone||'',
+              email: data.email||'',
+              service: data.service||'',
+              city: data.city||'',
+              location: data.location||'',
+              date: data.date||'',
+              time: data.time||'',
+              notes: data.notes||'',
+              plan: data.plan||'',
+              status: data.status||'pending',
+              payAmount: data.payAmount||0,
+              paymentStatus: data.paymentStatus||'',
+              paidAt: data.paidAt||'',
+              razorpayId: data.razorpayId||'',
+              rescheduled: data.rescheduled||false,
+              cancelledBy: data.cancelledBy||'',
+              cancelReason: data.cancelReason||'',
+              cancelledAt: data.cancelledAt||'',
+              adminEdited: data.adminEdited||false,
+              noShow: data.noShow||false,
+              preferredCreatorName: data.preferredCreatorName||'',
+              createdAt: data.createdAt ? new Date(data.createdAt.seconds*1000).toLocaleString() : new Date().toLocaleString()
+            });
           });
           localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
           allBookings = fbBookings;
