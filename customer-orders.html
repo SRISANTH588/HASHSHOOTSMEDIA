@@ -199,6 +199,21 @@
           snap.forEach(function(d){ list.push(Object.assign({},d.data())); });
           if(list.length){ localStorage.setItem('hs_payments', JSON.stringify(list)); loadBookings(); }
         }).catch(function(){});
+        // Sync enquiries from Firestore so accepted ones are hidden and booking shows instead
+        fbStore.onSnapshot(fbStore.collection(db,'enquiries'), function(snap){
+          var custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+          var myEnqs = [];
+          snap.forEach(function(d){
+            var data = d.data();
+            if(data.email === custEmail || data.phone === custEmail){
+              if(!data.accepted) myEnqs.push(Object.assign({id:d.id}, data));
+            }
+          });
+          localStorage.setItem('hs_customer_enquiries_' + custEmail, JSON.stringify(myEnqs.map(function(q){
+            return { id:q.id, message: q.message || (q.service ? 'Service: '+q.service : ''), submittedAt: q.createdAt ? new Date(q.createdAt.seconds*1000).toLocaleString() : new Date().toLocaleString() };
+          })));
+          loadBookings();
+        });
       }catch(e){ console.log('Firebase sync error:',e); loadBookings(); }
     })();
 
