@@ -4277,17 +4277,29 @@ Priority Support</textarea></div>
 
     // RAZORPAY CONFIG
     function loadRazorpayTab(){
-      var cfg = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
-      document.getElementById('rp_key_id').value          = cfg.keyId          || '';
-      document.getElementById('rp_key_secret').value      = cfg.keySecret      || '';
-      document.getElementById('rp_business_name').value   = cfg.businessName   || 'OG SHOOTS';
-      document.getElementById('rp_logo').value            = cfg.logo           || '';
-      document.getElementById('rp_default_amount').value  = cfg.defaultAmount  || '';
-      document.getElementById('rp_currency').value        = cfg.currency       || 'INR';
-      document.getElementById('rp_description').value     = cfg.description    || 'OG SHOOTS — Reel Shoot Booking';
-      document.getElementById('rp_enabled').checked       = cfg.enabled        || false;
-      populateRpBookingSelect();
-      renderPaymentHistory();
+      // Always fetch fresh from Firestore first
+      (async function(){
+        try {
+          var f = await _fbAdmin(); if(!f) throw new Error('no fb');
+          var snap = await f.s.getDoc(f.s.doc(f.db,'razorpay_config','main'));
+          if(snap.exists()){
+            var cfg = snap.data();
+            delete cfg.updatedAt;
+            localStorage.setItem('hs_razorpay', JSON.stringify(cfg));
+          }
+        } catch(e){}
+        var cfg = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+        document.getElementById('rp_key_id').value          = cfg.keyId          || '';
+        document.getElementById('rp_key_secret').value      = cfg.keySecret      || '';
+        document.getElementById('rp_business_name').value   = cfg.businessName   || 'OG SHOOTS';
+        document.getElementById('rp_logo').value            = cfg.logo           || '';
+        document.getElementById('rp_default_amount').value  = cfg.defaultAmount  || '';
+        document.getElementById('rp_currency').value        = cfg.currency       || 'INR';
+        document.getElementById('rp_description').value     = cfg.description    || 'OG SHOOTS — Reel Shoot Booking';
+        document.getElementById('rp_enabled').checked       = cfg.enabled        || false;
+        populateRpBookingSelect();
+        renderPaymentHistory();
+      })();
     }
     function saveRazorpayConfig(){
       var keyId = document.getElementById('rp_key_id').value.trim();
@@ -4298,19 +4310,26 @@ Priority Support</textarea></div>
         businessName:  document.getElementById('rp_business_name').value.trim() || 'OG SHOOTS',
         logo:          document.getElementById('rp_logo').value.trim(),
         defaultAmount: parseInt(document.getElementById('rp_default_amount').value) || 0,
-        currency:      document.getElementById('rp_currency').value,
+        currency:      document.getElementById('rp_currency').value || 'INR',
         description:   document.getElementById('rp_description').value.trim() || 'OG SHOOTS — Booking Payment',
         enabled:       document.getElementById('rp_enabled').checked
       };
       localStorage.setItem('hs_razorpay', JSON.stringify(cfg));
-      // Sync to Firestore so customers can fetch it cross-device
-      (async()=>{
-        var f = await _fbAdmin(); if(!f) return;
-        try{ await f.s.setDoc(f.s.doc(f.db,'razorpay_config','main'), cfg, {merge:true}); }catch(e){}
-      })();
       var toast = document.getElementById('rpToast');
-      toast.style.display = 'block';
-      setTimeout(function(){ toast.style.display = 'none'; }, 3000);
+      // Sync to Firestore
+      (async()=>{
+        var f = await _fbAdmin(); if(!f){ toast.textContent='\u26a0\ufe0f Saved locally only — Firebase not connected.'; toast.style.display='block'; setTimeout(function(){toast.style.display='none';},4000); return; }
+        try{
+          await f.s.setDoc(f.s.doc(f.db,'razorpay_config','main'), Object.assign({},cfg,{updatedAt:f.s.serverTimestamp()}), {merge:false});
+          toast.textContent='\u2705 Razorpay settings saved! Payment is now active on confirmed bookings.';
+          toast.style.background='rgba(76,175,80,0.15)'; toast.style.color='#4caf50'; toast.style.border='1px solid rgba(76,175,80,0.3)';
+        }catch(e){
+          toast.textContent='\u274c Save failed: '+e.message;
+          toast.style.background='rgba(244,67,54,0.12)'; toast.style.color='#f44336'; toast.style.border='1px solid rgba(244,67,54,0.3)';
+        }
+        toast.style.display='block';
+        setTimeout(function(){ toast.style.display='none'; }, 4000);
+      })();
     }
     function populateRpBookingSelect(){
       var sel = document.getElementById('rp_booking_sel');
