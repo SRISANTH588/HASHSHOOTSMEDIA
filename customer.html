@@ -778,7 +778,7 @@
       const bkId = Date.now();
       var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
       var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
-      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'confirmed', createdAt: new Date().toLocaleString() });
+      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       // Send to Firebase
@@ -792,7 +792,7 @@
           var fbDb = fbStore.getFirestore(fbApp);
           var userEmail = localStorage.getItem('hs_user')||'';
           var docId = 'bk_' + String(bkId);
-          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'confirmed', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
+          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'pending', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
           await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
           // Update local id to match Firestore doc id
           var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
