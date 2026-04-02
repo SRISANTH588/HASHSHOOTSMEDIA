@@ -145,7 +145,7 @@
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
         var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDoc(fbStore.doc(db,'razorpay_config','config'));
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'razorpay_config','main'));
         if(snap.exists()){ _rpCfg = snap.data(); localStorage.setItem('hs_razorpay', JSON.stringify(_rpCfg)); }
       } catch(e){}
     })();

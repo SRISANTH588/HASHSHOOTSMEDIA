@@ -4051,7 +4051,7 @@ Priority Support</textarea></div>
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
-          + '<button onclick="deleteAssignment("+String(a.id)+")" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
+          + '<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
@@ -4086,7 +4086,7 @@ Priority Support</textarea></div>
 
     function adminMarkDone(id){
       var list = getAssignedShoots();
-      var a = list.find(function(x){ return x.id===id; });
+      var a = list.find(function(x){ return String(x.id)===String(id); });
       if(!a) return;
       a.status = 'done';
       a.doneAt = new Date().toLocaleString();
@@ -4098,7 +4098,7 @@ Priority Support</textarea></div>
 
     function approveAndPay(id){
       var list = getAssignedShoots();
-      var a = list.find(function(x){ return x.id===id; });
+      var a = list.find(function(x){ return String(x.id)===String(id); });
       if(!a) return;
       // Read edited credit amount if admin changed it
       var inp = document.getElementById('creditEdit_' + id);
@@ -4316,7 +4316,7 @@ Priority Support</textarea></div>
       // Sync to Firestore so customers can fetch it cross-device
       (async()=>{
         var f = await _fbAdmin(); if(!f) return;
-        try{ await f.s.setDoc(f.s.doc(f.db,'razorpay_config','config'), cfg, {merge:true}); }catch(e){}
+        try{ await f.s.setDoc(f.s.doc(f.db,'razorpay_config','main'), cfg, {merge:true}); }catch(e){}
       })();
       var toast = document.getElementById('rpToast');
       toast.style.display = 'block';

@@ -670,7 +670,7 @@
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
     // Wallet
-    document.getElementById('walletBal').textContent = localStorage.getItem('hs_customer_wallet') || '0';
+    document.getElementById('walletBal').textContent = localStorage.getItem('hs_cw_'+(localStorage.getItem('hs_user')||'')) || localStorage.getItem('hs_customer_wallet') || '0';
 
     // Load admin messages for this customer
     (async function loadAdminMessages(){
@@ -838,14 +838,15 @@
           var fbBookings = [];
           snap.forEach(function(d){
             var data = d.data();
-            // Strict email-only match to prevent cross-account contamination
-            if(userEmail && data.email === userEmail)
+            var bEmail = (data.email||'').toLowerCase().trim();
+            var bPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
+            var uEmail = (userEmail||'').toLowerCase().trim();
+            var uPhone = (userPhone||'').replace(/\D/g,'').slice(-10);
+            var uName  = (userName||'').toLowerCase().trim();
+            var bName  = (data.name||'').toLowerCase().trim();
+            if((uEmail && bEmail===uEmail)||(uPhone && uPhone.length===10 && bPhone===uPhone)||(uName && uName.length>2 && bName===uName && bPhone===uPhone))
               fbBookings.push(Object.assign({id:d.id}, data));
           });
-          // Merge local bookings not yet in Firestore
-          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var fbIds = fbBookings.map(b=>String(b.id));
-          local.forEach(function(b){ if(!fbIds.includes(String(b.id))) fbBookings.push(b); });
           if(fbBookings.length) localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
         } catch(e){ console.log('loadBookings Firestore error:',e); }
         _renderBookings();
@@ -854,13 +855,18 @@
 
     function _renderBookings() {
       const allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      const custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-      const custPhone = localStorage.getItem('hs_customer_phone') || '';
+      const custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+      const custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
+      const custName  = (localStorage.getItem('hs_customer_name') || '').toLowerCase().trim();
       // SECURITY: Only show this customer's bookings
       const bookings = allBookings.filter(function(b){
         if(!custEmail && !custPhone) return false;
-        return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
-               (custPhone && b.phone === custPhone);
+        var bEmail = (b.email||'').toLowerCase().trim();
+        var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
+        var bName  = (b.name||'').toLowerCase().trim();
+        return (custEmail && bEmail===custEmail) ||
+               (custPhone && custPhone.length===10 && bPhone===custPhone) ||
+               (custName && custName.length>2 && bName===custName && bPhone===custPhone);
       });
       const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       const list = document.getElementById('bookingsList');
@@ -1047,14 +1053,20 @@
             var fbBookings = [];
             snap.forEach(function(d){
               var data = d.data();
-              // Only include bookings belonging to this customer
-              if(userEmail && (data.email === userEmail || data.phone === userEmail)) fbBookings.push(Object.assign({id:d.id},data));
-              else if(userPhone && data.phone === userPhone) fbBookings.push(Object.assign({id:d.id},data));
+              var bEmail = (data.email||'').toLowerCase().trim();
+              var bPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
+              var uEmail = userEmail.toLowerCase().trim();
+              var uPhone = userPhone.replace(/\D/g,'').slice(-10);
+              if((uEmail && bEmail===uEmail)||(uPhone && uPhone.length===10 && bPhone===uPhone))
+                fbBookings.push(Object.assign({id:d.id},data));
             });
             var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            // Filter local to only this customer's bookings
+            var _uEmail = (userEmail||'').toLowerCase().trim();
+            var _uPhone = (userPhone||'').replace(/\D/g,'').slice(-10);
             local = local.filter(function(b){
-              return (userEmail && (b.email===userEmail||b.phone===userEmail)) || (userPhone && b.phone===userPhone);
+              var bEmail=(b.email||'').toLowerCase().trim();
+              var bPhone=(b.phone||'').replace(/\D/g,'').slice(-10);
+              return (_uEmail&&bEmail===_uEmail)||(_uPhone&&_uPhone.length===10&&bPhone===_uPhone);
             });
             local = local.map(function(b){
               var fb = fbBookings.find(function(f){ return String(f.id)===String(b.id); });
