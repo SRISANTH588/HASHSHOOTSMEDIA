@@ -3670,72 +3670,79 @@ Priority Support</textarea></div>
       var seen = {};
       var customers = [];
       bookings.forEach(function(b){
-        if(b.name && !seen[b.phone]){
-          seen[b.phone] = true;
-          customers.push({ name: b.name, phone: b.phone });
+        if(b.name && b.email && !seen[b.email]){
+          seen[b.email] = true;
+          customers.push({ name: b.name, phone: b.phone, email: b.email });
         }
       });
       if(!customers.length){ list.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
       list.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
         + '<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.1);">'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Name</th>'
-        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Phone</th>'
+        + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Email / Phone</th>'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Balance</th>'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Actions</th>'
         + '</tr></thead><tbody>'
         + customers.map(function(cu){
-            var key = 'hs_cw_' + cu.phone;
-            var bal = parseInt(localStorage.getItem(key) || '0');
+            var bal = parseInt(localStorage.getItem('hs_cw_' + cu.email) || localStorage.getItem('hs_cw_' + cu.phone) || '0');
             return '<tr style="border-bottom:1px solid rgba(201,168,76,0.05);">'
               + '<td style="padding:0.65rem 0.75rem;font-size:0.88rem;font-weight:600;">' + cu.name + '</td>'
-              + '<td style="padding:0.65rem 0.75rem;font-size:0.82rem;color:#9a9080;">' + cu.phone + '</td>'
+              + '<td style="padding:0.65rem 0.75rem;font-size:0.78rem;color:#9a9080;">' + cu.email + '<br>' + cu.phone + '</td>'
               + '<td style="padding:0.65rem 0.75rem;font-size:1rem;font-weight:800;color:#4caf50;">₹' + bal + '</td>'
               + '<td style="padding:0.65rem 0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
-              + '<input type="number" id="cw_inp_' + cu.phone + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
-              + '<button onclick="setCustWalletRow(\'' + cu.phone + '\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
-              + '<button onclick="addCustWalletRow(\'' + cu.phone + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
+              + '<input type="number" id="cw_inp_' + cu.email + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
+              + '<button onclick="setCustWalletRow(\''+cu.email+'\',\''+cu.phone+'\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
+              + '<button onclick="addCustWalletRow(\''+cu.email+'\',\''+cu.phone+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
               + '</td></tr>';
           }).join('')
         + '</tbody></table>';
     }
 
-    function setCustWalletRow(phone){
-      var inp = document.getElementById('cw_inp_' + phone);
-      var amt = parseInt(inp.value);
+    function setCustWalletRow(email, phone){
+      var inp = document.getElementById('cw_inp_' + email);
+      var amt = parseInt(inp ? inp.value : 0);
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      localStorage.setItem('hs_cw_' + phone, amt);
+      localStorage.setItem('hs_cw_' + email, amt);
+      if(phone) localStorage.setItem('hs_cw_' + phone, amt);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt);
       inp.value = '';
       renderCustWallets();
     }
 
-    function addCustWalletRow(phone){
-      var inp = document.getElementById('cw_inp_' + phone);
-      var amt = parseInt(inp.value);
+    function addCustWalletRow(email, phone){
+      var inp = document.getElementById('cw_inp_' + email);
+      var amt = parseInt(inp ? inp.value : 0);
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      var cur = parseInt(localStorage.getItem('hs_cw_' + phone) || '0');
-      localStorage.setItem('hs_cw_' + phone, cur + amt);
+      var cur = parseInt(localStorage.getItem('hs_cw_' + email) || localStorage.getItem('hs_cw_' + phone) || '0');
+      var newBal = cur + amt;
+      localStorage.setItem('hs_cw_' + email, newBal);
+      if(phone) localStorage.setItem('hs_cw_' + phone, newBal);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal);
       inp.value = '';
       renderCustWallets();
     }
 
     function setCustWallet(){
-      var email = document.getElementById('cwEmail').value.trim();
+      var email = document.getElementById('cwEmail').value.trim().toLowerCase();
       var amt = parseInt(document.getElementById('cwAmount').value);
-      if(!email){ alert('Enter customer email/username.'); return; }
+      if(!email){ alert('Enter customer email.'); return; }
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      localStorage.setItem('hs_customer_wallet', amt);
+      localStorage.setItem('hs_cw_' + email, amt);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt);
       showCwMsg('Balance set to ₹' + amt + ' for ' + email);
       renderCustWallets();
     }
 
     function addCustWallet(){
-      var email = document.getElementById('cwEmail').value.trim();
+      var email = document.getElementById('cwEmail').value.trim().toLowerCase();
       var amt = parseInt(document.getElementById('cwAmount').value);
-      if(!email){ alert('Enter customer email/username.'); return; }
+      if(!email){ alert('Enter customer email.'); return; }
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
-      var cur = parseInt(localStorage.getItem('hs_customer_wallet') || '0');
-      localStorage.setItem('hs_customer_wallet', cur + amt);
-      showCwMsg('Added ₹' + amt + '. New balance: ₹' + (cur + amt));
+      var cur = parseInt(localStorage.getItem('hs_cw_' + email) || '0');
+      var newBal = cur + amt;
+      localStorage.setItem('hs_cw_' + email, newBal);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal);
+      showCwMsg('Added ₹' + amt + '. New balance: ₹' + newBal + ' for ' + email);
       renderCustWallets();
     }
 
@@ -4004,11 +4011,11 @@ Priority Support</textarea></div>
         // Action buttons based on status
         var actionBtns = '';
         if(a.status === 'assigned'){
-          actionBtns = '<button onclick="adminMarkDone("+String(a.id)+")" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
+          actionBtns = '<button onclick="adminMarkDone(\''+String(a.id)+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
         } else if(a.status === 'done'){
-          actionBtns = '<button onclick="approveAndPay("+String(a.id)+")" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
+          actionBtns = '<button onclick="approveAndPay(\''+String(a.id)+'\')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
         } else if(a.status === 'completed'){
-          actionBtns = '<button onclick="releasePayment("+String(a.id)+")" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
+          actionBtns = '<button onclick="releasePayment(\''+String(a.id)+'\')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>';
         } else if(a.status === 'paid'){
           actionBtns = '<span style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-check-double"></i> Paid</span>';
         }
@@ -4129,20 +4136,20 @@ Priority Support</textarea></div>
 
     function releasePayment(id){
       var list = getAssignedShoots();
-      var a = list.find(function(x){ return x.id===id; });
+      var a = list.find(function(x){ return String(x.id)===String(id); });
       if(!a) return;
-      if(!confirm('Release ₹' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
+      if(!confirm('Release \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
 
-      // Move from pending to balance in staff wallet
       var walletKey = 'hs_wallet_' + a.staffId;
       var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
       wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
-      wallet.balance += a.credit;
-      wallet.totalEarned += a.credit;
+      wallet.balance = (wallet.balance || 0) + a.credit;
+      wallet.totalEarned = (wallet.totalEarned || 0) + a.credit;
+      if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
       wallet.transactions.push({
         type: 'credit', amount: a.credit,
         label: 'Payment Released: ' + a.service,
-        note: a.clientName + ' — ' + a.city,
+        note: a.clientName + ' \u2014 ' + a.city,
         date: new Date().toLocaleString()
       });
       localStorage.setItem(walletKey, JSON.stringify(wallet));
@@ -4150,8 +4157,15 @@ Priority Support</textarea></div>
       a.status = 'paid';
       a.paidAt = new Date().toLocaleString();
       saveAssignedShoots(list);
+
+      // Sync to Firebase
+      if(window.fbUpdate){
+        fbUpdate('assigned_shoots', String(id), { status:'paid', paidAt:a.paidAt });
+        fbUpdate('wallets', String(a.staffId), wallet);
+      }
+
       renderAssignedList();
-      showAssignToast('Payment of ₹' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      showAssignToast('Payment of \u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
     // STAFF WITHDRAW TAB
