@@ -132,7 +132,10 @@
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
-    if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
+    // Allow access if logged in as customer OR if they just placed a booking (have email stored)
+    var _role = localStorage.getItem('hs_role');
+    var _hasBookingSession = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email');
+    if(_role !== 'customer' && !_hasBookingSession) window.location.href = 'login.html';
     var user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 

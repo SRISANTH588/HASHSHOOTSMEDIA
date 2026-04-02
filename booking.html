@@ -599,10 +599,17 @@
       }).catch(function(){});
 
       closeReview();
+      // Store booking email+phone so My Orders can match it on any device
+      if(d.email) localStorage.setItem('hs_user', d.email);
+      if(d.email) localStorage.setItem('hs_customer_email', d.email);
+      if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
+      if(d.name)  localStorage.setItem('hs_customer_name', d.name);
       document.getElementById('bk_success').style.display = 'block';
       document.getElementById('bk_btn').style.display = 'none';
       document.querySelector('form').querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
       pendingData = null;
+      // Redirect to My Orders after 2.5 seconds
+      setTimeout(function(){ window.location.href = 'customer-orders.html'; }, 2500);
     }
   
     // Load cities from Firestore/localStorage
@@ -616,6 +623,20 @@
           sel.innerHTML = '<option value="" disabled selected>Select city</option>' +
             cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
         }
+      }
+    })();
+
+    // Pre-fill form with logged-in customer details
+    (function(){
+      var n = localStorage.getItem('hs_customer_name') || '';
+      var p = localStorage.getItem('hs_customer_phone') || '';
+      var e = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      if(n){ var el=document.getElementById('bk_name'); if(el) el.value=n; }
+      if(e){ var el=document.getElementById('bk_email'); if(el) el.value=e; }
+      if(p){
+        var raw = p.replace(/\D/g,'');
+        var el = document.getElementById('bk_phone');
+        if(el) el.value = raw.slice(-10);
       }
     })();
     </script>
