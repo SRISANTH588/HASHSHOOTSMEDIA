@@ -1933,6 +1933,9 @@ Priority Support</textarea></div>
 
     function loadAll() {
       var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      // Deduplicate by id
+      var seen = {};
+      stored = stored.filter(function(b){ var k=String(b.id); if(seen[k]) return false; seen[k]=true; return true; });
       allBookings = stored;
       updateStats();
       renderTable();

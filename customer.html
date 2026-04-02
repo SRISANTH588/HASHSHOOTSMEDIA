@@ -780,15 +780,13 @@
       var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
       bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-      if(window.fbSave) fbSave('bookings', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
-      if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,service:service,city:city,date:date,time:time,status:'pending'});
 
       // Also save enquiry to localStorage
       const enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
       enquiries.push({ id: bkId, name, phone, email: localStorage.getItem('hs_user')||'', message: 'Service: '+service+' | City: '+city+' | Date: '+date+' at '+time, submittedAt: new Date().toLocaleString() });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
 
-      // Send to Firebase so admin sees it from any device
+      // Send to Firebase — use setDoc with known ID to prevent duplicates
       (async function(){
         try {
           var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -798,11 +796,14 @@
           var fbApp = apps.find(function(a){ return a.name==='cust'; }) || fbMod.initializeApp(fbCfg,'cust');
           var fbDb = fbStore.getFirestore(fbApp);
           var userEmail = localStorage.getItem('hs_user')||'';
-          var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
-          var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
-          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
-          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
-          await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
+          var docId = 'bk_' + String(bkId);
+          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'pending', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
+          await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
+          await fbStore.setDoc(fbStore.doc(fbDb,'enquiries', docId), Object.assign({}, data, { message:'Service: '+service+' | City: '+city+' | Date: '+date+' at '+time }));
+          // Update local id to match Firestore doc id
+          var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var li = bks.findIndex(function(b){ return String(b.id)===String(bkId); });
+          if(li>-1){ bks[li].id = docId; localStorage.setItem('hs_bookings', JSON.stringify(bks)); }
         } catch(e){ console.error('Firebase error:',e); }
       })();
 

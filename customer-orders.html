@@ -256,6 +256,9 @@
 
     function loadBookings(){
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      // Deduplicate by id
+      var _seen = {};
+      allBookings = allBookings.filter(function(b){ var k=String(b.id); if(_seen[k]) return false; _seen[k]=true; return true; });
       var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
       var custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
       var custName  = (localStorage.getItem('hs_customer_name') || '').toLowerCase().trim();
