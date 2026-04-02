@@ -130,10 +130,25 @@
 
   <div class="toast-notif" id="toastNotif"></div>
 
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
     var user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
+
+    // ── Load Razorpay config from Firestore so it works on any device ──
+    var _rpCfg = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+    (async function(){
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'razorpay_config','config'));
+        if(snap.exists()){ _rpCfg = snap.data(); localStorage.setItem('hs_razorpay', JSON.stringify(_rpCfg)); }
+      } catch(e){}
+    })();
 
     var videoDB = null;
     function openVideoDB(cb){
@@ -177,6 +192,12 @@
           var list = [];
           snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
           if(list.length){ localStorage.setItem('hs_staff', JSON.stringify(list)); loadBookings(); }
+        }).catch(function(){});
+        // Sync payments so paid status shows on any device
+        fbStore.getDocs(fbStore.collection(db,'payments')).then(function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(Object.assign({},d.data())); });
+          if(list.length){ localStorage.setItem('hs_payments', JSON.stringify(list)); loadBookings(); }
         }).catch(function(){});
       }catch(e){ console.log('Firebase sync error:',e); loadBookings(); }
     })();
@@ -277,6 +298,15 @@
           + creatorCard
           + videoSection
           + cancelNotice
+          + (b.status === 'confirmed' && b.payAmount > 0 && !paid
+            ? '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1rem 1.1rem;">'
+              + '<div style="font-size:0.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-credit-card"></i> Payment Due</div>'
+              + '<div style="font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:0.75rem;">&#8377;' + Number(b.payAmount).toLocaleString('en-IN') + '</div>'
+              + '<button onclick="payNow(\'' + b.id + '\',\'' + b.service + '\',\'' + b.name + '\',\'' + b.phone + '\',' + b.payAmount + ')" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:10px;padding:0.7rem 1.75rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fas fa-bolt"></i> Pay Now</button>'
+              + '</div>'
+            : (b.status === 'confirmed' && paid
+              ? '<div style="margin-top:0.75rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:10px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-circle"></i> Payment of &#8377;' + Number(paid.amount).toLocaleString('en-IN') + ' received. Thank you!</div>'
+              : ''))
           + (b.status !== 'cancelled' && b.status !== 'completed'
             ? '<div class="action-row">'
               + '<button class="btn-reschedule" onclick="openReschedule(\'' + b.id + '\')" ><i class="fas fa-calendar-alt"></i> Reschedule</button>'
@@ -443,6 +473,50 @@
     }
 
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
+
+    // ── RAZORPAY PAYMENT ──
+    function payNow(bookingId, service, custName, custPhone, amount){
+      var cfg = _rpCfg;
+      if(!cfg.enabled || !cfg.keyId){ showToast('Payment gateway not configured. Please contact support.', true); return; }
+      var options = {
+        key: cfg.keyId,
+        amount: amount * 100, // paise
+        currency: cfg.currency || 'INR',
+        name: cfg.businessName || 'OG SHOOTS',
+        description: service,
+        image: cfg.logo || '',
+        prefill: { name: custName, contact: custPhone },
+        theme: { color: '#c9a84c' },
+        handler: function(response){
+          // Save payment locally
+          var payments = JSON.parse(localStorage.getItem('hs_payments')||'[]');
+          var rec = { bookingId: String(bookingId), amount: amount, razorpayId: response.razorpay_payment_id, paidAt: new Date().toLocaleString() };
+          payments.push(rec);
+          localStorage.setItem('hs_payments', JSON.stringify(payments));
+          // Sync to Firestore
+          (async function(){
+            try {
+              var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+              var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+              var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+              var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+              var db      = fbStore.getFirestore(app);
+              // Mark booking as paid
+              await fbStore.setDoc(fbStore.doc(db,'bookings',String(bookingId)),{paymentStatus:'paid',paidAt:new Date().toISOString(),razorpayId:response.razorpay_payment_id},{merge:true});
+              // Save payment record
+              await fbStore.addDoc(fbStore.collection(db,'payments'), Object.assign({},rec,{createdAt:fbStore.serverTimestamp()}));
+              // Notify admin
+              await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{type:'booking',title:'\uD83D\uDCB0 Payment Received',message:custName+' paid \u20b9'+amount.toLocaleString('en-IN')+' for '+service,bookingId:String(bookingId),read:false,createdAt:fbStore.serverTimestamp()});
+            } catch(e){ console.error('Payment sync error:',e); }
+          })();
+          showToast('\u2705 Payment of \u20b9'+amount.toLocaleString('en-IN')+' successful! Thank you.');
+          loadBookings();
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.on('payment.failed', function(){ showToast('Payment failed. Please try again.', true); });
+      rzp.open();
+    }
   </script>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
