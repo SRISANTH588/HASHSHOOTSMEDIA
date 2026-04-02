@@ -1046,36 +1046,27 @@
           var rpSnap = await fbStore.getDoc(fbStore.doc(fbDb,'razorpay_config','main'));
           if(rpSnap.exists()){ var cfg=rpSnap.data(); delete cfg.updatedAt; localStorage.setItem('hs_razorpay',JSON.stringify(cfg)); }
         }catch(e){}
-        // Listen for booking status changes in real-time (only this customer's bookings)
-        fbStore.onSnapshot(
-          fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')),
-          function(snap){
-            var fbBookings = [];
-            snap.forEach(function(d){
-              var data = d.data();
-              var bEmail = (data.email||'').toLowerCase().trim();
-              var bPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
-              var uEmail = userEmail.toLowerCase().trim();
-              var uPhone = userPhone.replace(/\D/g,'').slice(-10);
-              if((uEmail && bEmail===uEmail)||(uPhone && uPhone.length===10 && bPhone===uPhone))
-                fbBookings.push(Object.assign({id:d.id},data));
-            });
-            var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            var _uEmail = (userEmail||'').toLowerCase().trim();
-            var _uPhone = (userPhone||'').replace(/\D/g,'').slice(-10);
-            local = local.filter(function(b){
-              var bEmail=(b.email||'').toLowerCase().trim();
-              var bPhone=(b.phone||'').replace(/\D/g,'').slice(-10);
-              return (_uEmail&&bEmail===_uEmail)||(_uPhone&&_uPhone.length===10&&bPhone===_uPhone);
-            });
-            local = local.map(function(b){
-              var fb = fbBookings.find(function(f){ return String(f.id)===String(b.id); });
-              return fb ? Object.assign({},b,fb) : b;
-            });
-            fbBookings.forEach(function(b){ if(!local.find(function(l){return String(l.id)===String(b.id);})) local.push(b); });
-            if(local.length){ localStorage.setItem('hs_bookings', JSON.stringify(local)); _renderBookings(); }
-          }
-        );
+
+        function _mapBk(d){ var data=d.data(); return Object.assign({id:d.id},data,{createdAt:data.createdAt&&data.createdAt.seconds?new Date(data.createdAt.seconds*1000).toLocaleString():(data.createdAt||new Date().toLocaleString())}); }
+        function _mergeBk(docs){ var local=JSON.parse(localStorage.getItem('hs_bookings')||'[]'); docs.forEach(function(b){ var idx=local.findIndex(function(e){return String(e.id)===String(b.id);}); if(idx>-1) local[idx]=Object.assign(local[idx],b); else local.push(b); }); localStorage.setItem('hs_bookings',JSON.stringify(local)); _renderBookings(); }
+
+        // Listen by email
+        if(userEmail){
+          fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('email','==',userEmail)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+        }
+        // Listen by phone (with and without +91)
+        if(userPhone){
+          var _phones=[userPhone];
+          if(!userPhone.startsWith('+')) _phones.push('+91'+userPhone);
+          _phones.forEach(function(ph){
+            fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('phone','==',ph)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+          });
+        }
+        // Listen by name (fallback for enquiry-based bookings)
+        var _uName = localStorage.getItem('hs_customer_name')||'';
+        if(_uName){
+          fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('name','==',_uName)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+        }
         // Listen for customer notifications from admin
         if(userEmail || userPhone){
           fbStore.onSnapshot(

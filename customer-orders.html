@@ -167,18 +167,54 @@
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
         var db      = fbStore.getFirestore(app);
-        // Listen for real-time booking changes — Firestore is source of truth
-        fbStore.onSnapshot(fbStore.collection(db,'bookings'), function(snap){
-          var fbBookings = [];
-          snap.forEach(function(d){
-            var data = d.data();
-            fbBookings.push(Object.assign({id:d.id}, data, {
-              createdAt: data.createdAt ? new Date(data.createdAt.seconds*1000).toLocaleString() : (data.createdAt||new Date().toLocaleString())
-            }));
+        var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+        var custPhone = (localStorage.getItem('hs_customer_phone') || '').trim();
+        var custName  = (localStorage.getItem('hs_customer_name') || '').trim();
+
+        // Query bookings directly by email and phone — no need to fetch all
+        function mergeAndStore(docs){
+          var existing = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          docs.forEach(function(b){
+            var idx = existing.findIndex(function(e){ return String(e.id)===String(b.id); });
+            if(idx>-1) existing[idx] = Object.assign(existing[idx], b);
+            else existing.push(b);
           });
-          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+          localStorage.setItem('hs_bookings', JSON.stringify(existing));
           loadBookings();
-        });
+        }
+
+        function mapDoc(d){
+          var data = d.data();
+          return Object.assign({id:d.id}, data, {
+            createdAt: data.createdAt && data.createdAt.seconds ? new Date(data.createdAt.seconds*1000).toLocaleString() : (data.createdAt||new Date().toLocaleString())
+          });
+        }
+
+        // Listen by email
+        if(custEmail){
+          fbStore.onSnapshot(
+            fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',custEmail)),
+            function(snap){ var docs=[]; snap.forEach(function(d){docs.push(mapDoc(d));}); mergeAndStore(docs); }
+          );
+        }
+        // Listen by phone (try both with and without country code)
+        if(custPhone){
+          var phones = [custPhone];
+          if(!custPhone.startsWith('+')) phones.push('+91'+custPhone);
+          phones.forEach(function(ph){
+            fbStore.onSnapshot(
+              fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('phone','==',ph)),
+              function(snap){ var docs=[]; snap.forEach(function(d){docs.push(mapDoc(d));}); mergeAndStore(docs); }
+            );
+          });
+        }
+        // Listen by name (fallback for enquiry-based bookings)
+        if(custName){
+          fbStore.onSnapshot(
+            fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('name','==',custName)),
+            function(snap){ var docs=[]; snap.forEach(function(d){docs.push(mapDoc(d));}); mergeAndStore(docs); }
+          );
+        }
         // Sync assigned_shoots so creator card shows on any device
         fbStore.onSnapshot(fbStore.collection(db,'assigned_shoots'), function(snap){
           var list = [];
