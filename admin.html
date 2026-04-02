@@ -3014,10 +3014,10 @@ Priority Support</textarea></div>
         infoSection += '<button onclick="downloadShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-download"><i class="fas fa-download"></i> Download</button>';
         
         if (assign && assign.status === 'done') {
-          infoSection += '<button onclick="approveShootVideo(' + assign.id + ')" class="shoot-reel-btn shoot-reel-btn-approve"><i class="fas fa-check-circle"></i> Approve & Pay</button>';
+          infoSection += '<button onclick="approveShootVideo(\''+String(assign.id)+'\')" class="shoot-reel-btn shoot-reel-btn-approve"><i class="fas fa-check-circle"></i> Approve & Pay</button>';
         }
         
-        infoSection += '<button onclick="deleteShootVideo(' + v.id + ')" class="shoot-reel-btn shoot-reel-btn-delete" style="flex:none;width:auto;padding:0.5rem 0.75rem;"><i class="fas fa-trash"></i></button>';
+        infoSection += '<button onclick="deleteShootVideo(\''+String(v.id)+'\')" class="shoot-reel-btn shoot-reel-btn-delete" style="flex:none;width:auto;padding:0.5rem 0.75rem;"><i class="fas fa-trash"></i></button>';
         
         infoSection += '</div></div>';
         
@@ -3118,9 +3118,8 @@ Priority Support</textarea></div>
     
     function approveShootVideo(assignId) {
       if (!confirm('Approve this shoot and release payment to the staff member?')) return;
-      
       var assigns = getAssignedShoots();
-      var assign = assigns.find(function(a) { return a.id === assignId; });
+      var assign = assigns.find(function(a) { return String(a.id) === String(assignId); });
       if (!assign) return;
       
       // Update assignment status
@@ -3583,7 +3582,7 @@ Priority Support</textarea></div>
             +(t.image?'<img src="'+t.image+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/>':'')
             +'<div style="flex:1;"><div style="font-weight:700;color:#fff;font-size:0.88rem;">'+t.name+'</div>'
             +'<div style="font-size:0.72rem;color:#9a9080;">&#8377;'+t.price+(t.sizes?' &nbsp;·&nbsp; '+t.sizes:'')+'</div></div>'
-            +'<button onclick="deleteTshirt('+t.id+')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'<button onclick="deleteTshirt(\''+String(t.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
             +'</div>';
         }).join(''); }
       }
@@ -3602,7 +3601,7 @@ Priority Support</textarea></div>
 
     function deleteTshirt(id){
       if(!confirm('Delete this product?')) return;
-      localStorage.setItem('hs_tshirts', JSON.stringify(JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return t.id!==id; })));
+      localStorage.setItem('hs_tshirts', JSON.stringify(JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return String(t.id)!==String(id); })));
       if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: JSON.parse(localStorage.getItem('hs_tshirts')||'[]')});
       loadStoreAdmin();
     }
@@ -3764,16 +3763,6 @@ Priority Support</textarea></div>
     function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
     function saveAssignedShoots(list){
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
-      // Sync each new shoot to Firebase
-      (async()=>{
-        var f=await _fbAdmin(); if(!f) return;
-        try{
-          for(var i=0;i<list.length;i++){
-            var a=list[i];
-            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)), a, {merge:true});
-          }
-        }catch(e){ console.error('saveAssignedShoots Firebase error:',e); }
-      })();
     }
 
     async function populateAssignSelects(autoBookingId){
@@ -4125,11 +4114,12 @@ Priority Support</textarea></div>
 
     function markShootComplete(id){
       var list = getAssignedShoots();
-      var a = list.find(function(x){ return x.id===id; });
+      var a = list.find(function(x){ return String(x.id)===String(id); });
       if(!a) return;
       a.status = 'completed';
       a.completedAt = new Date().toLocaleString();
       saveAssignedShoots(list);
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'completed', completedAt:a.completedAt});
       renderAssignedList();
       showAssignToast('Shoot marked as completed. You can now release payment.', true);
     }
