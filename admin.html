@@ -4671,8 +4671,16 @@ Priority Support</textarea></div>
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
           var fbDb = fbStore.getFirestore(fbApp);
+          // Create confirmed booking in Firestore
           await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), {name:bk.name,phone:bk.phone,email:bk.email,service:bk.service,city:bk.city,location:bk.location,date:bk.date,time:bk.time,plan:bk.plan,status:'confirmed',payAmount:payAmount,paymentStatus:'pending',createdAt:fbStore.serverTimestamp()});
-          if(String(id).length > 15) await fbStore.setDoc(fbStore.doc(fbDb,'enquiries',String(id)),{accepted:true},{merge:true});
+          // Always mark enquiry as accepted in Firestore — search by phone+name if no Firestore ID
+          try {
+            await fbStore.setDoc(fbStore.doc(fbDb,'enquiries',String(id)),{accepted:true},{merge:true});
+          } catch(e2){
+            // Fallback: query by phone to find and mark accepted
+            var eSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'enquiries'), fbStore.where('phone','==',bk.phone)));
+            eSnap.forEach(function(ed){ fbStore.setDoc(ed.ref,{accepted:true},{merge:true}); });
+          }
         } catch(e){ console.error('acceptEnquiry error:',e); }
       })();
       renderEnquiries();

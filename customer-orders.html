@@ -222,13 +222,15 @@
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
       var custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
-      // Match by email OR last 10 digits of phone
+      var custName  = (localStorage.getItem('hs_customer_name') || '').toLowerCase().trim();
       var bookings = allBookings.filter(function(b){
         if(!custEmail && !custPhone) return false;
         var bEmail = (b.email||'').toLowerCase().trim();
         var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
+        var bName  = (b.name||'').toLowerCase().trim();
         return (custEmail && bEmail === custEmail) ||
-               (custPhone && custPhone.length===10 && bPhone === custPhone);
+               (custPhone && custPhone.length===10 && bPhone === custPhone) ||
+               (custName && custName.length > 2 && bName === custName && bPhone === custPhone);
       });
       var enquiries = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
       var allVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
@@ -337,8 +339,9 @@
       var enquiryHTML = enquiries.slice().reverse().map(function(q){
         return '<div class="booking-item" style="flex-direction:row;align-items:center;">'
           + '<div class="booking-info">'
-          + '<h4><i class="fas fa-envelope" style="color:#c9a84c;font-size:0.85rem;"></i> &nbsp;Enquiry</h4>'
+          + '<h4><i class="fas fa-envelope" style="color:#c9a84c;font-size:0.85rem;"></i> &nbsp;Enquiry — Under Review</h4>'
           + '<p style="margin-top:4px;">' + q.message + '</p>'
+          + '<p style="margin-top:4px;font-size:0.72rem;color:#c9a84c;"><i class="fas fa-clock"></i> Our team will confirm your booking shortly.</p>'
           + '<p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Submitted on ' + q.submittedAt + '</p>'
           + '</div>'
           + '<span class="status pending">Pending</span>'
