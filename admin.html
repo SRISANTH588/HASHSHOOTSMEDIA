@@ -4641,12 +4641,12 @@ Priority Support</textarea></div>
       enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{accepted:true}) : e; });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
       var msg = q.message||'';
-      var service  = ((msg.match(/Service:\s*([^|]+)/)||[])[1]||'').trim();
-      var city     = ((msg.match(/City:\s*([^|]+)/)||[])[1]||'').trim();
-      var location = ((msg.match(/Location:\s*([^|]+)/)||[])[1]||'').trim();
-      var plan     = ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim();
-      var datePart = ((msg.match(/Date:\s*([^|]+at)/)||[])[1]||'').replace(/\s*at\s*$/,'').trim();
-      var timePart = ((msg.match(/at\s+(\S.*)$/)||[])[1]||'').trim();
+      var service  = q.service  || ((msg.match(/Service:\s*([^|]+)/)||[])[1]||'').trim();
+      var city     = q.city     || ((msg.match(/City:\s*([^|]+)/)||[])[1]||'').trim();
+      var location = q.location || ((msg.match(/Location:\s*([^|]+)/)||[])[1]||'').trim();
+      var plan     = q.plan     || ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim();
+      var datePart = q.date     || ((msg.match(/Date:\s*([^|]+at)/)||[])[1]||'').replace(/\s*at\s*$/,'').trim();
+      var timePart = q.time     || ((msg.match(/at\s+(\S.*)$/)||[])[1]||'').trim();
       var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:q.email||'', service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'confirmed', payAmount:payAmount, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       if(!bookings.find(function(b){ return String(b.id)===String(bk.id); })){
@@ -5348,7 +5348,21 @@ Priority Support</textarea></div>
             var data = d.data();
             var msg = data.message || '';
             if(!msg && data.service) msg = 'Service: '+data.service+(data.plan?' | Plan: '+data.plan:'')+(data.city?' | City: '+data.city:'')+(data.location?' | Location: '+data.location:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
-            fbEnquiries.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+            fbEnquiries.push({
+              id: d.id,
+              name: data.name||'',
+              phone: data.phone||'',
+              email: data.email||'',
+              message: msg,
+              service: data.service||'',
+              city: data.city||'',
+              location: data.location||'',
+              plan: data.plan||'',
+              date: data.date||'',
+              time: data.time||'',
+              accepted: data.accepted||false,
+              submittedAt: data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString()
+            });
           });
           localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
           if(currentTab==='enquiries') renderEnquiries();
