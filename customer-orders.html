@@ -375,16 +375,16 @@
       var enquiryHTML = enquiries.slice().reverse().map(function(q){
         return '<div class="booking-item" style="flex-direction:row;align-items:center;">'
           + '<div class="booking-info">'
-          + '<h4><i class="fas fa-envelope" style="color:#c9a84c;font-size:0.85rem;"></i> &nbsp;Enquiry — Under Review</h4>'
+          + '<h4><i class="fas fa-clock" style="color:#c9a84c;font-size:0.85rem;"></i> &nbsp;Order — Under Review</h4>'
           + '<p style="margin-top:4px;">' + q.message + '</p>'
-          + '<p style="margin-top:4px;font-size:0.72rem;color:#c9a84c;"><i class="fas fa-clock"></i> Our team will confirm your booking shortly.</p>'
+          + '<p style="margin-top:4px;font-size:0.72rem;color:#c9a84c;"><i class="fas fa-clock"></i> Your order is under review. We will confirm shortly.</p>'
           + '<p style="margin-top:4px;font-size:0.72rem;opacity:0.5">Submitted on ' + q.submittedAt + '</p>'
           + '</div>'
           + '<span class="status pending">Pending</span>'
           + '</div>';
       }).join('');
 
-      list.innerHTML = (bookingHTML + enquiryHTML) || '<div class="empty">No orders or enquiries yet.</div>';
+      list.innerHTML = (bookingHTML + enquiryHTML) || '<div class="empty">No orders yet.</div>';
 
       // Load videos from IndexedDB — inject player + download button
       allVideos.filter(function(v){ return !v.isFeedback; }).forEach(function(v){
