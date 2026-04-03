@@ -1,16 +1,16 @@
 // hs-cloudinary.js — OG Shoots Cloudinary Upload Helper
 
 const CLOUD_NAME = 'dqmjfw1qb';
-const UPLOAD_PRESET = 'hs_unsigned'; // Only unsigned preset on this account
+const UPLOAD_PRESET = 'hs_unsigned';
 
 window.cloudinaryUpload = function(file, folder, onProgress) {
   return new Promise(function(resolve, reject) {
     var formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', UPLOAD_PRESET);
-    if (folder) formData.append('folder', 'ogshoots/' + folder);
+    // Do NOT send folder — preset has fixed folder 'hashshoots' in Cloudinary settings
 
-    var resourceType = file.type && file.type.startsWith('video/') ? 'video' : 'image';
+    var resourceType = (file.type && file.type.startsWith('video/')) ? 'video' : 'image';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/' + resourceType + '/upload');
     xhr.timeout = 300000; // 5 min for large videos
