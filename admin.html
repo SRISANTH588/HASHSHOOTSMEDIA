@@ -386,8 +386,12 @@
   async function deleteVibeItem(id){
     if(!confirm('Delete this vibe item?')) return;
     try {
-      var f = await getVibeAdminDB();
-      await f.fs.deleteDoc(f.fs.doc(f.db,'vibe_items',String(id)));
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
+      var db      = fbStore.getFirestore(app);
+      await fbStore.deleteDoc(fbStore.doc(db,'vibe_items',String(id)));
       renderVibeAdmin();
     } catch(e){ alert('Delete failed: '+e.message); }
   }
@@ -498,10 +502,16 @@
     var countEl = document.getElementById('vibeCount');
     grid.innerHTML='<p style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     try {
-      var f = await getVibeAdminDB();
-      var snap = await f.fs.getDocs(f.fs.query(f.fs.collection(f.db,'vibe_items'), f.fs.orderBy('addedAt','desc')));
-      var items = [];
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDocs(fbStore.collection(db,'vibe_items'));
+      var items   = [];
       snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
+      // Sort by addedAt descending
+      items.sort(function(a,b){ return (b.addedAt||'') > (a.addedAt||'') ? 1 : -1; });
       if(countEl) countEl.textContent = items.length + ' item(s)';
       if(!items.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>'; return; }
       grid.innerHTML='';
@@ -509,7 +519,7 @@
         var card = document.createElement('div');
         card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
         var mediaHtml = item.thumbnail
-          ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"/>'
+          ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;" onerror="this.style.display=\'none\'" />'
           : '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
         card.innerHTML = mediaHtml
           +'<div style="padding:0.75rem;">'
