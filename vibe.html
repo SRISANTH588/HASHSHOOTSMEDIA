@@ -202,6 +202,14 @@
       } catch(e){ console.error('Vibe load error:',e); renderVibe(); }
     }
 
+    function getThumb(item){
+      var t = item.thumbnail || '';
+      if(t && (t.includes('.mp4') || t.includes('.mov') || t.includes('.webm'))){
+        t = t.replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i, '.jpg');
+      }
+      return t;
+    }
+
     function renderVibe(){
       _filtered = currentCat === 'all' ? _vibeItems : _vibeItems.filter(function(i){ return i.category === currentCat; });
       _sliderIdx = 0;
@@ -211,8 +219,9 @@
         return;
       }
       slider.innerHTML = _filtered.map(function(item, idx){
-        var thumb = item.thumbnail
-          ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
+        var thumbSrc = getThumb(item);
+        var thumb = thumbSrc
+          ? '<img class="vibe-thumb" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy"/>'
           : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
         return '<div class="vibe-card" onclick="openLb('+idx+')">'
           +'<div class="vibe-thumb-wrap">'+thumb

@@ -445,20 +445,20 @@
       if(pb) pb.style.width='100%';
       if(pl) pl.textContent='Saving...';
 
-      // Derive thumbnail from Cloudinary URL — no extra upload, no base64
-      // Replace /upload/ with /upload/w_360,h_640,c_fill,q_60,f_jpg/ and swap extension
+      // Derive thumbnail — Cloudinary video poster frame as JPEG
       var thumbUrl = vRes.url
-        .replace('/upload/', '/upload/w_360,h_640,c_fill,q_60,f_jpg/')
-        .replace(/\.(mp4|mov|webm|avi)(\?.*)?$/i, '.jpg');
+        .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
+        .replace(/\.mp4|\.(mov|webm|avi)/i, '.jpg');
 
-      // If admin uploaded a custom thumbnail, upload that instead
+      // If admin uploaded a custom thumbnail image, upload that instead
       if(thumbFile){
         if(pl) pl.textContent='Uploading thumbnail...';
-        var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs', null);
+        var tRes = await cloudinaryUpload(thumbFile, null, null);
         thumbUrl = tRes.url;
       }
 
-      // Save to Firestore — use admin-app instance with 10s timeout fallback
+      // Save to Firestore
+      if(pl) pl.textContent='Saving...';
       var newItem = { title:title, category:cat, thumbnail:thumbUrl, url:vRes.url, type:'video', addedAt:new Date().toLocaleString() };
       try {
         var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -466,18 +466,14 @@
         var fbCfg2   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app2     = fbMod2.getApps().find(function(a){return a.name==='admin-app';})||fbMod2.initializeApp(fbCfg2,'admin-app');
         var db2      = fbStore2.getFirestore(app2);
-        var ref = await Promise.race([
-          fbStore2.addDoc(fbStore2.collection(db2,'vibe_items'), newItem),
-          new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 10000); })
-        ]);
-        newItem.id = ref.id;
+        var ref      = await fbStore2.addDoc(fbStore2.collection(db2,'vibe_items'), newItem);
+        newItem.id   = ref.id;
       } catch(fsErr){
-        console.warn('Firestore vibe save:', fsErr.message);
-        newItem.id = 'local_' + Date.now();
+        alert('Video uploaded to Cloudinary but failed to save to database: ' + fsErr.message);
+        btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
+        if(pw) pw.style.display='none';
+        return;
       }
-      var local = getVibeItems();
-      local.push(newItem);
-      localStorage.setItem('hs_vibe', JSON.stringify(local));
 
       // Reset
       document.getElementById('vibe_title').value='';
@@ -518,8 +514,15 @@
       items.forEach(function(item){
         var card = document.createElement('div');
         card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
-        var mediaHtml = item.thumbnail
-          ? '<img src="'+item.thumbnail+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;" onerror="this.style.display=\'none\'" />'
+        var thumbSrc = item.thumbnail || '';
+        // If thumbnail is a video URL, convert to Cloudinary poster frame
+        if(thumbSrc && (thumbSrc.includes('.mp4') || thumbSrc.includes('.mov') || thumbSrc.includes('.webm'))){
+          thumbSrc = thumbSrc
+            .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
+            .replace(/\.(mp4|mov|webm|avi)/i, '.jpg');
+        }
+        var mediaHtml = thumbSrc
+          ? '<img src="'+thumbSrc+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;" onerror="this.style.display=\'none\'" />'
           : '<div style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2rem;"><i class="fas fa-film"></i></div>';
         card.innerHTML = mediaHtml
           +'<div style="padding:0.75rem;">'
