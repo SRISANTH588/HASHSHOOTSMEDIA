@@ -700,12 +700,14 @@
 
     async function submitFeedback(){
       if(!_fbStars.staff && !_fbStars.reel && !_fbStars.app){
-        showToast('Please rate at least one section.', true); return;
+        alert('Please select at least one star rating.'); return;
       }
+      var btn = document.querySelector('#fbForm .btn-fb-submit');
+      if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var b = bookings.find(function(x){ return String(x.id)===String(_fbBookingId); }) || {};
       var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-      var assign = assigns.find(function(a){ return a.bookingId == _fbBookingId; }) || {};
+      var assign = assigns.find(function(a){ return String(a.bookingId) === String(_fbBookingId); }) || {};
       var payload = {
         bookingId: String(_fbBookingId),
         customerName: b.name || localStorage.getItem('hs_customer_name') || '',
@@ -713,16 +715,15 @@
         service: b.service || '',
         date: b.date || '',
         staffName: assign.staffName || '',
-        staffId: assign.staffId || '',
-        staffRating: _fbStars.staff,
+        staffId: String(assign.staffId || ''),
+        staffRating: _fbStars.staff || 0,
         staffComment: document.getElementById('fbStaffComment').value.trim(),
-        reelRating: _fbStars.reel,
+        reelRating: _fbStars.reel || 0,
         reelComment: document.getElementById('fbReelComment').value.trim(),
-        appRating: _fbStars.app,
+        appRating: _fbStars.app || 0,
         appComment: document.getElementById('fbAppComment').value.trim(),
         submittedAt: new Date().toLocaleString()
       };
-      // Save to Firebase
       try {
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -730,18 +731,23 @@
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
         var db      = fbStore.getFirestore(app);
         await fbStore.addDoc(fbStore.collection(db,'shoot_feedback'), Object.assign({}, payload, {createdAt: fbStore.serverTimestamp()}));
-        // Notify admin
-        await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
-          type:'feedback', title:'\u2B50 New Shoot Feedback',
-          message: (payload.customerName||'Customer') + ' rated ' + payload.service + ' — Staff: ' + (payload.staffRating||'—') + '\u2605, Reel: ' + (payload.reelRating||'—') + '\u2605, App: ' + (payload.appRating||'—') + '\u2605',
+        fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
+          type:'feedback', title:'⭐ New Shoot Feedback',
+          message: (payload.customerName||'Customer') + ' rated ' + payload.service
+            + ' — Staff: ' + (payload.staffRating||'—') + '★'
+            + ', Reel: ' + (payload.reelRating||'—') + '★'
+            + ', App: ' + (payload.appRating||'—') + '★',
           bookingId: String(_fbBookingId), read: false, createdAt: fbStore.serverTimestamp()
-        });
-      } catch(e){ console.error('Feedback Firebase error:',e); }
-      // Mark done locally
+        }).catch(function(){});
+      } catch(e){
+        if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Feedback'; }
+        alert('Failed to submit feedback. Please check your connection and try again.\n\nError: ' + e.message);
+        return;
+      }
       localStorage.setItem('hs_fb_done_' + _fbBookingId, '1');
       document.getElementById('fbForm').style.display = 'none';
       document.getElementById('fbDone').style.display = 'block';
-      setTimeout(function(){ closeFeedback(); loadBookings(); }, 2500);
+      setTimeout(function(){ closeFeedback(); loadBookings(); }, 2200);
     }
 
     document.getElementById('fbOverlay').addEventListener('click', function(e){ if(e.target===this) closeFeedback(); });
