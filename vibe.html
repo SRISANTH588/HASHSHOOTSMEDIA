@@ -210,6 +210,24 @@
       return t;
     }
 
+    function hoverPlay(idx){
+      var vid = document.getElementById('vvid_'+idx);
+      var img = document.getElementById('vthumb_'+idx);
+      if(!vid) return;
+      vid.style.opacity='1'; vid.style.zIndex='2';
+      if(img){ img.style.opacity='0'; }
+      vid.play().catch(function(){});
+    }
+
+    function hoverStop(idx){
+      var vid = document.getElementById('vvid_'+idx);
+      var img = document.getElementById('vthumb_'+idx);
+      if(!vid) return;
+      vid.pause(); vid.currentTime=0;
+      vid.style.opacity='0'; vid.style.zIndex='1';
+      if(img){ img.style.opacity='1'; }
+    }
+
     function renderVibe(){
       _filtered = currentCat === 'all' ? _vibeItems : _vibeItems.filter(function(i){ return i.category === currentCat; });
       _sliderIdx = 0;
@@ -220,11 +238,21 @@
       }
       slider.innerHTML = _filtered.map(function(item, idx){
         var thumbSrc = getThumb(item);
-        var thumb = thumbSrc
-          ? '<img class="vibe-thumb" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy"/>'
-          : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
-        return '<div class="vibe-card" onclick="openLb('+idx+')">'
-          +'<div class="vibe-thumb-wrap">'+thumb
+        var videoUrl = item.url || item.cloudUrl || '';
+        var mediaHtml = '';
+        if(thumbSrc && videoUrl){
+          mediaHtml =
+            '<img id="vthumb_'+idx+'" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.3s;z-index:1;"/>'
+            +'<video id="vvid_'+idx+'" src="'+videoUrl+'" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.3s;z-index:1;"></video>';
+        } else if(thumbSrc){
+          mediaHtml = '<img id="vthumb_'+idx+'" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy" style="width:100%;height:100%;object-fit:cover;"/>';
+        } else if(videoUrl){
+          mediaHtml = '<video id="vvid_'+idx+'" src="'+videoUrl+'" muted loop playsinline preload="none" style="width:100%;height:100%;object-fit:cover;"></video>';
+        } else {
+          mediaHtml = '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
+        }
+        return '<div class="vibe-card" onclick="openLb('+idx+')" onmouseenter="hoverPlay('+idx+')" onmouseleave="hoverStop('+idx+')">'
+          +'<div class="vibe-thumb-wrap" style="position:relative;">'+mediaHtml
           +'<div class="vibe-play-overlay"><div class="vibe-play-btn"><i class="fas fa-play"></i></div></div>'
           +'</div>'
           +'<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div>'
@@ -259,11 +287,21 @@
       }
       slider.innerHTML = meta.map(function(v, idx){
         var videoUrl = v.cloudUrl || v.url || '';
-        var thumb = videoUrl
-          ? '<video src="'+videoUrl+'" preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;" muted></video>'
+        var tid = 'tv'+idx;
+        // Cloudinary poster frame thumbnail
+        var thumbUrl = videoUrl
+          ? videoUrl.replace('/video/upload/','/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i,'.jpg')
+          : '';
+        var mediaHtml = videoUrl
+          ? '<div style="position:relative;width:100%;height:100%;">'  
+            +(thumbUrl?'<img id="timg_'+tid+'" src="'+thumbUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.3s;" onerror="this.style.display=\'none\'"/>':'')
+            +'<video id="tvid_'+tid+'" src="'+videoUrl+'" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.3s;"></video>'
+            +'</div>'
           : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>Testimonial</span></div>';
-        return '<div class="vibe-card" onclick="openTestiLb(\''+videoUrl+'\')">'
-          +'<div class="vibe-thumb-wrap">'+thumb
+        return '<div class="vibe-card" onclick="openTestiLb(\''+videoUrl+'\')"
+          onmouseenter="(function(){var v=document.getElementById(\'tvid_'+tid+'\'),i=document.getElementById(\'timg_'+tid+'\');if(v){v.style.opacity=\'1\';v.play().catch(function(){});}if(i)i.style.opacity=\'0\';})()"
+          onmouseleave="(function(){var v=document.getElementById(\'tvid_'+tid+'\'),i=document.getElementById(\'timg_'+tid+'\');if(v){v.pause();v.currentTime=0;v.style.opacity=\'0\';}if(i)i.style.opacity=\'1\';})()">'
+          +'<div class="vibe-thumb-wrap" style="position:relative;">'+mediaHtml
           +'<div class="vibe-play-overlay"><div class="vibe-play-btn"><i class="fas fa-play"></i></div></div>'
           +'</div>'
           +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'
