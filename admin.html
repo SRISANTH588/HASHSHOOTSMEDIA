@@ -430,45 +430,31 @@
     btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
     var pw=document.getElementById('vibe_progress_wrap'), pb=document.getElementById('vibe_progress_bar'), pl=document.getElementById('vibe_progress_label');
     if(pw) pw.style.display='block';
+    if(pb) pb.style.width='0%';
     try {
-      // Step 1: Generate thumbnail from video locally (no extra upload)
-      if(pl) pl.textContent='Generating thumbnail...';
-      var thumbUrl = '';
-      if(thumbFile){
-        thumbUrl = await new Promise(function(res){
-          var r = new FileReader(); r.onload=function(e){res(e.target.result);}; r.readAsDataURL(thumbFile);
-        });
-      } else {
-        thumbUrl = await new Promise(function(res){
-          var vid = document.createElement('video');
-          vid.muted = true; vid.preload = 'metadata';
-          vid.src = URL.createObjectURL(videoFile);
-          vid.addEventListener('loadeddata', function(){
-            vid.currentTime = Math.min(1, vid.duration * 0.1);
-          });
-          vid.addEventListener('seeked', function(){
-            var canvas = document.createElement('canvas');
-            canvas.width = 360; canvas.height = 640;
-            canvas.getContext('2d').drawImage(vid, 0, 0, 360, 640);
-            URL.revokeObjectURL(vid.src);
-            res(canvas.toDataURL('image/jpeg', 0.75));
-          });
-          vid.addEventListener('error', function(){ res(''); });
-          vid.load();
-        });
-      }
-      if(pb) pb.style.width='5%';
-
-      // Step 2: Upload video only (thumbnail is local base64 — no second upload)
+      // Upload video to Cloudinary
       if(pl) pl.textContent='Uploading video...';
       var vRes = await cloudinaryUpload(videoFile,'vibe_videos',function(p){
-        if(pb) pb.style.width=(5 + p*0.93)+'%';
+        if(pb) pb.style.width=p+'%';
         if(pl) pl.textContent='Uploading... '+p+'%';
       });
       if(pb) pb.style.width='100%';
       if(pl) pl.textContent='Saving...';
 
-      // Step 3: Save to Firestore
+      // Derive thumbnail from Cloudinary URL — no extra upload, no base64
+      // Replace /upload/ with /upload/w_360,h_640,c_fill,q_60,f_jpg/ and swap extension
+      var thumbUrl = vRes.url
+        .replace('/upload/', '/upload/w_360,h_640,c_fill,q_60,f_jpg/')
+        .replace(/\.(mp4|mov|webm|avi)(\?.*)?$/i, '.jpg');
+
+      // If admin uploaded a custom thumbnail, upload that instead
+      if(thumbFile){
+        if(pl) pl.textContent='Uploading thumbnail...';
+        var tRes = await cloudinaryUpload(thumbFile,'vibe_thumbs', null);
+        thumbUrl = tRes.url;
+      }
+
+      // Save to Firestore — only URLs, no base64
       var newItem = { title:title, category:cat, thumbnail:thumbUrl, url:vRes.url, type:'video', addedAt:new Date().toLocaleString() };
       var f = await getVibeAdminDB();
       var ref = await f.fs.addDoc(f.fs.collection(f.db,'vibe_items'), newItem);
@@ -477,7 +463,7 @@
       local.push(newItem);
       localStorage.setItem('hs_vibe', JSON.stringify(local));
 
-      // Reset form
+      // Reset
       document.getElementById('vibe_title').value='';
       document.getElementById('vibe_cat').value='';
       document.getElementById('vibe_thumb').value='';
@@ -492,8 +478,8 @@
       if(pw) pw.style.display='none';
       if(pl) pl.textContent='';
       var errMsg = e.message||'';
-      if(errMsg.indexOf('preset')>-1||errMsg.indexOf('400')>-1) alert('Upload failed: Cloudinary preset not configured. Please check hs-cloudinary.js upload preset.');
-      else if(errMsg.indexOf('network')>-1||errMsg.indexOf('Network')>-1) alert('Upload failed: No internet connection. Please check your network.');
+      if(errMsg.indexOf('preset')>-1||errMsg.indexOf('400')>-1) alert('Upload failed: Cloudinary preset not configured.');
+      else if(errMsg.toLowerCase().indexOf('network')>-1) alert('Upload failed: No internet connection.');
       else alert('Upload failed: '+errMsg);
     }
   }
