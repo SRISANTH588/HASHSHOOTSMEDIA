@@ -41,7 +41,7 @@
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
-  <section class="vibe-section" id="vibe" style="display:none;">
+  <section class="vibe-section" id="vibe" style="display:block;">
     <style>
       .vibe-section{background:#0a0a0a;padding:5rem 0 4rem;}
       .vibe-header{text-align:center;margin-bottom:2rem;}
@@ -109,11 +109,10 @@
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
           var db  = fbStore.getFirestore(app);
-          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
-            _vibeItems = [];
-            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
-            renderVibe();
-          });
+          var snap = await fbStore.getDocs(fbStore.collection(db,'vibe_items'));
+          _vibeItems = [];
+          snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
+          renderVibe();
         } catch(e){ console.error('Vibe index load error:',e); }
       }
 
@@ -1735,188 +1734,7 @@
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
-  <section class="vibe-section" id="vibe" style="display:none;">
-    <style>
-      .vibe-section{background:#0a0a0a;padding:5rem 0 4rem;}
-      .vibe-header{text-align:center;margin-bottom:2rem;}
-      .vibe-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:0.4rem;}
-      .vibe-title span{color:#c9a84c;}
-      .vibe-subtitle{color:#706050;font-size:0.95rem;}
-      .vibe-cats{display:flex;gap:0.6rem;justify-content:flex-start;flex-wrap:nowrap;padding:0 1.5rem;margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
-      .vibe-cats::-webkit-scrollbar{display:none;}
-      .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
-      .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:transparent;}
-      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
-      .vibe-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
-      .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(201,168,76,0.2);}
-      .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#0a0a0a;}
-      .vibe-thumb-placeholder{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,#181818,#0a0a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#3a1a1a;}
-      .vibe-thumb-placeholder i{font-size:2.5rem;}
-      .vibe-thumb-placeholder span{font-size:0.75rem;}
-      .vibe-info{padding:0.85rem 1rem;}
-      .vibe-info-title{font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .vibe-info-cat{font-size:0.72rem;color:#c9a84c;font-weight:600;}
-      .vibe-empty{text-align:center;padding:4rem 1.5rem;color:#484030;grid-column:1/-1;}
-      .vibe-empty i{font-size:2.5rem;display:block;margin-bottom:0.75rem;opacity:0.4;}
-      /* Lightbox */
-      .vibe-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;}
-      .vibe-lightbox.open{display:flex;}
-      .vibe-lb-inner{position:relative;max-width:400px;width:90%;}
-      .vibe-lb-video{width:100%;border-radius:16px;max-height:80vh;}
-      .vibe-lb-img{width:100%;border-radius:16px;max-height:80vh;object-fit:contain;}
-      .vibe-lb-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;background:#c9a84c;border:none;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-    </style>
-    <div class="vibe-header">
-      <h2 class="vibe-title">Discover with <span>Vibe</span></h2>
-      <p class="vibe-subtitle">Explore trending reels from our creators</p>
-    </div>
-    <div class="vibe-cats">
-      <button class="vibe-cat active" data-cat="all">All</button>
-      <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star"></i> Testimonials</button>
-      <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
-      <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
-      <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
-      <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
-      <button class="vibe-cat" data-cat="Concerts">Concerts</button>
-      <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
-      <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
-    </div>
-    <div class="vibe-grid" id="vibeGrid"></div>
-    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
-    <!-- Lightbox -->
-    <div class="vibe-lightbox" id="vibeLightbox">
-      <div class="vibe-lb-inner">
-        <button class="vibe-lb-close" id="vibeLbClose"><i class="fas fa-times"></i></button>
-        <div id="vibeLbContent"></div>
-      </div>
-    </div>
-  </section>
-  <script>
-    (function(){
-      var currentCat = 'all';
-      var _vibeItems = [];
-
-      async function loadVibeFromFirestore(){
-        try {
-          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
-          var db  = fbStore.getFirestore(app);
-          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
-            _vibeItems = [];
-            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
-            renderVibe();
-          });
-        } catch(e){ console.error('Vibe index load error:',e); }
-      }
-
-      function renderVibe(){
-        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
-        var grid = document.getElementById('vibeGrid');
-        if(!filtered.length){
-          grid.innerHTML='<div class="vibe-empty"><i class="fas fa-photo-video"></i>No content yet. Check back soon!</div>';
-          return;
-        }
-        grid.innerHTML = filtered.map(function(item,idx){
-          var thumb = item.thumbnail
-            ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
-            : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
-          return '<div class="vibe-card" onclick="openVibeLb(\''+idx+'\')">' + thumb + '<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div><div class="vibe-info-cat">'+item.category+'</div></div></div>';
-        }).join('');
-      }
-      document.querySelectorAll('.vibe-cat').forEach(function(btn){
-        btn.addEventListener('click',function(){
-          document.querySelectorAll('.vibe-cat').forEach(function(b){b.classList.remove('active');});
-          btn.classList.add('active');
-          currentCat = btn.dataset.cat;
-          if(currentCat === 'Testimonials'){
-            document.getElementById('vibeGrid').style.display = 'none';
-            document.getElementById('vibeTestiPanel').style.display = 'block';
-            renderTestimonials();
-          } else {
-            document.getElementById('vibeGrid').style.display = 'grid';
-            document.getElementById('vibeTestiPanel').style.display = 'none';
-            renderVibe();
-          }
-        });
-      });
-
-      function renderTestimonials(){
-        var panel = document.getElementById('vibeTestiPanel');
-        var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
-        var textTestis = hp.testimonials || [];
-        var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
-
-        if(!textTestis.length && !videoMeta.length){
-          panel.innerHTML = '<div class="vibe-empty"><i class="fas fa-star"></i>No testimonials yet. Check back soon!</div>';
-          return;
-        }
-
-        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">';
-
-        // Text testimonials from admin Home Page editor
-        textTestis.forEach(function(t){
-          var initials = (t.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-          html += '<div class="vibe-card" style="padding:1.5rem;cursor:default;">'
-            +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">'
-            +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#fff;flex-shrink:0;">'+initials+'</div>'
-            +'<div><div style="font-size:0.92rem;font-weight:700;color:#fff;">'+t.name+'</div>'
-            +'<div style="color:#f5a623;font-size:0.8rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>'
-            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
-            +'</div>';
-        });
-
-        // Video testimonials from admin Testimonial Videos tab
-        videoMeta.forEach(function(v){
-          html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
-            +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-spinner fa-spin"></i></div>'
-            +'<div class="vibe-info"><div class="vibe-info-title">'+(v.clientName||v.title||'Testimonial')+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
-            +'</div>';
-        });
-
-        html += '</div>';
-        panel.innerHTML = html;
-
-        // Load testimonial videos using Cloudinary URLs
-        videoMeta.forEach(function(v){
-          var videoUrl = v.cloudUrl || v.url || '';
-          var ph = document.getElementById('vtpi_'+v.id);
-          if(!ph) return;
-          if(videoUrl){
-            var vid = document.createElement('video');
-            vid.src = videoUrl; vid.controls = true; vid.preload = 'metadata';
-            vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;';
-            ph.replaceWith(vid);
-          }
-        });
-      }
-
-      window.openVibeLb = function(idx){
-        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
-        var item = filtered[idx];
-        var videoUrl = item.url || item.cloudUrl || '';
-        var html = '';
-        if(videoUrl){
-          html = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
-        } else if(item.thumbnail){
-          html = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
-        } else {
-          html = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
-        }
-        document.getElementById('vibeLbContent').innerHTML = html;
-        document.getElementById('vibeLightbox').classList.add('open');
-      };
-      document.getElementById('vibeLbClose').addEventListener('click',function(){
-        document.getElementById('vibeLightbox').classList.remove('open');
-        document.getElementById('vibeLbContent').innerHTML='';
-      });
-      document.getElementById('vibeLightbox').addEventListener('click',function(e){
-        if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
-      });
-      loadVibeFromFirestore();
-    })();
-  </script>
+  
 
 
 
