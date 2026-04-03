@@ -1,16 +1,16 @@
 // hs-cloudinary.js — OG Shoots Cloudinary Upload Helper
 
 const CLOUD_NAME = 'dqmjfw1qb';
-
-// Only these presets are tried — all must be unsigned with NO eager transformations
 const PRESETS_TO_TRY = ['hs_unsigned', 'hs_clean', 'ml_default'];
 
-async function tryUpload(file, folder, preset, onProgress) {
+// Cache the working preset so we don't retry failed ones on subsequent uploads
+var _workingPreset = localStorage.getItem('hs_cloud_preset') || null;
+
+function tryUpload(file, folder, preset, onProgress) {
   return new Promise(function(resolve, reject) {
     var formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', preset);
-    // Only append folder — no eager, no transformation params
     if (folder) formData.append('folder', 'ogshoots/' + folder);
 
     var resourceType = file.type && file.type.startsWith('video/') ? 'video' : 'image';
@@ -47,21 +47,36 @@ async function tryUpload(file, folder, preset, onProgress) {
 }
 
 window.cloudinaryUpload = async function(file, folder, onProgress) {
+  // Use cached working preset first — skips failed preset retries
+  if (_workingPreset) {
+    try {
+      var result = await tryUpload(file, folder, _workingPreset, onProgress);
+      return result;
+    } catch(e) {
+      // Cached preset stopped working — clear and fall through to retry all
+      _workingPreset = null;
+      localStorage.removeItem('hs_cloud_preset');
+      if (e.message && e.message.toLowerCase().indexOf('network') > -1) throw e;
+    }
+  }
+
+  // Try each preset, stop at first success
   var lastErr = null;
   for (var i = 0; i < PRESETS_TO_TRY.length; i++) {
     try {
-      var result = await tryUpload(file, folder, PRESETS_TO_TRY[i], onProgress);
-      console.log('[Cloudinary] Uploaded with preset:', PRESETS_TO_TRY[i]);
-      return result;
+      var res = await tryUpload(file, folder, PRESETS_TO_TRY[i], onProgress);
+      // Cache the working preset for future uploads
+      _workingPreset = PRESETS_TO_TRY[i];
+      localStorage.setItem('hs_cloud_preset', _workingPreset);
+      console.log('[Cloudinary] Working preset cached:', _workingPreset);
+      return res;
     } catch(e) {
       lastErr = e;
-      // If error is about eager/signed params, try next preset
-      // If it's a network error, stop immediately
       if (e.message && e.message.toLowerCase().indexOf('network') > -1) throw e;
-      console.warn('[Cloudinary] Preset', PRESETS_TO_TRY[i], 'failed:', e.message, '— trying next...');
+      console.warn('[Cloudinary] Preset', PRESETS_TO_TRY[i], 'failed:', e.message);
     }
   }
   throw lastErr || new Error('All upload presets failed');
 };
 
-console.log('[OG Shoots] Cloudinary ready — auto-fallback across presets');
+console.log('[OG Shoots] Cloudinary ready');
