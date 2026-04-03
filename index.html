@@ -41,7 +41,7 @@
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
-  <section class="vibe-section" id="vibe" style="display:block;">
+  <section class="vibe-section" id="vibe" style="display:none;">
     <style>
       .vibe-section{background:#0a0a0a;padding:5rem 0 4rem;}
       .vibe-header{text-align:center;margin-bottom:2rem;}
@@ -52,7 +52,7 @@
       .vibe-cats::-webkit-scrollbar{display:none;}
       .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
       .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:transparent;}
-      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1400px;margin:0 auto;padding:0 1.5rem;}
       .vibe-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
       .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(201,168,76,0.2);}
       .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#0a0a0a;}
@@ -88,7 +88,7 @@
       <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
     </div>
     <div class="vibe-grid" id="vibeGrid"></div>
-    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
+    <div id="vibeTestiPanel" style="display:none;max-width:1400px;margin:0 auto;padding:0 1.5rem;"></div>
     <!-- Lightbox -->
     <div class="vibe-lightbox" id="vibeLightbox">
       <div class="vibe-lb-inner">
@@ -316,7 +316,7 @@
       .whyus-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;margin-bottom:0.75rem;line-height:1.15;white-space:nowrap;}
       .whyus-title span{color:#c9a84c;}
       .whyus-desc{color:#9a9080;font-size:0.95rem;line-height:1.8;}
-      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1400px;margin:0 auto;padding:0 2rem;}
       .whyus-card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);cursor:default;}
       .whyus-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.1);}
       .whyus-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
@@ -427,7 +427,7 @@
       .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;letter-spacing:-0.5px;}
       .bs-title span{color:#c9a84c;}
       .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
-      .bs-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .bs-wrap{max-width:1400px;margin:0 auto;padding:0 2rem;}
       .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
       .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
       .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
@@ -892,7 +892,7 @@
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
       .svc-section{background:#080808;padding:6rem 0;position:relative;overflow:hidden;}
       .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
-      .svc-inner{max-width:1200px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+      .svc-inner{max-width:1400px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
       /* HEADER */
       .svc-header{text-align:center;margin-bottom:3.5rem;}
       .svc-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;justify-content:center;}
@@ -992,7 +992,7 @@
       .hiw-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
       .hiw-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
       .hiw-bg-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
-      .hiw-inner{max-width:1100px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+      .hiw-inner{max-width:1300px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
       .hiw-header{text-align:center;margin-bottom:5rem;}
       .hiw-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
       .hiw-title{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;line-height:1.15;}
@@ -1747,7 +1747,7 @@
     <style>
       .app-cta-section{background:linear-gradient(135deg,#0a0a0a 0%,#111111 50%,#0a0a0a 100%);padding:5rem 0;position:relative;overflow:hidden;}
       .app-cta-section::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);pointer-events:none;}
-      .app-cta-inner{max-width:1000px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:4rem;}
+      .app-cta-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:4rem;}
       .app-cta-text{flex:1;}
       .app-cta-tag{color:#c9a84c;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;}
       .app-cta-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:1rem;}
@@ -1953,7 +1953,7 @@
   <!-- WEDDING PLANS OVERLAY -->
   <div id="weddingPlansOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;overflow-y:auto;padding:2rem 1rem;">
     <style>
-      .wp-wrap{max-width:1100px;margin:0 auto;}
+      .wp-wrap{max-width:1300px;margin:0 auto;}
       .wp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
       .wp-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#fff;}
       .wp-title span{color:#c9a84c;}
