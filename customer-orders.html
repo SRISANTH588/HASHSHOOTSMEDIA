@@ -403,7 +403,13 @@
                 var done = localStorage.getItem(fbKey);
                 return done
                   ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:8px;padding:0.4rem 0.9rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Feedback Submitted — Thank you!</div>'
-                  : '<button class="btn-fb-rate" onclick="openFeedback(\'' + b.id + '\',\'' + b.service.replace(/'/g,"\'\'") + '\',\'' + (b.date||'') + '\',\'' + (assign ? assign.staffName||'' : '') + '\')"><i class="fas fa-star"></i> Rate Your Experience</button>';
+                  : '<button class="btn-fb-rate" '
+                    + 'data-bid="' + b.id + '" '
+                    + 'data-svc="' + (b.service||'').replace(/"/g,'&quot;') + '" '
+                    + 'data-date="' + (b.date||'') + '" '
+                    + 'data-staff="' + ((assign && assign.staffName)||'').replace(/"/g,'&quot;') + '" '
+                    + 'onclick="openFeedbackFromBtn(this)">'
+                    + '<i class="fas fa-star"></i> Rate Your Experience</button>';
               })()
             : '')
           + '</div>';
@@ -648,6 +654,15 @@
   <script>
     var _fbBookingId = null, _fbStars = {staff:0, reel:0, app:0};
 
+    function openFeedbackFromBtn(btn){
+      openFeedback(
+        btn.dataset.bid,
+        btn.dataset.svc,
+        btn.dataset.date,
+        btn.dataset.staff
+      );
+    }
+
     function openFeedback(bookingId, service, date, staffName){
       _fbBookingId = bookingId;
       _fbStars = {staff:0, reel:0, app:0};
@@ -660,8 +675,9 @@
       });
       document.getElementById('fbOverlay').classList.add('open');
       // bind star interactions
+      var starMap = {starsStaff:'staff', starsReel:'reel', starsApp:'app'};
       ['starsStaff','starsReel','starsApp'].forEach(function(rowId){
-        var key = rowId.replace('stars','').toLowerCase();
+        var key = starMap[rowId];
         document.querySelectorAll('#'+rowId+' .fb-star').forEach(function(s){
           s.onmouseover = function(){
             var v = parseInt(s.dataset.v);
