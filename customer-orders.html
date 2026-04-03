@@ -655,12 +655,7 @@
     var _fbBookingId = null, _fbStars = {staff:0, reel:0, app:0};
 
     function openFeedbackFromBtn(btn){
-      openFeedback(
-        btn.dataset.bid,
-        btn.dataset.svc,
-        btn.dataset.date,
-        btn.dataset.staff
-      );
+      openFeedback(btn.dataset.bid, btn.dataset.svc, btn.dataset.date, btn.dataset.staff);
     }
 
     function openFeedback(bookingId, service, date, staffName){
@@ -669,12 +664,14 @@
       document.getElementById('fbBookingLabel').textContent = service + (date ? ' — ' + date : '') + (staffName ? ' · ' + staffName : '');
       document.getElementById('fbForm').style.display = 'block';
       document.getElementById('fbDone').style.display = 'none';
+      var submitBtn = document.querySelector('#fbForm .btn-fb-submit');
+      if(submitBtn){ submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback'; }
       ['fbStaffComment','fbReelComment','fbAppComment'].forEach(function(id){ document.getElementById(id).value = ''; });
       ['starsStaff','starsReel','starsApp'].forEach(function(id){
         document.querySelectorAll('#'+id+' .fb-star').forEach(function(s){ s.classList.remove('lit'); });
       });
       document.getElementById('fbOverlay').classList.add('open');
-      // bind star interactions
+      // bind stars
       var starMap = {starsStaff:'staff', starsReel:'reel', starsApp:'app'};
       ['starsStaff','starsReel','starsApp'].forEach(function(rowId){
         var key = starMap[rowId];
@@ -700,48 +697,69 @@
 
     async function submitFeedback(){
       if(!_fbStars.staff && !_fbStars.reel && !_fbStars.app){
-        showToast('Please rate at least one section.', true); return;
+        alert('Please select at least one star rating before submitting.'); return;
       }
+      var btn = document.querySelector('#fbForm .btn-fb-submit');
+      if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var b = bookings.find(function(x){ return String(x.id)===String(_fbBookingId); }) || {};
       var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-      var assign = assigns.find(function(a){ return a.bookingId == _fbBookingId; }) || {};
+      var assign = assigns.find(function(a){ return String(a.bookingId)===String(_fbBookingId); }) || {};
+
       var payload = {
-        bookingId: String(_fbBookingId),
-        customerName: b.name || localStorage.getItem('hs_customer_name') || '',
+        bookingId:     String(_fbBookingId),
+        customerName:  b.name  || localStorage.getItem('hs_customer_name') || '',
         customerEmail: b.email || localStorage.getItem('hs_user') || '',
-        service: b.service || '',
-        date: b.date || '',
-        staffName: assign.staffName || '',
-        staffId: assign.staffId || '',
-        staffRating: _fbStars.staff,
-        staffComment: document.getElementById('fbStaffComment').value.trim(),
-        reelRating: _fbStars.reel,
-        reelComment: document.getElementById('fbReelComment').value.trim(),
-        appRating: _fbStars.app,
-        appComment: document.getElementById('fbAppComment').value.trim(),
-        submittedAt: new Date().toLocaleString()
+        service:       b.service || '',
+        date:          b.date || '',
+        staffName:     assign.staffName || '',
+        staffId:       String(assign.staffId || ''),
+        staffRating:   _fbStars.staff  || 0,
+        staffComment:  document.getElementById('fbStaffComment').value.trim(),
+        reelRating:    _fbStars.reel   || 0,
+        reelComment:   document.getElementById('fbReelComment').value.trim(),
+        appRating:     _fbStars.app    || 0,
+        appComment:    document.getElementById('fbAppComment').value.trim(),
+        submittedAt:   new Date().toLocaleString()
       };
-      // Save to Firebase
+
       try {
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
         var db      = fbStore.getFirestore(app);
-        await fbStore.addDoc(fbStore.collection(db,'shoot_feedback'), Object.assign({}, payload, {createdAt: fbStore.serverTimestamp()}));
-        // Notify admin
-        await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
-          type:'feedback', title:'\u2B50 New Shoot Feedback',
-          message: (payload.customerName||'Customer') + ' rated ' + payload.service + ' — Staff: ' + (payload.staffRating||'—') + '\u2605, Reel: ' + (payload.reelRating||'—') + '\u2605, App: ' + (payload.appRating||'—') + '\u2605',
-          bookingId: String(_fbBookingId), read: false, createdAt: fbStore.serverTimestamp()
-        });
-      } catch(e){ console.error('Feedback Firebase error:',e); }
-      // Mark done locally
+
+        await fbStore.addDoc(
+          fbStore.collection(db,'shoot_feedback'),
+          Object.assign({}, payload, {createdAt: fbStore.serverTimestamp()})
+        );
+
+        // fire-and-forget admin notification
+        fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
+          type:'feedback',
+          title:'⭐ New Shoot Feedback',
+          message: (payload.customerName||'Customer') + ' rated ' + payload.service
+            + ' — Staff: '+(payload.staffRating||'—')+'★'
+            + ', Reel: '+(payload.reelRating||'—')+'★'
+            + ', App: '+(payload.appRating||'—')+'★',
+          bookingId: String(_fbBookingId),
+          read: false,
+          createdAt: fbStore.serverTimestamp()
+        }).catch(function(){});
+
+      } catch(e){
+        if(btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback'; }
+        alert('Could not submit feedback. Please check your internet connection and try again.\n\nError: ' + e.message);
+        return;
+      }
+
+      // Success
       localStorage.setItem('hs_fb_done_' + _fbBookingId, '1');
       document.getElementById('fbForm').style.display = 'none';
       document.getElementById('fbDone').style.display = 'block';
-      setTimeout(function(){ closeFeedback(); loadBookings(); }, 2500);
+      setTimeout(function(){ closeFeedback(); loadBookings(); }, 2200);
     }
 
     document.getElementById('fbOverlay').addEventListener('click', function(e){ if(e.target===this) closeFeedback(); });
