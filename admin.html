@@ -3507,6 +3507,87 @@ Priority Support</textarea></div>
         if(!creatorFeedbacks.length){ creatorEl.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No creator feedback yet.</p>'; }
         else { creatorEl.innerHTML = creatorFeedbacks.slice().reverse().map(feedbackCard).join(''); }
       }
+
+      // ── Load shoot_feedback from Firebase (3-section: Staff + Reel + App) ──
+      (async function(){
+        try {
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='fb-admin-sf';})||fbMod.initializeApp(fbCfg,'fb-admin-sf');
+          var db      = fbStore.getFirestore(app);
+          var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'shoot_feedback'), fbStore.orderBy('createdAt','desc')));
+          var items = [];
+          snap.forEach(function(d){ items.push(Object.assign({_fbId:d.id}, d.data())); });
+          if(!items.length) return;
+
+          function stars(n){
+            if(!n) return '<span style="color:#555;">Not rated</span>';
+            var s='';
+            for(var i=1;i<=5;i++) s+='<i class="fas fa-star" style="color:'+(i<=n?'#f5a623':'#333')+';font-size:0.75rem;"></i>';
+            return s;
+          }
+
+          var html = '<div style="font-size:0.82rem;font-weight:800;color:#c9a84c;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.15);"><i class="fas fa-star"></i> &nbsp;Post-Shoot Feedback (Staff + Reel + App)</div>';
+          html += items.map(function(f){
+            return '<div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.25rem;margin-bottom:0.85rem;">'
+              +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">'
+                +'<div>'
+                  +'<div style="font-size:0.95rem;font-weight:800;color:#fff;">'+(f.customerName||'Anonymous')+'</div>'
+                  +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">'+(f.service||'')+(f.date?' &nbsp;&middot;&nbsp; '+f.date:'')+(f.staffName?' &nbsp;&middot;&nbsp; <i class="fas fa-user-circle" style="color:#c9a84c;"></i> '+f.staffName:'')+'</div>'
+                  +'<div style="font-size:0.65rem;color:#555;margin-top:0.1rem;">'+(f.submittedAt||'')+'</div>'
+                +'</div>'
+                +'<button onclick="deleteShootFeedback(\''+f._fbId+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.7rem;border-radius:7px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+              +'</div>'
+              +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;">'
+                +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem;">'
+                  +'<div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;"><i class="fas fa-user-circle"></i> Staff</div>'
+                  +'<div style="margin-bottom:0.3rem;">'+stars(f.staffRating)+'</div>'
+                  +(f.staffComment?'<div style="font-size:0.75rem;color:#9a9080;font-style:italic;">&ldquo;'+f.staffComment+'&rdquo;</div>':'<div style="font-size:0.72rem;color:#555;">No comment</div>')
+                +'</div>'
+                +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem;">'
+                  +'<div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;"><i class="fas fa-film"></i> Reel</div>'
+                  +'<div style="margin-bottom:0.3rem;">'+stars(f.reelRating)+'</div>'
+                  +(f.reelComment?'<div style="font-size:0.75rem;color:#9a9080;font-style:italic;">&ldquo;'+f.reelComment+'&rdquo;</div>':'<div style="font-size:0.72rem;color:#555;">No comment</div>')
+                +'</div>'
+                +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem;">'
+                  +'<div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;"><i class="fas fa-mobile-alt"></i> App</div>'
+                  +'<div style="margin-bottom:0.3rem;">'+stars(f.appRating)+'</div>'
+                  +(f.appComment?'<div style="font-size:0.75rem;color:#9a9080;font-style:italic;">&ldquo;'+f.appComment+'&rdquo;</div>':'<div style="font-size:0.72rem;color:#555;">No comment</div>')
+                +'</div>'
+              +'</div>'
+            +'</div>';
+          }).join('');
+
+          // Prepend to feedbackAdminList
+          var el2 = document.getElementById('feedbackAdminList');
+          if(el2) el2.innerHTML = html + el2.innerHTML;
+
+          // Update stats
+          var allRatings = items.flatMap(function(f){ return [f.staffRating,f.reelRating,f.appRating].filter(Boolean); });
+          var sfAvg = allRatings.length ? (allRatings.reduce(function(a,b){return a+b;},0)/allRatings.length).toFixed(1) : null;
+          if(sfAvg && fb_avg) fb_avg.textContent = sfAvg;
+          if(fb_total) fb_total.textContent = (list.length + items.length);
+          if(fb_shoot) fb_shoot.textContent = (shoots.length + items.length);
+
+          // Update badge
+          var badge = document.getElementById('feedbackNotifBadge');
+          if(badge && items.length){ badge.textContent = items.length; badge.style.display='inline'; }
+        } catch(e){ console.error('shoot_feedback load error:',e); }
+      })();
+    }
+
+    async function deleteShootFeedback(fbId){
+      if(!confirm('Delete this feedback?')) return;
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='fb-admin-sf';})||fbMod.initializeApp(fbCfg,'fb-admin-sf');
+        var db      = fbStore.getFirestore(app);
+        await fbStore.deleteDoc(fbStore.doc(db,'shoot_feedback',fbId));
+        renderFeedbackAdmin();
+      } catch(e){ alert('Delete failed: '+e.message); }
     }
 
     function deleteFeedback(id){
@@ -5249,6 +5330,27 @@ Priority Support</textarea></div>
           });
           localStorage.setItem('hs_feedbacks', JSON.stringify(local));
           if(currentTab==='feedback') renderFeedbackAdmin();
+        });
+
+        // Real-time shoot_feedback listener — badge + toast on new submission
+        onSnapshot(collection(fbDb,'shoot_feedback'), function(snap){
+          var count = snap.size;
+          var badge = document.getElementById('feedbackNotifBadge');
+          if(badge && count > 0){ badge.textContent = count; badge.style.display = 'inline'; }
+          if(currentTab === 'feedback') renderFeedbackAdmin();
+          else {
+            // Show toast for newest entry
+            var newest = null;
+            snap.forEach(function(d){ newest = d.data(); });
+            if(newest){
+              document.getElementById('feedbackNotifTitle').textContent = '\u2B50 New Shoot Feedback!';
+              document.getElementById('feedbackNotifSub').textContent = (newest.customerName||'A customer') + ' rated ' + (newest.service||'a shoot') + ' \u2014 Staff: ' + (newest.staffRating||'\u2014') + '\u2605, Reel: ' + (newest.reelRating||'\u2014') + '\u2605, App: ' + (newest.appRating||'\u2014') + '\u2605';
+              var toast = document.getElementById('feedbackNotifToast');
+              toast.style.display = 'block';
+              clearTimeout(window._fbToastTimer);
+              window._fbToastTimer = setTimeout(function(){ toast.style.display = 'none'; }, 7000);
+            }
+          }
         });
 
         // Real-time payout requests
