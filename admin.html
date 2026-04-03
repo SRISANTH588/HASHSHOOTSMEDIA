@@ -2066,6 +2066,14 @@ Priority Support</textarea></div>
           var update = {status};
           if(status === 'confirmed'){ update.payAmount = payAmount; update.paymentStatus = 'pending'; }
           await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)), update, {merge:true});
+          // Auto-update homepage reels delivered stat when a shoot is completed
+          if(status === 'completed'){
+            var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+            var newCount = 50000 + completed;
+            hp.statReels = newCount.toLocaleString('en-IN') + '+';
+            localStorage.setItem('hs_homepage', JSON.stringify(hp));
+            await f.s.setDoc(f.s.doc(f.db,'settings','homepage'), {statReels: hp.statReels}, {merge:true});
+          }
         }catch(e){}
       })();
       loadAll();
@@ -5332,24 +5340,39 @@ Priority Support</textarea></div>
           if(currentTab==='feedback') renderFeedbackAdmin();
         });
 
-        // Real-time shoot_feedback listener — badge + toast on new submission
+        // Real-time shoot_feedback listener — badge + toast + auto-update homepage rating
         onSnapshot(collection(fbDb,'shoot_feedback'), function(snap){
           var count = snap.size;
           var badge = document.getElementById('feedbackNotifBadge');
           if(badge && count > 0){ badge.textContent = count; badge.style.display = 'inline'; }
           if(currentTab === 'feedback') renderFeedbackAdmin();
-          else {
-            // Show toast for newest entry
-            var newest = null;
-            snap.forEach(function(d){ newest = d.data(); });
-            if(newest){
-              document.getElementById('feedbackNotifTitle').textContent = '\u2B50 New Shoot Feedback!';
-              document.getElementById('feedbackNotifSub').textContent = (newest.customerName||'A customer') + ' rated ' + (newest.service||'a shoot') + ' \u2014 Staff: ' + (newest.staffRating||'\u2014') + '\u2605, Reel: ' + (newest.reelRating||'\u2014') + '\u2605, App: ' + (newest.appRating||'\u2014') + '\u2605';
-              var toast = document.getElementById('feedbackNotifToast');
-              toast.style.display = 'block';
-              clearTimeout(window._fbToastTimer);
-              window._fbToastTimer = setTimeout(function(){ toast.style.display = 'none'; }, 7000);
-            }
+
+          // Recalculate average rating from all shoot_feedback and push to homepage
+          var allRatings = [];
+          var newest = null;
+          snap.forEach(function(d){
+            var f = d.data();
+            newest = f;
+            [f.staffRating, f.reelRating, f.appRating].forEach(function(r){ if(r) allRatings.push(r); });
+          });
+          if(allRatings.length){
+            var avg = (allRatings.reduce(function(a,b){return a+b;},0) / allRatings.length).toFixed(1);
+            var ratingStr = avg + '/5';
+            // Update homepage in Firebase
+            setDoc(doc(fbDb,'settings','homepage'), {statRating: ratingStr}, {merge:true}).catch(function(){});
+            // Update localStorage
+            var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+            hp.statRating = ratingStr;
+            localStorage.setItem('hs_homepage', JSON.stringify(hp));
+          }
+
+          if(currentTab !== 'feedback' && newest){
+            document.getElementById('feedbackNotifTitle').textContent = '\u2B50 New Shoot Feedback!';
+            document.getElementById('feedbackNotifSub').textContent = (newest.customerName||'A customer') + ' rated ' + (newest.service||'a shoot') + ' \u2014 Staff: ' + (newest.staffRating||'\u2014') + '\u2605, Reel: ' + (newest.reelRating||'\u2014') + '\u2605, App: ' + (newest.appRating||'\u2014') + '\u2605';
+            var toast = document.getElementById('feedbackNotifToast');
+            toast.style.display = 'block';
+            clearTimeout(window._fbToastTimer);
+            window._fbToastTimer = setTimeout(function(){ toast.style.display = 'none'; }, 7000);
           }
         });
 
