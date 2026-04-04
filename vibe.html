@@ -190,26 +190,23 @@
     // ── Firebase ─────────────────────────────────────────────────
     async function loadVibeFromFirestore(){
       try {
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app = fbMod.getApps().find(function(a){return a.name==='vibe-public';}) || fbMod.initializeApp(fbCfg,'vibe-public');
-        var db  = fbStore.getFirestore(app);
-        var snap = await fbStore.getDocs(fbStore.collection(db,'vibe_items'));
+        // Use REST API directly — most reliable, no SDK conflicts
+        var res  = await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE');
+        var data = await res.json();
         _vibeItems = [];
-        snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
-        if(!_vibeItems.length){
-          // fallback: try REST API directly
-          var res = await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE');
-          var json = await res.json();
-          (json.documents||[]).forEach(function(d){
-            var f=d.fields, item={id:d.name.split('/').pop()};
-            Object.keys(f).forEach(function(k){ item[k]=f[k].stringValue||f[k].integerValue||f[k].booleanValue||''; });
-            _vibeItems.push(item);
+        (data.documents||[]).forEach(function(d){
+          var f = d.fields;
+          var item = { id: d.name.split('/').pop() };
+          Object.keys(f).forEach(function(k){
+            item[k] = f[k].stringValue || f[k].integerValue || f[k].booleanValue || '';
           });
-        }
+          _vibeItems.push(item);
+        });
         renderVibe();
-      } catch(e){ console.error('Vibe load error:',e); renderVibe(); }
+      } catch(e){
+        console.error('Vibe load error:',e);
+        renderVibe();
+      }
     }
 
     function getThumb(item){
