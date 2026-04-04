@@ -5,396 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Discover with Vibe – OG Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#0a0a0a;font-family:'Inter',sans-serif;color:#fff;min-height:100vh;overflow-x:hidden;}
-
-    /* PAGE */
-    .vibe-page{padding:7rem 0 5rem;}
-
-    /* HEADER */
-    .vibe-header{text-align:center;padding:0 2rem;margin-bottom:2.5rem;}
+    body{background:#0a0a0a;font-family:'Inter',sans-serif;color:#fff;min-height:100vh;}
+    .vibe-page{padding:7rem 2rem 5rem;max-width:1400px;margin:0 auto;}
+    .vibe-header{text-align:center;margin-bottom:2.5rem;}
     .vibe-title{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;color:#fff;margin-bottom:0.5rem;letter-spacing:-1px;}
     .vibe-title span{color:#c9a84c;}
     .vibe-subtitle{color:#706050;font-size:1rem;}
-
-    /* CATEGORY PILLS */
-    .vibe-cats-wrap{padding:0 2rem;margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
-    .vibe-cats-wrap::-webkit-scrollbar{display:none;}
-    .vibe-cats{display:flex;gap:0.6rem;width:max-content;margin:0 auto;}
+    /* CATS */
+    .vibe-cats{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem;}
     .vibe-cat{padding:0.55rem 1.4rem;border-radius:50px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#888;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;}
-    .vibe-cat.active{background:#c9a84c;color:#fff;border-color:#c9a84c;}
-    .vibe-cat:hover:not(.active){border-color:rgba(255,255,255,0.3);color:#fff;}
-
-    /* SLIDER WRAPPER */
-    .vibe-slider-wrap{position:relative;padding:0 2rem;}
-    .vibe-slider-overflow{overflow:hidden;}
-    .vibe-slider{display:flex;gap:1.25rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
-
-    /* CARDS */
-    .vibe-card{
-      flex:0 0 calc(33.333% - 0.84rem);
-      border-radius:20px;overflow:hidden;
-      cursor:pointer;position:relative;
-      background:#111;
-      transition:transform 0.3s,box-shadow 0.3s;
-    }
+    .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:#c9a84c;}
+    /* GRID */
+    .vibe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+    .vibe-card{border-radius:20px;overflow:hidden;background:#111;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;}
     .vibe-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,0.6);}
-    .vibe-thumb-wrap{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#111;}
-    .vibe-thumb-wrap img,.vibe-thumb-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-    .vibe-thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
-    .vibe-card:hover .vibe-thumb{transform:scale(1.04);}
-    .vibe-thumb-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#0f0f0f);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;color:#3a2a10;}
-    .vibe-thumb-placeholder i{font-size:3rem;}
-    .vibe-thumb-placeholder span{font-size:0.8rem;font-weight:600;}
-    /* Play overlay on hover */
-    .vibe-play-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;}
-    .vibe-card:hover .vibe-play-overlay{opacity:1;}
-    .vibe-play-btn{width:60px;height:60px;background:rgba(201,168,76,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#000;}
-    /* Card info */
-    .vibe-info{padding:1rem 1.1rem 1.1rem;}
-    .vibe-info-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .vibe-info-cat{font-size:0.75rem;color:#c9a84c;font-weight:600;display:flex;align-items:center;gap:0.3rem;}
-
-    /* ARROWS */
-    .vibe-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(10,10,10,0.9);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all 0.2s;backdrop-filter:blur(10px);}
-    .vibe-arrow:hover{background:rgba(201,168,76,0.9);border-color:#c9a84c;color:#000;}
-    .vibe-arrow-l{left:-16px;}
-    .vibe-arrow-r{right:-16px;}
-    .vibe-arrow.hidden{opacity:0;pointer-events:none;}
-
-    /* EMPTY */
-    .vibe-empty{text-align:center;padding:5rem 2rem;color:#484030;width:100%;}
+    .vibe-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
+    .vibe-card-info{padding:0.85rem 1rem;}
+    .vibe-card-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vibe-card-cat{font-size:0.75rem;color:#c9a84c;font-weight:600;}
+    .vibe-empty{text-align:center;padding:5rem;color:#484030;grid-column:1/-1;}
     .vibe-empty i{font-size:3rem;display:block;margin-bottom:1rem;opacity:0.3;}
-
-    /* SKELETON */
-    .vibe-skeleton{flex:0 0 calc(33.333% - 0.84rem);border-radius:20px;overflow:hidden;background:#111;}
-    .vibe-skeleton-thumb{width:100%;aspect-ratio:3/4;background:linear-gradient(90deg,#1a1a1a 25%,#222 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
-    .vibe-skeleton-info{padding:1rem 1.1rem;}
-    .vibe-skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,#1a1a1a 25%,#222 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:8px;}
-    .vibe-skeleton-line.short{width:60%;}
-    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-
     /* LIGHTBOX */
-    .vibe-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;padding:1.5rem;}
-    .vibe-lightbox.open{display:flex;}
-    .vibe-lb-inner{position:relative;max-width:420px;width:100%;}
-    .vibe-lb-video{width:100%;border-radius:20px;max-height:85vh;display:block;}
-    .vibe-lb-img{width:100%;border-radius:20px;max-height:85vh;object-fit:contain;display:block;}
-    .vibe-lb-close{position:absolute;top:-16px;right:-16px;width:36px;height:36px;background:#c9a84c;border:none;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(201,168,76,0.4);}
-    .vibe-lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:#fff;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-    .vibe-lb-prev{left:-52px;}
-    .vibe-lb-next{right:-52px;}
-
-    /* RESPONSIVE */
-    @media(max-width:1024px){.vibe-card{flex:0 0 calc(50% - 0.63rem);}}
-    @media(max-width:600px){
-      .vibe-card{flex:0 0 85%;}
-      .vibe-arrow-l{left:4px;}
-      .vibe-arrow-r{right:4px;}
-    }
+    .lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;}
+    .lb.open{display:flex;}
+    .lb-inner{position:relative;max-width:420px;width:90%;}
+    .lb-inner video,.lb-inner img{width:100%;border-radius:20px;max-height:85vh;display:block;}
+    .lb-close{position:absolute;top:-16px;right:-16px;width:36px;height:36px;background:#c9a84c;border:none;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    @media(max-width:900px){.vibe-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:500px){.vibe-grid{grid-template-columns:1fr;}}
   </style>
   <script src="nav.js"></script>
-  <script type="module" src="hs-firebase.js"></script>
 </head>
 <body>
 
-  <div class="vibe-page">
-
-    <div class="vibe-header">
-      <h1 class="vibe-title">Discover with <span>Vibe</span></h1>
-      <p class="vibe-subtitle">Explore trending reels from our creators</p>
-    </div>
-
-    <div class="vibe-cats-wrap">
-      <div class="vibe-cats">
-        <button class="vibe-cat active" data-cat="all">All</button>
-        <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
-        <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
-        <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
-        <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
-        <button class="vibe-cat" data-cat="Concerts">Concerts</button>
-        <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
-        <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
-        <button class="vibe-cat" data-cat="Caterers">Caterers</button>
-        <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star" style="font-size:0.7rem;"></i> Testimonials</button>
-      </div>
-    </div>
-
-    <div class="vibe-slider-wrap">
-      <button class="vibe-arrow vibe-arrow-l hidden" id="vArrowL"><i class="fas fa-chevron-left"></i></button>
-      <div class="vibe-slider-overflow">
-        <div class="vibe-slider" id="vibeSlider">
-          <!-- skeletons while loading -->
-          <div class="vibe-skeleton"><div class="vibe-skeleton-thumb"></div><div class="vibe-skeleton-info"><div class="vibe-skeleton-line"></div><div class="vibe-skeleton-line short"></div></div></div>
-          <div class="vibe-skeleton"><div class="vibe-skeleton-thumb"></div><div class="vibe-skeleton-info"><div class="vibe-skeleton-line"></div><div class="vibe-skeleton-line short"></div></div></div>
-          <div class="vibe-skeleton"><div class="vibe-skeleton-thumb"></div><div class="vibe-skeleton-info"><div class="vibe-skeleton-line"></div><div class="vibe-skeleton-line short"></div></div></div>
-        </div>
-      </div>
-      <button class="vibe-arrow vibe-arrow-r" id="vArrowR"><i class="fas fa-chevron-right"></i></button>
-    </div>
-
+<div class="vibe-page">
+  <div class="vibe-header">
+    <h1 class="vibe-title">Discover with <span>Vibe</span></h1>
+    <p class="vibe-subtitle">Explore trending reels from our creators</p>
   </div>
 
-  <!-- Lightbox -->
-  <div class="vibe-lightbox" id="vibeLightbox">
-    <div class="vibe-lb-inner">
-      <button class="vibe-lb-close" id="vibeLbClose"><i class="fas fa-times"></i></button>
-      <button class="vibe-lb-nav vibe-lb-prev" id="vibeLbPrev"><i class="fas fa-chevron-left"></i></button>
-      <div id="vibeLbContent"></div>
-      <button class="vibe-lb-nav vibe-lb-next" id="vibeLbNext"><i class="fas fa-chevron-right"></i></button>
-    </div>
+  <div class="vibe-cats" id="vibeCats">
+    <button class="vibe-cat active" data-cat="all">All</button>
+    <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
+    <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
+    <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
+    <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
+    <button class="vibe-cat" data-cat="Concerts">Concerts</button>
+    <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
+    <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
+    <button class="vibe-cat" data-cat="Caterers">Caterers</button>
+    <button class="vibe-cat" data-cat="Testimonials">Testimonials</button>
   </div>
 
-  <script>
-    var currentCat = 'all';
-    var _vibeItems = [];
-    var _filtered = [];
-    var _lbIdx = 0;
-    var _sliderIdx = 0;
+  <div class="vibe-grid" id="vibeGrid">
+    <div class="vibe-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>
+  </div>
+</div>
 
-    // ── Slider ──────────────────────────────────────────────────
-    var slider = document.getElementById('vibeSlider');
-    var arrowL = document.getElementById('vArrowL');
-    var arrowR = document.getElementById('vArrowR');
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLb()"><i class="fas fa-times"></i></button>
+    <div id="lbContent"></div>
+  </div>
+</div>
 
-    function visibleCount(){
-      return window.innerWidth <= 600 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
-    }
-    function cardWidth(){
-      var c = slider.children[0];
-      return c ? c.offsetWidth + 20 : 0; // 20 = gap
-    }
-    function updateArrows(){
-      arrowL.classList.toggle('hidden', _sliderIdx === 0);
-      arrowR.classList.toggle('hidden', _sliderIdx >= slider.children.length - visibleCount());
-    }
-    function slideTo(idx){
-      _sliderIdx = Math.max(0, Math.min(idx, slider.children.length - visibleCount()));
-      slider.style.transform = 'translateX(-' + (_sliderIdx * cardWidth()) + 'px)';
-      updateArrows();
-    }
-    arrowL.onclick = function(){ slideTo(_sliderIdx - 1); };
-    arrowR.onclick = function(){ slideTo(_sliderIdx + 1); };
+<script>
+var _items = [];
+var _cat = 'all';
 
-    // Touch swipe
-    var _tx = 0, _dragging = false;
-    slider.addEventListener('touchstart', function(e){ _tx = e.touches[0].clientX; _dragging = true; }, {passive:true});
-    slider.addEventListener('touchend', function(e){
-      if(!_dragging) return; _dragging = false;
-      var diff = _tx - e.changedTouches[0].clientX;
-      if(Math.abs(diff) > 50) slideTo(_sliderIdx + (diff > 0 ? 1 : -1));
+fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    _items = [];
+    (data.documents||[]).forEach(function(d){
+      var f=d.fields, item={id:d.name.split('/').pop()};
+      Object.keys(f).forEach(function(k){ item[k]=f[k].stringValue||''; });
+      _items.push(item);
     });
+    render();
+  })
+  .catch(function(e){
+    document.getElementById('vibeGrid').innerHTML='<div class="vibe-empty"><i class="fas fa-exclamation-circle"></i><p>Error loading: '+e.message+'</p></div>';
+  });
 
-    // ── Firebase ─────────────────────────────────────────────────
-    async function loadVibeFromFirestore(){
-      try {
-        var res  = await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE');
-        var data = await res.json();
-        _vibeItems = [];
-        (data.documents||[]).forEach(function(d){
-          var f = d.fields;
-          var item = { id: d.name.split('/').pop() };
-          Object.keys(f).forEach(function(k){
-            item[k] = f[k].stringValue || f[k].integerValue || f[k].booleanValue || '';
-          });
-          _vibeItems.push(item);
-        });
-        renderVibe();
-        bindCatButtons();
-      } catch(e){
-        console.error('Vibe load error:',e);
-        renderVibe();
-      }
-    }
+function thumb(item){
+  var t = item.thumbnail||'';
+  var u = item.url||'';
+  if(t && t.match(/\.(jpg|jpeg|png|webp)/i)) return t;
+  if(u && u.includes('cloudinary.com')){
+    return u.replace('/video/upload/','/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i,'.jpg');
+  }
+  return t;
+}
 
-    function getThumb(item){
-      var t = item.thumbnail || '';
-      var u = item.url || '';
-      // If thumbnail is a video URL (not jpg/png), derive poster frame from video URL
-      if(!t || t.includes('.mp4') || t.includes('.mov') || t.includes('.webm') || (!t.includes('.jpg') && !t.includes('.jpeg') && !t.includes('.png') && !t.includes('.webp'))){
-        if(u && u.includes('cloudinary.com')){
-          t = u
-            .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
-            .replace(/\.mp4|\.mov|\.webm|\.avi/i, '.jpg');
-        }
-      }
-      return t;
-    }
+function render(){
+  var filtered = _cat==='all' ? _items : _items.filter(function(i){ return i.category===_cat; });
+  var grid = document.getElementById('vibeGrid');
+  if(!filtered.length){
+    grid.innerHTML='<div class="vibe-empty"><i class="fas fa-photo-video"></i><p>No content yet.</p></div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(function(item,idx){
+    var t = thumb(item);
+    return '<div class="vibe-card" onclick="openLb('+idx+')">'
+      +(t?'<img src="'+t+'" alt="'+item.title+'" loading="lazy" onerror="this.style.background=\'#1a1a1a\';this.style.aspectRatio=\'3/4\'"/>':'<div style="width:100%;aspect-ratio:3/4;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:3rem;"><i class=\'fas fa-film\'></i></div>')
+      +'<div class="vibe-card-info"><div class="vibe-card-title">'+item.title+'</div><div class="vibe-card-cat">'+item.category+'</div></div>'
+      +'</div>';
+  }).join('');
+}
 
-    function hoverPlay(idx){
-      var vid = document.getElementById('vvid_'+idx);
-      var img = document.getElementById('vthumb_'+idx);
-      if(!vid) return;
-      vid.style.opacity='1'; vid.style.zIndex='2';
-      if(img){ img.style.opacity='0'; }
-      vid.play().catch(function(){});
-    }
+document.getElementById('vibeCats').addEventListener('click', function(e){
+  var btn = e.target.closest('.vibe-cat');
+  if(!btn) return;
+  document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  _cat = btn.dataset.cat;
+  render();
+});
 
-    function hoverStop(idx){
-      var vid = document.getElementById('vvid_'+idx);
-      var img = document.getElementById('vthumb_'+idx);
-      if(!vid) return;
-      vid.pause(); vid.currentTime=0;
-      vid.style.opacity='0'; vid.style.zIndex='1';
-      if(img){ img.style.opacity='1'; }
-    }
+function openLb(idx){
+  var filtered = _cat==='all' ? _items : _items.filter(function(i){ return i.category===_cat; });
+  var item = filtered[idx];
+  var url = item.url||'';
+  var content = document.getElementById('lbContent');
+  content.innerHTML = url
+    ? '<video src="'+url+'" controls autoplay playsinline style="width:100%;border-radius:20px;max-height:85vh;"></video>'
+    : '<img src="'+thumb(item)+'" style="width:100%;border-radius:20px;"/>';
+  document.getElementById('lb').classList.add('open');
+}
 
-    function renderVibe(){
-      _filtered = currentCat === 'all' ? _vibeItems : _vibeItems.filter(function(i){ return i.category === currentCat; });
-      _sliderIdx = 0;
-      if(!_filtered.length){
-        slider.innerHTML = '<div class="vibe-empty" style="flex:1;"><i class="fas fa-photo-video"></i><p>No content yet. Check back soon!</p></div>';
-        arrowL.classList.add('hidden'); arrowR.classList.add('hidden');
-        return;
-      }
-      slider.innerHTML = _filtered.map(function(item, idx){
-        var thumbSrc = getThumb(item);
-        var videoUrl = item.url || item.cloudUrl || '';
-        var mediaHtml = '';
-        if(thumbSrc && videoUrl){
-          mediaHtml =
-            '<img id="vthumb_'+idx+'" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy"/>'
-            +'<video id="vvid_'+idx+'" src="'+videoUrl+'" muted loop playsinline preload="none" style="opacity:0;transition:opacity 0.3s;"></video>';
-        } else if(thumbSrc){
-          mediaHtml = '<img id="vthumb_'+idx+'" src="'+thumbSrc+'" alt="'+item.title+'" loading="lazy"/>';
-        } else if(videoUrl){
-          mediaHtml = '<video id="vvid_'+idx+'" src="'+videoUrl+'" muted loop playsinline preload="none"></video>';
-        } else {
-          mediaHtml = '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
-        }
-        return '<div class="vibe-card" onclick="openLb('+idx+')" onmouseenter="hoverPlay('+idx+')" onmouseleave="hoverStop('+idx+')">'
-          +'<div class="vibe-thumb-wrap">'+mediaHtml
-          +'<div class="vibe-play-overlay"><div class="vibe-play-btn"><i class="fas fa-play"></i></div></div>'
-          +'</div>'
-          +'<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div>'
-          +'<div class="vibe-info-cat"><i class="fas fa-film"></i>'+item.category+'</div></div>'
-          +'</div>';
-      }).join('');
-      slider.style.transform = 'translateX(0)';
-      updateArrows();
-    }
+function closeLb(){
+  var v = document.querySelector('#lbContent video');
+  if(v) v.pause();
+  document.getElementById('lb').classList.remove('open');
+  document.getElementById('lbContent').innerHTML='';
+}
 
-    // ── Category filter ──────────────────────────────────────────
-    document.querySelectorAll('.vibe-cat').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
-        btn.classList.add('active');
-        currentCat = btn.dataset.cat;
-        _sliderIdx = 0;
-        slider.style.transform = 'translateX(0)';
-        if(currentCat === 'Testimonials'){
-          renderTestimonials();
-        } else {
-          renderVibe();
-        }
-      });
-    });
-
-    // Also re-bind after items load in case buttons were clicked before load
-    function bindCatButtons(){
-      document.querySelectorAll('.vibe-cat').forEach(function(btn){
-        btn.onclick = function(){
-          document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
-          btn.classList.add('active');
-          currentCat = btn.dataset.cat;
-          _sliderIdx = 0;
-          slider.style.transform = 'translateX(0)';
-          if(currentCat === 'Testimonials') renderTestimonials();
-          else renderVibe();
-        };
-      });
-    }
-
-    function renderTestimonials(){
-      var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
-      _sliderIdx = 0;
-      if(!meta.length){
-        slider.innerHTML = '<div class="vibe-empty" style="flex:1;"><i class="fas fa-star"></i><p>No testimonials yet.</p></div>';
-        arrowL.classList.add('hidden'); arrowR.classList.add('hidden');
-        return;
-      }
-      slider.innerHTML = meta.map(function(v, idx){
-        var videoUrl = v.cloudUrl || v.url || '';
-        var tid = 'tv'+idx;
-        // Cloudinary poster frame thumbnail
-        var thumbUrl = videoUrl
-          ? videoUrl.replace('/video/upload/','/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i,'.jpg')
-          : '';
-        var mediaHtml = videoUrl
-          ? '<div style="position:relative;width:100%;height:100%;">'  
-            +(thumbUrl?'<img id="timg_'+tid+'" src="'+thumbUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.3s;" onerror="this.style.display=\'none\'"/>':'')
-            +'<video id="tvid_'+tid+'" src="'+videoUrl+'" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.3s;"></video>'
-            +'</div>'
-          : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>Testimonial</span></div>';
-        return '<div class="vibe-card" onclick="openTestiLb(\''+videoUrl+'\')"
-          onmouseenter="(function(){var v=document.getElementById(\'tvid_'+tid+'\'),i=document.getElementById(\'timg_'+tid+'\');if(v){v.style.opacity=\'1\';v.play().catch(function(){});}if(i)i.style.opacity=\'0\';})()"
-          onmouseleave="(function(){var v=document.getElementById(\'tvid_'+tid+'\'),i=document.getElementById(\'timg_'+tid+'\');if(v){v.pause();v.currentTime=0;v.style.opacity=\'0\';}if(i)i.style.opacity=\'1\';})()">'
-          +'<div class="vibe-thumb-wrap" style="position:relative;">'+mediaHtml
-          +'<div class="vibe-play-overlay"><div class="vibe-play-btn"><i class="fas fa-play"></i></div></div>'
-          +'</div>'
-          +'<div class="vibe-info"><div class="vibe-info-title">'+v.clientName+'</div>'
-          +(v.caption?'<div class="vibe-info-cat"><i class="fas fa-star"></i>'+v.caption+'</div>':'')
-          +'</div></div>';
-      }).join('');
-      slider.style.transform = 'translateX(0)';
-      updateArrows();
-    }
-
-    // ── Lightbox ─────────────────────────────────────────────────
-    function openLb(idx){
-      _lbIdx = idx;
-      showLbItem();
-      document.getElementById('vibeLightbox').classList.add('open');
-    }
-
-    function openTestiLb(url){
-      var content = document.getElementById('vibeLbContent');
-      content.innerHTML = url
-        ? '<video class="vibe-lb-video" src="'+url+'" controls autoplay playsinline></video>'
-        : '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-exclamation-circle" style="font-size:2.5rem;color:#c9a84c;"></i><p style="margin-top:1rem;">Video not available.</p></div>';
-      document.getElementById('vibeLbPrev').style.display = 'none';
-      document.getElementById('vibeLbNext').style.display = 'none';
-      document.getElementById('vibeLightbox').classList.add('open');
-    }
-
-    function showLbItem(){
-      var item = _filtered[_lbIdx];
-      var content = document.getElementById('vibeLbContent');
-      var videoUrl = item.url || item.cloudUrl || '';
-      if(videoUrl){
-        content.innerHTML = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
-      } else if(item.thumbnail){
-        content.innerHTML = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
-      } else {
-        content.innerHTML = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
-      }
-      document.getElementById('vibeLbPrev').style.display = _lbIdx > 0 ? 'flex' : 'none';
-      document.getElementById('vibeLbNext').style.display = _lbIdx < _filtered.length - 1 ? 'flex' : 'none';
-    }
-
-    function closeLb(){
-      var v = document.querySelector('#vibeLbContent video');
-      if(v){ v.pause(); }
-      document.getElementById('vibeLightbox').classList.remove('open');
-      document.getElementById('vibeLbContent').innerHTML = '';
-      document.getElementById('vibeLbPrev').style.display = 'flex';
-      document.getElementById('vibeLbNext').style.display = 'flex';
-    }
-
-    document.getElementById('vibeLbClose').addEventListener('click', closeLb);
-    document.getElementById('vibeLightbox').addEventListener('click', function(e){ if(e.target===this) closeLb(); });
-    document.getElementById('vibeLbPrev').addEventListener('click', function(){ if(_lbIdx > 0){ _lbIdx--; showLbItem(); } });
-    document.getElementById('vibeLbNext').addEventListener('click', function(){ if(_lbIdx < _filtered.length - 1){ _lbIdx++; showLbItem(); } });
-
-    window.addEventListener('resize', function(){ slideTo(_sliderIdx); });
-
-    loadVibeFromFirestore();
-  </script>
+document.getElementById('lb').addEventListener('click', function(e){ if(e.target===this) closeLb(); });
+</script>
 
 <script src="hs-feedback-widget.js"></script>
 </body>
 </html>
-<!-- cache bust Sat Apr  4 10:37:19 IST 2026 -->
