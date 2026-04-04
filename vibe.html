@@ -99,6 +99,53 @@
     .vcard:hover .vcard-vid{opacity:1;}
     .vcard:hover .vcard-img{opacity:0;}
 
+    /* PLAY BUTTON */
+    .vcard-play{
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:56px;height:56px;
+      border-radius:50%;
+      background:rgba(201,168,76,0.25);
+      border:2px solid rgba(255,255,255,0.7);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:1.2rem;
+      pointer-events:none;
+      transition:opacity 0.3s;
+      backdrop-filter:blur(4px);
+    }
+    .vcard:hover .vcard-play{opacity:0;}
+
+    /* CARD TITLE */
+    .vcard-title{
+      position:absolute;
+      bottom:0;left:0;right:0;
+      padding:0.75rem 1rem;
+      background:rgba(0,0,0,0.65);
+      font-size:0.9rem;
+      font-weight:600;
+      color:#fff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      backdrop-filter:blur(4px);
+    }
+
+    /* DOTS */
+    .vdots{
+      display:flex;justify-content:center;gap:7px;
+      margin-top:1.4rem;
+    }
+    .vdot{
+      width:8px;height:8px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.2);
+      border:none;cursor:pointer;
+      padding:0;
+      transition:background 0.2s,transform 0.2s;
+    }
+    .vdot.active{background:#c9a84c;transform:scale(1.25);}
+
     /* EMPTY */
     .vempty{text-align:center;padding:5rem 2rem;color:#5a1a1a;width:100%;}
     .vempty i{font-size:2.5rem;display:block;margin-bottom:0.75rem;opacity:0.3;}
@@ -175,6 +222,7 @@
     </div>
     <button class="varr" id="aR" onclick="slide(1)"><i class="fas fa-chevron-right"></i></button>
   </div>
+  <div class="vdots" id="vdots"></div>
 
 </div>
 
@@ -230,6 +278,8 @@ function render(){
     return '<div class="vcard" onclick="openLb('+idx+')">'
       +(t?'<img class="vcard-img" src="'+t+'" alt="'+item.title+'" loading="lazy"/>':'<div style="width:100%;aspect-ratio:3/4;background:#2a0808;display:flex;align-items:center;justify-content:center;color:#e8453c;font-size:3rem;"><i class=\'fas fa-film\'></i></div>')
       +(u?'<video class="vcard-vid" src="'+u+'" muted loop playsinline preload="none" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>':'')
+      +'<div class="vcard-play"><i class="fas fa-play"></i></div>'
+      +(item.title?'<div class="vcard-title">'+item.title+'</div>':'')
       +'</div>';
   }).join('');
   upd();
@@ -244,6 +294,16 @@ function slide(d){
 function upd(){
   document.getElementById('aL').disabled=(_i===0);
   document.getElementById('aR').disabled=(_i>=_fil.length-vis());
+  var dots=document.getElementById('vdots');
+  var pages=Math.max(1,_fil.length-vis()+1);
+  dots.innerHTML=Array.from({length:pages},function(_,p){
+    return '<button class="vdot'+(p===_i?' active':'')+'" onclick="jumpTo('+p+')"></button>';
+  }).join('');
+}
+function jumpTo(p){
+  _i=p;
+  document.getElementById('vsl').style.transform='translateX(-'+(_i*cw())+'px)';
+  upd();
 }
 
 document.getElementById('vcr').addEventListener('click',function(e){
