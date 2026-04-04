@@ -386,12 +386,11 @@
   async function deleteVibeItem(id){
     if(!confirm('Delete this vibe item?')) return;
     try {
-      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-      var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
-      var db      = fbStore.getFirestore(app);
-      await fbStore.deleteDoc(fbStore.doc(db,'vibe_items',String(id)));
+      var res = await fetch(
+        'https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items/'+id+'?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+        {method:'DELETE'}
+      );
+      if(!res.ok){ var d=await res.json(); throw new Error(d.error?d.error.message:'Delete failed'); }
       renderVibeAdmin();
     } catch(e){ alert('Delete failed: '+e.message); }
   }
@@ -457,17 +456,30 @@
         thumbUrl = tRes.url;
       }
 
-      // Save to Firestore
+      // Save to Firestore via REST API — avoids SDK instance conflicts
       if(pl) pl.textContent='Saving...';
       var newItem = { title:title, category:cat, thumbnail:thumbUrl, url:vRes.url, type:'video', addedAt:new Date().toLocaleString() };
       try {
-        var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg2   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app2     = fbMod2.getApps().find(function(a){return a.name==='admin-app';})||fbMod2.initializeApp(fbCfg2,'admin-app');
-        var db2      = fbStore2.getFirestore(app2);
-        var ref      = await fbStore2.addDoc(fbStore2.collection(db2,'vibe_items'), newItem);
-        newItem.id   = ref.id;
+        var saveRes = await fetch(
+          'https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+          {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+              fields: {
+                title:    {stringValue: title},
+                category: {stringValue: cat},
+                thumbnail:{stringValue: thumbUrl},
+                url:      {stringValue: vRes.url},
+                type:     {stringValue: 'video'},
+                addedAt:  {stringValue: new Date().toLocaleString()}
+              }
+            })
+          }
+        );
+        var saveData = await saveRes.json();
+        if(saveData.error){ throw new Error(saveData.error.message); }
+        newItem.id = saveData.name ? saveData.name.split('/').pop() : Date.now().toString();
       } catch(fsErr){
         alert('Video uploaded to Cloudinary but failed to save to database: ' + fsErr.message);
         btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
@@ -498,28 +510,24 @@
     var countEl = document.getElementById('vibeCount');
     grid.innerHTML='<p style="color:#9a9080;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     try {
-      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-      var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
-      var db      = fbStore.getFirestore(app);
-      var snap    = await fbStore.getDocs(fbStore.collection(db,'vibe_items'));
-      var items   = [];
-      snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
-      // Sort by addedAt descending
-      items.sort(function(a,b){ return (b.addedAt||'') > (a.addedAt||'') ? 1 : -1; });
+      var res  = await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE');
+      var data = await res.json();
+      var items = [];
+      (data.documents||[]).forEach(function(d){
+        var f=d.fields, item={id:d.name.split('/').pop()};
+        Object.keys(f).forEach(function(k){ item[k]=f[k].stringValue||f[k].integerValue||''; });
+        items.push(item);
+      });
+      items.sort(function(a,b){ return (b.addedAt||'')>(a.addedAt||'')?1:-1; });
       if(countEl) countEl.textContent = items.length + ' item(s)';
       if(!items.length){ grid.innerHTML='<p style="color:#6a5a40;font-size:0.85rem;text-align:center;padding:2rem;grid-column:1/-1;">No content uploaded yet.</p>'; return; }
       grid.innerHTML='';
       items.forEach(function(item){
         var card = document.createElement('div');
         card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;';
-        var thumbSrc = item.thumbnail || '';
-        // If thumbnail is a video URL, convert to Cloudinary poster frame
-        if(thumbSrc && (thumbSrc.includes('.mp4') || thumbSrc.includes('.mov') || thumbSrc.includes('.webm'))){
-          thumbSrc = thumbSrc
-            .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
-            .replace(/\.(mp4|mov|webm|avi)/i, '.jpg');
+        var thumbSrc = item.thumbnail||'';
+        if(thumbSrc && (thumbSrc.includes('.mp4')||thumbSrc.includes('.mov')||thumbSrc.includes('.webm'))){
+          thumbSrc = thumbSrc.replace('/video/upload/','/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i,'.jpg');
         }
         var mediaHtml = thumbSrc
           ? '<img src="'+thumbSrc+'" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;" onerror="this.style.display=\'none\'" />'
@@ -529,7 +537,7 @@
           +'<div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
           +'<div style="font-size:0.7rem;color:#c9a84c;font-weight:600;margin-bottom:0.5rem;">'+item.category+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
-          +(item.url ? '<a href="'+item.url+'" target="_blank" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;"><i class="fas fa-external-link-alt"></i> View</a>' : '')
+          +(item.url?'<a href="'+item.url+'" target="_blank" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;"><i class="fas fa-external-link-alt"></i> View</a>':'')
           +'<button onclick="deleteVibeItem(\''+String(item.id)+'\')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
         grid.appendChild(card);
