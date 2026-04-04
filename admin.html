@@ -222,7 +222,7 @@
       <div class="stat-card"><div class="num" style="color:#ff9800" id="pendingCount">0</div><div class="lbl">Pending Bookings</div></div>
       <div class="stat-card"><div class="num" style="color:#4caf50" id="confirmedCount">0</div><div class="lbl">Confirmed</div></div>
       <div class="stat-card"><div class="num" style="color:#2196f3" id="completedCount">0</div><div class="lbl">Completed</div></div>
-      <div class="stat-card" style="cursor:pointer;" onclick="switchTab('assign',document.querySelector('[onclick*=assign]'))">
+      <div class="stat-card" style="cursor:pointer;" onclick="switchTab('assign',document.getElementById('assignTabBtn'))">
         <div class="num" style="color:#f44336" id="creatorPendingAmt">₹0</div>
         <div class="lbl">Creator Pending Pay</div>
       </div>
@@ -238,7 +238,7 @@
             <div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
           </div>
         </div>
-        <button onclick="switchTab('assign',document.querySelector('[onclick*=assign]'))" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
+        <button onclick="switchTab('assign',document.getElementById('assignTabBtn'))" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
       </div>
       <div id="creatorPendingBreakdown" style="margin-top:0.85rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.6rem;"></div>
     </div>
