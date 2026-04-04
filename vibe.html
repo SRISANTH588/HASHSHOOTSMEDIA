@@ -42,41 +42,40 @@
     .vc:hover:not(.active){border-color:rgba(255,255,255,0.4);color:#fff;}
 
     /* SLIDER SECTION */
-    .vsec{position:relative;display:flex;align-items:center;}
+    .vsec{position:relative;display:flex;align-items:center;padding:0 1rem;}
 
     /* ARROWS */
     .varr{
       flex-shrink:0;
-      width:38px;height:38px;
+      width:40px;height:40px;
       border-radius:50%;
-      background:rgba(15,15,15,0.8);
+      background:rgba(10,10,10,0.85);
       border:1.5px solid rgba(255,255,255,0.2);
       color:#fff;
-      font-size:0.85rem;
+      font-size:0.9rem;
       cursor:pointer;
       display:flex;align-items:center;justify-content:center;
       transition:all 0.2s;
       backdrop-filter:blur(8px);
       z-index:10;
-      position:relative;
     }
-    #aL{margin-left:0.6rem;margin-right:0.5rem;}
-    #aR{margin-right:0.6rem;margin-left:0.5rem;}
+    #aL{margin-right:0.75rem;}
+    #aR{margin-left:0.75rem;}
     .varr:hover{background:rgba(232,69,60,0.85);border-color:#e8453c;}
     .varr:disabled{opacity:0.15;pointer-events:none;}
 
     /* OVERFLOW */
-    .vov{overflow:hidden;flex:1;}
+    .vov{overflow:hidden;flex:1;min-width:0;}
     .vsl{
       display:flex;
-      gap:14px;
+      gap:16px;
       transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
     }
 
-    /* CARD */
+    /* CARD — exactly 1/3 of overflow container */
     .vcard{
-      flex:0 0 calc(33.333% - 10px);
-      border-radius:14px;
+      flex:0 0 calc((100% - 32px) / 3);
+      border-radius:16px;
       overflow:hidden;
       background:#1a0a0a;
       cursor:pointer;
@@ -84,7 +83,7 @@
     }
     .vcard-img{
       width:100%;
-      aspect-ratio:3/4;
+      aspect-ratio:9/13;
       object-fit:cover;
       display:block;
       transition:opacity 0.3s;
@@ -111,12 +110,26 @@
     .vlb-in video,.vlb-in img{width:100%;border-radius:16px;max-height:88vh;display:block;}
     .vlb-x{position:absolute;top:-14px;right:-14px;width:34px;height:34px;background:#e8453c;border:none;border-radius:50%;color:#fff;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
+    /* FOOTER */
+    .vfooter{margin-top:4rem;border-top:1px solid rgba(255,255,255,0.07);padding:2.5rem 1rem 1.5rem;text-align:center;}
+    .vfooter-logo{font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:1px;margin-bottom:0.4rem;}
+    .vfooter-logo span{color:#e8453c;}
+    .vfooter-sub{color:#555;font-size:0.8rem;margin-bottom:1.5rem;}
+    .vfooter-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+    .vfooter-links a{color:#666;font-size:0.8rem;text-decoration:none;transition:color 0.2s;}
+    .vfooter-links a:hover{color:#e8453c;}
+    .vfooter-social{display:flex;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;}
+    .vfooter-social a{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:#666;text-decoration:none;font-size:0.85rem;transition:all 0.2s;}
+    .vfooter-social a:hover{border-color:#e8453c;color:#e8453c;}
+    .vfooter-copy{color:#333;font-size:0.75rem;}
+
     @media(max-width:900px){
-      .vcard{flex:0 0 calc(50% - 7px);}
+      .vcard{flex:0 0 calc((100% - 16px) / 2);}
     }
     @media(max-width:560px){
       .vcard{flex:0 0 82%;}
       .vcp{padding:0 1rem;}
+      .vsec{padding:0 0.5rem;}
     }
   </style>
   <script src="nav.js"></script>
@@ -190,7 +203,7 @@ function th(item){
 }
 
 function vis(){return window.innerWidth<=560?1:window.innerWidth<=900?2:3;}
-function cw(){var c=document.querySelector('.vcard');return c?c.offsetWidth+14:0;}
+function cw(){var c=document.querySelector('.vcard');return c?c.offsetWidth+16:0;}
 
 function render(){
   _fil=_cat==='all'?_all:_all.filter(function(i){return i.category===_cat;});
@@ -251,5 +264,23 @@ window.addEventListener('resize',function(){
 });
 </script>
 <script src="hs-feedback-widget.js"></script>
+
+<footer class="vfooter">
+  <div class="vfooter-logo">HASH<span>SHOOTS</span> MEDIA</div>
+  <p class="vfooter-sub">Premium content creation for brands &amp; creators</p>
+  <div class="vfooter-links">
+    <a href="index.html">Home</a>
+    <a href="vibe.html">Discover</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="vfooter-social">
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+    <a href="#"><i class="fab fa-whatsapp"></i></a>
+  </div>
+  <p class="vfooter-copy">&copy; 2025 HashShoots Media. All rights reserved.</p>
+</footer>
 </body>
 </html>
