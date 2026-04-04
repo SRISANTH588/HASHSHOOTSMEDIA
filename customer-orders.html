@@ -785,7 +785,7 @@
       localStorage.setItem('hs_fb_done_' + _fbBookingId, '1');
       document.getElementById('fbForm').style.display = 'none';
       document.getElementById('fbDone').style.display = 'block';
-      setTimeout(function(){ closeFeedback(); loadBookings(); }, 2200);
+      loadBookings();
     }
 
     document.getElementById('fbOverlay').addEventListener('click', function(e){ if(e.target===this) closeFeedback(); });
