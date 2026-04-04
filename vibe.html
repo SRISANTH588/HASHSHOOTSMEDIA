@@ -203,7 +203,7 @@
           _vibeItems.push(item);
         });
         renderVibe();
-      } catch(e){
+        bindCatButtons();
         console.error('Vibe load error:',e);
         renderVibe();
       }
@@ -282,6 +282,8 @@
         document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
         btn.classList.add('active');
         currentCat = btn.dataset.cat;
+        _sliderIdx = 0;
+        slider.style.transform = 'translateX(0)';
         if(currentCat === 'Testimonials'){
           renderTestimonials();
         } else {
@@ -289,6 +291,21 @@
         }
       });
     });
+
+    // Also re-bind after items load in case buttons were clicked before load
+    function bindCatButtons(){
+      document.querySelectorAll('.vibe-cat').forEach(function(btn){
+        btn.onclick = function(){
+          document.querySelectorAll('.vibe-cat').forEach(function(b){ b.classList.remove('active'); });
+          btn.classList.add('active');
+          currentCat = btn.dataset.cat;
+          _sliderIdx = 0;
+          slider.style.transform = 'translateX(0)';
+          if(currentCat === 'Testimonials') renderTestimonials();
+          else renderVibe();
+        };
+      });
+    }
 
     function renderTestimonials(){
       var meta = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
