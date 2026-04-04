@@ -204,8 +204,14 @@
 
     function getThumb(item){
       var t = item.thumbnail || '';
-      if(t && (t.includes('.mp4') || t.includes('.mov') || t.includes('.webm'))){
-        t = t.replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/').replace(/\.(mp4|mov|webm|avi)/i, '.jpg');
+      var u = item.url || '';
+      // If thumbnail is a video URL (not jpg/png), derive poster frame from video URL
+      if(!t || t.includes('.mp4') || t.includes('.mov') || t.includes('.webm') || (!t.includes('.jpg') && !t.includes('.jpeg') && !t.includes('.png') && !t.includes('.webp'))){
+        if(u && u.includes('cloudinary.com')){
+          t = u
+            .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
+            .replace(/\.mp4|\.mov|\.webm|\.avi/i, '.jpg');
+        }
       }
       return t;
     }
