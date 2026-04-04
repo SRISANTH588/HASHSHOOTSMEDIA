@@ -586,6 +586,7 @@
             <div style="font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:0.3rem;"><i class="fas fa-money-bill-wave" style="color:#4caf50;"></i> Request Payout</div>
             <div style="font-size:0.82rem;color:#9a9080;">Withdraw your earnings to your bank account</div>
             <div style="font-size:0.9rem;color:#4caf50;font-weight:700;margin-top:0.4rem;">Available: ₹<span id="po_quick_balance">0</span></div>
+            <div style="font-size:0.72rem;color:#ff9800;margin-top:0.2rem;">⚠️ Min: ₹500 | Max: ₹10,000 per request | Daily: ₹15,000 | Weekly: ₹50,000</div>
           </div>
           <button onclick="openQuickPayout()" style="background:#4caf50;color:#fff;border:none;border-radius:12px;padding:0.75rem 1.5rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'"><i class="fas fa-paper-plane"></i> Request Payout</button>
         </div>
@@ -799,9 +800,65 @@
             <input class="upload-input" type="text" id="bankName" placeholder="Full name as per bank"/>
           </div>
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Bank Name *</label>
-            <input class="upload-input" type="text" id="bankBankName" placeholder="e.g. State Bank of India"/>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Select Bank *</label>
+            <select class="upload-input" id="bankBankName">
+              <option value="" disabled selected>Choose your bank</option>
+              <option value="State Bank of India">State Bank of India (SBI)</option>
+              <option value="HDFC Bank">HDFC Bank</option>
+              <option value="ICICI Bank">ICICI Bank</option>
+              <option value="Axis Bank">Axis Bank</option>
+              <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+              <option value="IndusInd Bank">IndusInd Bank</option>
+              <option value="Yes Bank">Yes Bank</option>
+              <option value="IDFC First Bank">IDFC First Bank</option>
+              <option value="Federal Bank">Federal Bank</option>
+              <option value="South Indian Bank">South Indian Bank</option>
+              <option value="Karnataka Bank">Karnataka Bank</option>
+              <option value="Canara Bank">Canara Bank</option>
+              <option value="Punjab National Bank">Punjab National Bank (PNB)</option>
+              <option value="Bank of Baroda">Bank of Baroda</option>
+              <option value="Union Bank of India">Union Bank of India</option>
+              <option value="Indian Bank">Indian Bank</option>
+              <option value="Central Bank of India">Central Bank of India</option>
+              <option value="Bank of India">Bank of India</option>
+              <option value="UCO Bank">UCO Bank</option>
+              <option value="Indian Overseas Bank">Indian Overseas Bank</option>
+              <option value="Punjab & Sind Bank">Punjab & Sind Bank</option>
+              <option value="Bank of Maharashtra">Bank of Maharashtra</option>
+              <option value="Andhra Bank">Andhra Bank</option>
+              <option value="Corporation Bank">Corporation Bank</option>
+              <option value="Vijaya Bank">Vijaya Bank</option>
+              <option value="Dena Bank">Dena Bank</option>
+              <option value="Syndicate Bank">Syndicate Bank</option>
+              <option value="Allahabad Bank">Allahabad Bank</option>
+              <option value="Oriental Bank of Commerce">Oriental Bank of Commerce</option>
+              <option value="United Bank of India">United Bank of India</option>
+              <option value="IDBI Bank">IDBI Bank</option>
+              <option value="RBL Bank">RBL Bank</option>
+              <option value="Bandhan Bank">Bandhan Bank</option>
+              <option value="Paytm Payments Bank">Paytm Payments Bank</option>
+              <option value="Airtel Payments Bank">Airtel Payments Bank</option>
+              <option value="Fino Payments Bank">Fino Payments Bank</option>
+              <option value="India Post Payments Bank">India Post Payments Bank</option>
+              <option value="Jio Payments Bank">Jio Payments Bank</option>
+              <option value="NSDL Payments Bank">NSDL Payments Bank</option>
+              <option value="AU Small Finance Bank">AU Small Finance Bank</option>
+              <option value="Equitas Small Finance Bank">Equitas Small Finance Bank</option>
+              <option value="Ujjivan Small Finance Bank">Ujjivan Small Finance Bank</option>
+              <option value="Jana Small Finance Bank">Jana Small Finance Bank</option>
+              <option value="Suryoday Small Finance Bank">Suryoday Small Finance Bank</option>
+              <option value="North East Small Finance Bank">North East Small Finance Bank</option>
+              <option value="Capital Small Finance Bank">Capital Small Finance Bank</option>
+              <option value="Fincare Small Finance Bank">Fincare Small Finance Bank</option>
+              <option value="ESAF Small Finance Bank">ESAF Small Finance Bank</option>
+              <option value="Utkarsh Small Finance Bank">Utkarsh Small Finance Bank</option>
+              <option value="Other">Other Bank</option>
+            </select>
           </div>
+        </div>
+        <div id="otherBankInput" style="display:none;margin-bottom:1rem;">
+          <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Enter Bank Name *</label>
+          <input class="upload-input" type="text" id="bankOtherName" placeholder="Enter your bank name"/>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div>
@@ -810,19 +867,19 @@
           </div>
           <div>
             <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">IFSC Code *</label>
-            <input class="upload-input" type="text" id="bankIFSC" placeholder="e.g. SBIN0001234"/>
+            <input class="upload-input" type="text" id="bankIFSC" placeholder="e.g. SBIN0001234" style="text-transform:uppercase;"/>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div>
-            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">UPI ID</label>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">UPI ID (Optional)</label>
             <input class="upload-input" type="text" id="bankUPI" placeholder="e.g. name@upi"/>
           </div>
           <div>
             <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Account Type</label>
             <select class="upload-input" id="bankType">
-              <option value="savings">Savings</option>
-              <option value="current">Current</option>
+              <option value="savings">Savings Account</option>
+              <option value="current">Current Account</option>
             </select>
           </div>
         </div>
@@ -2136,8 +2193,8 @@
           + '<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.75rem;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;"></i> Request Payout</div>'
           + '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;">Available balance: <strong style="color:#4caf50;font-size:1rem;">₹' + (w.balance||0).toLocaleString('en-IN') + '</strong></div>'
           + '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">'
-          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) *</label>'
-          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="1" max="'+(w.balance||0)+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
+          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) * [Min: ₹500, Max: ₹10,000]</label>'
+          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="500" max="10000" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
           + '<button onclick="submitPayoutRequestOld()" style="background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem 1.5rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-paper-plane"></i> Request Payout</button>'
           + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.5rem;">Payout will be sent to: <strong style="color:#fff;">' + bankData.bankName + '</strong> &nbsp;·&nbsp; A/C: <strong style="color:#fff;">' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '</strong>' + (bankData.upi ? ' &nbsp;·&nbsp; UPI: <strong style="color:#fff;">' + bankData.upi + '</strong>' : '') + '</div>'
@@ -2185,8 +2242,12 @@
         return;
       }
       
-      if((w.balance || 0) <= 0){
-        alert('💰 No Balance Available\n\nYou don\'t have any available balance to withdraw. Complete more shoots to earn money.');
+      var availableBalance = w.balance || 0;
+      var minPayout = 500; // Minimum payout amount
+      var maxPayout = Math.min(availableBalance, 10000); // Maximum ₹10,000 per request
+      
+      if(availableBalance < minPayout){
+        alert('💰 Minimum Payout Not Met\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYour current balance: ₹' + availableBalance.toLocaleString('en-IN') + '\n\nComplete more shoots to reach minimum payout.');
         return;
       }
       
@@ -2198,21 +2259,53 @@
         return;
       }
       
-      var amount = prompt('💸 Request Payout\n\nAvailable Balance: ₹' + (w.balance||0).toLocaleString('en-IN') + '\n\nEnter amount to withdraw (₹):');
+      // Check daily/weekly payout limits
+      var today = new Date().toDateString();
+      var thisWeekStart = new Date();
+      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+      var thisWeekStartStr = thisWeekStart.toDateString();
+      
+      var allReqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]')
+        .filter(function(r){ return String(r.staffId) === String(staffId); });
+      
+      var todayReqs = allReqs.filter(function(r){ return new Date(r.requestedAt).toDateString() === today; });
+      var thisWeekReqs = allReqs.filter(function(r){ return new Date(r.requestedAt) >= thisWeekStart; });
+      
+      var todayTotal = todayReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
+      var weekTotal = thisWeekReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
+      
+      var dailyLimit = 15000; // ₹15,000 per day
+      var weeklyLimit = 50000; // ₹50,000 per week
+      
+      if(todayTotal >= dailyLimit){
+        alert('🚫 Daily Limit Reached\n\nYou have reached your daily payout limit of ₹' + dailyLimit.toLocaleString('en-IN') + '.\nToday\'s total: ₹' + todayTotal.toLocaleString('en-IN') + '\n\nTry again tomorrow.');
+        return;
+      }
+      
+      if(weekTotal >= weeklyLimit){
+        alert('🚫 Weekly Limit Reached\n\nYou have reached your weekly payout limit of ₹' + weeklyLimit.toLocaleString('en-IN') + '.\nThis week\'s total: ₹' + weekTotal.toLocaleString('en-IN') + '\n\nTry again next week.');
+        return;
+      }
+      
+      var remainingDaily = dailyLimit - todayTotal;
+      var remainingWeekly = weeklyLimit - weekTotal;
+      var maxAllowed = Math.min(maxPayout, remainingDaily, remainingWeekly, availableBalance);
+      
+      var amount = prompt('💸 Request Payout\n\nAvailable Balance: ₹' + availableBalance.toLocaleString('en-IN') + '\nMinimum: ₹' + minPayout.toLocaleString('en-IN') + '\nMaximum: ₹' + maxAllowed.toLocaleString('en-IN') + '\n\nDaily Remaining: ₹' + remainingDaily.toLocaleString('en-IN') + '\nWeekly Remaining: ₹' + remainingWeekly.toLocaleString('en-IN') + '\n\nEnter amount to withdraw (₹):');
       if(!amount) return;
       
       var amt = parseInt(amount);
-      if(!amt || amt < 1){
-        alert('❌ Invalid Amount\n\nPlease enter a valid amount greater than ₹0.');
+      if(!amt || amt < minPayout){
+        alert('❌ Amount Too Low\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN'));
         return;
       }
       
-      if(amt > (w.balance || 0)){
-        alert('❌ Insufficient Balance\n\nAmount exceeds your available balance of ₹' + (w.balance||0).toLocaleString('en-IN'));
+      if(amt > maxAllowed){
+        alert('❌ Amount Too High\n\nMaximum allowed: ₹' + maxAllowed.toLocaleString('en-IN') + '\nYou entered: ₹' + amt.toLocaleString('en-IN') + '\n\nReasons for limit:\n• Per request limit: ₹' + maxPayout.toLocaleString('en-IN') + '\n• Daily remaining: ₹' + remainingDaily.toLocaleString('en-IN') + '\n• Weekly remaining: ₹' + remainingWeekly.toLocaleString('en-IN'));
         return;
       }
       
-      if(confirm('💳 Confirm Payout Request\n\nAmount: ₹' + amt.toLocaleString('en-IN') + '\nBank: ' + bankData.bankName + '\nAccount: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '\n\nSubmit payout request?')){
+      if(confirm('💳 Confirm Payout Request\n\nAmount: ₹' + amt.toLocaleString('en-IN') + '\nBank: ' + bankData.bankName + '\nAccount: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '\n\n⚠️ PAYOUT LIMITS:\n• Min: ₹' + minPayout.toLocaleString('en-IN') + ' | Max per request: ₹' + maxPayout.toLocaleString('en-IN') + '\n• Daily limit: ₹' + dailyLimit.toLocaleString('en-IN') + '\n• Weekly limit: ₹' + weeklyLimit.toLocaleString('en-IN') + '\n\nSubmit payout request?')){
         submitPayoutRequest(amt);
       }
     }
@@ -2246,10 +2339,54 @@
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var w = getWallet();
       var amt = parseInt(document.getElementById('po_req_amount').value);
-      if(!amt || amt < 1){ alert('Please enter a valid amount.'); return; }
-      if(amt > (w.balance || 0)){ alert('Amount exceeds your available balance of ₹' + (w.balance||0).toLocaleString('en-IN')); return; }
+      var minPayout = 500;
+      var maxPayout = 10000;
+      
+      if(!amt || amt < minPayout){ 
+        alert('❌ Invalid Amount\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN')); 
+        return; 
+      }
+      
+      if(amt > maxPayout){ 
+        alert('❌ Amount Too High\n\nMaximum payout per request is ₹' + maxPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + amt.toLocaleString('en-IN')); 
+        return; 
+      }
+      
+      if(amt > (w.balance || 0)){ 
+        alert('❌ Insufficient Balance\n\nAmount exceeds your available balance of ₹' + (w.balance||0).toLocaleString('en-IN')); 
+        return; 
+      }
+      
+      // Check daily/weekly limits
+      var today = new Date().toDateString();
+      var thisWeekStart = new Date();
+      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+      
+      var allReqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]')
+        .filter(function(r){ return String(r.staffId) === String(staffId); });
+      
+      var todayReqs = allReqs.filter(function(r){ return new Date(r.requestedAt).toDateString() === today; });
+      var thisWeekReqs = allReqs.filter(function(r){ return new Date(r.requestedAt) >= thisWeekStart; });
+      
+      var todayTotal = todayReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
+      var weekTotal = thisWeekReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
+      
+      var dailyLimit = 15000;
+      var weeklyLimit = 50000;
+      
+      if(todayTotal + amt > dailyLimit){
+        alert('🚫 Daily Limit Exceeded\n\nThis request would exceed your daily limit of ₹' + dailyLimit.toLocaleString('en-IN') + '.\nToday\'s total: ₹' + todayTotal.toLocaleString('en-IN') + '\nRemaining: ₹' + (dailyLimit - todayTotal).toLocaleString('en-IN'));
+        return;
+      }
+      
+      if(weekTotal + amt > weeklyLimit){
+        alert('🚫 Weekly Limit Exceeded\n\nThis request would exceed your weekly limit of ₹' + weeklyLimit.toLocaleString('en-IN') + '.\nThis week\'s total: ₹' + weekTotal.toLocaleString('en-IN') + '\nRemaining: ₹' + (weeklyLimit - weekTotal).toLocaleString('en-IN'));
+        return;
+      }
+      
       var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       if(!bankData || !bankData.accNo){ alert('Please add your bank details first.'); return; }
+      
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
       reqs.push({
         id: 'pr_' + Date.now(),
@@ -2373,17 +2510,51 @@
       new Razorpay(options).open();
     }
 
+    // Show/hide other bank input
+    document.getElementById('bankBankName').addEventListener('change', function(){
+      var otherInput = document.getElementById('otherBankInput');
+      if(this.value === 'Other'){
+        otherInput.style.display = 'block';
+        document.getElementById('bankOtherName').required = true;
+      } else {
+        otherInput.style.display = 'none';
+        document.getElementById('bankOtherName').required = false;
+        document.getElementById('bankOtherName').value = '';
+      }
+    });
+
     // BANK
     function saveBankDetails(){      var staffId = localStorage.getItem('hs_staff_id');
+      var selectedBank = document.getElementById('bankBankName').value;
+      var bankName = selectedBank === 'Other' ? document.getElementById('bankOtherName').value.trim() : selectedBank;
+      
       var data = {
         name: document.getElementById('bankName').value.trim(),
-        bankName: document.getElementById('bankBankName').value.trim(),
+        bankName: bankName,
         accNo: document.getElementById('bankAccNo').value.trim(),
-        ifsc: document.getElementById('bankIFSC').value.trim(),
+        ifsc: document.getElementById('bankIFSC').value.trim().toUpperCase(),
         upi: document.getElementById('bankUPI').value.trim(),
         type: document.getElementById('bankType').value
       };
-      if(!data.name || !data.bankName || !data.accNo || !data.ifsc){ alert('Please fill all required fields.'); return; }
+      
+      if(!data.name || !data.bankName || !data.accNo || !data.ifsc){ 
+        alert('❌ Missing Required Fields\n\nPlease fill all required fields:\n• Account Holder Name\n• Bank Name\n• Account Number\n• IFSC Code'); 
+        return; 
+      }
+      
+      // Validate IFSC format (4 letters + 7 digits)
+      var ifscPattern = /^[A-Z]{4}[0-9]{7}$/;
+      if(!ifscPattern.test(data.ifsc)){
+        alert('❌ Invalid IFSC Code\n\nIFSC code should be 11 characters:\n• First 4 letters (bank code)\n• Last 7 digits (branch code)\n\nExample: SBIN0001234');
+        return;
+      }
+      
+      // Validate account number (6-18 digits)
+      if(!/^[0-9]{6,18}$/.test(data.accNo)){
+        alert('❌ Invalid Account Number\n\nAccount number should be 6-18 digits only.');
+        return;
+      }
+      
       localStorage.setItem('hs_bank_' + staffId, JSON.stringify(data));
       // Sync bank details to Firebase under staff_bank collection
       if(window.fbUpdate) fbUpdate('staff_bank', String(staffId), Object.assign({staffId: staffId}, data));
@@ -2398,7 +2569,30 @@
       var data = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       if(!data) return;
       document.getElementById('bankName').value = data.name || '';
-      document.getElementById('bankBankName').value = data.bankName || '';
+      
+      // Handle bank selection
+      var bankSelect = document.getElementById('bankBankName');
+      var otherInput = document.getElementById('otherBankInput');
+      var otherNameInput = document.getElementById('bankOtherName');
+      
+      // Check if saved bank is in the dropdown
+      var bankFound = false;
+      for(var i = 0; i < bankSelect.options.length; i++){
+        if(bankSelect.options[i].value === data.bankName){
+          bankSelect.value = data.bankName;
+          bankFound = true;
+          break;
+        }
+      }
+      
+      // If bank not found in dropdown, select "Other" and show custom input
+      if(!bankFound && data.bankName){
+        bankSelect.value = 'Other';
+        otherInput.style.display = 'block';
+        otherNameInput.value = data.bankName;
+        otherNameInput.required = true;
+      }
+      
       document.getElementById('bankAccNo').value = data.accNo || '';
       document.getElementById('bankIFSC').value = data.ifsc || '';
       document.getElementById('bankUPI').value = data.upi || '';
