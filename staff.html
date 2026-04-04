@@ -2287,36 +2287,39 @@
         return;
       }
       
+      // Check if already processing a request (prevent double submission)
+      if(window._payoutProcessing){
+        alert('⏳ Processing Request\n\nPlease wait, your payout request is being processed...');
+        return;
+      }
+      
       var remainingDaily = dailyLimit - todayTotal;
       var remainingWeekly = weeklyLimit - weekTotal;
       var maxAllowed = Math.min(maxPayout, remainingDaily, remainingWeekly, availableBalance);
       
-      var amount = prompt('💸 Request Payout\n\nAvailable Balance: ₹' + availableBalance.toLocaleString('en-IN') + '\nMinimum: ₹' + minPayout.toLocaleString('en-IN') + '\nMaximum: ₹' + maxAllowed.toLocaleString('en-IN') + '\n\nDaily Remaining: ₹' + remainingDaily.toLocaleString('en-IN') + '\nWeekly Remaining: ₹' + remainingWeekly.toLocaleString('en-IN') + '\n\nEnter amount to withdraw (₹):');
-      if(!amount) return;
-      
-      var amt = parseInt(amount);
-      if(!amt || amt < minPayout){
-        alert('❌ Amount Too Low\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN'));
-        return;
-      }
-      
-      if(amt > maxAllowed){
-        alert('❌ Amount Too High\n\nMaximum allowed: ₹' + maxAllowed.toLocaleString('en-IN') + '\nYou entered: ₹' + amt.toLocaleString('en-IN') + '\n\nReasons for limit:\n• Per request limit: ₹' + maxPayout.toLocaleString('en-IN') + '\n• Daily remaining: ₹' + remainingDaily.toLocaleString('en-IN') + '\n• Weekly remaining: ₹' + remainingWeekly.toLocaleString('en-IN'));
-        return;
-      }
-      
-      if(confirm('💳 Confirm Payout Request\n\nAmount: ₹' + amt.toLocaleString('en-IN') + '\nBank: ' + bankData.bankName + '\nAccount: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '\n\n⚠️ PAYOUT LIMITS:\n• Min: ₹' + minPayout.toLocaleString('en-IN') + ' | Max per request: ₹' + maxPayout.toLocaleString('en-IN') + '\n• Daily limit: ₹' + dailyLimit.toLocaleString('en-IN') + '\n• Weekly limit: ₹' + weeklyLimit.toLocaleString('en-IN') + '\n\nSubmit payout request?')){
-        submitPayoutRequest(amt);
-      }
+      // Show bank account selection and amount input modal
+      showPayoutModal(maxAllowed, remainingDaily, remainingWeekly, availableBalance, minPayout);
     }
 
     function submitPayoutRequest(amt){
+      if(window._payoutProcessing && window._payoutProcessing !== 'initial') return;
+      window._payoutProcessing = 'processing';
+      
       var staffId = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
-      reqs.push({
-        id: 'pr_' + Date.now(),
+      
+      // Double-check for existing pending request
+      var existingPending = reqs.find(function(r){ return String(r.staffId) === String(staffId) && r.status === 'pending'; });
+      if(existingPending){
+        alert('⏳ Request Already Exists\n\nYou already have a pending payout request.');
+        window._payoutProcessing = false;
+        return;
+      }
+      
+      var newRequest = {
+        id: 'pr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         staffId: staffId,
         staffName: staffName,
         amount: amt,
@@ -2326,9 +2329,21 @@
         upi: bankData.upi || '',
         status: 'pending',
         requestedAt: new Date().toLocaleString()
-      });
+      };
+      
+      reqs.push(newRequest);
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      if(window.fbSave) fbSave('payout_requests', reqs[reqs.length-1]);
+      
+      if(window.fbSave) {
+        fbSave('payout_requests', newRequest).then(function(){
+          window._payoutProcessing = false;
+        }).catch(function(){
+          window._payoutProcessing = false;
+        });
+      } else {
+        window._payoutProcessing = false;
+      }
+      
       alert('✅ Payout Request Submitted!\n\nYour payout request of ₹' + amt.toLocaleString('en-IN') + ' has been submitted successfully. Admin will process it within 24-48 hours.');
       renderPayout();
     }
@@ -3597,3 +3612,78 @@
 </body>
 </html>
 
+
+    function showPayoutModal(maxAllowed, remainingDaily, remainingWeekly, availableBalance, minPayout){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      
+      // Create modal HTML
+      var modalHTML = '<div id="payoutModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;">'
+        + '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.3);border-radius:16px;width:100%;max-width:450px;padding:1.5rem;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">'
+        + '<h3 style="font-size:1.1rem;font-weight:900;color:#fff;margin:0;"><i class="fas fa-money-bill-wave" style="color:#4caf50;"></i> Request Payout</h3>'
+        + '<button onclick="closePayoutModal()" style="background:none;border:none;color:#9a9080;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>'
+        + '</div>'
+        + '<div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:1rem;margin-bottom:1.25rem;">'
+        + '<div style="font-size:0.85rem;color:#4caf50;font-weight:700;margin-bottom:0.5rem;">💰 Available Balance: ₹' + availableBalance.toLocaleString('en-IN') + '</div>'
+        + '<div style="font-size:0.72rem;color:#9a9080;line-height:1.4;">Min: ₹' + minPayout.toLocaleString('en-IN') + ' | Max: ₹' + maxAllowed.toLocaleString('en-IN') + '<br/>Daily Remaining: ₹' + remainingDaily.toLocaleString('en-IN') + ' | Weekly Remaining: ₹' + remainingWeekly.toLocaleString('en-IN') + '</div>'
+        + '</div>'
+        + '<div style="margin-bottom:1rem;">'
+        + '<label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.4rem;">Bank Account *</label>'
+        + '<div style="background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;">'
+        + '<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem;">' + bankData.bankName + '</div>'
+        + '<div style="font-size:0.72rem;color:#c9a84c;">A/C: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + ' | IFSC: ' + bankData.ifsc + '</div>'
+        + (bankData.upi ? '<div style="font-size:0.68rem;color:#9a9080;margin-top:0.1rem;">UPI: ' + bankData.upi + '</div>' : '')
+        + '</div>'
+        + '</div>'
+        + '<div style="margin-bottom:1.25rem;">'
+        + '<label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.4rem;">Amount (₹) *</label>'
+        + '<input type="number" id="payoutAmount" placeholder="Enter amount" min="' + minPayout + '" max="' + maxAllowed + '" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;" onkeypress="if(event.key===\'Enter\')processPayoutRequest()"/>'
+        + '</div>'
+        + '<div style="display:flex;gap:0.75rem;">'
+        + '<button onclick="closePayoutModal()" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:10px;padding:0.75rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'
+        + '<button onclick="processPayoutRequest()" style="flex:1;background:#4caf50;color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;"><i class="fas fa-paper-plane"></i> Submit Request</button>'
+        + '</div>'
+        + '</div></div>';
+      
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+      document.getElementById('payoutAmount').focus();
+    }
+
+    function closePayoutModal(){
+      var modal = document.getElementById('payoutModal');
+      if(modal) modal.remove();
+      window._payoutProcessing = false;
+    }
+
+    function processPayoutRequest(){
+      if(window._payoutProcessing) return;
+      window._payoutProcessing = true;
+      
+      var amt = parseInt(document.getElementById('payoutAmount').value);
+      var staffId = localStorage.getItem('hs_staff_id');
+      var w = getWallet();
+      var minPayout = 500;
+      var maxPayout = Math.min(w.balance || 0, 10000);
+      
+      if(!amt || amt < minPayout){
+        alert('❌ Amount Too Low\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN'));
+        window._payoutProcessing = false;
+        return;
+      }
+      
+      if(amt > maxPayout){
+        alert('❌ Amount Too High\n\nMaximum allowed: ₹' + maxPayout.toLocaleString('en-IN') + '\nYou entered: ₹' + amt.toLocaleString('en-IN'));
+        window._payoutProcessing = false;
+        return;
+      }
+      
+      // Final confirmation
+      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      if(confirm('💳 Confirm Payout Request\n\nAmount: ₹' + amt.toLocaleString('en-IN') + '\nBank: ' + bankData.bankName + '\nAccount: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '\n\nSubmit payout request?')){
+        submitPayoutRequest(amt);
+        closePayoutModal();
+      } else {
+        window._payoutProcessing = false;
+      }
+    }
