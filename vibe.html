@@ -350,7 +350,6 @@ function render(){
       +(u?'<video class="vcard-vid" src="'+u+'" muted loop playsinline preload="none" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>':'')
       +'<div class="vcard-overlay"></div>'
       +'<div class="vcard-play"><i class="fas fa-play"></i></div>'
-      +(item.category&&item.category!=='all'?'<div class="vcard-cat">'+item.category+'</div>':'')
       +(item.title?'<div class="vcard-title">'+item.title+'</div>':'')
       +'</div>';
   }).join('');
