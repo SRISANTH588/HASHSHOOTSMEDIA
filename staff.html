@@ -977,7 +977,7 @@
       if(name === 'wallet') renderWallet();
       if(name === 'payout') renderPayout();
       if(name === 'testimonials') renderStvGrid();
-      if(name === 'profile') loadBankDetails();
+      if(name === 'profile') { loadBankDetails(); loadStaffAddress(); }
       if(name === 'address') loadStaffAddress();
       if(name === 'aieditor') saie_init();
     }
@@ -1900,6 +1900,57 @@
     }
 
     renderAssignedShoots();
+
+    // ── SYNC ALL DATA FROM FIREBASE ON LOAD ──────────────────────────────────
+    (async function syncAllFromFirebase(){
+      var myId = String(localStorage.getItem('hs_staff_id'));
+      try {
+        // 1. Wallet
+        var walletSnap = await fbGet('wallets', myId);
+        if(walletSnap){
+          var wLocal = { balance: walletSnap.balance||0, totalEarned: walletSnap.totalEarned||0, pending: walletSnap.pending||0, withdrawn: walletSnap.withdrawn||0, transactions: walletSnap.transactions||[] };
+          localStorage.setItem('hs_wallet_' + myId, JSON.stringify(wLocal));
+        }
+        // 2. Demos
+        var allDemos = await fbGetAll('demos');
+        if(allDemos.length){ localStorage.setItem('hs_demos', JSON.stringify(allDemos)); }
+        // 3. Feedbacks received by this staff
+        var allFeedbacks = await fbGetAll('feedbacks');
+        if(allFeedbacks.length){ localStorage.setItem('hs_feedbacks', JSON.stringify(allFeedbacks)); }
+        // 4. Creator feedbacks submitted by this staff
+        var allCreatorFb = await fbGetAll('creator_feedbacks');
+        if(allCreatorFb.length){ localStorage.setItem('hs_creator_feedbacks', JSON.stringify(allCreatorFb)); }
+        // 5. Event feedbacks collected by this staff
+        var allEventFb = await fbGetAll('event_feedbacks');
+        if(allEventFb.length){ localStorage.setItem('hs_event_feedbacks', JSON.stringify(allEventFb)); }
+        // 6. Payout requests
+        var allPayouts = await fbGetAll('payout_requests');
+        if(allPayouts.length){ localStorage.setItem('hs_payout_requests', JSON.stringify(allPayouts)); }
+        // 7. Bank details
+        var bankSnap = await fbGet('staff_bank', myId);
+        if(bankSnap){ localStorage.setItem('hs_bank_' + myId, JSON.stringify(bankSnap)); }
+        // 8. Staff videos
+        var allVideos = await fbGetAll('staff_videos');
+        if(allVideos.length){ localStorage.setItem('hs_staff_videos', JSON.stringify(allVideos)); renderMyVideos(); }
+        // 9. Testimonial videos
+        var allStv = await fbGetAll('testimonial_videos');
+        if(allStv.length){ localStorage.setItem('hs_testi_videos', JSON.stringify(allStv)); }
+        // 10. Store products & ID card
+        var allProducts = await fbGetAll('products');
+        if(allProducts.length){ localStorage.setItem('hs_products', JSON.stringify(allProducts)); }
+        var idcardSnap = await fbGet('settings', 'idcard');
+        if(idcardSnap){ localStorage.setItem('hs_idcard', JSON.stringify(idcardSnap)); }
+        // 11. Address
+        var addrSnap = await fbGet('staff_addresses', myId);
+        if(addrSnap){ localStorage.setItem('hs_staff_address_' + myId, JSON.stringify(addrSnap)); }
+        // Re-render active tab after sync
+        renderAssignedShoots();
+        renderCreatorDemos();
+        renderWallet();
+        renderPayout();
+      } catch(e){ console.warn('syncAllFromFirebase:', e); }
+    })();
+
     // Also fetch directly from Firestore on load so shoots appear even before listener fires
     (async function(){
       try {
@@ -1932,6 +1983,67 @@
       } catch(e){ console.warn('shoots fetch:', e); }
     })();
     setInterval(function(){ if(!_shootUploadInProgress){ renderAssignedShoots(); renderPayout(); } }, 5000);
+
+    // ── REAL-TIME LISTENERS for all tabs ────────────────────────────────────
+    (async function setupListeners(){
+      var myId = String(localStorage.getItem('hs_staff_id'));
+      // Assigned shoots
+      if(window.fbListen){
+        fbListen('assigned_shoots', function(docs){
+          var others = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(x){ return String(x.staffId) !== myId; });
+          var mine = docs.filter(function(d){ return String(d.staffId) === myId || String(d.staffId) === String(Number(myId)); });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(mine)));
+          if(!_shootUploadInProgress) renderAssignedShoots();
+        });
+        // Demos
+        fbListen('demos', function(docs){
+          localStorage.setItem('hs_demos', JSON.stringify(docs));
+          renderCreatorDemos();
+        });
+        // Wallet
+        if(window.fbListenDoc){
+          fbListenDoc('wallets', myId, function(data){
+            var wLocal = { balance: data.balance||0, totalEarned: data.totalEarned||0, pending: data.pending||0, withdrawn: data.withdrawn||0, transactions: data.transactions||[] };
+            localStorage.setItem('hs_wallet_' + myId, JSON.stringify(wLocal));
+            renderWallet();
+            renderPayout();
+            var dashBal = document.getElementById('dashWalletBal');
+            if(dashBal) dashBal.textContent = (wLocal.balance||0).toLocaleString('en-IN');
+          });
+        }
+        // Feedbacks
+        fbListen('feedbacks', function(docs){
+          localStorage.setItem('hs_feedbacks', JSON.stringify(docs));
+          renderCreatorFeedback();
+        });
+        fbListen('creator_feedbacks', function(docs){
+          localStorage.setItem('hs_creator_feedbacks', JSON.stringify(docs));
+          renderCreatorShootFeedback();
+        });
+        fbListen('event_feedbacks', function(docs){
+          localStorage.setItem('hs_event_feedbacks', JSON.stringify(docs));
+          renderEventFeedbackCollected();
+        });
+        // Payout requests
+        fbListen('payout_requests', function(docs){
+          localStorage.setItem('hs_payout_requests', JSON.stringify(docs));
+          renderPayout();
+        });
+        // Staff videos
+        fbListen('staff_videos', function(docs){
+          localStorage.setItem('hs_staff_videos', JSON.stringify(docs));
+          renderMyVideos();
+        });
+        // Testimonial videos
+        fbListen('testimonial_videos', function(docs){
+          localStorage.setItem('hs_testi_videos', JSON.stringify(docs));
+        });
+        // Store products
+        fbListen('products', function(docs){
+          localStorage.setItem('hs_products', JSON.stringify(docs));
+        });
+      }
+    })();
 
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
@@ -2740,7 +2852,12 @@
     function loadBankDetails(){
       var staffId = localStorage.getItem('hs_staff_id');
       var data = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
-      if(!data) return;
+      if(!data){
+        if(window.fbGet) fbGet('staff_bank', staffId).then(function(snap){
+          if(snap){ localStorage.setItem('hs_bank_' + staffId, JSON.stringify(snap)); loadBankDetails(); }
+        });
+        return;
+      }
       document.getElementById('bankName').value = data.name || '';
       
       // Handle bank selection
@@ -2821,7 +2938,12 @@
     function loadStaffAddress(){
       var sId = localStorage.getItem('hs_staff_id');
       var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
-      if(!data) return;
+      if(!data){
+        if(window.fbGet) fbGet('staff_address', sId).then(function(snap){
+          if(snap){ localStorage.setItem('hs_address_' + sId, JSON.stringify(snap)); loadStaffAddress(); }
+        });
+        return;
+      }
       var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
       set('addr_name', data.name); set('addr_phone', data.phone);
       set('addr_line1', data.line1); set('addr_line2', data.line2);
@@ -2847,57 +2969,6 @@
     // Start class
     function startClass(name){
       alert('Starting: ' + name + '\n\nAI class content coming soon!');
-
-    // ── STAFF ADDRESS ──────────────────────────────────────────────
-    function saveStaffAddress(){
-      var sId = localStorage.getItem('hs_staff_id');
-      var data = {
-        name:     (document.getElementById('addr_name')||{}).value||'',
-        phone:    (document.getElementById('addr_phone')||{}).value||'',
-        line1:    (document.getElementById('addr_line1')||{}).value||'',
-        line2:    (document.getElementById('addr_line2')||{}).value||'',
-        city:     (document.getElementById('addr_city')||{}).value||'',
-        state:    (document.getElementById('addr_state')||{}).value||'',
-        pin:      (document.getElementById('addr_pin')||{}).value||'',
-        landmark: (document.getElementById('addr_landmark')||{}).value||''
-      };
-      if(!data.name||!data.line1||!data.city||!data.state||!data.pin){
-        alert('Please fill all required fields (Name, Address Line 1, City, State, PIN Code).');
-        return;
-      }
-      if(!/^[0-9]{6}$/.test(data.pin)){ alert('PIN Code must be 6 digits.'); return; }
-      localStorage.setItem('hs_address_' + sId, JSON.stringify(data));
-      if(window.fbUpdate) fbUpdate('staff_address', String(sId), Object.assign({ staffId: sId, staffName: localStorage.getItem('hs_staff_name')||'' }, data));
-      var toast = document.getElementById('addrToast');
-      if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 3000); }
-      showSavedAddress(data);
-    }
-
-    function loadStaffAddress(){
-      var sId = localStorage.getItem('hs_staff_id');
-      var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
-      if(!data) return;
-      var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
-      set('addr_name', data.name); set('addr_phone', data.phone);
-      set('addr_line1', data.line1); set('addr_line2', data.line2);
-      set('addr_city', data.city); set('addr_state', data.state);
-      set('addr_pin', data.pin); set('addr_landmark', data.landmark);
-      showSavedAddress(data);
-    }
-
-    function showSavedAddress(data){
-      var el = document.getElementById('addrSavedDisplay');
-      var txt = document.getElementById('addrSavedText');
-      if(!el||!txt) return;
-      el.style.display = 'block';
-      txt.innerHTML =
-        '<strong style="color:#fff;">' + (data.name||'') + '</strong> &nbsp;·&nbsp; ' + (data.phone||'') + '<br/>'
-        + (data.line1||'') + (data.line2 ? ', ' + data.line2 : '') + '<br/>'
-        + (data.landmark ? data.landmark + ', ' : '')
-        + (data.city||'') + ' — ' + (data.pin||'') + '<br/>'
-        + (data.state||'');
-    }
-    // ── END STAFF ADDRESS ──────────────────────────────────────────────
     }
 
     // EVENT FEEDBACK
