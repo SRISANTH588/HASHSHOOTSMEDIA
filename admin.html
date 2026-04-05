@@ -732,15 +732,22 @@
             <input type="text" id="sf_name" placeholder="e.g. Kiran Madireddy"/>
           </div>
           <div class="form-group">
-            <label>Username *</label>
-            <input type="text" id="sf_username" placeholder="e.g. kiran123"/>
+            <label>Staff ID * <span style="font-size:0.7rem;color:#9a9080;font-weight:400;">(unique number)</span></label>
+            <input type="number" id="sf_id" placeholder="e.g. 1001" min="1"/>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
+            <label>Username *</label>
+            <input type="text" id="sf_username" placeholder="e.g. kiran123"/>
+          </div>
+          <div class="form-group">
             <label>Password *</label>
             <input type="password" id="sf_password" placeholder="Set a strong password"/>
           </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
           <div class="form-group">
             <label>Role *</label>
             <select id="sf_role" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
@@ -3337,18 +3344,24 @@ Priority Support</textarea></div>
 
     function createStaff(){
       var name     = document.getElementById('sf_name').value.trim();
+      var staffIdRaw = document.getElementById('sf_id').value.trim();
       var username = document.getElementById('sf_username').value.trim();
       var password = document.getElementById('sf_password').value.trim();
       var roleVal  = document.getElementById('sf_role').value;
       var role     = roleVal === 'custom' ? document.getElementById('sf_custom_role').value.trim() : roleVal;
       var access   = Array.from(document.querySelectorAll('#sf_access_grid input[type=checkbox]:checked')).map(function(c){ return c.value; });
       var toast    = document.getElementById('sfToast');
-      if(!name||!username||!password||!role){ toast.textContent='Please fill all required fields.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return; }
+      if(!name||!staffIdRaw||!username||!password||!role){ toast.textContent='Please fill all required fields including Staff ID.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return; }
+      var staffId = parseInt(staffIdRaw);
+      if(isNaN(staffId)||staffId<1){ toast.textContent='Staff ID must be a positive number.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return; }
       var staff = getStaff();
+      if(staff.find(function(s){ return String(s.id)===String(staffId); })){
+        toast.textContent='Staff ID '+staffId+' already exists. Use a different ID.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return;
+      }
       if(staff.find(function(s){ return s.username.toLowerCase()===username.toLowerCase(); })){
         toast.textContent='Username already exists.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return;
       }
-      var member = { id: Date.now(), name:name, username:username, password:password, role:role, access:access, createdAt: new Date().toLocaleString() };
+      var member = { id: staffId, name:name, username:username, password:password, role:role, access:access, createdAt: new Date().toLocaleString() };
       // Write ONLY to Firestore — onSnapshot will update localStorage + re-render
       (async function(){
         try {
@@ -3370,6 +3383,7 @@ Priority Support</textarea></div>
         }
       })();
       document.getElementById('sf_name').value='';
+      document.getElementById('sf_id').value='';
       document.getElementById('sf_username').value='';
       document.getElementById('sf_password').value='';
       document.getElementById('sf_role').value='';
@@ -3385,6 +3399,7 @@ Priority Support</textarea></div>
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
           +'<div>'
           +'<div style="font-weight:700;color:#fff;font-size:0.92rem;">'+s.name+'</div>'
+          +'<div style="font-size:0.75rem;color:#c9a84c;font-weight:700;margin-top:0.1rem;">ID: #'+s.id+'</div>'
           +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">@'+s.username+' &nbsp;·&nbsp; '+s.role+'</div>'
           +'<div style="font-size:0.72rem;color:#6a6050;margin-top:0.2rem;">Access: '+(s.access&&s.access.length?s.access.join(', '):'none')+'</div>'
           +'</div>'
