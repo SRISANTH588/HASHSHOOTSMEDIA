@@ -2407,6 +2407,15 @@
     // STORE
     async function renderStore(){
       if(window.loadRazorpayFromFirebase) await loadRazorpayFromFirebase();
+      // Fetch latest store data from Firebase if not in localStorage
+      if(!localStorage.getItem('hs_idcard') || localStorage.getItem('hs_idcard') === '{}') {
+        try {
+          if(window.fbGet) {
+            var idc = await fbGet('settings', 'idcard');
+            if(idc) localStorage.setItem('hs_idcard', JSON.stringify(idc));
+          }
+        } catch(e){}
+      }
       var tshirts = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
       var idcard  = JSON.parse(localStorage.getItem('hs_idcard')  || '{}');
       var storeCfg = JSON.parse(localStorage.getItem('hs_store_settings') || '{}');
@@ -2448,7 +2457,7 @@
 
       // ID CARD
       var idEl = document.getElementById('storeIdCard');
-      var discountEmail = store.discountEmail || contactEmail;
+      var discountEmail = storeCfg.discountEmail || contactEmail;
       var idMailSubject = encodeURIComponent('ID Card Request \u2014 ' + staffName);
       var idMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to request my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
       var discountMailSubject = encodeURIComponent('ID Card Discount Request \u2014 ' + staffName);
@@ -2462,7 +2471,7 @@
         + (idcard.image ? '<img src="'+idcard.image+'" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid rgba(245,166,35,0.3);"/>' : '<div style="width:90px;height:90px;background:rgba(245,166,35,0.1);border:2px dashed rgba(245,166,35,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-id-badge" style="font-size:2rem;color:#f5a623;opacity:0.5;"></i></div>')
         + '<div style="flex:1;">'
         + '<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">OG Shoots Official ID Card</div>'
-        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || 'Your official identity card for all OG Shoots events and shoots.') + '</div>'
+        + '<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.5rem;">' + (idcard.description || idcard.desc || 'Your official identity card for all OG Shoots events and shoots.') + '</div>'
         + '<div style="font-size:1.2rem;font-weight:900;color:#f5a623;">\u20b9' + Number(idcard.price || 0).toLocaleString('en-IN') + '</div>'
         + '</div></div>'
         + '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(201,168,76,0.06);">'
