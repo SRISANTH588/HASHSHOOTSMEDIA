@@ -132,10 +132,6 @@
       .story-inner { grid-template-columns: 1fr; gap: 2.5rem; }
       .values-grid { grid-template-columns: 1fr 1fr; }
       .hero-stats { gap: 1.5rem; }
-      .founder-card { grid-template-columns: 1fr !important; }
-      .founder-card-reverse { grid-template-columns: 1fr !important; }
-      .founder-card-reverse > div:last-child { order: -1; }
-      .founder-photo { min-height: 320px !important; }
     }
     @media(max-width: 480px) {
       .team-grid { grid-template-columns: 1fr; max-width: 360px; }
@@ -160,46 +156,32 @@
 
   <!-- TEAM -->
   <section class="team-section">
-    <p class="section-label"><i class="fas fa-users"></i> &nbsp;Meet Our Founders</p>
+    <p class="section-label"><i class="fas fa-users"></i> &nbsp;Meet Our Team</p>
     <h2 class="section-title">The Minds Behind <span>OG Shoots</span></h2>
     <p class="section-sub">Meet the passionate individuals who are revolutionizing content creation</p>
-
-    <div style="max-width:1000px;margin:3rem auto;display:flex;flex-direction:column;gap:2rem;padding:0 1.5rem;">
-
-      <!-- FOUNDER 1 -->
-      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:0;border-radius:24px;overflow:hidden;background:#111;border:1px solid rgba(201,168,76,0.15);">
-        <div style="background:#f5f5f5;display:flex;align-items:flex-end;justify-content:center;min-height:420px;overflow:hidden;">
-          <img src="srisanth.jpeg" alt="Boddu Srisanth" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#0a0a0a)'"/>
-        </div>
-        <div style="padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;">
-          <div style="font-size:0.7rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;">Founder &amp; CEO</div>
-          <h3 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:0.5rem;letter-spacing:-0.5px;">Boddu Srisanth</h3>
-          <div style="width:40px;height:3px;background:linear-gradient(90deg,#c9a84c,#a07830);border-radius:2px;margin-bottom:1.5rem;"></div>
-          <p style="font-size:0.92rem;color:#9a9080;line-height:1.8;margin-bottom:1.5rem;">Visionary entrepreneur and the driving force behind OG Shoots. Srisanth built India&rsquo;s first on-demand reel creation platform from the ground up — making professional content accessible to everyone in just 10 minutes.</p>
-          <p style="font-size:0.88rem;color:#6a6050;line-height:1.75;margin-bottom:2rem;font-style:italic;">&ldquo;Your Vision. Our Expertise. Perfectly Delivered.&rdquo;</p>
-          <a href="https://instagram.com/srisanth.18" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.55rem 1.25rem;border-radius:50px;font-size:0.82rem;font-weight:700;text-decoration:none;width:fit-content;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='rgba(201,168,76,0.1)'">
-            <i class="fab fa-instagram"></i> @srisanth.18
-          </a>
+    <div class="team-grid" id="teamGrid">
+      <div class="team-card">
+        <img src="srisanth.jpeg" alt="Boddu Srisanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">BS</div>
+        <div class="team-overlay"></div>
+        <div class="team-insta-hover"><a href="https://instagram.com/srisanth.18" target="_blank"><i class="fab fa-instagram"></i></a></div>
+        <div class="team-info">
+          <div class="team-name">Boddu Srisanth</div>
+          <span class="team-role-pill">Founder &amp; CEO</span>
+          <div><a href="https://instagram.com/srisanth.18" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> @srisanth.18</a></div>
         </div>
       </div>
-
-      <!-- FOUNDER 2 -->
-      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:0;border-radius:24px;overflow:hidden;background:#111;border:1px solid rgba(201,168,76,0.15);">
-        <div style="padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;">
-          <div style="font-size:0.7rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;">Managing Director</div>
-          <h3 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:0.5rem;letter-spacing:-0.5px;">Gulimi Sumanth</h3>
-          <div style="width:40px;height:3px;background:linear-gradient(90deg,#c9a84c,#a07830);border-radius:2px;margin-bottom:1.5rem;"></div>
-          <p style="font-size:0.92rem;color:#9a9080;line-height:1.8;margin-bottom:1.5rem;">Strategic leader and operations expert at OG Shoots. Sumanth ensures every shoot runs seamlessly — from creator onboarding to client delivery — maintaining the highest standards of quality and speed.</p>
-          <p style="font-size:0.88rem;color:#6a6050;line-height:1.75;margin-bottom:2rem;font-style:italic;">&ldquo;Excellence is not a skill, it&rsquo;s an attitude.&rdquo;</p>
-          <a href="https://instagram.com/sumanthh_lazy" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.55rem 1.25rem;border-radius:50px;font-size:0.82rem;font-weight:700;text-decoration:none;width:fit-content;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='rgba(201,168,76,0.1)'">
-            <i class="fab fa-instagram"></i> @sumanthh_lazy
-          </a>
-        </div>
-        <div style="background:#f5f5f5;display:flex;align-items:flex-end;justify-content:center;min-height:420px;overflow:hidden;">
-          <img src="sumanth.jpeg" alt="Gulimi Sumanth" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#0a0a0a)'"/>
+      <div class="team-card">
+        <img src="sumanth.jpeg" alt="Gulimi Sumanth" class="team-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="team-photo-bg" style="display:none;">GS</div>
+        <div class="team-overlay"></div>
+        <div class="team-insta-hover"><a href="https://instagram.com/sumanthh_lazy" target="_blank"><i class="fab fa-instagram"></i></a></div>
+        <div class="team-info">
+          <div class="team-name">Gulimi Sumanth</div>
+          <span class="team-role-pill">Managing Director</span>
+          <div><a href="https://instagram.com/sumanthh_lazy" target="_blank" class="team-insta"><i class="fab fa-instagram"></i> @sumanthh_lazy</a></div>
         </div>
       </div>
-
     </div>
   </section>
 
