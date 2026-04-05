@@ -5681,9 +5681,22 @@ Priority Support</textarea></div>
     }
 
     function clearAllNotifications(){
-      if(!confirm('Clear all notifications?')) return;
+      if(!confirm('Clear all notifications? This will also remove them from the database.')) return;
       localStorage.removeItem('hs_admin_notifs');
+      window._notifsCleared = true;
       renderNotifications();
+      // Delete from Firestore so they don't come back
+      (async function(){
+        try {
+          var f = await _fbAdmin(); if(!f) return;
+          var batch = f.s.writeBatch(f.db);
+          var snap1 = await f.s.getDocs(f.s.collection(f.db,'admin_notifications'));
+          snap1.forEach(function(d){ batch.delete(d.ref); });
+          var snap2 = await f.s.getDocs(f.s.collection(f.db,'notifications'));
+          snap2.forEach(function(d){ batch.delete(d.ref); });
+          await batch.commit();
+        } catch(e){ console.warn('clearAllNotifications Firestore:', e); }
+      })();
     }
 
     // Poll for new events every 4 seconds
@@ -5693,6 +5706,7 @@ Priority Support</textarea></div>
     var _lastEnquiryCount = 0;
 
     function pollNotifications(){
+      if(window._notifsCleared) return;
       var assigns  = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var enquiries= JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
@@ -6307,6 +6321,7 @@ Priority Support</textarea></div>
 
         // Real-time payment notifications from customers
         onSnapshot(query(collection(fbDb,'admin_notifications'), orderBy('createdAt','desc')), function(snap){
+          if(window._notifsCleared) return;
           snap.docChanges().forEach(function(change){
             if(change.type==='added'){
               var data = change.doc.data();
@@ -6317,6 +6332,7 @@ Priority Support</textarea></div>
 
         // Real-time customer cancellation & reschedule notifications
         onSnapshot(query(collection(fbDb,'notifications'), orderBy('createdAt','desc')), function(snap){
+          if(window._notifsCleared) return;
           snap.docChanges().forEach(function(change){
             if(change.type==='added'){
               var data = change.doc.data();
