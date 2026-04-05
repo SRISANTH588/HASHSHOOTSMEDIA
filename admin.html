@@ -5339,6 +5339,20 @@ Priority Support</textarea></div>
       var countEl = document.getElementById('affiliateAppsCount');
       if(countEl) countEl.textContent = list.length+' application(s)';
 
+      var el = document.getElementById('affiliateAppsList');
+      if(!el) return;
+      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No affiliate applications yet.</p>'; return; }
+      el.innerHTML = list.map(function(a){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+' &nbsp;·&nbsp; '+a.channel+'</div>'
+          +(a.profile?'<div style="font-size:0.72rem;margin-top:0.2rem;"><a href="'+a.profile+'" target="_blank" style="color:#c9a84c;">'+a.profile+'</a></div>':'')
+          +(a.audience?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;">'+a.audience+'</div>':'')
+          +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
     // ── PAYMENTS TAB ──────────────────────────────────────────────
     var _pmActiveTab = 'customer';
 
@@ -5357,80 +5371,57 @@ Priority Support</textarea></div>
     }
 
     function renderPaymentsTab(){
-      // ── Customer payments ──
-      var custSearch = (document.getElementById('pm_custSearch') || {}).value || '';
-      var custPayments = JSON.parse(localStorage.getItem('hs_payments') || '[]').slice().reverse();
-      if(custSearch){
-        var q = custSearch.toLowerCase();
-        custPayments = custPayments.filter(function(p){
-          return (p.customerName||'').toLowerCase().includes(q) || (p.paymentId||'').toLowerCase().includes(q) || (p.service||'').toLowerCase().includes(q);
-        });
-      }
-
-      // ── Store payments ──
+      var custSearch  = (document.getElementById('pm_custSearch')  || {}).value || '';
       var storeSearch = (document.getElementById('pm_storeSearch') || {}).value || '';
-      var storePayments = JSON.parse(localStorage.getItem('hs_store_payments') || '[]').slice().reverse();
-      if(storeSearch){
-        var sq = storeSearch.toLowerCase();
-        storePayments = storePayments.filter(function(p){
-          return (p.staffName||'').toLowerCase().includes(sq) || (p.item||'').toLowerCase().includes(sq) || (p.paymentId||'').toLowerCase().includes(sq);
-        });
-      }
 
-      // ── Summary ──
+      var custPayments = JSON.parse(localStorage.getItem('hs_payments') || '[]').slice().reverse();
+      if(custSearch){ var q = custSearch.toLowerCase(); custPayments = custPayments.filter(function(p){ return (p.customerName||'').toLowerCase().includes(q)||(p.paymentId||'').toLowerCase().includes(q)||(p.service||'').toLowerCase().includes(q); }); }
+
+      var storePayments = JSON.parse(localStorage.getItem('hs_store_payments') || '[]').slice().reverse();
+      if(storeSearch){ var sq = storeSearch.toLowerCase(); storePayments = storePayments.filter(function(p){ return (p.staffName||'').toLowerCase().includes(sq)||(p.item||'').toLowerCase().includes(sq)||(p.paymentId||'').toLowerCase().includes(sq); }); }
+
+      // Summary
       var allSuccess = JSON.parse(localStorage.getItem('hs_payments')||'[]');
       var allStore   = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
-      var totalAmt   = allSuccess.reduce(function(s,p){ return s + (p.amount||0); }, 0)
-                     + allStore.reduce(function(s,p){ return s + (p.amount||0); }, 0);
-      var totalCount = allSuccess.length + allStore.length;
-      // Failed = bookings with paymentStatus failed
-      var failedCount = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus === 'failed'; }).length;
-      var ts = document.getElementById('pm_totalSuccess'); if(ts) ts.textContent = '\u20b9' + totalAmt.toLocaleString('en-IN');
+      var totalAmt   = allSuccess.reduce(function(s,p){ return s+(p.amount||0); },0) + allStore.reduce(function(s,p){ return s+(p.amount||0); },0);
+      var failedCount = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus==='failed'; }).length;
+      var ts = document.getElementById('pm_totalSuccess'); if(ts) ts.textContent = '\u20b9'+totalAmt.toLocaleString('en-IN');
       var tf = document.getElementById('pm_totalFailed');  if(tf) tf.textContent = failedCount;
-      var tc = document.getElementById('pm_totalCount');   if(tc) tc.textContent = totalCount;
+      var tc = document.getElementById('pm_totalCount');   if(tc) tc.textContent = allSuccess.length + allStore.length;
 
-      // ── Render customer list ──
+      // Customer list
       var custEl = document.getElementById('pm_custList');
       if(custEl){
-        if(!custPayments.length){
-          custEl.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer payments yet.</div>';
+        var failedBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus==='failed'; });
+        var custHTML = '';
+        if(!custPayments.length && !failedBookings.length){
+          custHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer payments yet.</div>';
         } else {
-          custEl.innerHTML = custPayments.map(function(p){
-            var isPaid   = p.status !== 'failed';
-            var color    = isPaid ? '#4caf50' : '#f44336';
-            var icon     = isPaid ? 'fa-check-circle' : 'fa-times-circle';
-            var label    = isPaid ? 'Paid' : 'Failed';
+          custHTML = custPayments.map(function(p){
+            var color = '#4caf50'; var icon = 'fa-check-circle'; var label = 'Paid';
             return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.1);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
-              + '<div>'
-              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (p.customerName||'Customer') + ' &mdash; ' + (p.service||'') + '</div>'
-              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#c9a84c;"></i> ' + (p.paymentId||'—') + '</div>'
-              + '<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">' + (p.paidAt||'') + '</div>'
-              + '</div>'
-              + '<div style="text-align:right;">'
-              + '<div style="font-size:1.1rem;font-weight:900;color:'+color+';">&#8377;' + Number(p.amount||0).toLocaleString('en-IN') + '</div>'
-              + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas '+icon+'"></i> '+label+'</span>'
-              + '</div>'
-              + '</div>';
+              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(p.customerName||'Customer')+' &mdash; '+(p.service||'')+'</div>'
+              +'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#c9a84c;"></i> '+(p.paymentId||'\u2014')+'</div>'
+              +'<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">'+(p.paidAt||'')+'</div></div>'
+              +'<div style="text-align:right;"><div style="font-size:1.1rem;font-weight:900;color:'+color+';">&#8377;'+Number(p.amount||0).toLocaleString('en-IN')+'</div>'
+              +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas '+icon+'"></i> '+label+'</span></div>'
+              +'</div>';
           }).join('');
+          if(failedBookings.length){
+            custHTML += '<div style="font-size:0.85rem;font-weight:800;color:#f44336;margin:1.25rem 0 0.75rem;"><i class="fas fa-exclamation-triangle"></i> Failed Payment Attempts</div>'
+              + failedBookings.map(function(b){
+                return '<div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-left:3px solid #f44336;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+                  +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(b.name||'Customer')+' &mdash; '+(b.service||'')+'</div>'
+                  +'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(b.city||'')+' &nbsp;&middot;&nbsp; '+(b.date||'')+'</div></div>'
+                  +'<span style="background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-times-circle"></i> Failed</span>'
+                  +'</div>';
+              }).join('');
+          }
         }
+        custEl.innerHTML = custHTML;
       }
 
-      // ── Also show failed bookings in customer panel ──
-      var failedBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus === 'failed'; });
-      if(failedBookings.length && custEl){
-        custEl.innerHTML += '<div style="font-size:0.85rem;font-weight:800;color:#f44336;margin:1.25rem 0 0.75rem;"><i class="fas fa-exclamation-triangle"></i> Failed Payment Attempts</div>'
-          + failedBookings.map(function(b){
-            return '<div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-left:3px solid #f44336;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
-              + '<div>'
-              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (b.name||'Customer') + ' &mdash; ' + (b.service||'') + '</div>'
-              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (b.city||'') + ' &nbsp;&middot;&nbsp; ' + (b.date||'') + '</div>'
-              + '</div>'
-              + '<span style="background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-times-circle"></i> Failed</span>'
-              + '</div>';
-          }).join('');
-      }
-
-      // ── Render store list ──
+      // Store list
       var storeEl = document.getElementById('pm_storeList');
       if(storeEl){
         if(!storePayments.length){
@@ -5438,35 +5429,17 @@ Priority Support</textarea></div>
         } else {
           storeEl.innerHTML = storePayments.map(function(p){
             return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.1);border-left:3px solid #f5a623;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
-              + '<div>'
-              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (p.staffName||'Staff') + ' &mdash; ' + (p.item||'') + (p.size ? ' ('+p.size+')' : '') + '</div>'
-              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#f5a623;"></i> ' + (p.paymentId||'—') + '</div>'
-              + '<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">' + (p.paidAt||'') + '</div>'
-              + '</div>'
-              + '<div style="text-align:right;">'
-              + '<div style="font-size:1.1rem;font-weight:900;color:#f5a623;">&#8377;' + Number(p.amount||0).toLocaleString('en-IN') + '</div>'
-              + '<span style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:#f5a623;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span>'
-              + '</div>'
-              + '</div>';
+              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(p.staffName||'Staff')+' &mdash; '+(p.item||'')+(p.size?' ('+p.size+')':'')+'</div>'
+              +'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#f5a623;"></i> '+(p.paymentId||'\u2014')+'</div>'
+              +'<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">'+(p.paidAt||'')+'</div></div>'
+              +'<div style="text-align:right;"><div style="font-size:1.1rem;font-weight:900;color:#f5a623;">&#8377;'+Number(p.amount||0).toLocaleString('en-IN')+'</div>'
+              +'<span style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:#f5a623;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span></div>'
+              +'</div>';
           }).join('');
         }
       }
     }
-    // ── END PAYMENTS TAB ──────────────────────────────────────────
-      var el = document.getElementById('affiliateAppsList');
-      if(!el) return;
-      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No affiliate applications yet.</p>'; return; }
-      el.innerHTML = list.map(function(a){
-        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
-          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+' &nbsp;·&nbsp; '+a.channel+'</div>'
-          +(a.profile?'<div style="font-size:0.72rem;margin-top:0.2rem;"><a href="'+a.profile+'" target="_blank" style="color:#c9a84c;">'+a.profile+'</a></div>':'')
-          +(a.audience?'<div style="font-size:0.78rem;color:#9a9080;margin-top:0.3rem;">'+a.audience+'</div>':'')
-          +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
-          +'</div>';
-      }).join('');
-    }
-
+    // ── END PAYMENTS TAB ──────────────────────────────────────────────
 
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
