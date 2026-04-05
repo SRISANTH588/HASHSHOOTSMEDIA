@@ -2534,8 +2534,10 @@
           alert('\u2705 Payment successful! Payment ID: ' + response.razorpay_payment_id + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
           // Save payment record
           var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
-          payments.push({ id: Date.now(), item: itemName, size: selectedSize, amount: price, paymentId: response.razorpay_payment_id, staffName: staffName, paidAt: new Date().toLocaleString() });
+          var sp = { id: Date.now(), item: itemName, size: selectedSize, amount: price, paymentId: response.razorpay_payment_id, staffName: staffName, staffId: localStorage.getItem('hs_staff_id'), paidAt: new Date().toLocaleString(), status: 'paid' };
+          payments.push(sp);
           localStorage.setItem('hs_store_payments', JSON.stringify(payments));
+          if(window.fbSave) fbSave('store_payments', sp);
           // Notify admin
           if(window.fbSave) fbSave('admin_notifications', { type:'payment', title:'Store Purchase', message: staffName + ' paid \u20b9' + price.toLocaleString('en-IN') + ' for ' + itemName, read: false, time: new Date().toLocaleString() });
         },

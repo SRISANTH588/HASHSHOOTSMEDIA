@@ -167,6 +167,7 @@
       <button class="tab-btn" onclick="switchTab('press',this)" id="pressTabBtn"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+      <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
 
     </div>
 
@@ -1834,6 +1835,53 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    <!-- PAYMENTS TAB -->
+    <div class="tab-panel" id="tab-payments">
+      <div class="about-form">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-credit-card" style="color:#c9a84c;margin-right:0.5rem;"></i> Payments</h2>
+
+        <!-- Sub-tabs -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+          <button id="pmtab-customer" onclick="switchPmTab('customer',this)" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user"></i> Customer Payments</button>
+          <button id="pmtab-store" onclick="switchPmTab('store',this)" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-store"></i> Staff Store Payments</button>
+        </div>
+
+        <!-- Summary cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;">
+          <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="pm_totalSuccess">&#8377;0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Collected</div>
+          </div>
+          <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#f44336;" id="pm_totalFailed">0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Failed Payments</div>
+          </div>
+          <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#c9a84c;" id="pm_totalCount">0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Transactions</div>
+          </div>
+        </div>
+
+        <!-- Customer Payments panel -->
+        <div id="pmpanel-customer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:800;color:#fff;"><i class="fas fa-user" style="color:#4caf50;"></i> Customer Booking Payments</div>
+            <input type="text" id="pm_custSearch" oninput="renderPaymentsTab()" placeholder="Search name / payment ID..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.78rem;outline:none;width:220px;"/>
+          </div>
+          <div id="pm_custList"></div>
+        </div>
+
+        <!-- Staff Store Payments panel -->
+        <div id="pmpanel-store" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:800;color:#fff;"><i class="fas fa-store" style="color:#f5a623;"></i> Staff Store Purchases</div>
+            <input type="text" id="pm_storeSearch" oninput="renderPaymentsTab()" placeholder="Search staff / item..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.78rem;outline:none;width:220px;"/>
+          </div>
+          <div id="pm_storeList"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2277,6 +2325,7 @@ Priority Support</textarea></div>
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
+      if (tab === 'payments') renderPaymentsTab();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -5289,6 +5338,121 @@ Priority Support</textarea></div>
       var list = JSON.parse(localStorage.getItem('hs_affiliate_applications')||'[]').slice().reverse();
       var countEl = document.getElementById('affiliateAppsCount');
       if(countEl) countEl.textContent = list.length+' application(s)';
+
+    // ── PAYMENTS TAB ──────────────────────────────────────────────
+    var _pmActiveTab = 'customer';
+
+    function switchPmTab(name, btn){
+      _pmActiveTab = name;
+      document.getElementById('pmpanel-customer').style.display = name === 'customer' ? 'block' : 'none';
+      document.getElementById('pmpanel-store').style.display    = name === 'store'    ? 'block' : 'none';
+      ['customer','store'].forEach(function(t){
+        var b = document.getElementById('pmtab-' + t);
+        if(!b) return;
+        b.style.background = t === name ? 'linear-gradient(135deg,#c9a84c,#a07830)' : 'transparent';
+        b.style.color      = t === name ? '#fff' : '#c9a84c';
+        b.style.border     = t === name ? 'none' : '1px solid rgba(201,168,76,0.3)';
+      });
+      renderPaymentsTab();
+    }
+
+    function renderPaymentsTab(){
+      // ── Customer payments ──
+      var custSearch = (document.getElementById('pm_custSearch') || {}).value || '';
+      var custPayments = JSON.parse(localStorage.getItem('hs_payments') || '[]').slice().reverse();
+      if(custSearch){
+        var q = custSearch.toLowerCase();
+        custPayments = custPayments.filter(function(p){
+          return (p.customerName||'').toLowerCase().includes(q) || (p.paymentId||'').toLowerCase().includes(q) || (p.service||'').toLowerCase().includes(q);
+        });
+      }
+
+      // ── Store payments ──
+      var storeSearch = (document.getElementById('pm_storeSearch') || {}).value || '';
+      var storePayments = JSON.parse(localStorage.getItem('hs_store_payments') || '[]').slice().reverse();
+      if(storeSearch){
+        var sq = storeSearch.toLowerCase();
+        storePayments = storePayments.filter(function(p){
+          return (p.staffName||'').toLowerCase().includes(sq) || (p.item||'').toLowerCase().includes(sq) || (p.paymentId||'').toLowerCase().includes(sq);
+        });
+      }
+
+      // ── Summary ──
+      var allSuccess = JSON.parse(localStorage.getItem('hs_payments')||'[]');
+      var allStore   = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
+      var totalAmt   = allSuccess.reduce(function(s,p){ return s + (p.amount||0); }, 0)
+                     + allStore.reduce(function(s,p){ return s + (p.amount||0); }, 0);
+      var totalCount = allSuccess.length + allStore.length;
+      // Failed = bookings with paymentStatus failed
+      var failedCount = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus === 'failed'; }).length;
+      var ts = document.getElementById('pm_totalSuccess'); if(ts) ts.textContent = '\u20b9' + totalAmt.toLocaleString('en-IN');
+      var tf = document.getElementById('pm_totalFailed');  if(tf) tf.textContent = failedCount;
+      var tc = document.getElementById('pm_totalCount');   if(tc) tc.textContent = totalCount;
+
+      // ── Render customer list ──
+      var custEl = document.getElementById('pm_custList');
+      if(custEl){
+        if(!custPayments.length){
+          custEl.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer payments yet.</div>';
+        } else {
+          custEl.innerHTML = custPayments.map(function(p){
+            var isPaid   = p.status !== 'failed';
+            var color    = isPaid ? '#4caf50' : '#f44336';
+            var icon     = isPaid ? 'fa-check-circle' : 'fa-times-circle';
+            var label    = isPaid ? 'Paid' : 'Failed';
+            return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.1);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+              + '<div>'
+              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (p.customerName||'Customer') + ' &mdash; ' + (p.service||'') + '</div>'
+              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#c9a84c;"></i> ' + (p.paymentId||'—') + '</div>'
+              + '<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">' + (p.paidAt||'') + '</div>'
+              + '</div>'
+              + '<div style="text-align:right;">'
+              + '<div style="font-size:1.1rem;font-weight:900;color:'+color+';">&#8377;' + Number(p.amount||0).toLocaleString('en-IN') + '</div>'
+              + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas '+icon+'"></i> '+label+'</span>'
+              + '</div>'
+              + '</div>';
+          }).join('');
+        }
+      }
+
+      // ── Also show failed bookings in customer panel ──
+      var failedBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.paymentStatus === 'failed'; });
+      if(failedBookings.length && custEl){
+        custEl.innerHTML += '<div style="font-size:0.85rem;font-weight:800;color:#f44336;margin:1.25rem 0 0.75rem;"><i class="fas fa-exclamation-triangle"></i> Failed Payment Attempts</div>'
+          + failedBookings.map(function(b){
+            return '<div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-left:3px solid #f44336;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+              + '<div>'
+              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (b.name||'Customer') + ' &mdash; ' + (b.service||'') + '</div>'
+              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (b.city||'') + ' &nbsp;&middot;&nbsp; ' + (b.date||'') + '</div>'
+              + '</div>'
+              + '<span style="background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-times-circle"></i> Failed</span>'
+              + '</div>';
+          }).join('');
+      }
+
+      // ── Render store list ──
+      var storeEl = document.getElementById('pm_storeList');
+      if(storeEl){
+        if(!storePayments.length){
+          storeEl.innerHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-store" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No staff store purchases yet.</div>';
+        } else {
+          storeEl.innerHTML = storePayments.map(function(p){
+            return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.1);border-left:3px solid #f5a623;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+              + '<div>'
+              + '<div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (p.staffName||'Staff') + ' &mdash; ' + (p.item||'') + (p.size ? ' ('+p.size+')' : '') + '</div>'
+              + '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#f5a623;"></i> ' + (p.paymentId||'—') + '</div>'
+              + '<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">' + (p.paidAt||'') + '</div>'
+              + '</div>'
+              + '<div style="text-align:right;">'
+              + '<div style="font-size:1.1rem;font-weight:900;color:#f5a623;">&#8377;' + Number(p.amount||0).toLocaleString('en-IN') + '</div>'
+              + '<span style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:#f5a623;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span>'
+              + '</div>'
+              + '</div>';
+          }).join('');
+        }
+      }
+    }
+    // ── END PAYMENTS TAB ──────────────────────────────────────────
       var el = document.getElementById('affiliateAppsList');
       if(!el) return;
       if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No affiliate applications yet.</p>'; return; }
@@ -5636,6 +5800,23 @@ Priority Support</textarea></div>
           });
           localStorage.setItem('hs_affiliate_applications', JSON.stringify(local));
           if(currentTab==='affiliates') renderAffiliateApps();
+        });
+
+        // Real-time payments listener
+        onSnapshot(query(collection(fbDb,'payments'), orderBy('paidAt','desc')), function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
+          var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.paymentId, customerName: p.customerName, service: p.service, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : '' }; });
+          localStorage.setItem('hs_payments', JSON.stringify(mapped));
+          if(currentTab==='payments') renderPaymentsTab();
+        });
+
+        // Real-time store payments listener
+        onSnapshot(collection(fbDb,'store_payments'), function(snap){
+          var list = [];
+          snap.forEach(function(d){ list.push(Object.assign({ id: d.id }, d.data())); });
+          localStorage.setItem('hs_store_payments', JSON.stringify(list));
+          if(currentTab==='payments') renderPaymentsTab();
         });
 
         // Real-time settings listener — loads all admin-saved settings
