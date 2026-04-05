@@ -259,6 +259,13 @@ Promise.all([
     if(!item.url && item.cloudUrl) item.url = item.cloudUrl;
     if(!item.title && item.clientName) item.title = item.clientName;
     if(!item.category) item.category = 'Testimonials';
+    // Generate proper Cloudinary thumbnail from video URL
+    var videoUrl = item.url || item.cloudUrl || '';
+    if(videoUrl && videoUrl.includes('cloudinary.com')){
+      item.thumbnail = videoUrl
+        .replace('/video/upload/', '/video/upload/so_0,w_400,h_600,c_fill,f_jpg/')
+        .replace(/\.(mp4|mov|webm|avi)$/i, '.jpg');
+    }
     if(item.url) _all.push(item);
   });
   render();
