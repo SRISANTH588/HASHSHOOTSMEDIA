@@ -3826,7 +3826,7 @@ Priority Support</textarea></div>
             '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.65rem;">'
             + _bankField('Account Holder', b.name || s.name)
             + _bankField('Bank', b.bankName || '—')
-            + _bankField('Account No.', b.accNo ? b.accNo.replace(/.(?=.{4})/g,'*') : '—')
+            + _bankField('Account No.', b.accNo || '—')
             + _bankField('IFSC', b.ifsc || '—')
             + _bankField('UPI ID', b.upi || '—')
             + _bankField('Account Type', b.type ? (b.type.charAt(0).toUpperCase()+b.type.slice(1)) : 'Savings')
