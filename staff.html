@@ -2321,139 +2321,68 @@
     }
 
     function submitPayoutRequest(amt){
-      if(window._payoutProcessing && window._payoutProcessing !== 'initial') return;
-      window._payoutProcessing = 'processing';
-      
+      if(window._payoutProcessing) return;
+      window._payoutProcessing = true;
+
       var staffId = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
-      
-      // Double-check for existing pending request
+
+      // Block if already has a pending request
       var existingPending = reqs.find(function(r){ return String(r.staffId) === String(staffId) && r.status === 'pending'; });
       if(existingPending){
-        alert('⏳ Request Already Exists\n\nYou already have a pending payout request.');
+        alert('\u23f3 You already have a pending payout request of \u20b9' + existingPending.amount.toLocaleString('en-IN') + '. Please wait for admin approval.');
         window._payoutProcessing = false;
         return;
       }
-      
+
+      var reqId = 'pr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       var newRequest = {
-        id: 'pr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        id: reqId,
         staffId: staffId,
         staffName: staffName,
         amount: amt,
-        bankName: bankData.bankName,
-        accNo: bankData.accNo,
-        ifsc: bankData.ifsc,
-        upi: bankData.upi || '',
+        bankName: bankData ? bankData.bankName : '',
+        accNo: bankData ? bankData.accNo : '',
+        ifsc: bankData ? bankData.ifsc : '',
+        upi: bankData ? (bankData.upi || '') : '',
         status: 'pending',
         requestedAt: new Date().toLocaleString()
       };
-      
+
+      // Save to localStorage immediately (Firebase listener will merge/update)
       reqs.push(newRequest);
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      
-      if(window.fbSave) {
-        fbSave('payout_requests', newRequest).then(function(){
-          window._payoutProcessing = false;
-        }).catch(function(){
+
+      // Save to Firebase — use setDoc with known ID to prevent duplicates
+      if(window.fbSave){
+        fbSave('payout_requests', newRequest).finally(function(){
           window._payoutProcessing = false;
         });
       } else {
         window._payoutProcessing = false;
       }
-      
-      alert('✅ Payout Request Submitted!\n\nYour payout request of ₹' + amt.toLocaleString('en-IN') + ' has been submitted successfully. Admin will process it within 24-48 hours.');
+
+      alert('\u2705 Payout request of \u20b9' + amt.toLocaleString('en-IN') + ' submitted! Admin will process it within 24-48 hours.');
       renderPayout();
     }
 
-    // Legacy function for existing form-based payout
+    // Legacy form-based payout — delegates to main function
     function submitPayoutRequestOld(){
-      var staffId = localStorage.getItem('hs_staff_id');
-      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
-      var w = getWallet();
-      var amt = parseInt(document.getElementById('po_req_amount').value);
-      var minPayout = 500;
-      var maxPayout = 10000;
-      
-      if(!amt || amt < minPayout){ 
-        alert('❌ Invalid Amount\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN')); 
-        return; 
-      }
-      
-      if(amt > maxPayout){ 
-        alert('❌ Amount Too High\n\nMaximum payout per request is ₹' + maxPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + amt.toLocaleString('en-IN')); 
-        return; 
-      }
-      
-      if(amt > (w.balance || 0)){ 
-        alert('❌ Insufficient Balance\n\nAmount exceeds your available balance of ₹' + (w.balance||0).toLocaleString('en-IN')); 
-        return; 
-      }
-      
-      // Check daily/weekly limits
-      var today = new Date().toDateString();
-      var thisWeekStart = new Date();
-      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
-      
-      var allReqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]')
-        .filter(function(r){ return String(r.staffId) === String(staffId); });
-      
-      var todayReqs = allReqs.filter(function(r){ return new Date(r.requestedAt).toDateString() === today; });
-      var thisWeekReqs = allReqs.filter(function(r){ return new Date(r.requestedAt) >= thisWeekStart; });
-      
-      var todayTotal = todayReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
-      var weekTotal = thisWeekReqs.reduce(function(sum, r){ return sum + r.amount; }, 0);
-      
-      var dailyLimit = 15000;
-      var weeklyLimit = 50000;
-      
-      if(todayTotal + amt > dailyLimit){
-        alert('🚫 Daily Limit Exceeded\n\nThis request would exceed your daily limit of ₹' + dailyLimit.toLocaleString('en-IN') + '.\nToday\'s total: ₹' + todayTotal.toLocaleString('en-IN') + '\nRemaining: ₹' + (dailyLimit - todayTotal).toLocaleString('en-IN'));
-        return;
-      }
-      
-      if(weekTotal + amt > weeklyLimit){
-        alert('🚫 Weekly Limit Exceeded\n\nThis request would exceed your weekly limit of ₹' + weeklyLimit.toLocaleString('en-IN') + '.\nThis week\'s total: ₹' + weekTotal.toLocaleString('en-IN') + '\nRemaining: ₹' + (weeklyLimit - weekTotal).toLocaleString('en-IN'));
-        return;
-      }
-      
-      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
-      if(!bankData || !bankData.accNo){ alert('Please add your bank details first.'); return; }
-      
-      var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
-      reqs.push({
-        id: 'pr_' + Date.now(),
-        staffId: staffId,
-        staffName: staffName,
-        amount: amt,
-        bankName: bankData.bankName,
-        accNo: bankData.accNo,
-        ifsc: bankData.ifsc,
-        upi: bankData.upi || '',
-        status: 'pending',
-        requestedAt: new Date().toLocaleString()
-      });
-      localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      if(window.fbSave) fbSave('payout_requests', reqs[reqs.length-1]);
-      var msg = document.getElementById('po_req_msg');
-      if(msg){
-        msg.style.display = 'block';
-        msg.style.cssText = 'display:block;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 0.85rem;font-size:0.8rem;font-weight:600;margin-top:0.5rem;';
-        msg.innerHTML = '<i class="fas fa-check-circle"></i> Payout request of ₹' + amt.toLocaleString('en-IN') + ' submitted! Admin will process it shortly.';
-      }
-      setTimeout(function(){ renderPayout(); }, 1500);
+      var amt = parseInt((document.getElementById('po_req_amount') || {}).value);
+      if(!amt || amt < 500){ alert('Minimum payout is \u20b9500.'); return; }
+      submitPayoutRequest(amt);
     }
 
     // STORE
     async function renderStore(){
-      // Load Razorpay config from Firebase first
       if(window.loadRazorpayFromFirebase) await loadRazorpayFromFirebase();
-      var store = JSON.parse(localStorage.getItem('hs_store') || '{"tshirts":[],"idcard":{}}');
-      var tshirts = store.tshirts || [];
-      var idcard  = store.idcard  || {};
+      var tshirts = JSON.parse(localStorage.getItem('hs_tshirts') || '[]');
+      var idcard  = JSON.parse(localStorage.getItem('hs_idcard')  || '{}');
+      var storeCfg = JSON.parse(localStorage.getItem('hs_store_settings') || '{}');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
-      var contactEmail = store.contactEmail || 'support.ogshootsmedia@gmail.com';
+      var contactEmail = storeCfg.email || 'support.ogshootsmedia@gmail.com';
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
 
       // T-SHIRTS
@@ -2462,7 +2391,8 @@
         tGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-tshirt" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No T-shirts listed yet. Check back soon!</div>';
       } else {
         tGrid.innerHTML = tshirts.map(function(t, i){
-          var sizes = (t.sizes || []).map(function(s){
+          var sizeArr = Array.isArray(t.sizes) ? t.sizes : (t.sizes||'').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+          var sizes = sizeArr.map(function(s){
             return '<span style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#d4c9a8;cursor:pointer;" onclick="this.parentNode.querySelectorAll(\'span\').forEach(function(x){x.style.borderColor=\'rgba(201,168,76,0.15)\';x.style.color=\'#d4c9a8\';});this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\';window._selectedSize_'+i+'=\''+s+'\';">' + s + '</span>';
           }).join('');
           var imgHTML = t.image
@@ -2954,9 +2884,9 @@
         // Listen to all settings docs
         fbListenDoc('settings', 'homepage',      function(data){ localStorage.setItem('hs_homepage',       JSON.stringify(data)); });
         fbListenDoc('settings', 'customer_page', function(data){ localStorage.setItem('hs_customer_page',  JSON.stringify(data)); });
-        fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); });
-        fbListenDoc('settings', 'tshirts',       function(data){ if(data.items) localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); });
-        fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard',         JSON.stringify(data)); });
+        fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
+        fbListenDoc('settings', 'tshirts',       function(data){ if(data.items) localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
+        fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
         fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); });
         fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); });
         fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); });

@@ -3803,8 +3803,10 @@ Priority Support</textarea></div>
 
     function deleteTshirt(id){
       if(!confirm('Delete this product?')) return;
-      localStorage.setItem('hs_tshirts', JSON.stringify(JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return String(t.id)!==String(id); })));
-      if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: JSON.parse(localStorage.getItem('hs_tshirts')||'[]')});
+      var remaining = JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return String(t.id)!==String(id); });
+      localStorage.setItem('hs_tshirts', JSON.stringify(remaining));
+      var fsItems = remaining.map(function(t){ return Object.assign({}, t, { image: t.image && t.image.startsWith('http') ? t.image : '' }); });
+      if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: fsItems});
       loadStoreAdmin();
     }
 
@@ -3819,9 +3821,12 @@ Priority Support</textarea></div>
       var file = imgEl && imgEl.files && imgEl.files[0];
       function doSave(imgData){
         var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
-        items.push({ id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), image:imgData||'', active:true });
+        var newItem = { id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), description:(document.getElementById('ts_desc')||{}).value||'', image:imgData||'', active:true };
+        items.push(newItem);
         localStorage.setItem('hs_tshirts', JSON.stringify(items));
-        if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: items});
+        // Strip base64 image before saving to Firestore (too large)
+        var firestoreItems = items.map(function(t){ return Object.assign({}, t, { image: t.image && t.image.startsWith('http') ? t.image : '' }); });
+        if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: firestoreItems});
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
         loadStoreAdmin();
       }
@@ -3839,10 +3844,13 @@ Priority Support</textarea></div>
       var imgEl = document.getElementById('idc_image');
       var file  = imgEl && imgEl.files && imgEl.files[0];
       function doSave(imgData){
-        var cfg = { price:price, desc:desc.trim(), image:imgData||localStorage.getItem('hs_idcard_img')||'' };
+        var imgToStore = imgData || localStorage.getItem('hs_idcard_img') || '';
+        var cfg = { price:price, desc:desc.trim(), image:imgToStore };
         localStorage.setItem('hs_idcard', JSON.stringify(cfg));
         if(imgData) localStorage.setItem('hs_idcard_img', imgData);
-        if(window.fbUpdate) fbUpdate('settings', 'idcard', cfg);
+        // Strip base64 before Firestore
+        var fsCfg = { price:price, desc:desc.trim(), image: imgToStore.startsWith('http') ? imgToStore : '' };
+        if(window.fbUpdate) fbUpdate('settings', 'idcard', fsCfg);
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
       }
       if(file){
