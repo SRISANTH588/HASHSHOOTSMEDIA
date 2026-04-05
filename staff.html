@@ -2065,8 +2065,10 @@
     }
 
     function renderCreatorFeedback(){
+      var staffId = localStorage.getItem('hs_staff_id');
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]')
+        .filter(function(f){ return !f.staffId || String(f.staffId) === String(staffId); })
         .filter(function(f){ return _fbDateMatch(f.date || f.submittedAt || ''); });
       var el = document.getElementById('creatorFeedbackList');
       if(!feedbacks.length){
@@ -2930,6 +2932,20 @@
           });
           localStorage.setItem('hs_demos', JSON.stringify(local));
           renderCreatorDemos();
+        }, 'createdAt');
+
+        // Listen to customer feedbacks — so staff sees them in real-time
+        fbListen('feedbacks', function(docs) {
+          var local = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
+          docs.forEach(function(d) {
+            var merged = Object.assign({}, d, { id: d._fbId || d.id });
+            delete merged._fbId; delete merged.createdAt;
+            var idx = local.findIndex(function(x) { return String(x.id) === String(merged.id); });
+            if (idx > -1) { Object.assign(local[idx], merged); }
+            else { local.push(merged); }
+          });
+          localStorage.setItem('hs_feedbacks', JSON.stringify(local));
+          renderCreatorFeedback();
         }, 'createdAt');
 
         // Listen to all settings docs

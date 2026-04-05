@@ -1215,7 +1215,7 @@
       }).join('');
     }
 
-    function submitShootFeedback(bookingId){
+    async function submitShootFeedback(bookingId){
       var rating = selectedStars[bookingId] || 0;
       if(!rating){ alert('Please select a star rating.'); return; }
       var el = document.getElementById('fbtext_' + bookingId);
@@ -1224,11 +1224,26 @@
       var description = descEl ? descEl.value.trim() : '';
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var b = bookings.find(function(x){ return x.id === bookingId; });
+
+      // Look up staffId from Firebase assigned_shoots
+      var staffId = null; var staffName = null;
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){ return a.name==='cust-fb'; }) || fbMod.initializeApp(fbCfg,'cust-fb');
+        var db      = fbStore.getFirestore(app);
+        var q       = fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('bookingId','==', bookingId));
+        var snap    = await fbStore.getDocs(q);
+        if(!snap.empty){ var d = snap.docs[0].data(); staffId = d.staffId; staffName = d.staffName || null; }
+      } catch(e){ console.warn('Could not fetch staffId for feedback:', e); }
+
       var feedbacks = getFeedbacks();
       feedbacks.push({
         id: Date.now(), type: 'shoot', refId: bookingId,
         service: b ? b.service : '', city: b ? b.city : '',
         customerName: b ? b.name : '',
+        staffId: staffId, staffName: staffName,
         date: b ? b.date : '', rating: rating, comment: comment, description: description,
         submittedAt: new Date().toLocaleString()
       });
