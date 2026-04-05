@@ -356,6 +356,7 @@ window._fbReady = new Promise(function(resolve){
 
     <!-- ASSIGNED SHOOTS -->
     <div class="section active" id="sec-shoots">
+      <div id="debugPanel" style="background:#1a0a0a;border:1px solid #f44336;border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:0.75rem;color:#ff8a80;font-family:monospace;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
         <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-camera"></i> My Assigned Shoots</div>
       </div>
@@ -987,10 +988,16 @@ window._fbReady = new Promise(function(resolve){
     // Fetch fresh data from Firestore then render the tab
     async function fetchAndRender(name){
       var myId = String(localStorage.getItem('hs_staff_id'));
+      var dbg = document.getElementById('debugPanel');
+      function log(msg){ if(dbg){ dbg.innerHTML += msg + '<br/>'; } console.log('[DEBUG]',msg); }
+      if(name==='shoots') log('staffId='+myId+' | role='+localStorage.getItem('hs_role'));
       await window._fbReady;
+      if(name==='shoots') log('Firebase ready: fbGetAll='+(typeof window.fbGetAll)+' fbGet='+(typeof window.fbGet));
       try{
         if(name === 'shoots' || name === 'dashboard'){
+          if(name==='shoots') log('Fetching assigned_shoots from Firestore...');
           var docs = await fbGetAll('assigned_shoots');
+          if(name==='shoots') log('Firestore returned '+docs.length+' docs');
           if(docs.length){
             var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
             docs.forEach(function(d){
@@ -1006,6 +1013,10 @@ window._fbReady = new Promise(function(resolve){
               if(idx>-1) Object.assign(local[idx],clean); else local.push(clean);
             });
             localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
+            if(name==='shoots'){
+              var mine = local.filter(function(a){ return String(a.staffId)===String(myId); });
+              log('My shoots after merge: '+mine.length+' (staffIds in FB: '+[...new Set(docs.map(function(d){return d.staffId;}).filter(Boolean))].join(',')+')' );
+            }
           }
           renderAssignedShoots();
         }
