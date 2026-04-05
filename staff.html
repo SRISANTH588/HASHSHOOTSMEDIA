@@ -1616,9 +1616,19 @@
           }
         } else if(a.status === 'completed' || a.status === 'paid'){
           var paidLabel = a.status === 'paid'
-            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released — &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
-            : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed — Awaiting Payment</div>';
-          uploadHTML = paidLabel;
+            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
+            : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed &#8212; Awaiting Payment</div>';
+          // Check if feedback already given
+          var existingFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]').find(function(f){ return f.assignId === a.id; });
+          var feedbackSection = existingFb
+            ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;color:#4caf50;"><i class="fas fa-star"></i> Feedback Submitted &#8212; ' + '\u2605'.repeat(existingFb.rating) + '</div>'
+            : '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">'
+              + '<div style="font-size:0.82rem;font-weight:800;color:#c9a84c;margin-bottom:0.65rem;"><i class="fas fa-star"></i> Rate this Shoot <span style="color:#f44336;font-size:0.72rem;">*Required</span></div>'
+              + '<div style="display:flex;gap:0.35rem;margin-bottom:0.65rem;" id="shootFbStars_'+a.id+'">' + [1,2,3,4,5].map(function(v){ return '<span onclick="setShootFbStar('+a.id+','+v+')" style="font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;" class="sfbstar" data-id="'+a.id+'" data-val="'+v+'">&#9733;</span>'; }).join('') + '</div>'
+              + '<textarea id="shootFbComment_'+a.id+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:60px;" placeholder="How was the shoot experience? Any feedback..."></textarea>'
+              + '<button onclick="submitShootFeedbackInline('+a.id+')" style="margin-top:0.6rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
+              + '</div>';
+          uploadHTML = paidLabel + feedbackSection;
         }
 
         card.innerHTML = headerHTML + detailsHTML + arrivedHTML + uploadHTML;
@@ -2119,6 +2129,42 @@
           + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
           + '</div>';
       }).join('');
+    }
+
+    var _shootFbStars = {};
+
+    function setShootFbStar(assignId, val){
+      _shootFbStars[assignId] = val;
+      document.querySelectorAll('.sfbstar[data-id="'+assignId+'"]').forEach(function(s){
+        s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
+      });
+    }
+
+    function submitShootFeedbackInline(assignId){
+      var rating = _shootFbStars[assignId] || 0;
+      if(!rating){ alert('Please select a star rating.'); return; }
+      var comment = (document.getElementById('shootFbComment_'+assignId)||{}).value||'';
+      var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var a = assigned.find(function(x){ return x.id === assignId; });
+      var list = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]');
+      var fb = {
+        id: Date.now(),
+        assignId: assignId,
+        staffId: Number(localStorage.getItem('hs_staff_id')),
+        staffName: localStorage.getItem('hs_staff_name')||'',
+        service: a ? a.service : '',
+        clientName: a ? a.clientName : '',
+        city: a ? a.city : '',
+        date: a ? a.date : '',
+        rating: rating,
+        comment: comment,
+        submittedAt: new Date().toLocaleString()
+      };
+      list.push(fb);
+      localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
+      if(window.fbSave) fbSave('creator_feedbacks', fb);
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {creatorFeedbackSubmitted:true, creatorRating:rating});
+      renderAssignedShoots();
     }
 
     function submitCreatorFeedback(assignId){
