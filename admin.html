@@ -4419,20 +4419,104 @@ Priority Support</textarea></div>
       showAssignToast('₹' + r.amount.toLocaleString('en-IN') + ' withdrawal approved for ' + r.staffName, true);
     }
 
+    // ── REJECTION MODAL ──────────────────────────────────────────
+    (function(){
+      var modalHTML = `
+      <div id="rejectModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;align-items:center;justify-content:center;padding:1rem;">
+        <div style="background:#0f0f0f;border:1px solid rgba(244,67,54,0.35);border-radius:20px;width:100%;max-width:480px;box-shadow:0 30px 80px rgba(0,0,0,0.9);">
+          <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(244,67,54,0.12);display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-times-circle" style="color:#f44336;"></i> Reject Payout Request</div>
+            <button onclick="closeRejectModal()" style="background:none;border:none;color:#888;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+          </div>
+          <div style="padding:1.25rem 1.5rem;">
+            <div style="font-size:0.75rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">Select Reason</div>
+            <select id="rejectReasonSelect" onchange="onRejectReasonChange()" style="width:100%;background:#0a0a0a;border:1px solid rgba(244,67,54,0.25);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;margin-bottom:0.85rem;">
+              <option value="" disabled selected>-- Choose a reason --</option>
+              <optgroup label="Quality & Skills">
+                <option>Portfolio does not meet our quality standards</option>
+                <option>Reel editing skills need improvement</option>
+                <option>Shooting technique not up to OG Shoots standards</option>
+              </optgroup>
+              <optgroup label="Equipment">
+                <option>Does not have iPhone 13 Pro or newer</option>
+                <option>Poor video quality in sample submissions</option>
+              </optgroup>
+              <optgroup label="Availability & Reliability">
+                <option>Unable to commit to required availability</option>
+                <option>Location not currently serviceable</option>
+                <option>Response time during screening was too slow</option>
+              </optgroup>
+              <optgroup label="Profile & Verification">
+                <option>Incomplete application / missing details</option>
+                <option>Unable to verify identity or Instagram profile</option>
+                <option>No sample reels submitted</option>
+              </optgroup>
+              <optgroup label="Conduct">
+                <option>Did not complete demo shoot requirement</option>
+                <option>Did not respond to follow-up messages</option>
+                <option>Unprofessional behavior during screening</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option>Currently not hiring in your city</option>
+                <option>Position filled for your area</option>
+                <option>Application submitted multiple times</option>
+                <option value="__custom__">Custom reason...</option>
+              </optgroup>
+            </select>
+            <div id="rejectCustomWrap" style="display:none;margin-bottom:0.85rem;">
+              <div style="font-size:0.75rem;font-weight:700;color:#9a9080;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;">Custom Reason</div>
+              <textarea id="rejectCustomText" rows="3" placeholder="Type your custom reason here..." style="width:100%;background:#0a0a0a;border:1px solid rgba(244,67,54,0.25);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex;gap:0.75rem;margin-top:0.25rem;">
+              <button onclick="closeRejectModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#ccc;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
+              <button onclick="confirmRejectWithdraw()" style="flex:1;background:linear-gradient(135deg,#f44336,#c62828);color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times-circle"></i> Confirm Reject</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    })();
+
+    var _pendingRejectId = null;
+
     function rejectWithdraw(reqId){
-      var reason = prompt('Reason for rejection (will be shown to staff):');
-      if(reason === null) return;
+      _pendingRejectId = reqId;
+      document.getElementById('rejectReasonSelect').value = '';
+      document.getElementById('rejectCustomWrap').style.display = 'none';
+      document.getElementById('rejectCustomText').value = '';
+      document.getElementById('rejectModal').style.display = 'flex';
+    }
+
+    function closeRejectModal(){
+      document.getElementById('rejectModal').style.display = 'none';
+      _pendingRejectId = null;
+    }
+
+    function onRejectReasonChange(){
+      var val = document.getElementById('rejectReasonSelect').value;
+      document.getElementById('rejectCustomWrap').style.display = val === '__custom__' ? 'block' : 'none';
+    }
+
+    function confirmRejectWithdraw(){
+      var sel = document.getElementById('rejectReasonSelect').value;
+      if(!sel){ alert('Please select a rejection reason.'); return; }
+      var reason = sel === '__custom__'
+        ? document.getElementById('rejectCustomText').value.trim()
+        : sel;
+      if(!reason){ alert('Please enter a custom reason.'); return; }
+
       var reqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
-      var r = reqs.find(function(x){ return x.id === reqId; });
-      if(!r) return;
+      var r = reqs.find(function(x){ return x.id === _pendingRejectId; });
+      if(!r){ closeRejectModal(); return; }
       r.status = 'rejected';
-      r.rejectReason = reason.trim() || 'Rejected by admin';
+      r.rejectReason = reason;
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
       (async()=>{
         var f=await _fbAdmin(); if(!f) return;
         try{ await f.s.setDoc(f.s.doc(f.db,'payout_requests',String(r.id)),{status:'rejected',rejectReason:r.rejectReason,processedAt:r.processedAt},{merge:true}); }catch(e){}
       })();
+      closeRejectModal();
       renderWithdrawList();
       updateWithdrawBadge();
       showAssignToast('Withdrawal rejected for ' + r.staffName, false);
