@@ -17,9 +17,9 @@
 
     /* HEADER */
     .vh{text-align:center;margin-bottom:2.5rem;padding:0 1rem;}
-    .vt{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;color:#fff;margin-bottom:0.5rem;letter-spacing:-1px;line-height:1.1;}
-    .vt span{color:#c9a84c;}
-    .vs{color:#888;font-size:1rem;font-weight:400;}
+    .vt{font-size:clamp(2.5rem,5vw,4rem);font-weight:900;color:#fff;margin-bottom:0.6rem;letter-spacing:-2px;line-height:1.05;}
+    .vt span{background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .vs{color:#706050;font-size:1rem;font-weight:400;letter-spacing:0.3px;}
 
     /* PILLS */
     .vcp{overflow-x:auto;scrollbar-width:none;padding:0 3.5rem;margin-bottom:1.8rem;}
@@ -28,18 +28,18 @@
     .vc{
       padding:0.5rem 1.3rem;
       border-radius:50px;
-      border:1.5px solid rgba(255,255,255,0.18);
-      background:transparent;
-      color:#bbb;
-      font-size:0.83rem;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.04);
+      color:#9a9080;
+      font-size:0.82rem;
       font-weight:600;
       cursor:pointer;
       font-family:inherit;
       transition:all 0.2s;
       white-space:nowrap;
     }
-    .vc.active{background:#c9a84c;color:#000;border-color:#c9a84c;}
-    .vc:hover:not(.active){border-color:rgba(255,255,255,0.4);color:#fff;}
+    .vc.active{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border-color:transparent;box-shadow:0 4px 20px rgba(201,168,76,0.3);}
+    .vc:hover:not(.active){border-color:rgba(201,168,76,0.4);color:#c9a84c;background:rgba(201,168,76,0.08);}
 
     /* SLIDER SECTION */
     .vsec{position:relative;display:flex;align-items:center;padding:0 1rem;}
@@ -47,22 +47,23 @@
     /* ARROWS */
     .varr{
       flex-shrink:0;
-      width:40px;height:40px;
+      width:44px;height:44px;
       border-radius:50%;
-      background:rgba(10,10,10,0.85);
-      border:1.5px solid rgba(255,255,255,0.2);
-      color:#fff;
+      background:rgba(15,10,5,0.9);
+      border:1px solid rgba(201,168,76,0.25);
+      color:#c9a84c;
       font-size:0.9rem;
       cursor:pointer;
       display:flex;align-items:center;justify-content:center;
-      transition:all 0.2s;
-      backdrop-filter:blur(8px);
+      transition:all 0.25s;
+      backdrop-filter:blur(12px);
       z-index:10;
+      box-shadow:0 4px 20px rgba(0,0,0,0.4);
     }
     #aL{margin-right:0.75rem;}
     #aR{margin-left:0.75rem;}
-    .varr:hover{background:rgba(201,168,76,0.9);border-color:#c9a84c;color:#000;}
-    .varr:disabled{opacity:0.15;pointer-events:none;}
+    .varr:hover{background:linear-gradient(135deg,#c9a84c,#a07830);border-color:transparent;color:#000;box-shadow:0 8px 25px rgba(201,168,76,0.4);}
+    .varr:disabled{opacity:0.12;pointer-events:none;}
 
     /* OVERFLOW */
     .vov{overflow:hidden;flex:1;min-width:0;}
@@ -75,76 +76,123 @@
     /* CARD — exactly 1/3 of overflow container */
     .vcard{
       flex:0 0 calc((100% - 32px) / 3);
-      border-radius:16px;
+      border-radius:20px;
       overflow:hidden;
-      background:#1a0a0a;
+      background:linear-gradient(145deg,#1a1208,#0d0d0d);
       cursor:pointer;
       position:relative;
+      border:1px solid rgba(201,168,76,0.15);
+      box-shadow:0 8px 32px rgba(0,0,0,0.5);
+      transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),box-shadow 0.4s,border-color 0.3s;
+    }
+    .vcard:hover{
+      transform:translateY(-8px) scale(1.02);
+      box-shadow:0 24px 60px rgba(0,0,0,0.7),0 0 40px rgba(201,168,76,0.15);
+      border-color:rgba(201,168,76,0.45);
     }
     .vcard-img{
       width:100%;
       aspect-ratio:9/13;
       object-fit:cover;
       display:block;
-      transition:opacity 0.3s;
+      transition:opacity 0.4s,transform 0.4s;
     }
+    .vcard:hover .vcard-img{opacity:0;transform:scale(1.04);}
     .vcard-vid{
       position:absolute;
       inset:0;
       width:100%;height:100%;
       object-fit:cover;
       opacity:0;
-      transition:opacity 0.3s;
+      transition:opacity 0.4s;
     }
     .vcard:hover .vcard-vid{opacity:1;}
-    .vcard:hover .vcard-img{opacity:0;}
+
+    /* GOLD TOP LINE */
+    .vcard::before{
+      content:'';
+      position:absolute;
+      top:0;left:0;right:0;
+      height:2px;
+      background:linear-gradient(90deg,transparent,#c9a84c,transparent);
+      opacity:0;
+      transition:opacity 0.3s;
+      z-index:5;
+    }
+    .vcard:hover::before{opacity:1;}
 
     /* PLAY BUTTON */
     .vcard-play{
       position:absolute;
       top:50%;left:50%;
-      transform:translate(-50%,-50%);
-      width:56px;height:56px;
+      transform:translate(-50%,-50%) scale(0.85);
+      width:60px;height:60px;
       border-radius:50%;
-      background:rgba(201,168,76,0.25);
-      border:2px solid rgba(255,255,255,0.7);
+      background:rgba(201,168,76,0.2);
+      border:2px solid rgba(201,168,76,0.7);
       display:flex;align-items:center;justify-content:center;
-      color:#fff;font-size:1.2rem;
+      color:#c9a84c;font-size:1.2rem;
       pointer-events:none;
-      transition:opacity 0.3s;
-      backdrop-filter:blur(4px);
+      transition:opacity 0.3s,transform 0.3s,background 0.3s;
+      backdrop-filter:blur(8px);
+      box-shadow:0 0 30px rgba(201,168,76,0.3);
     }
-    .vcard:hover .vcard-play{opacity:0;}
+    .vcard:hover .vcard-play{opacity:0;transform:translate(-50%,-50%) scale(1.1);}
+
+    /* CARD OVERLAY GRADIENT */
+    .vcard-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 40%,transparent 70%);
+      pointer-events:none;
+    }
 
     /* CARD TITLE */
     .vcard-title{
       position:absolute;
       bottom:0;left:0;right:0;
-      padding:0.75rem 1rem;
-      background:rgba(0,0,0,0.65);
-      font-size:0.9rem;
-      font-weight:600;
+      padding:1rem 1rem 0.85rem;
+      font-size:0.88rem;
+      font-weight:700;
       color:#fff;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      backdrop-filter:blur(4px);
+      z-index:3;
+      letter-spacing:0.2px;
+    }
+
+    /* CATEGORY BADGE */
+    .vcard-cat{
+      position:absolute;
+      top:0.75rem;left:0.75rem;
+      background:rgba(0,0,0,0.6);
+      border:1px solid rgba(201,168,76,0.3);
+      color:#c9a84c;
+      font-size:0.6rem;
+      font-weight:700;
+      padding:0.2rem 0.6rem;
+      border-radius:50px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      backdrop-filter:blur(8px);
+      z-index:4;
     }
 
     /* DOTS */
     .vdots{
-      display:flex;justify-content:center;gap:7px;
-      margin-top:1.4rem;
+      display:flex;justify-content:center;gap:6px;
+      margin-top:1.6rem;
     }
     .vdot{
-      width:8px;height:8px;
+      width:6px;height:6px;
       border-radius:50%;
-      background:rgba(255,255,255,0.2);
+      background:rgba(201,168,76,0.2);
       border:none;cursor:pointer;
       padding:0;
-      transition:background 0.2s,transform 0.2s;
+      transition:all 0.25s;
     }
-    .vdot.active{background:#c9a84c;transform:scale(1.25);}
+    .vdot.active{background:linear-gradient(135deg,#c9a84c,#a07830);width:22px;border-radius:3px;box-shadow:0 2px 10px rgba(201,168,76,0.4);}
 
     /* EMPTY */
     .vempty{text-align:center;padding:5rem 2rem;color:#5a1a1a;width:100%;}
@@ -300,7 +348,9 @@ function render(){
     return '<div class="vcard" onclick="openLb('+idx+')">'
       +(t?'<img class="vcard-img" src="'+t+'" alt="'+item.title+'" loading="lazy"/>':'<div style="width:100%;aspect-ratio:3/4;background:#2a0808;display:flex;align-items:center;justify-content:center;color:#e8453c;font-size:3rem;"><i class=\'fas fa-film\'></i></div>')
       +(u?'<video class="vcard-vid" src="'+u+'" muted loop playsinline preload="none" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>':'')
+      +'<div class="vcard-overlay"></div>'
       +'<div class="vcard-play"><i class="fas fa-play"></i></div>'
+      +(item.category&&item.category!=='all'?'<div class="vcard-cat">'+item.category+'</div>':'')
       +(item.title?'<div class="vcard-title">'+item.title+'</div>':'')
       +'</div>';
   }).join('');
