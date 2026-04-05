@@ -4385,19 +4385,46 @@ Priority Support</textarea></div>
       renderAssignedList();
     }
 
-    function renderCustWallets(){
+    async function renderCustWallets(){
       var list = document.getElementById('cwList');
       if(!list) return;
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      var seen = {};
-      var customers = [];
-      bookings.forEach(function(b){
-        if(b.name && b.email && !seen[b.email]){
-          seen[b.email] = true;
-          customers.push({ name: b.name, phone: b.phone, email: b.email });
+
+      // Fetch wallet balances from Firebase first
+      try {
+        var f = await _fbAdmin();
+        if(f){
+          var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
+          snap.forEach(function(d){
+            var data = d.data();
+            if(data.email) localStorage.setItem('hs_cw_' + data.email, String(data.balance||0));
+          });
         }
-      });
-      if(!customers.length){ list.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found. Customers appear here after they make a booking.</div>'; return; }
+      } catch(e){ console.warn('customer_wallets fetch:', e); }
+
+      // Also fetch customers from Firebase
+      var customers = [];
+      try {
+        var f2 = await _fbAdmin();
+        if(f2){
+          var csnap = await f2.s.getDocs(f2.s.collection(f2.db,'customers'));
+          var seen = {};
+          csnap.forEach(function(d){
+            var c = d.data();
+            if(c.email && !seen[c.email]){ seen[c.email]=true; customers.push({name:c.name||c.email, email:c.email, phone:c.phone||''}); }
+          });
+        }
+      } catch(e){}
+
+      // Fallback to bookings
+      if(!customers.length){
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+        var seen2 = {};
+        bookings.forEach(function(b){
+          if(b.name && b.email && !seen2[b.email]){ seen2[b.email]=true; customers.push({name:b.name, phone:b.phone||'', email:b.email}); }
+        });
+      }
+
+      if(!customers.length){ list.innerHTML = '<div style="color:#9a9080;font-size:0.85rem;text-align:center;padding:1.5rem;">No customers found.</div>'; return; }
       list.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
         + '<thead><tr style="border-bottom:1px solid rgba(201,168,76,0.1);">'
         + '<th style="text-align:left;padding:0.6rem 0.75rem;font-size:0.78rem;color:#9a9080;">Name</th>'

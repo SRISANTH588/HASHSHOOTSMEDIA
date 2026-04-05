@@ -236,20 +236,35 @@
 <script>
 var _all=[],_fil=[],_cat='all',_i=0;
 
-fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE')
-  .then(function(r){return r.json();})
-  .then(function(d){
-    _all=[];
-    (d.documents||[]).forEach(function(doc){
-      var f=doc.fields,item={id:doc.name.split('/').pop()};
-      Object.keys(f).forEach(function(k){item[k]=f[k].stringValue||'';});
-      _all.push(item);
-    });
-    render();
-  })
-  .catch(function(e){
-    document.getElementById('vsl').innerHTML='<div class="vempty"><i class="fas fa-exclamation-circle"></i><p>'+e.message+'</p></div>';
+// Load vibe_items + testimonial_videos from Firestore
+Promise.all([
+  fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE').then(function(r){return r.json();}),
+  fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/testimonial_videos?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE').then(function(r){return r.json();})
+]).then(function(results){
+  _all=[];
+  // Parse vibe_items
+  (results[0].documents||[]).forEach(function(doc){
+    var f=doc.fields,item={id:doc.name.split('/').pop()};
+    Object.keys(f).forEach(function(k){item[k]=f[k].stringValue||f[k].integerValue||f[k].doubleValue||'';});
+    _all.push(item);
   });
+  // Parse testimonial_videos — map to vibe format
+  (results[1].documents||[]).forEach(function(doc){
+    var f=doc.fields,item={id:doc.name.split('/').pop()};
+    Object.keys(f).forEach(function(k){
+      var v=f[k];
+      item[k]=v.stringValue||v.integerValue||v.doubleValue||'';
+    });
+    // Map fields to vibe format
+    if(!item.url && item.cloudUrl) item.url = item.cloudUrl;
+    if(!item.title && item.clientName) item.title = item.clientName;
+    if(!item.category) item.category = 'Testimonials';
+    if(item.url) _all.push(item);
+  });
+  render();
+}).catch(function(e){
+  document.getElementById('vsl').innerHTML='<div class="vempty"><i class="fas fa-exclamation-circle"></i><p>'+e.message+'</p></div>';
+});
 
 function th(item){
   var t=item.thumbnail||'',u=item.url||'';
