@@ -952,31 +952,31 @@
     }
 
     // Load staff info
-    const name = localStorage.getItem('hs_staff_name') || 'Staff';
-    const role = localStorage.getItem('hs_staff_role') || 'Staff';
-    const id   = localStorage.getItem('hs_staff_id') || '—';
-    const access = JSON.parse(localStorage.getItem('hs_staff_access') || '[]');
+    var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+    var staffRole = localStorage.getItem('hs_staff_role') || 'Staff';
+    var staffId   = localStorage.getItem('hs_staff_id') || '—';
+    var staffAccess = JSON.parse(localStorage.getItem('hs_staff_access') || '[]');
 
-    document.getElementById('staffNameDisplay').textContent = name;
-    document.getElementById('staffRoleDisplay').textContent = role + ' — OG Shoots';
-    document.getElementById('sidebarName').textContent = name;
-    document.getElementById('sidebarRole').textContent = role;
-    document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
-    document.getElementById('dp-name').textContent = name;
-    document.getElementById('dp-role').textContent = role;
-    document.getElementById('dp-user').textContent = name.toLowerCase().replace(/\s/g,'_');
-    document.getElementById('da-id').textContent = '#' + id;
-    document.getElementById('da-access').textContent = access.length ? access.join(', ') : 'Standard';
+    document.getElementById('staffNameDisplay').textContent = staffName;
+    document.getElementById('staffRoleDisplay').textContent = staffRole + ' — OG Shoots';
+    document.getElementById('sidebarName').textContent = staffName;
+    document.getElementById('sidebarRole').textContent = staffRole;
+    document.getElementById('avatarInitial').textContent = staffName.charAt(0).toUpperCase();
+    document.getElementById('dp-name').textContent = staffName;
+    document.getElementById('dp-role').textContent = staffRole;
+    document.getElementById('dp-user').textContent = staffName.toLowerCase().replace(/\s/g,'_');
+    document.getElementById('da-id').textContent = '#' + staffId;
+    document.getElementById('da-access').textContent = staffAccess.length ? staffAccess.join(', ') : 'Standard';
 
     // Stats
-    const bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(id); }).length;
-    document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.staffId == id; }).length;
-    document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(id); }).length;
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId); }).length;
+    document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.staffId == staffId; }).length;
+    document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(staffId); }).length;
     var dashShootCount = document.getElementById('dashShootCount');
-    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(id) && a.status === 'assigned'; }).length;
+    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId) && a.status === 'assigned'; }).length;
     // update dashboard wallet balance
-    var w = JSON.parse(localStorage.getItem('hs_wallet_' + id) || '{"balance":0}');
+    var w = JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0}');
     var dashBal = document.getElementById('dashWalletBal');
     if(dashBal) dashBal.textContent = w.balance.toLocaleString('en-IN');
 
@@ -2785,7 +2785,7 @@
         tx.oncomplete = function(){
           fill.style.width = '100%'; label.textContent = 'Done!';
           var meta = getStvMeta();
-          meta.push({ id: id, clientName: clientName, caption: caption, sizeMB: (_stvFile.size/1024/1024).toFixed(2), uploadedBy: name, uploadedAt: new Date().toLocaleString() });
+          meta.push({ id: id, clientName: clientName, caption: caption, sizeMB: (_stvFile.size/1024/1024).toFixed(2), uploadedBy: staffName, uploadedAt: new Date().toLocaleString() });
           saveStvMeta(meta);
           document.getElementById('stv_name').value = '';
           document.getElementById('stv_caption').value = '';
