@@ -2847,57 +2847,6 @@
     // Start class
     function startClass(name){
       alert('Starting: ' + name + '\n\nAI class content coming soon!');
-
-    // ── STAFF ADDRESS ──────────────────────────────────────────────
-    function saveStaffAddress(){
-      var sId = localStorage.getItem('hs_staff_id');
-      var data = {
-        name:     (document.getElementById('addr_name')||{}).value||'',
-        phone:    (document.getElementById('addr_phone')||{}).value||'',
-        line1:    (document.getElementById('addr_line1')||{}).value||'',
-        line2:    (document.getElementById('addr_line2')||{}).value||'',
-        city:     (document.getElementById('addr_city')||{}).value||'',
-        state:    (document.getElementById('addr_state')||{}).value||'',
-        pin:      (document.getElementById('addr_pin')||{}).value||'',
-        landmark: (document.getElementById('addr_landmark')||{}).value||''
-      };
-      if(!data.name||!data.line1||!data.city||!data.state||!data.pin){
-        alert('Please fill all required fields (Name, Address Line 1, City, State, PIN Code).');
-        return;
-      }
-      if(!/^[0-9]{6}$/.test(data.pin)){ alert('PIN Code must be 6 digits.'); return; }
-      localStorage.setItem('hs_address_' + sId, JSON.stringify(data));
-      if(window.fbUpdate) fbUpdate('staff_address', String(sId), Object.assign({ staffId: sId, staffName: localStorage.getItem('hs_staff_name')||'' }, data));
-      var toast = document.getElementById('addrToast');
-      if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 3000); }
-      showSavedAddress(data);
-    }
-
-    function loadStaffAddress(){
-      var sId = localStorage.getItem('hs_staff_id');
-      var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
-      if(!data) return;
-      var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
-      set('addr_name', data.name); set('addr_phone', data.phone);
-      set('addr_line1', data.line1); set('addr_line2', data.line2);
-      set('addr_city', data.city); set('addr_state', data.state);
-      set('addr_pin', data.pin); set('addr_landmark', data.landmark);
-      showSavedAddress(data);
-    }
-
-    function showSavedAddress(data){
-      var el = document.getElementById('addrSavedDisplay');
-      var txt = document.getElementById('addrSavedText');
-      if(!el||!txt) return;
-      el.style.display = 'block';
-      txt.innerHTML =
-        '<strong style="color:#fff;">' + (data.name||'') + '</strong> &nbsp;·&nbsp; ' + (data.phone||'') + '<br/>'
-        + (data.line1||'') + (data.line2 ? ', ' + data.line2 : '') + '<br/>'
-        + (data.landmark ? data.landmark + ', ' : '')
-        + (data.city||'') + ' — ' + (data.pin||'') + '<br/>'
-        + (data.state||'');
-    }
-    // ── END STAFF ADDRESS ──────────────────────────────────────────────
     }
 
     // EVENT FEEDBACK
