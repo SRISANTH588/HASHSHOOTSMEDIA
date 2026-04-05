@@ -2169,7 +2169,6 @@ Priority Support</textarea></div>
 
     // Auto-refresh every 5 seconds
     loadAll();
-    setInterval(loadAll, 5000);
 
     // DEMO NOTIFICATION TRACKER
     var lastSubmittedCount = 0;
@@ -2206,7 +2205,7 @@ Priority Support</textarea></div>
     }
 
     updateDemoNotifBadge();
-    setInterval(updateDemoNotifBadge, 3000);
+
 
     // FEEDBACK NOTIFICATION TRACKER
     var lastFeedbackCount = getFeedbacks().length;
@@ -2241,7 +2240,12 @@ Priority Support</textarea></div>
       switchTab('feedback', document.getElementById('feedbackTabBtn'));
     }
 
-    setInterval(updateFeedbackNotifBadge, 3000);
+    // Unified polling — all badge/data refreshes in one interval to avoid request flooding
+    setInterval(function(){
+      loadAll();
+      updateDemoNotifBadge();
+      updateFeedbackNotifBadge();
+    }, 8000);
 
     // TAB SWITCHING
     function switchTab(tab, btn) {
@@ -4543,7 +4547,6 @@ Priority Support</textarea></div>
       if(badge){ badge.textContent = pending; badge.style.display = pending > 0 ? 'inline' : 'none'; }
     }
 
-    setInterval(updateWithdrawBadge, 4000);
     updateWithdrawBadge();
 
     // RAZORPAY CONFIG
@@ -4994,7 +4997,7 @@ Priority Support</textarea></div>
         lastEnquiryCount = count;
       }
     }
-    setInterval(updateEnquiriesNotifBadge, 3000);
+
 
     // ── NOTIFICATIONS ─────────────────────────────────────────
     function getNotifications(){ return JSON.parse(localStorage.getItem('hs_admin_notifs')||'[]'); }
@@ -5261,7 +5264,7 @@ Priority Support</textarea></div>
       updateNotifBadge();
     })();
 
-    setInterval(pollNotifications, 4000);
+
 
     // CAREER APPS
     function renderCareerApps(){
