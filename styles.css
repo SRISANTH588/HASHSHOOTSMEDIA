@@ -136,20 +136,20 @@ body {
 }
 .hero-content { text-align: center; position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
 .hero-tag {
-  color: #c9a84c; font-size: 0.8rem; font-weight: 700;
+  color: var(--red); font-size: 0.8rem; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem;
 }
 .hero-sub {
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 800;
-  color: #c9a84c; margin-bottom: 0.25rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 600;
+  color: #fff; margin-bottom: 0.25rem;
 }
 .hero-big {
   font-size: clamp(4rem, 12vw, 9rem); font-weight: 900;
-  color: #c9a84c; line-height: 1; margin-bottom: 3rem;
-  letter-spacing: -3px;
+  color: var(--red); line-height: 1; margin-bottom: 3rem;
   text-shadow: 0 0 80px rgba(201,168,76,0.25);
+  letter-spacing: -3px;
 }
-.asterisk { font-size: 0.4em; vertical-align: super; color: #c9a84c; }
+.asterisk { font-size: 0.4em; vertical-align: super; color: var(--red); }
 
 /* PHONE MOCKUP */
 .phone-mockup {
