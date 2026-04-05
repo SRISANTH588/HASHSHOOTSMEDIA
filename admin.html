@@ -5775,22 +5775,27 @@ Priority Support</textarea></div>
           if(currentTab==='affiliates') renderAffiliateApps();
         });
 
-        // Real-time payments listener
-        onSnapshot(query(collection(fbDb,'payments'), orderBy('paidAt','desc')), function(snap){
-          var list = [];
-          snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
-          var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.paymentId, customerName: p.customerName, service: p.service, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : '' }; });
-          localStorage.setItem('hs_payments', JSON.stringify(mapped));
-          if(currentTab==='payments') renderPaymentsTab();
-        });
+        // Real-time payments listener (wrapped in try/catch so it never breaks other listeners)
+        try {
+          onSnapshot(collection(fbDb,'payments'), function(snap){
+            var list = [];
+            snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
+            var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.paymentId, customerName: p.customerName, service: p.service, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : '' }; });
+            mapped.sort(function(a,b){ return new Date(b.paidAt||0) - new Date(a.paidAt||0); });
+            localStorage.setItem('hs_payments', JSON.stringify(mapped));
+            if(currentTab==='payments') renderPaymentsTab();
+          });
+        } catch(e){ console.warn('payments listener:', e); }
 
         // Real-time store payments listener
-        onSnapshot(collection(fbDb,'store_payments'), function(snap){
-          var list = [];
-          snap.forEach(function(d){ list.push(Object.assign({ id: d.id }, d.data())); });
-          localStorage.setItem('hs_store_payments', JSON.stringify(list));
-          if(currentTab==='payments') renderPaymentsTab();
-        });
+        try {
+          onSnapshot(collection(fbDb,'store_payments'), function(snap){
+            var list = [];
+            snap.forEach(function(d){ list.push(Object.assign({ id: d.id }, d.data())); });
+            localStorage.setItem('hs_store_payments', JSON.stringify(list));
+            if(currentTab==='payments') renderPaymentsTab();
+          });
+        } catch(e){ console.warn('store_payments listener:', e); }
 
         // Real-time settings listener — loads all admin-saved settings
         onSnapshot(collection(fbDb,'settings'), function(snap){
