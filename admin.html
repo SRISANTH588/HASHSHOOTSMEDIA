@@ -1396,9 +1396,9 @@ Priority Support</textarea></div>
         <div class="save-toast" id="storeSettingsToast"><i class="fas fa-check-circle"></i> Store settings saved!</div>
       </div>
 
-      <!-- ADD T-SHIRT -->
+      <!-- ADD PRODUCT -->
       <div class="about-form" style="margin-bottom:1rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-tshirt" style="color:#2196f3;margin-right:0.5rem;"></i> Add / Edit T-Shirts</h2>
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-box-open" style="color:#2196f3;margin-right:0.5rem;"></i> Add Product</h2>
         <div class="form-row">
           <div class="form-group">
             <label>Product Name *</label>
@@ -1409,27 +1409,41 @@ Priority Support</textarea></div>
             <input type="number" id="ts_price" placeholder="e.g. 499" min="1"/>
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="ts_category" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="T-Shirt">👕 T-Shirt</option>
+              <option value="Hoodie">🧥 Hoodie</option>
+              <option value="Cap">🧢 Cap</option>
+              <option value="Accessory">💍 Accessory</option>
+              <option value="Equipment">📷 Equipment</option>
+              <option value="Sticker">🏷️ Sticker / Print</option>
+              <option value="Other">📦 Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Available Sizes <span style="color:#6a6050;font-weight:400;">(comma separated, leave blank if N/A)</span></label>
+            <input type="text" id="ts_sizes" placeholder="e.g. XS, S, M, L, XL, XXL"/>
+          </div>
+        </div>
         <div class="form-group">
           <label>Description</label>
           <input type="text" id="ts_desc" placeholder="e.g. Premium cotton, official OG SHOOTS branding"/>
-        </div>
-        <div class="form-group">
-          <label>Available Sizes (comma separated)</label>
-          <input type="text" id="ts_sizes" placeholder="e.g. XS, S, M, L, XL, XXL"/>
         </div>
         <div class="form-group">
           <label>Product Image</label>
           <input type="file" id="ts_image" accept="image/*" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
           <div id="ts_img_preview" style="margin-top:0.5rem;display:none;"><img id="ts_img_tag" style="max-height:120px;border-radius:8px;border:1px solid rgba(201,168,76,0.15);"/></div>
         </div>
-        <button class="btn-save-about" onclick="addTshirt()"><i class="fas fa-plus"></i> Add T-Shirt</button>
-        <div class="save-toast" id="tsToast"><i class="fas fa-check-circle"></i> T-shirt added!</div>
+        <button class="btn-save-about" onclick="addTshirt()"><i class="fas fa-plus"></i> Add Product</button>
+        <div class="save-toast" id="tsToast"><i class="fas fa-check-circle"></i> Product added!</div>
       </div>
 
-      <!-- T-SHIRT LIST -->
+      <!-- PRODUCT LIST -->
       <div class="about-form" style="margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#2196f3;margin-right:0.5rem;"></i> T-Shirt Products</h2>
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#2196f3;margin-right:0.5rem;"></i> All Products</h2>
           <span style="font-size:0.8rem;color:#9a9080;" id="tsCount"></span>
         </div>
         <div id="tshirtAdminList"></div>
@@ -3774,11 +3788,11 @@ Priority Support</textarea></div>
       var cfg = JSON.parse(localStorage.getItem('hs_store_settings')||'{}');
       var emailEl=document.getElementById('store_email'); if(emailEl) emailEl.value=cfg.email||'';
       var discEl=document.getElementById('store_discount_email'); if(discEl) discEl.value=cfg.discountEmail||'';
-      var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
+      var items = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
       var countEl=document.getElementById('tsCount'); if(countEl) countEl.textContent=items.length+' product(s)';
       var listEl=document.getElementById('tshirtAdminList');
       if(listEl){
-        if(!items.length){ listEl.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No t-shirts added yet.</p>'; }
+        if(!items.length){ listEl.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No products added yet.</p>'; }
         else { listEl.innerHTML=items.map(function(t){
           return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:0.85rem 1.25rem;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">'
             +(t.image?'<img src="'+t.image+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/>':'')
@@ -3803,7 +3817,8 @@ Priority Support</textarea></div>
 
     function deleteTshirt(id){
       if(!confirm('Delete this product?')) return;
-      var remaining = JSON.parse(localStorage.getItem('hs_tshirts')||'[]').filter(function(t){ return String(t.id)!==String(id); });
+      var remaining = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]').filter(function(t){ return String(t.id)!==String(id); });
+      localStorage.setItem('hs_products', JSON.stringify(remaining));
       localStorage.setItem('hs_tshirts', JSON.stringify(remaining));
       var fsItems = remaining.map(function(t){ return Object.assign({}, t, { image: t.image && t.image.startsWith('http') ? t.image : '' }); });
       if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: fsItems});
@@ -3820,12 +3835,14 @@ Priority Support</textarea></div>
       var imgEl = document.getElementById('ts_image');
       var file = imgEl && imgEl.files && imgEl.files[0];
       function doSave(imgData){
-        var items = JSON.parse(localStorage.getItem('hs_tshirts')||'[]');
-        var newItem = { id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), description:(document.getElementById('ts_desc')||{}).value||'', image:imgData||'', active:true };
+        var items = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
+        var cat = (document.getElementById('ts_category')||{}).value || 'T-Shirt';
+        var newItem = { id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), description:(document.getElementById('ts_desc')||{}).value||'', category:cat, image:imgData||'', active:true };
         items.push(newItem);
+        localStorage.setItem('hs_products', JSON.stringify(items));
         localStorage.setItem('hs_tshirts', JSON.stringify(items));
         // Strip base64 image before saving to Firestore (too large)
-        var firestoreItems = items.map(function(t){ return Object.assign({}, t, { image: t.image && t.image.startsWith('http') ? t.image : '' }); });
+        var firestoreItems = items.map(function(t){ return { id:t.id, name:t.name, price:t.price, sizes:t.sizes||'', description:t.description||'', category:t.category||'T-Shirt', active:t.active }; });
         if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: firestoreItems});
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
         loadStoreAdmin();
@@ -5813,7 +5830,7 @@ Priority Support</textarea></div>
               case 'about':         localStorage.setItem('hs_about',          JSON.stringify(data)); break;
               case 'customer_page': localStorage.setItem('hs_customer_page',  JSON.stringify(data)); break;
               case 'store_settings':localStorage.setItem('hs_store_settings', JSON.stringify(data)); break;
-              case 'tshirts':       if(data.items) localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); break;
+              case 'tshirts':       if(data.items){ localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); localStorage.setItem('hs_products', JSON.stringify(data.items)); } break;
               case 'idcard':        localStorage.setItem('hs_idcard',         JSON.stringify(data)); break;
               case 'tawk_config':   localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); break;
               case 'blogs':         if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); break;
