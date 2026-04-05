@@ -2581,9 +2581,19 @@
     function storePayNow(itemName, price, idx){
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       if(!rp.enabled || !rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
+      var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
-      var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' — ' + staffName;
+      if(idx >= 0 && !selectedSize){
+        // Check if product has sizes
+        var products = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
+        var prod = products[idx];
+        if(prod && prod.sizes && prod.sizes.trim()){
+          alert('Please select a size before paying.');
+          return;
+        }
+      }
+      var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' \u2014 ' + staffName;
       var options = {
         key: rp.keyId,
         amount: price * 100,
@@ -2594,17 +2604,44 @@
         prefill: { name: staffName },
         theme: { color: '#c9a84c' },
         handler: function(response){
-          alert('\u2705 Payment successful! Payment ID: ' + response.razorpay_payment_id + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
-          // Save payment record
+          var orderId = 'ORD_' + Date.now();
+          var order = {
+            id: orderId,
+            item: itemName,
+            size: selectedSize,
+            amount: price,
+            paymentId: response.razorpay_payment_id,
+            staffId: staffId,
+            staffName: staffName,
+            paidAt: new Date().toLocaleString(),
+            status: 'paid'
+          };
+          // Save to store_payments
           var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
-          var sp = { id: Date.now(), item: itemName, size: selectedSize, amount: price, paymentId: response.razorpay_payment_id, staffName: staffName, staffId: localStorage.getItem('hs_staff_id'), paidAt: new Date().toLocaleString(), status: 'paid' };
-          payments.push(sp);
+          payments.push(order);
           localStorage.setItem('hs_store_payments', JSON.stringify(payments));
-          if(window.fbSave) fbSave('store_payments', sp);
-          // Notify admin
-          if(window.fbSave) fbSave('admin_notifications', { type:'payment', title:'Store Purchase', message: staffName + ' paid \u20b9' + price.toLocaleString('en-IN') + ' for ' + itemName, read: false, time: new Date().toLocaleString() });
+          if(window.fbSave) fbSave('store_payments', order);
+          // Save to store_orders (separate collection for order tracking)
+          if(window.fbSave) fbSave('store_orders', Object.assign({}, order, { type: 'store_purchase' }));
+          // Send rich admin notification
+          if(window.fbSave) fbSave('admin_notifications', {
+            type: 'store_order',
+            title: '\uD83D\uDED2 New Store Order',
+            message: staffName + ' (ID: #' + staffId + ') ordered ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN') + ' | Payment ID: ' + response.razorpay_payment_id,
+            staffId: staffId,
+            staffName: staffName,
+            item: itemName,
+            size: selectedSize,
+            amount: price,
+            paymentId: response.razorpay_payment_id,
+            orderId: orderId,
+            read: false
+          });
+          // Show success
+          alert('\u2705 Payment Successful!\n\nOrder ID: ' + orderId + '\nPayment ID: ' + response.razorpay_payment_id + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
+          renderStore();
         },
-        modal: { ondismiss: function(){ console.log('Payment dismissed'); } }
+        modal: { ondismiss: function(){ } }
       };
       new Razorpay(options).open();
     }

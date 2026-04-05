@@ -171,6 +171,7 @@
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
+      <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
 
     </div>
 
@@ -1964,6 +1965,37 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    </div>
+
+    <!-- STORE ORDERS TAB -->
+    <div class="tab-panel" id="tab-storeorders">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-shopping-bag" style="color:#c9a84c;margin-right:0.5rem;"></i> Store Orders</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <input type="text" id="so_search" oninput="renderStoreOrders()" placeholder="Search staff / item..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.75rem;color:#fff;font-family:inherit;font-size:0.78rem;outline:none;width:200px;"/>
+            <button onclick="renderStoreOrders()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <!-- Summary -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+          <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#c9a84c;" id="so_totalOrders">0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Orders</div>
+          </div>
+          <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="so_totalRevenue">&#8377;0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Revenue</div>
+          </div>
+          <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.2);border-radius:14px;padding:1.1rem;text-align:center;">
+            <div style="font-size:1.6rem;font-weight:900;color:#2196f3;" id="so_uniqueStaff">0</div>
+            <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Staff Ordered</div>
+          </div>
+        </div>
+        <div id="so_list"></div>
+      </div>
+    </div><!-- end tab-storeorders -->
+
     <!-- BLOG TAB -->
     <div class="tab-panel" id="tab-blog">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2411,6 +2443,7 @@ Priority Support</textarea></div>
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
       if (tab === 'payments') renderPaymentsTab();
+      if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
@@ -3900,6 +3933,73 @@ Priority Support</textarea></div>
       }).join('');
     }
     // ── END STAFF ADDRESSES ──────────────────────────────────────
+
+    // ── STORE ORDERS ──────────────────────────────────────────
+    async function renderStoreOrders(){
+      var el = document.getElementById('so_list');
+      if(!el) return;
+      el.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i></div>';
+
+      // Load from Firebase store_orders + store_payments
+      var orders = JSON.parse(localStorage.getItem('hs_store_orders') || localStorage.getItem('hs_store_payments') || '[]');
+      try {
+        var f = await _fbAdmin();
+        if(f){
+          var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'store_orders'), f.s.orderBy('paidAt','desc')));
+          if(!snap.empty){
+            orders = [];
+            snap.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); });
+            localStorage.setItem('hs_store_orders', JSON.stringify(orders));
+          }
+        }
+      } catch(e){
+        // fallback to store_payments
+        try {
+          var f2 = await _fbAdmin();
+          if(f2){
+            var snap2 = await f2.s.getDocs(f2.s.collection(f2.db,'store_payments'));
+            if(!snap2.empty){ orders = []; snap2.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); }); }
+          }
+        } catch(e2){}
+      }
+
+      var search = (document.getElementById('so_search')||{}).value||'';
+      if(search){
+        var q = search.toLowerCase();
+        orders = orders.filter(function(o){ return (o.staffName||'').toLowerCase().includes(q)||(o.item||'').toLowerCase().includes(q)||(o.paymentId||'').toLowerCase().includes(q); });
+      }
+
+      orders = orders.slice().reverse();
+
+      // Summary
+      var allOrders = JSON.parse(localStorage.getItem('hs_store_orders') || localStorage.getItem('hs_store_payments') || '[]');
+      var totalRev = allOrders.reduce(function(s,o){ return s+(o.amount||0); }, 0);
+      var uniqueStaff = new Set(allOrders.map(function(o){ return o.staffId; })).size;
+      var tot = document.getElementById('so_totalOrders'); if(tot) tot.textContent = allOrders.length;
+      var rev = document.getElementById('so_totalRevenue'); if(rev) rev.textContent = '\u20b9'+totalRev.toLocaleString('en-IN');
+      var uni = document.getElementById('so_uniqueStaff'); if(uni) uni.textContent = uniqueStaff;
+
+      if(!orders.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-shopping-bag" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No store orders yet.</div>';
+        return;
+      }
+
+      el.innerHTML = orders.map(function(o){
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+          + '<div>'
+          + '<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">' + (o.item||'Item') + (o.size?' <span style="font-size:0.72rem;color:#c9a84c;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:0.1rem 0.5rem;border-radius:50px;">'+o.size+'</span>':'') + '</div>'
+          + '<div style="font-size:0.78rem;color:#9a9080;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> ' + (o.staffName||'Staff') + ' &nbsp;&middot;&nbsp; <i class="fas fa-hashtag" style="color:#c9a84c;"></i> ' + (o.staffId||'') + '</div>'
+          + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-credit-card" style="color:#c9a84c;"></i> ' + (o.paymentId||o.id||'—') + '</div>'
+          + '<div style="font-size:0.68rem;color:#777;margin-top:0.1rem;">' + (o.paidAt||'') + '</div>'
+          + '</div>'
+          + '<div style="text-align:right;">'
+          + '<div style="font-size:1.2rem;font-weight:900;color:#4caf50;">&#8377;' + Number(o.amount||0).toLocaleString('en-IN') + '</div>'
+          + '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }
+    // ── END STORE ORDERS ──────────────────────────────────────────
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 
@@ -6254,6 +6354,17 @@ Priority Support</textarea></div>
             if(currentTab==='payments') renderPaymentsTab();
           });
         } catch(e){ console.warn('store_payments listener:', e); }
+
+        // Real-time store orders listener
+        try {
+          onSnapshot(collection(fbDb,'store_orders'), function(snap){
+            var list = [];
+            snap.forEach(function(d){ list.push(Object.assign({ id: d.id }, d.data())); });
+            localStorage.setItem('hs_store_orders', JSON.stringify(list));
+            if(currentTab==='storeorders') renderStoreOrders();
+            if(currentTab==='payments') renderPaymentsTab();
+          });
+        } catch(e){ console.warn('store_orders listener:', e); }
 
         // Real-time settings listener — loads all admin-saved settings
         onSnapshot(collection(fbDb,'settings'), function(snap){
