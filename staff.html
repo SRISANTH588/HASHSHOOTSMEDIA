@@ -2876,8 +2876,7 @@
 
         // Listen to assigned shoots — admin assigns/updates
         fbListen('assigned_shoots', function(docs) {
-          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(staffId); });
-          if (!myDocs.length) return;
+          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
           myDocs.forEach(function(d) {
             var idx = local.findIndex(function(x) { return String(x.id) === String(d.id || d._fbId); });
@@ -2888,10 +2887,6 @@
           });
           localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
           renderAssignedShoots();
-          // Update badge
-          var pending = local.filter(function(a) { return String(a.staffId) === String(staffId) && a.status === 'assigned'; }).length;
-          var badge = document.getElementById('shootsPendingBadge');
-          if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline' : 'none'; }
         }, 'createdAt');
 
         // Listen to wallet — admin releases payment
@@ -2912,8 +2907,7 @@
 
         // Listen to payout requests — admin approves/rejects
         fbListen('payout_requests', function(docs) {
-          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(staffId); });
-          if (!myDocs.length) return;
+          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
           myDocs.forEach(function(d) {
             var idx = local.findIndex(function(x) { return String(x.id) === String(d._fbId || d.id); });
@@ -2928,8 +2922,7 @@
 
         // Listen to demo sessions — admin assigns demos
         fbListen('demos', function(docs) {
-          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(staffId); });
-          if (!myDocs.length) return;
+          var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_demos') || '[]');
           myDocs.forEach(function(d) {
             var idx = local.findIndex(function(x) { return String(x.id) === String(d.id || d._fbId); });
