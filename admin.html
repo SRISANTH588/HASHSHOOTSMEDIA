@@ -157,6 +157,7 @@
       <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('staffwallets',this)" id="staffWalletsTabBtn"><i class="fas fa-wallet"></i> Staff Wallets</button>
       <button class="tab-btn" onclick="switchTab('staffbank',this)" id="staffBankTabBtn"><i class="fas fa-university"></i> Staff Bank Accounts</button>
+      <button class="tab-btn" onclick="switchTab('staffaddress',this)" id="staffAddressTabBtn"><i class="fas fa-map-marker-alt"></i> Staff Addresses</button>
       <button class="tab-btn" onclick="switchTab('razorpay',this)" id="razorpayTabBtn"><i class="fas fa-credit-card"></i> Razorpay</button>
       <button class="tab-btn" onclick="switchTab('tawk',this)" id="tawkTabBtn"><i class="fas fa-comments"></i> Tawk.to</button>
       <button class="tab-btn" onclick="switchTab('settings',this)" id="settingsTabBtn"><i class="fas fa-sliders-h"></i> Settings</button>
@@ -1557,6 +1558,17 @@ Priority Support</textarea></div>
       </div>
     </div><!-- end tab-staffbank -->
 
+    <!-- STAFF ADDRESSES TAB -->
+    <div class="tab-panel" id="tab-staffaddress">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Addresses</h2>
+          <button onclick="renderStaffAddresses()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="staffAddressList"></div>
+      </div>
+    </div><!-- end tab-staffaddress -->
+
     <!-- RAZORPAY TAB -->
     <div class="tab-panel" id="tab-razorpay">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2379,6 +2391,7 @@ Priority Support</textarea></div>
       if (tab === 'withdraw') loadWithdrawTab();
       if (tab === 'staffwallets') renderStaffWallets();
       if (tab === 'staffbank') renderStaffBankAccounts();
+      if (tab === 'staffaddress') renderStaffAddresses();
       if (tab === 'testimonial-videos') renderTestiVideos();
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
@@ -3832,6 +3845,61 @@ Priority Support</textarea></div>
         + '</div>';
     }
     // ── END STAFF BANK ACCOUNTS ─────────────────────────────────
+
+    // ── STAFF ADDRESSES ──────────────────────────────────────
+    async function renderStaffAddresses(){
+      var el = document.getElementById('staffAddressList');
+      if(!el) return;
+      el.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i></div>';
+
+      var staffList = getStaff();
+      if(!staffList.length){ el.innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;">No staff accounts yet.</p>'; return; }
+
+      // Load from Firebase staff_address collection
+      var addrMap = {};
+      try {
+        var f = await _fbAdmin();
+        if(f){
+          var snap = await f.s.getDocs(f.s.collection(f.db, 'staff_address'));
+          snap.forEach(function(d){ addrMap[String(d.id)] = d.data(); });
+        }
+      } catch(e){ console.warn('staff_address fetch:', e); }
+
+      // Fallback to localStorage
+      staffList.forEach(function(s){
+        if(!addrMap[String(s.id)]){
+          var local = JSON.parse(localStorage.getItem('hs_address_' + s.id) || 'null');
+          if(local) addrMap[String(s.id)] = local;
+        }
+      });
+
+      el.innerHTML = staffList.map(function(s){
+        var a = addrMap[String(s.id)];
+        var hasAddr = a && a.line1;
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;margin-bottom:0.85rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:' + (hasAddr?'1rem':'0') + ';flex-wrap:wrap;gap:0.5rem;">'
+          + '<div>'
+          + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + s.name + ' <span style="font-size:0.72rem;color:#c9a84c;">#' + s.id + '</span></div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;">' + s.role + '</div>'
+          + '</div>'
+          + (hasAddr
+            ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Address Added</span>'
+            : '<span style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-exclamation-circle"></i> No Address</span>')
+          + '</div>'
+          + (hasAddr ? (
+            '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.06);border-radius:10px;padding:0.85rem 1rem;font-size:0.85rem;color:#d4c9a8;line-height:1.8;">'
+            + '<strong style="color:#fff;">' + (a.name||s.name) + '</strong>'
+            + (a.phone ? ' &nbsp;&middot;&nbsp; <i class="fas fa-phone" style="color:#c9a84c;"></i> ' + a.phone : '') + '<br/>'
+            + (a.line1||'') + (a.line2 ? ', ' + a.line2 : '') + '<br/>'
+            + (a.landmark ? '<span style="color:#9a9080;">' + a.landmark + '</span>, ' : '')
+            + (a.city||'') + ' &mdash; ' + (a.pin||'') + '<br/>'
+            + (a.state||'')
+            + '</div>'
+          ) : '')
+          + '</div>';
+      }).join('');
+    }
+    // ── END STAFF ADDRESSES ──────────────────────────────────────
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 

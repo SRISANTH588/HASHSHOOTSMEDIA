@@ -279,6 +279,7 @@
     <button class="tab-btn" onclick="switchTab('bank',this)"><i class="fas fa-university"></i> Bank</button>
     <button class="tab-btn" onclick="switchTab('testimonials',this)"><i class="fas fa-play-circle"></i> Testimonials</button>
     <button class="tab-btn" onclick="switchTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
+    <button class="tab-btn" onclick="switchTab('address',this)"><i class="fas fa-map-marker-alt"></i> My Address</button>
 
   </div>
 
@@ -501,6 +502,59 @@
         <button class="btn-logout-full" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </div>
 
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="section" id="sec-address">
+      <div class="sec-title"><i class="fas fa-map-marker-alt"></i> My Address</div>
+      <div class="upload-section">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Full Name *</label>
+            <input type="text" id="addr_name" class="upload-input" placeholder="e.g. Kiran Reddy"/>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Phone Number *</label>
+            <input type="tel" id="addr_phone" class="upload-input" placeholder="e.g. +91 98765 43210"/>
+          </div>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Address Line 1 * <span style="color:#6a6050;font-weight:400;">(House / Flat / Building)</span></label>
+          <input type="text" id="addr_line1" class="upload-input" placeholder="e.g. Flat 4B, Sai Residency"/>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Address Line 2 <span style="color:#6a6050;font-weight:400;">(Street / Area)</span></label>
+          <input type="text" id="addr_line2" class="upload-input" placeholder="e.g. MG Road, Labbipet"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">City *</label>
+            <input type="text" id="addr_city" class="upload-input" placeholder="e.g. Vijayawada"/>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">State *</label>
+            <input type="text" id="addr_state" class="upload-input" placeholder="e.g. Andhra Pradesh"/>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">PIN Code *</label>
+            <input type="text" id="addr_pin" class="upload-input" placeholder="e.g. 520010" maxlength="6"/>
+          </div>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Landmark <span style="color:#6a6050;font-weight:400;">(optional)</span></label>
+          <input type="text" id="addr_landmark" class="upload-input" placeholder="e.g. Near SBI Bank"/>
+        </div>
+        <button class="btn-upload" onclick="saveStaffAddress()"><i class="fas fa-save"></i> Save Address</button>
+        <div id="addrToast" class="upload-toast"><i class="fas fa-check-circle"></i> Address saved successfully!</div>
+
+        <!-- Saved address display -->
+        <div id="addrSavedDisplay" style="display:none;margin-top:1.25rem;">
+          <div class="sec-title" style="font-size:0.9rem;margin-bottom:0.75rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i> Saved Address</div>
+          <div style="background:#0a0a0a;border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:1.1rem 1.25rem;">
+            <div id="addrSavedText" style="font-size:0.88rem;color:#d4c9a8;line-height:1.8;"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- STORE -->
@@ -924,6 +978,7 @@
       if(name === 'payout') renderPayout();
       if(name === 'testimonials') renderStvGrid();
       if(name === 'profile') loadBankDetails();
+      if(name === 'address') loadStaffAddress();
       if(name === 'aieditor') saie_init();
     }
 
@@ -2618,9 +2673,111 @@
       }).join('');
     }
 
+    // ── STAFF ADDRESS ──────────────────────────────────────────
+    function saveStaffAddress(){
+      var sId = localStorage.getItem('hs_staff_id');
+      var data = {
+        name:     (document.getElementById('addr_name')||{}).value||'',
+        phone:    (document.getElementById('addr_phone')||{}).value||'',
+        line1:    (document.getElementById('addr_line1')||{}).value||'',
+        line2:    (document.getElementById('addr_line2')||{}).value||'',
+        city:     (document.getElementById('addr_city')||{}).value||'',
+        state:    (document.getElementById('addr_state')||{}).value||'',
+        pin:      (document.getElementById('addr_pin')||{}).value||'',
+        landmark: (document.getElementById('addr_landmark')||{}).value||''
+      };
+      if(!data.name||!data.line1||!data.city||!data.state||!data.pin){
+        alert('Please fill all required fields (Name, Address Line 1, City, State, PIN Code).');
+        return;
+      }
+      if(!/^[0-9]{6}$/.test(data.pin)){ alert('PIN Code must be 6 digits.'); return; }
+      localStorage.setItem('hs_address_' + sId, JSON.stringify(data));
+      if(window.fbUpdate) fbUpdate('staff_address', String(sId), Object.assign({ staffId: sId, staffName: localStorage.getItem('hs_staff_name')||'' }, data));
+      var toast = document.getElementById('addrToast');
+      if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 3000); }
+      showSavedAddress(data);
+    }
+
+    function loadStaffAddress(){
+      var sId = localStorage.getItem('hs_staff_id');
+      var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
+      if(!data) return;
+      var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
+      set('addr_name', data.name); set('addr_phone', data.phone);
+      set('addr_line1', data.line1); set('addr_line2', data.line2);
+      set('addr_city', data.city); set('addr_state', data.state);
+      set('addr_pin', data.pin); set('addr_landmark', data.landmark);
+      showSavedAddress(data);
+    }
+
+    function showSavedAddress(data){
+      var el = document.getElementById('addrSavedDisplay');
+      var txt = document.getElementById('addrSavedText');
+      if(!el||!txt) return;
+      el.style.display = 'block';
+      txt.innerHTML =
+        '<strong style="color:#fff;">' + (data.name||'') + '</strong> &nbsp;&middot;&nbsp; ' + (data.phone||'') + '<br/>'
+        + (data.line1||'') + (data.line2 ? ', ' + data.line2 : '') + '<br/>'
+        + (data.landmark ? data.landmark + ', ' : '')
+        + (data.city||'') + ' — ' + (data.pin||'') + '<br/>'
+        + (data.state||'');
+    }
+    // ── END STAFF ADDRESS ──────────────────────────────────────
+
     // Start class
     function startClass(name){
       alert('Starting: ' + name + '\n\nAI class content coming soon!');
+
+    // ── STAFF ADDRESS ──────────────────────────────────────────────
+    function saveStaffAddress(){
+      var sId = localStorage.getItem('hs_staff_id');
+      var data = {
+        name:     (document.getElementById('addr_name')||{}).value||'',
+        phone:    (document.getElementById('addr_phone')||{}).value||'',
+        line1:    (document.getElementById('addr_line1')||{}).value||'',
+        line2:    (document.getElementById('addr_line2')||{}).value||'',
+        city:     (document.getElementById('addr_city')||{}).value||'',
+        state:    (document.getElementById('addr_state')||{}).value||'',
+        pin:      (document.getElementById('addr_pin')||{}).value||'',
+        landmark: (document.getElementById('addr_landmark')||{}).value||''
+      };
+      if(!data.name||!data.line1||!data.city||!data.state||!data.pin){
+        alert('Please fill all required fields (Name, Address Line 1, City, State, PIN Code).');
+        return;
+      }
+      if(!/^[0-9]{6}$/.test(data.pin)){ alert('PIN Code must be 6 digits.'); return; }
+      localStorage.setItem('hs_address_' + sId, JSON.stringify(data));
+      if(window.fbUpdate) fbUpdate('staff_address', String(sId), Object.assign({ staffId: sId, staffName: localStorage.getItem('hs_staff_name')||'' }, data));
+      var toast = document.getElementById('addrToast');
+      if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 3000); }
+      showSavedAddress(data);
+    }
+
+    function loadStaffAddress(){
+      var sId = localStorage.getItem('hs_staff_id');
+      var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
+      if(!data) return;
+      var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
+      set('addr_name', data.name); set('addr_phone', data.phone);
+      set('addr_line1', data.line1); set('addr_line2', data.line2);
+      set('addr_city', data.city); set('addr_state', data.state);
+      set('addr_pin', data.pin); set('addr_landmark', data.landmark);
+      showSavedAddress(data);
+    }
+
+    function showSavedAddress(data){
+      var el = document.getElementById('addrSavedDisplay');
+      var txt = document.getElementById('addrSavedText');
+      if(!el||!txt) return;
+      el.style.display = 'block';
+      txt.innerHTML =
+        '<strong style="color:#fff;">' + (data.name||'') + '</strong> &nbsp;·&nbsp; ' + (data.phone||'') + '<br/>'
+        + (data.line1||'') + (data.line2 ? ', ' + data.line2 : '') + '<br/>'
+        + (data.landmark ? data.landmark + ', ' : '')
+        + (data.city||'') + ' — ' + (data.pin||'') + '<br/>'
+        + (data.state||'');
+    }
+    // ── END STAFF ADDRESS ──────────────────────────────────────────────
     }
 
     // EVENT FEEDBACK
