@@ -2535,7 +2535,7 @@
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           // Show Pay Now button if Razorpay is enabled
           var payBtn = (rp.enabled && rp.keyId && t.price)
-            ? '<button onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:0.5rem;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
+            ? '<button onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:0.5rem;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
             : '';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
@@ -2578,20 +2578,17 @@
     }
 
     // Razorpay payment for store items
-    function storePayNow(itemName, price, idx){
+    function storePayNow(itemName, price, idx, sizesStr){
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       if(!rp.enabled || !rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
-      if(idx >= 0 && !selectedSize){
-        // Check if product has sizes
-        var products = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
-        var prod = products[idx];
-        if(prod && prod.sizes && prod.sizes.trim()){
-          alert('Please select a size before paying.');
-          return;
-        }
+      // Check if this product requires a size selection
+      var hasSizes = sizesStr && sizesStr.trim().length > 0;
+      if(idx >= 0 && hasSizes && !selectedSize){
+        alert('Please select a size before paying.');
+        return;
       }
       var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' \u2014 ' + staffName;
       var options = {
