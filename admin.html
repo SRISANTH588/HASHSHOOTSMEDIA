@@ -3891,8 +3891,13 @@ Priority Support</textarea></div>
       try {
         var f = await _fbAdmin();
         if(f){
+          // Try both collection names
           var snap = await f.s.getDocs(f.s.collection(f.db, 'staff_address'));
           snap.forEach(function(d){ addrMap[String(d.id)] = d.data(); });
+          if(!snap.size){
+            var snap2 = await f.s.getDocs(f.s.collection(f.db, 'staff_addresses'));
+            snap2.forEach(function(d){ addrMap[String(d.id)] = d.data(); });
+          }
         }
       } catch(e){ console.warn('staff_address fetch:', e); }
 
@@ -3938,28 +3943,27 @@ Priority Support</textarea></div>
       if(!el) return;
       el.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i></div>';
 
-      // Load from Firebase store_orders + store_payments
       var orders = JSON.parse(localStorage.getItem('hs_store_orders') || localStorage.getItem('hs_store_payments') || '[]');
       try {
         var f = await _fbAdmin();
         if(f){
-          var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'store_orders'), f.s.orderBy('paidAt','desc')));
+          // Try store_orders first (no orderBy to avoid index issues)
+          var snap = await f.s.getDocs(f.s.collection(f.db,'store_orders'));
           if(!snap.empty){
             orders = [];
             snap.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); });
             localStorage.setItem('hs_store_orders', JSON.stringify(orders));
+          } else {
+            // fallback to store_payments
+            var snap2 = await f.s.getDocs(f.s.collection(f.db,'store_payments'));
+            if(!snap2.empty){
+              orders = [];
+              snap2.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); });
+              localStorage.setItem('hs_store_payments', JSON.stringify(orders));
+            }
           }
         }
-      } catch(e){
-        // fallback to store_payments
-        try {
-          var f2 = await _fbAdmin();
-          if(f2){
-            var snap2 = await f2.s.getDocs(f2.s.collection(f2.db,'store_payments'));
-            if(!snap2.empty){ orders = []; snap2.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); }); }
-          }
-        } catch(e2){}
-      }
+      } catch(e){ console.warn('store orders fetch:', e); }
 
       var search = (document.getElementById('so_search')||{}).value||'';
       if(search){
