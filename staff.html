@@ -2527,7 +2527,7 @@
           var sizeArr = Array.isArray(t.sizes) ? t.sizes : (t.sizes||'').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
           var hasSizes = sizeArr.length > 0;
           var sizes = sizeArr.map(function(s){
-            return '<span id="sz_'+i+'_'+s.replace(/\s/g,\'_\')+'" style="background:#0a0a0a;border:2px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.35rem 0.75rem;font-size:0.78rem;font-weight:700;color:#9a9080;cursor:pointer;transition:all 0.2s;" onclick="selectSize('+i+',\''+s+'\',this)">'+s+'</span>';
+            return '<span id="sz_'+i+'_'+s.replace(/\s/g,'_')+'" style="background:#0a0a0a;border:2px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.35rem 0.75rem;font-size:0.78rem;font-weight:700;color:#9a9080;cursor:pointer;transition:all 0.2s;" onclick="selectSize('+i+',\''+s+'\',this)">'+s+'</span>';
           }).join('');
           var imgHTML = t.image
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
