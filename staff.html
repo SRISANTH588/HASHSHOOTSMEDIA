@@ -247,6 +247,22 @@
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
 <script src="hs-fixes.js"></script>
+<script>
+// Wait for hs-firebase.js module to expose window.fbGet before any sync runs
+window._fbReady = new Promise(function(resolve){
+  var tries = 0;
+  var check = setInterval(function(){
+    tries++;
+    if(window.fbGet && window.fbGetAll && window.fbListen){
+      clearInterval(check);
+      resolve();
+    } else if(tries > 100){ // 10 seconds max
+      clearInterval(check);
+      resolve(); // resolve anyway so page doesn't hang
+    }
+  }, 100);
+});
+</script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -1903,6 +1919,7 @@
 
     // ── SYNC ALL DATA FROM FIREBASE ON LOAD ──────────────────────────────────
     (async function syncAllFromFirebase(){
+      await window._fbReady;
       var myId = String(localStorage.getItem('hs_staff_id'));
       try {
         // 1. Wallet
@@ -1986,6 +2003,7 @@
 
     // ── REAL-TIME LISTENERS for all tabs ────────────────────────────────────
     (async function setupListeners(){
+      await window._fbReady;
       var myId = String(localStorage.getItem('hs_staff_id'));
       // Assigned shoots
       if(window.fbListen){
@@ -3169,7 +3187,7 @@
     // ── FIREBASE TWO-WAY SYNC FOR STAFF ─────────────────────────
     (async function() {
       try {
-        await new Promise(r => setTimeout(r, 1000)); // wait for hs-firebase.js
+        await window._fbReady;
         if (!window.fbListen) return;
         var staffId = localStorage.getItem('hs_staff_id');
 
