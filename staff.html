@@ -344,7 +344,7 @@
         <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
           <input type="month" id="shootsMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by month"/>
           <input type="date" id="shootsDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by exact date"/>
-          <button type="button" onclick="document.getElementById('shootsMonthFilter').value='';document.getElementById('shootsDateFilter').value='';renderAssignedShoots();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+          <button type="button" onclick="clearShootsFilter()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
         </div>
       </div>
       <div id="assignedShootsList"></div>
@@ -420,7 +420,7 @@
       <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
         <input type="month" id="feedbackMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="applyFeedbackFilters()" title="Filter by month"/>
         <input type="date" id="feedbackDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="applyFeedbackFilters()" title="Filter by exact date"/>
-        <button type="button" onclick="document.getElementById('feedbackMonthFilter').value='';document.getElementById('feedbackDateFilter').value='';applyFeedbackFilters();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+        <button type="button" onclick="clearFeedbackFilter()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
       </div>
 
       <!-- SUB TABS -->
@@ -933,6 +933,18 @@
       if(name === 'testimonials') renderStvGrid();
       if(name === 'profile') loadBankDetails();
       if(name === 'aieditor') saie_init();
+    }
+
+    function clearShootsFilter(){
+      document.getElementById('shootsMonthFilter').value = '';
+      document.getElementById('shootsDateFilter').value = '';
+      renderAssignedShoots();
+    }
+
+    function clearFeedbackFilter(){
+      document.getElementById('feedbackMonthFilter').value = '';
+      document.getElementById('feedbackDateFilter').value = '';
+      applyFeedbackFilters();
     }
 
     // Load staff info
