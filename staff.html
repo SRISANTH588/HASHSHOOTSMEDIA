@@ -359,8 +359,8 @@ window._fbReady = new Promise(function(resolve){
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
         <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-camera"></i> My Assigned Shoots</div>
         <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-          <input type="month" id="shootsMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by month" placeholder="Filter by month"/>
-          <input type="date" id="shootsDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by exact date"/>
+          <input type="month" id="shootsMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by month" placeholder="Filter by month" autocomplete="off"/>
+          <input type="text" id="shootsDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" placeholder="YYYY-MM-DD" title="Filter by exact date (YYYY-MM-DD)" oninput="renderAssignedShoots()" autocomplete="off"/>
           <button type="button" onclick="clearShootsFilter()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
         </div>
       </div>
@@ -1515,8 +1515,14 @@ window._fbReady = new Promise(function(resolve){
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var dfEl = document.getElementById('shootsDateFilter');
       var mfEl = document.getElementById('shootsMonthFilter');
-      var dateFilter  = dfEl ? dfEl.value : '';
-      var monthFilter = mfEl ? mfEl.value : '';
+      // Auto-clear if value looks like a future date or browser autofill
+      if(dfEl && dfEl.value){
+        var today = new Date(); today.setHours(0,0,0,0);
+        var picked = new Date(dfEl.value);
+        if(isNaN(picked.getTime()) || picked > today) dfEl.value = '';
+      }
+      var dateFilter  = dfEl ? dfEl.value.trim() : '';
+      var monthFilter = mfEl ? mfEl.value.trim() : '';
 
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
         .filter(function(a){ return String(a.staffId) === String(staffId); })
