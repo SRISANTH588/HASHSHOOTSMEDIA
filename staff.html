@@ -936,14 +936,18 @@
     }
 
     function clearShootsFilter(){
-      document.getElementById('shootsMonthFilter').value = '';
-      document.getElementById('shootsDateFilter').value = '';
+      var mf = document.getElementById('shootsMonthFilter');
+      var df = document.getElementById('shootsDateFilter');
+      if(mf) mf.value = '';
+      if(df) df.value = '';
       renderAssignedShoots();
     }
 
     function clearFeedbackFilter(){
-      document.getElementById('feedbackMonthFilter').value = '';
-      document.getElementById('feedbackDateFilter').value = '';
+      var mf = document.getElementById('feedbackMonthFilter');
+      var df = document.getElementById('feedbackDateFilter');
+      if(mf) mf.value = '';
+      if(df) df.value = '';
       applyFeedbackFilters();
     }
 
@@ -1430,8 +1434,10 @@
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
-      var dateFilter  = (document.getElementById('shootsDateFilter')  || {}).value || '';
-      var monthFilter = (document.getElementById('shootsMonthFilter') || {}).value || '';
+      var dfEl = document.getElementById('shootsDateFilter');
+      var mfEl = document.getElementById('shootsMonthFilter');
+      var dateFilter  = dfEl ? dfEl.value : '';
+      var monthFilter = mfEl ? mfEl.value : '';
 
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
         .filter(function(a){ return String(a.staffId) === String(staffId); })
@@ -1846,8 +1852,10 @@
     }
 
     function _fbDateMatch(dateStr){
-      var df = (document.getElementById('feedbackDateFilter')  || {}).value || '';
-      var mf = (document.getElementById('feedbackMonthFilter') || {}).value || '';
+      var dfEl = document.getElementById('feedbackDateFilter');
+      var mfEl = document.getElementById('feedbackMonthFilter');
+      var df = dfEl ? dfEl.value : '';
+      var mf = mfEl ? mfEl.value : '';
       if(df)  return dateStr === df;
       if(mf)  return dateStr && dateStr.slice(0,7) === mf;
       return true;
