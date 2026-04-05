@@ -3884,6 +3884,18 @@ Priority Support</textarea></div>
       el.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i></div>';
 
       var staffList = getStaff();
+      // Also fetch from Firebase in case localStorage is stale
+      try {
+        var f0 = await _fbAdmin();
+        if(f0){
+          var ssnap = await f0.s.getDocs(f0.s.collection(f0.db,'staff'));
+          if(!ssnap.empty){
+            var fbStaff = [];
+            ssnap.forEach(function(d){ fbStaff.push(d.data()); });
+            if(fbStaff.length){ staffList = fbStaff; localStorage.setItem('hs_staff', JSON.stringify(fbStaff)); }
+          }
+        }
+      } catch(e){}
       if(!staffList.length){ el.innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;">No staff accounts yet.</p>'; return; }
 
       // Load from Firebase staff_address collection
