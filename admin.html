@@ -155,6 +155,7 @@
       <button class="tab-btn" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn"><i class="fas fa-comment-dots"></i> App Feedback <span id="appFeedbackBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('store',this)" id="storeTabBtn"><i class="fas fa-store"></i> Store</button>
       <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('staffwallets',this)" id="staffWalletsTabBtn"><i class="fas fa-wallet"></i> Staff Wallets</button>
       <button class="tab-btn" onclick="switchTab('razorpay',this)" id="razorpayTabBtn"><i class="fas fa-credit-card"></i> Razorpay</button>
       <button class="tab-btn" onclick="switchTab('tawk',this)" id="tawkTabBtn"><i class="fas fa-comments"></i> Tawk.to</button>
       <button class="tab-btn" onclick="switchTab('settings',this)" id="settingsTabBtn"><i class="fas fa-sliders-h"></i> Settings</button>
@@ -1506,6 +1507,44 @@ Priority Support</textarea></div>
       </div>
     </div><!-- end tab-withdraw -->
 
+    <!-- STAFF WALLETS TAB -->
+    <div class="tab-panel" id="tab-staffwallets">
+
+      <!-- Quick Add/Edit -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-wallet" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Wallet Management</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.75rem;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;">
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Select Staff *</label>
+            <select id="sw_staff" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"><option value="">Choose staff...</option></select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Amount (&#8377;) *</label>
+            <input type="number" id="sw_amount" placeholder="e.g. 500" min="0" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;font-weight:600;color:#9a9080;display:block;margin-bottom:0.4rem;">Note (optional)</label>
+            <input type="text" id="sw_note" placeholder="e.g. Bonus, Adjustment..." style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button onclick="swAddAmount()" style="background:#4caf50;color:#fff;border:none;border-radius:10px;padding:0.7rem 1rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-plus"></i> Add</button>
+            <button onclick="swSetAmount()" style="background:#c9a84c;color:#fff;border:none;border-radius:10px;padding:0.7rem 1rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-edit"></i> Set</button>
+            <button onclick="swDeductAmount()" style="background:#f44336;color:#fff;border:none;border-radius:10px;padding:0.7rem 1rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-minus"></i> Deduct</button>
+          </div>
+        </div>
+        <div id="sw_msg" style="display:none;margin-bottom:0.75rem;"></div>
+      </div>
+
+      <!-- Staff Wallet List -->
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> All Staff Wallets</h2>
+          <button onclick="renderStaffWallets()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="sw_list"></div>
+      </div>
+    </div><!-- end tab-staffwallets -->
+
     <!-- RAZORPAY TAB -->
     <div class="tab-panel" id="tab-razorpay">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -2326,6 +2365,7 @@ Priority Support</textarea></div>
       if (tab === 'wedding-plans') loadWeddingPlans();
       if (tab === 'app-feedback') renderAppFeedback();
       if (tab === 'withdraw') loadWithdrawTab();
+      if (tab === 'staffwallets') renderStaffWallets();
       if (tab === 'testimonial-videos') renderTestiVideos();
       if (tab === 'tawk') loadTawkConfig();
       if (tab === 'store') loadStoreAdmin();
@@ -3572,6 +3612,146 @@ Priority Support</textarea></div>
         } catch(e){ console.warn('clearAllAppFeedback Firestore:', e); }
       })();
     }
+
+    // ── STAFF WALLETS MANAGEMENT ─────────────────────────────────
+    function renderStaffWallets(){
+      var staffList = getStaff();
+      var sel = document.getElementById('sw_staff');
+      if(sel){
+        sel.innerHTML = '<option value="">Choose staff...</option>';
+        staffList.forEach(function(s){
+          var o = document.createElement('option');
+          o.value = s.id; o.textContent = s.name + ' (' + s.role + ')';
+          sel.appendChild(o);
+        });
+      }
+      var el = document.getElementById('sw_list');
+      if(!el) return;
+      if(!staffList.length){ el.innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;">No staff accounts yet.</p>'; return; }
+      el.innerHTML = staffList.map(function(s){
+        var w = JSON.parse(localStorage.getItem('hs_wallet_' + s.id) || '{"balance":0,"totalEarned":0,"pending":0,"withdrawn":0,"transactions":[]}');
+        var txns = (w.transactions || []).slice().reverse().slice(0, 5);
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;margin-bottom:1rem;">'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">'
+          + '<div>'
+          + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + s.name + ' <span style="font-size:0.72rem;color:#c9a84c;font-weight:600;">#' + s.id + '</span></div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;">' + s.role + '</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;">'
+          + '<div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:#4caf50;">&#8377;' + (w.balance||0).toLocaleString('en-IN') + '</div><div style="font-size:0.65rem;color:#9a9080;">Balance</div></div>'
+          + '<div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:#ff9800;">&#8377;' + (w.pending||0).toLocaleString('en-IN') + '</div><div style="font-size:0.65rem;color:#9a9080;">Pending</div></div>'
+          + '<div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:#c9a84c;">&#8377;' + (w.totalEarned||0).toLocaleString('en-IN') + '</div><div style="font-size:0.65rem;color:#9a9080;">Total Earned</div></div>'
+          + '<div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:#2196f3;">&#8377;' + (w.withdrawn||0).toLocaleString('en-IN') + '</div><div style="font-size:0.65rem;color:#9a9080;">Withdrawn</div></div>'
+          + '</div>'
+          + '</div>'
+          + (txns.length ? '<div style="font-size:0.72rem;font-weight:700;color:#9a9080;margin-bottom:0.5rem;">Recent Transactions</div>'
+            + txns.map(function(t){
+                var color = t.type==='credit'?'#4caf50':t.type==='pending'?'#ff9800':'#f44336';
+                var prefix = t.type==='credit'?'+':t.type==='debit'?'-':'';
+                return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.78rem;">'
+                  + '<div><span style="color:#d4c9a8;">' + (t.label||t.note||'Transaction') + '</span><span style="color:#6a6050;font-size:0.68rem;margin-left:0.5rem;">' + (t.date||'') + '</span></div>'
+                  + '<span style="color:' + color + ';font-weight:700;">' + prefix + '&#8377;' + (t.amount||0).toLocaleString('en-IN') + '</span>'
+                  + '</div>';
+              }).join('')
+          : '')
+          + '<div style="display:flex;gap:0.5rem;margin-top:0.85rem;flex-wrap:wrap;">'
+          + '<button onclick="swQuickAdd(\''+s.id+'\',\''+s.name+'\')" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add Amount</button>'
+          + '<button onclick="swQuickSet(\''+s.id+'\',\''+s.name+'\')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit Balance</button>'
+          + '<button onclick="swQuickDeduct(\''+s.id+'\',\''+s.name+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-minus"></i> Deduct</button>'
+          + '<button onclick="swResetWallet(\''+s.id+'\',\''+s.name+'\')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.4rem 0.85rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-undo"></i> Reset</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    function _swGetWallet(staffId){
+      return JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0,"totalEarned":0,"pending":0,"withdrawn":0,"transactions":[]}');
+    }
+
+    function _swSaveWallet(staffId, w, label, amount, type){
+      if(!Array.isArray(w.transactions)) w.transactions = [];
+      if(amount !== undefined){
+        w.transactions.push({ type: type||'credit', amount: Math.abs(amount), label: label||'Admin Adjustment', date: new Date().toLocaleString() });
+      }
+      localStorage.setItem('hs_wallet_' + staffId, JSON.stringify(w));
+      if(window.fbUpdate) fbUpdate('wallets', String(staffId), { balance: w.balance, totalEarned: w.totalEarned, pending: w.pending, withdrawn: w.withdrawn||0, lastUpdated: new Date().toLocaleString() });
+      renderStaffWallets();
+      var msg = document.getElementById('sw_msg');
+      if(msg){ msg.style.cssText='display:block;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;'; msg.innerHTML='<i class="fas fa-check-circle"></i> Wallet updated for ' + (getStaff().find(function(s){return String(s.id)===String(staffId);})||{name:'Staff'}).name; setTimeout(function(){ msg.style.display='none'; }, 3000); }
+    }
+
+    function swAddAmount(){
+      var staffId = (document.getElementById('sw_staff')||{}).value;
+      var amt = parseFloat((document.getElementById('sw_amount')||{}).value)||0;
+      var note = (document.getElementById('sw_note')||{}).value||'Admin Credit';
+      if(!staffId){ alert('Please select a staff member.'); return; }
+      if(!amt){ alert('Please enter an amount.'); return; }
+      var w = _swGetWallet(staffId);
+      w.balance = (w.balance||0) + amt;
+      w.totalEarned = (w.totalEarned||0) + amt;
+      _swSaveWallet(staffId, w, note, amt, 'credit');
+    }
+
+    function swSetAmount(){
+      var staffId = (document.getElementById('sw_staff')||{}).value;
+      var amt = parseFloat((document.getElementById('sw_amount')||{}).value);
+      var note = (document.getElementById('sw_note')||{}).value||'Admin Balance Set';
+      if(!staffId){ alert('Please select a staff member.'); return; }
+      if(isNaN(amt)){ alert('Please enter an amount.'); return; }
+      var w = _swGetWallet(staffId);
+      var diff = amt - (w.balance||0);
+      w.balance = amt;
+      if(diff > 0) w.totalEarned = (w.totalEarned||0) + diff;
+      _swSaveWallet(staffId, w, note, Math.abs(diff), diff>=0?'credit':'debit');
+    }
+
+    function swDeductAmount(){
+      var staffId = (document.getElementById('sw_staff')||{}).value;
+      var amt = parseFloat((document.getElementById('sw_amount')||{}).value)||0;
+      var note = (document.getElementById('sw_note')||{}).value||'Admin Deduction';
+      if(!staffId){ alert('Please select a staff member.'); return; }
+      if(!amt){ alert('Please enter an amount.'); return; }
+      var w = _swGetWallet(staffId);
+      w.balance = Math.max(0, (w.balance||0) - amt);
+      _swSaveWallet(staffId, w, note, amt, 'debit');
+    }
+
+    function swQuickAdd(staffId, staffName){
+      var amt = parseFloat(prompt('Add amount to ' + staffName + '\'s wallet (\u20b9):'));
+      if(isNaN(amt) || amt <= 0) return;
+      var note = prompt('Note (optional):', 'Admin Credit') || 'Admin Credit';
+      var w = _swGetWallet(staffId);
+      w.balance = (w.balance||0) + amt;
+      w.totalEarned = (w.totalEarned||0) + amt;
+      _swSaveWallet(staffId, w, note, amt, 'credit');
+    }
+
+    function swQuickSet(staffId, staffName){
+      var w = _swGetWallet(staffId);
+      var amt = parseFloat(prompt('Set balance for ' + staffName + ' (current: \u20b9' + (w.balance||0).toLocaleString('en-IN') + '):'));
+      if(isNaN(amt) || amt < 0) return;
+      var note = prompt('Note (optional):', 'Admin Balance Edit') || 'Admin Balance Edit';
+      var diff = amt - (w.balance||0);
+      w.balance = amt;
+      if(diff > 0) w.totalEarned = (w.totalEarned||0) + diff;
+      _swSaveWallet(staffId, w, note, Math.abs(diff), diff>=0?'credit':'debit');
+    }
+
+    function swQuickDeduct(staffId, staffName){
+      var w = _swGetWallet(staffId);
+      var amt = parseFloat(prompt('Deduct amount from ' + staffName + '\'s wallet (current: \u20b9' + (w.balance||0).toLocaleString('en-IN') + '):'));
+      if(isNaN(amt) || amt <= 0) return;
+      var note = prompt('Note (optional):', 'Admin Deduction') || 'Admin Deduction';
+      w.balance = Math.max(0, (w.balance||0) - amt);
+      _swSaveWallet(staffId, w, note, amt, 'debit');
+    }
+
+    function swResetWallet(staffId, staffName){
+      if(!confirm('Reset ' + staffName + '\'s wallet to zero? This cannot be undone.')) return;
+      var w = { balance:0, totalEarned:0, pending:0, withdrawn:0, transactions:[] };
+      _swSaveWallet(staffId, w, 'Wallet Reset by Admin', 0, 'debit');
+    }
+    // ── END STAFF WALLETS ─────────────────────────────────────────
 
     function clearAllStaff(){ if(!confirm('Delete ALL staff accounts? This cannot be undone.')) return; localStorage.removeItem('hs_staff'); renderStaffList(); }
 
