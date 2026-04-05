@@ -4510,8 +4510,10 @@ Priority Support</textarea></div>
       });
 
       saveAssignedShoots(assigned);
-      // Push to Firebase so staff sees on any device
-      if(window.fbSave) fbSave('assigned_shoots', assigned[assigned.length-1]);
+      // Push to Firebase so staff sees on any device — use fbUpdate with known ID to prevent duplicates
+      assigned.slice(-selectedIds.length).forEach(function(a){
+        if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), a);
+      });
 
       document.getElementById('as_booking').value='';
       document.getElementById('as_date').value='';
