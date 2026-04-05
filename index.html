@@ -292,11 +292,11 @@
           <a href="partner.html" class="btn btn-partner">Become a Partner</a>
         </div>
         <div class="hero-stats">
-          <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statReels">50,002+</span><span class="stat-label">Reels Delivered</span></div>
           <div class="stat-sep"></div>
           <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
           <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statMakers">0</span><span class="stat-label">Content Makers</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statMakers">200+</span><span class="stat-label">Content Makers</span></div>
         </div>
       </div>
 
@@ -1882,9 +1882,9 @@
     function applyHomepage(hp){
       const completedCount = JSON.parse(localStorage.getItem('hs_bookings') || '[]').filter(function(b){ return b.status === 'completed'; }).length;
       const feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
-      document.getElementById('statReels').textContent  = hp.statReels  || '0';
+      document.getElementById('statReels').textContent  = hp.statReels  || '50,002+';
       document.getElementById('statRating').textContent = hp.statRating || '5.0/5';
-      document.getElementById('statMakers').textContent = hp.statMakers || '0';
+      document.getElementById('statMakers').textContent = hp.statMakers || '200+';
       if(hp.heroTag) document.querySelector('.hero-tag').textContent = hp.heroTag;
       if(hp.heroSub) document.querySelector('.hero-sub').textContent = hp.heroSub;
       if(hp.heroBig) { var hb = document.querySelector('.hero-big'); hb.innerHTML = hp.heroBig + '<span class="asterisk">*</span>'; }
