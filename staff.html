@@ -2525,27 +2525,29 @@
       } else {
         tGrid.innerHTML = tshirts.map(function(t, i){
           var sizeArr = Array.isArray(t.sizes) ? t.sizes : (t.sizes||'').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+          var hasSizes = sizeArr.length > 0;
           var sizes = sizeArr.map(function(s){
-            return '<span style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.72rem;font-weight:700;color:#d4c9a8;cursor:pointer;" onclick="this.parentNode.querySelectorAll(\'span\').forEach(function(x){x.style.borderColor=\'rgba(201,168,76,0.15)\';x.style.color=\'#d4c9a8\';});this.style.borderColor=\'#c9a84c\';this.style.color=\'#c9a84c\';window._selectedSize_'+i+'=\''+s+'\';">' + s + '</span>';
+            return '<span id="sz_'+i+'_'+s.replace(/\s/g,\'_\')+'" style="background:#0a0a0a;border:2px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.35rem 0.75rem;font-size:0.78rem;font-weight:700;color:#9a9080;cursor:pointer;transition:all 0.2s;" onclick="selectSize('+i+',\''+s+'\',this)">'+s+'</span>';
           }).join('');
           var imgHTML = t.image
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
-          var mailSubject = encodeURIComponent('T-Shirt Order \u2014 ' + t.name + ' \u2014 ' + staffName);
-          var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to order the following T-shirt:\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill your size]\nQuantity: [Please fill quantity]\n\nStaff Name: ' + staffName + '\n\nThank you!');
-          // Show Pay Now button if Razorpay is enabled
+          var mailSubject = encodeURIComponent('Order \u2014 ' + t.name + ' \u2014 ' + staffName);
+          var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
+          var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
+          var payBtnId = 'payBtn_' + i;
           var payBtn = (rp.enabled && rp.keyId && t.price)
-            ? '<button onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:0.5rem;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
+            ? '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
             : '';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
             + '<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">' + t.name + '</div>'
-            + (t.description ? '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;line-height:1.5;">' + t.description + '</div>' : '')
-            + '<div style="font-size:1.3rem;font-weight:900;color:#c9a84c;margin-bottom:0.75rem;">\u20b9' + Number(t.price).toLocaleString('en-IN') + '</div>'
-            + (sizes ? '<div style="margin-bottom:0.85rem;"><div style="font-size:0.65rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;">Select Size</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + sizes + '</div></div>' : '')
+            + (t.description ? '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.5rem;line-height:1.5;">' + t.description + '</div>' : '')
+            + '<div style="font-size:1.3rem;font-weight:900;color:#c9a84c;margin-bottom:0.85rem;">\u20b9' + Number(t.price).toLocaleString('en-IN') + '</div>'
+            + (hasSizes ? '<div style="margin-bottom:0.5rem;"><div style="font-size:0.68rem;color:#f44336;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-exclamation-circle"></i> Select Size <span style="color:#6a6050;">(required)</span></div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;" id="sizeRow_'+i+'">' + sizes + '</div><div id="sizeHint_'+i+'" style="font-size:0.68rem;color:#f44336;margin-top:0.35rem;display:none;">Please select a size to continue</div></div>' : '')
             + payBtn
-            + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(201,168,76,0.1);color:#c9a84c;border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;"><i class="fas fa-envelope"></i> Order via Email</a>'
+            + '<a href="mailto:' + contactEmail + '?subject=' + mailSubject + '&body=' + mailBody + '" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(201,168,76,0.1);color:#c9a84c;border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;margin-top:0.5rem;"><i class="fas fa-envelope"></i> Order via Email</a>'
             + '</div></div>';
         }).join('');
       }
@@ -2578,6 +2580,26 @@
     }
 
     // Razorpay payment for store items
+    function selectSize(idx, size, el){
+      // Highlight selected size
+      var row = document.getElementById('sizeRow_' + idx);
+      if(row) row.querySelectorAll('span').forEach(function(s){
+        s.style.borderColor = 'rgba(201,168,76,0.2)';
+        s.style.color = '#9a9080';
+        s.style.background = '#0a0a0a';
+      });
+      el.style.borderColor = '#c9a84c';
+      el.style.color = '#fff';
+      el.style.background = 'rgba(201,168,76,0.15)';
+      window['_selectedSize_' + idx] = size;
+      // Enable Pay Now button
+      var btn = document.getElementById('payBtn_' + idx);
+      if(btn){ btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+      // Hide hint
+      var hint = document.getElementById('sizeHint_' + idx);
+      if(hint) hint.style.display = 'none';
+    }
+
     function storePayNow(itemName, price, idx, sizesStr){
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       if(!rp.enabled || !rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
@@ -2587,6 +2609,8 @@
       // Check if this product requires a size selection
       var hasSizes = sizesStr && sizesStr.trim().length > 0;
       if(idx >= 0 && hasSizes && !selectedSize){
+        var hint = document.getElementById('sizeHint_' + idx);
+        if(hint) hint.style.display = 'block';
         alert('Please select a size before paying.');
         return;
       }
