@@ -6049,16 +6049,19 @@ Priority Support</textarea></div>
       hp.statMakers = document.getElementById('hs_statMakers').value.trim();
       localStorage.setItem('hs_homepage', JSON.stringify(hp));
       try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='hs-stats';}) || fbMod.initializeApp(fbCfg,'hs-stats');
-        var db      = fbStore.getFirestore(app);
-        await fbStore.setDoc(fbStore.doc(db,'settings','homepage'),{statReels:hp.statReels,statRating:hp.statRating,statMakers:hp.statMakers},{merge:true});
-      }catch(e){ console.error(e); }
-      var toast = document.getElementById('heroStatsToast');
-      toast.style.display='inline';
-      setTimeout(function(){ toast.style.display='none'; }, 2500);
+        var f = await _fbAdmin();
+        if(!f) throw new Error('Firebase not ready');
+        await f.s.setDoc(f.s.doc(f.db,'settings','homepage'),{
+          statReels: hp.statReels,
+          statRating: hp.statRating,
+          statMakers: hp.statMakers
+        },{merge:true});
+        var toast = document.getElementById('heroStatsToast');
+        toast.style.display='inline';
+        setTimeout(function(){ toast.style.display='none'; }, 2500);
+      }catch(e){
+        alert('Save failed: '+e.message);
+      }
     }
 
     // ── PAYMENTS TAB ──────────────────────────────────────────────
