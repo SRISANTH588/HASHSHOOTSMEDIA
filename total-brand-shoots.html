@@ -356,35 +356,39 @@
       </form>
     </div>
   </section>
-  <script>
-    async function tbsSendEnquiry(e){
+  <script type="module">
+    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+    const app = getApps().find(a => a.name === 'tbs-enq') || initializeApp(fbCfg, 'tbs-enq');
+    const db  = getFirestore(app);
+
+    window.tbsSendEnquiry = async function(e){
       e.preventDefault();
       var btn = e.target.querySelector('button[type=submit]');
-      btn.disabled = true; btn.textContent = 'Sending...';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
       var name  = document.getElementById('tbs_name').value.trim();
       var phone = document.getElementById('tbs_phone').value.trim();
       var brand = document.getElementById('tbs_brand').value.trim();
       var insta = document.getElementById('tbs_insta').value.trim();
       var msg   = document.getElementById('tbs_msg').value.trim();
       try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='tbs-enq';}) || fbMod.initializeApp(fbCfg,'tbs-enq');
-        var db      = fbStore.getFirestore(app);
-        await fbStore.addDoc(fbStore.collection(db,'marketing_enquiries'),{
-          name:name, phone:phone, brand:brand, instagram:insta||'', message:msg||'',
-          submittedAt: fbStore.serverTimestamp()
+        await addDoc(collection(db, 'marketing_enquiries'), {
+          name, phone, brand, instagram: insta || '', message: msg || '',
+          submittedAt: serverTimestamp()
         });
         btn.innerHTML = '<i class="fas fa-check"></i> Sent!';
-        btn.style.background = '#4caf50';
+        btn.style.background = 'linear-gradient(135deg,#4caf50,#388e3c)';
         e.target.reset();
       } catch(err){
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Enquiry';
-        alert('Error: '+err.message);
+        btn.style.background = 'linear-gradient(135deg,#c9a84c,#a07830)';
+        alert('Failed to send: ' + err.message);
       }
-    }
+    };
   </script>
 
 
