@@ -2548,9 +2548,10 @@
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
           var mailSubject = encodeURIComponent('Order \u2014 ' + t.name + ' \u2014 ' + staffName);
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
-          var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
+          var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;pointer-events:none;' : '';
           var payBtnId = 'payBtn_' + i;
-          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' data-name="'+encodeURIComponent(t.name)+'" data-price="'+t.price+'" data-idx="'+i+'" data-sizes="'+encodeURIComponent(sizeArr.join(','))+'" onclick="storePayNowBtn(this)" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
+          var payBtnClick = hasSizes ? '' : 'onclick="storePayNowBtn(this)"';
+          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' '+payBtnClick+' data-name="'+encodeURIComponent(t.name)+'" data-price="'+t.price+'" data-idx="'+i+'" data-sizes="'+encodeURIComponent(sizeArr.join(','))+'" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
@@ -2606,13 +2607,19 @@
       window['_selectedSize_' + idx] = size;
       // Enable Pay Now button
       var btn = document.getElementById('payBtn_' + idx);
-      if(btn){ btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+      if(btn){ btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.style.pointerEvents = 'auto'; btn.onclick = function(){ storePayNowBtn(this); }; }
       // Hide hint
       var hint = document.getElementById('sizeHint_' + idx);
       if(hint) hint.style.display = 'none';
     }
 
     function storePayNowBtn(btn){
+      if(btn.disabled) {
+        var idx = parseInt(btn.getAttribute('data-idx'));
+        var hint = document.getElementById('sizeHint_' + idx);
+        if(hint) hint.style.display = 'block';
+        return;
+      }
       var name     = decodeURIComponent(btn.getAttribute('data-name'));
       var price    = parseFloat(btn.getAttribute('data-price'));
       var idx      = parseInt(btn.getAttribute('data-idx'));
@@ -2672,7 +2679,33 @@
           prefill: { name: staffName },
           theme: { color: '#c9a84c' },
           handler: function(response){ saveOrder(response.razorpay_payment_id); },
-          modal: { ondismiss: function(){ } }
+          modal: { ondismiss: function(){
+            var failedOrder = {
+              id: 'FAIL_' + Date.now(),
+              item: itemName,
+              size: selectedSize,
+              amount: price,
+              paymentId: null,
+              staffId: staffId,
+              staffName: staffName,
+              paidAt: new Date().toLocaleString(),
+              status: 'failed'
+            };
+            var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
+            payments.push(failedOrder);
+            localStorage.setItem('hs_store_payments', JSON.stringify(payments));
+            if(window.fbSave){
+              fbSave('store_payments', failedOrder);
+              fbSave('admin_notifications', {
+                type: 'store_payment_failed',
+                title: '\u274C Store Payment Failed',
+                message: staffName + ' (ID: #' + staffId + ') payment failed for ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN'),
+                staffId: staffId, staffName: staffName, item: itemName,
+                size: selectedSize, amount: price,
+                orderId: failedOrder.id, read: false
+              });
+            }
+          } }
         };
         new Razorpay(options).open();
       } else {
