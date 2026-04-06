@@ -2504,6 +2504,7 @@
 
       alert('\u2705 Payout request of \u20b9' + amt.toLocaleString('en-IN') + ' submitted! Admin will process it within 24-48 hours.');
       renderPayout();
+      try { switchTab('payout', document.getElementById('payoutTabBtn')); } catch(e){}
     }
 
     // Legacy form-based payout — delegates to main function
@@ -3978,6 +3979,7 @@
       var modal = document.getElementById('payoutModal');
       if(modal) modal.remove();
       window._payoutProcessing = false;
+      try { renderPayout(); } catch(e){}
     }
 
     function processPayoutRequest(){
