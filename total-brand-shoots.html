@@ -337,6 +337,38 @@
     </div>
   </section>
 
+  <!-- LET'S TALK FORM -->
+  <section style="padding:5rem 2rem;background:#0a0a0a;">
+    <div style="max-width:560px;margin:0 auto;background:#161616;border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem 2.25rem;">
+      <h2 style="font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:0.4rem;">Let's Talk</h2>
+      <p style="font-size:0.88rem;color:#6a6050;margin-bottom:2rem;">Fill in your details and we'll get back to you within 24 hours.</p>
+      <form onsubmit="tbsSendEnquiry(event)" style="display:flex;flex-direction:column;gap:0.85rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;">
+          <input type="text" placeholder="Your Name" required style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" id="tbs_name"/>
+          <input type="tel" placeholder="Phone Number" required style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" id="tbs_phone"/>
+        </div>
+        <input type="text" placeholder="Brand / Business Name" required style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" id="tbs_brand"/>
+        <input type="text" placeholder="Instagram Handle (optional)" style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" id="tbs_insta"/>
+        <textarea placeholder="Tell us about your brand..." rows="4" style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;resize:none;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" id="tbs_msg"></textarea>
+        <button type="submit" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.95rem;font-weight:800;padding:1rem;border-radius:12px;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:filter 0.2s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='brightness(1)'">
+          <i class="fas fa-paper-plane"></i> Send Enquiry
+        </button>
+      </form>
+    </div>
+  </section>
+  <script>
+    function tbsSendEnquiry(e){
+      e.preventDefault();
+      var name=document.getElementById('tbs_name').value;
+      var phone=document.getElementById('tbs_phone').value;
+      var brand=document.getElementById('tbs_brand').value;
+      var insta=document.getElementById('tbs_insta').value;
+      var msg=document.getElementById('tbs_msg').value;
+      var text='New Total Brand Shoots Enquiry%0A%0AName: '+encodeURIComponent(name)+'%0APhone: '+encodeURIComponent(phone)+'%0ABrand: '+encodeURIComponent(brand)+'%0AInstagram: '+encodeURIComponent(insta||'N/A')+'%0AMessage: '+encodeURIComponent(msg||'N/A');
+      window.open('https://wa.me/919999999999?text='+text,'_blank');
+    }
+  </script>
+
   <!-- CTA -->
   <section class="tbs-cta">
     <h2>Ready to Grow Your <span>Brand?</span></h2>
