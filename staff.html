@@ -2600,11 +2600,9 @@
 
     function storePayNow(itemName, price, idx, sizesStr){
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
-      if(!rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
-      // Check if this product requires a size selection
       var hasSizes = sizesStr && sizesStr.trim().length > 0;
       if(idx >= 0 && hasSizes && !selectedSize){
         var hint = document.getElementById('sizeHint_' + idx);
@@ -2612,57 +2610,54 @@
         alert('Please select a size before paying.');
         return;
       }
-      var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' \u2014 ' + staffName;
-      var options = {
-        key: rp.keyId,
-        amount: price * 100,
-        currency: rp.currency || 'INR',
-        name: rp.businessName || 'OG Shoots',
-        description: description,
-        image: rp.logo || '',
-        prefill: { name: staffName },
-        theme: { color: '#c9a84c' },
-        handler: function(response){
-          var orderId = 'ORD_' + Date.now();
-          var order = {
-            id: orderId,
-            item: itemName,
-            size: selectedSize,
-            amount: price,
-            paymentId: response.razorpay_payment_id,
-            staffId: staffId,
-            staffName: staffName,
-            paidAt: new Date().toLocaleString(),
-            status: 'paid'
-          };
-          // Save to store_payments
-          var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
-          payments.push(order);
-          localStorage.setItem('hs_store_payments', JSON.stringify(payments));
-          if(window.fbSave) fbSave('store_payments', order);
-          // Save to store_orders (separate collection for order tracking)
-          if(window.fbSave) fbSave('store_orders', Object.assign({}, order, { type: 'store_purchase' }));
-          // Send rich admin notification
-          if(window.fbSave) fbSave('admin_notifications', {
+
+      function saveOrder(paymentId){
+        var orderId = 'ORD_' + Date.now();
+        var order = {
+          id: orderId, item: itemName, size: selectedSize, amount: price,
+          paymentId: paymentId, staffId: staffId, staffName: staffName,
+          paidAt: new Date().toLocaleString(), status: 'paid'
+        };
+        var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
+        payments.push(order);
+        localStorage.setItem('hs_store_payments', JSON.stringify(payments));
+        if(window.fbSave){
+          fbSave('store_payments', order);
+          fbSave('store_orders', Object.assign({}, order, { type: 'store_purchase' }));
+          fbSave('admin_notifications', {
             type: 'store_order',
             title: '\uD83D\uDED2 New Store Order',
-            message: staffName + ' (ID: #' + staffId + ') ordered ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN') + ' | Payment ID: ' + response.razorpay_payment_id,
-            staffId: staffId,
-            staffName: staffName,
-            item: itemName,
-            size: selectedSize,
-            amount: price,
-            paymentId: response.razorpay_payment_id,
-            orderId: orderId,
-            read: false
+            message: staffName + ' (ID: #' + staffId + ') ordered ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN') + (paymentId ? ' | Payment ID: ' + paymentId : ''),
+            staffId: staffId, staffName: staffName, item: itemName,
+            size: selectedSize, amount: price, paymentId: paymentId,
+            orderId: orderId, read: false
           });
-          // Show success
-          alert('\u2705 Payment Successful!\n\nOrder ID: ' + orderId + '\nPayment ID: ' + response.razorpay_payment_id + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
-          renderStore();
-        },
-        modal: { ondismiss: function(){ } }
-      };
-      new Razorpay(options).open();
+        }
+        alert('\u2705 Order Placed!\n\nOrder ID: ' + orderId + (paymentId ? '\nPayment ID: ' + paymentId : '') + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
+        renderStore();
+      }
+
+      // Use Razorpay if configured
+      if(rp.keyId && rp.enabled){
+        var description = itemName + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + ' \u2014 ' + staffName;
+        var options = {
+          key: rp.keyId,
+          amount: price * 100,
+          currency: rp.currency || 'INR',
+          name: rp.businessName || 'OG Shoots',
+          description: description,
+          image: rp.logo || '',
+          prefill: { name: staffName },
+          theme: { color: '#c9a84c' },
+          handler: function(response){ saveOrder(response.razorpay_payment_id); },
+          modal: { ondismiss: function(){ } }
+        };
+        new Razorpay(options).open();
+      } else {
+        // Fallback: show order confirmation modal
+        var confirm = window.confirm('\uD83D\uDED2 Confirm Order\n\nItem: ' + itemName + (selectedSize ? '\nSize: ' + selectedSize : '') + '\nAmount: \u20b9' + Number(price).toLocaleString('en-IN') + '\n\nClick OK to place this order. Payment will be collected by the admin.');
+        if(confirm) saveOrder('PENDING_' + Date.now());
+      }
     }
 
     // Show/hide other bank input
