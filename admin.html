@@ -154,6 +154,7 @@
       <button class="tab-btn" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn"><i class="fas fa-heart"></i> Wedding Plans</button>
       <button class="tab-btn" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn"><i class="fas fa-comment-dots"></i> App Feedback <span id="appFeedbackBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('store',this)" id="storeTabBtn"><i class="fas fa-store"></i> Store</button>
+      <button class="tab-btn" onclick="switchTab('store-razorpay',this)" id="storeRazorpayTabBtn"><i class="fas fa-credit-card"></i> Store Payment</button>
       <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('staffwallets',this)" id="staffWalletsTabBtn"><i class="fas fa-wallet"></i> Staff Wallets</button>
       <button class="tab-btn" onclick="switchTab('staffbank',this)" id="staffBankTabBtn"><i class="fas fa-university"></i> Staff Bank Accounts</button>
@@ -1484,6 +1485,45 @@ Priority Support</textarea></div>
 
     </div><!-- end tab-store -->
 
+    <!-- STORE RAZORPAY CONFIG TAB -->
+    <div class="tab-panel" id="tab-store-razorpay">
+      <div class="about-form">
+        <h2><i class="fas fa-credit-card" style="color:#c9a84c;margin-right:0.5rem;"></i> Store Payment Config</h2>
+        <p style="font-size:0.85rem;color:#9a9080;margin-bottom:2rem;line-height:1.7;">Configure Razorpay specifically for the <strong style="color:#fff;">Staff Store</strong>. Go to <a href="https://dashboard.razorpay.com" target="_blank" style="color:#c9a84c;">Razorpay Dashboard</a> → Settings → API Keys → Generate Key.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Razorpay Key ID *</label>
+            <input type="text" id="srp_key_id" placeholder="rzp_live_XXXXXXXXXXXXXXXX"/>
+          </div>
+          <div class="form-group">
+            <label>Business Name (shown on popup)</label>
+            <input type="text" id="srp_business_name" placeholder="OG Shoots"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Currency</label>
+            <select id="srp_currency" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="INR">INR — Indian Rupee</option>
+              <option value="USD">USD — US Dollar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Logo URL (optional)</label>
+            <input type="text" id="srp_logo" placeholder="https://yourdomain.com/logo.png"/>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.88rem;color:#d4c9a8;text-transform:none;letter-spacing:0;font-weight:600;">
+            <input type="checkbox" id="srp_enabled" style="accent-color:#c9a84c;width:18px;height:18px;"/>
+            Enable Razorpay payments for Staff Store
+          </label>
+        </div>
+        <button class="btn-save-about" onclick="saveStoreRazorpay()"><i class="fas fa-save"></i> Save Store Payment Settings</button>
+        <div class="save-toast" id="srpToast"><i class="fas fa-check-circle"></i> Store payment settings saved!</div>
+      </div>
+    </div><!-- end tab-store-razorpay -->
+
     <!-- STAFF WITHDRAW TAB -->
     <div class="tab-panel" id="tab-withdraw">
 
@@ -2481,6 +2521,7 @@ Priority Support</textarea></div>
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
+      if (tab === 'store-razorpay') loadStoreRazorpay();
       if (tab === 'mkt-enquiries') renderMktEnquiries();
       if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderPaymentsTab();
@@ -6032,6 +6073,35 @@ Priority Support</textarea></div>
       } catch(e){
         el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error loading enquiries: '+e.message+'</p>';
       }
+    }
+
+    // ── STORE RAZORPAY ───────────────────────────────────────────
+    function loadStoreRazorpay(){
+      var cfg = JSON.parse(localStorage.getItem('hs_store_razorpay')||'{}');
+      document.getElementById('srp_key_id').value        = cfg.keyId        || '';
+      document.getElementById('srp_business_name').value = cfg.businessName || '';
+      document.getElementById('srp_currency').value      = cfg.currency     || 'INR';
+      document.getElementById('srp_logo').value          = cfg.logo         || '';
+      document.getElementById('srp_enabled').checked     = cfg.enabled      || false;
+    }
+
+    async function saveStoreRazorpay(){
+      var cfg = {
+        keyId:        document.getElementById('srp_key_id').value.trim(),
+        businessName: document.getElementById('srp_business_name').value.trim() || 'OG Shoots',
+        currency:     document.getElementById('srp_currency').value,
+        logo:         document.getElementById('srp_logo').value.trim(),
+        enabled:      document.getElementById('srp_enabled').checked
+      };
+      localStorage.setItem('hs_store_razorpay', JSON.stringify(cfg));
+      try{
+        var f = await _fbAdmin();
+        if(!f) throw new Error('Firebase not ready');
+        await f.s.setDoc(f.s.doc(f.db,'settings','store_razorpay'), cfg, {merge:true});
+        var toast = document.getElementById('srpToast');
+        toast.style.display = 'block';
+        setTimeout(function(){ toast.style.display='none'; }, 2500);
+      } catch(e){ alert('Save failed: '+e.message); }
     }
 
     // ── HERO STATS TAB ────────────────────────────────────────────

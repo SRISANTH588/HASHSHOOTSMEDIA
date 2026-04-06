@@ -2516,7 +2516,7 @@
       var storeCfg = JSON.parse(localStorage.getItem('hs_store_settings') || '{}');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var contactEmail = storeCfg.email || 'support.ogshootsmedia@gmail.com';
-      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      var rp = JSON.parse(localStorage.getItem('hs_store_razorpay') || localStorage.getItem('hs_razorpay') || '{}');
 
       // T-SHIRTS
       var tGrid = document.getElementById('storeTshirtGrid');
@@ -2599,7 +2599,7 @@
     }
 
     function storePayNow(itemName, price, idx, sizesStr){
-      var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      var rp = JSON.parse(localStorage.getItem('hs_store_razorpay') || localStorage.getItem('hs_razorpay') || '{}');
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
@@ -3138,6 +3138,7 @@
         fbListenDoc('settings', 'customer_page', function(data){ localStorage.setItem('hs_customer_page',  JSON.stringify(data)); });
         fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
         fbListenDoc('settings', 'tshirts',       function(data){ if(data.items){ localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); localStorage.setItem('hs_products', JSON.stringify(data.items)); } if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
+        fbListenDoc('settings', 'store_razorpay', function(data){ localStorage.setItem('hs_store_razorpay', JSON.stringify(data)); });
         fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
         fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); });
         fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); });
