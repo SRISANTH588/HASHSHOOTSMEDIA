@@ -2537,7 +2537,7 @@
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
           var payBtnId = 'payBtn_' + i;
-          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
+          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' data-name="'+encodeURIComponent(t.name)+'" data-price="'+t.price+'" data-idx="'+i+'" data-sizes="'+encodeURIComponent(sizeArr.join(','))+'" onclick="storePayNowBtn(this)" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;"+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
@@ -2597,6 +2597,14 @@
       // Hide hint
       var hint = document.getElementById('sizeHint_' + idx);
       if(hint) hint.style.display = 'none';
+    }
+
+    function storePayNowBtn(btn){
+      var name     = decodeURIComponent(btn.getAttribute('data-name'));
+      var price    = parseFloat(btn.getAttribute('data-price'));
+      var idx      = parseInt(btn.getAttribute('data-idx'));
+      var sizesStr = decodeURIComponent(btn.getAttribute('data-sizes') || '');
+      storePayNow(name, price, idx, sizesStr);
     }
 
     function storePayNow(itemName, price, idx, sizesStr){
