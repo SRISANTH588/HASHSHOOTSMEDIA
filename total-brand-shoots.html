@@ -76,18 +76,25 @@
     .tbs-include-desc{font-size:0.8rem;color:#9a9080;line-height:1.6;}
 
     /* T&C */
-    .tbs-tc{padding:5rem 2rem;background:#080808;border-top:1px solid rgba(201,168,76,0.08);}
-    .tbs-tc-inner{max-width:800px;margin:0 auto;}
-    .tbs-accordion{display:flex;flex-direction:column;gap:0.75rem;margin-top:3rem;}
-    .tbs-acc-item{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;}
-    .tbs-acc-head{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.5rem;cursor:pointer;user-select:none;}
-    .tbs-acc-head:hover{background:rgba(201,168,76,0.04);}
-    .tbs-acc-title{font-size:0.92rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:0.75rem;}
-    .tbs-acc-title i{color:#c9a84c;font-size:0.85rem;}
-    .tbs-acc-arrow{color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;}
+    .tbs-tc{padding:5rem 2rem;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.08);}
+    .tbs-tc-inner{max-width:760px;margin:0 auto;}
+    .tbs-tc-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.3rem 0.9rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
+    .tbs-tc-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;margin-bottom:0.6rem;}
+    .tbs-tc-sub{color:#6a6050;font-size:0.88rem;margin-bottom:3rem;}
+    .tbs-accordion{display:flex;flex-direction:column;gap:0.75rem;}
+    .tbs-acc-item{background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;overflow:hidden;transition:border-color 0.3s;}
+    .tbs-acc-item.open{border-color:rgba(201,168,76,0.25);}
+    .tbs-acc-head{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.5rem;cursor:pointer;user-select:none;gap:1rem;}
+    .tbs-acc-head:hover{background:rgba(201,168,76,0.03);}
+    .tbs-acc-left{display:flex;align-items:center;gap:1rem;}
+    .tbs-acc-icon{width:36px;height:36px;border-radius:10px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .tbs-acc-icon i{color:#c9a84c;font-size:0.85rem;}
+    .tbs-acc-title{font-size:0.95rem;font-weight:700;color:#fff;}
+    .tbs-acc-arrow{color:#c9a84c;font-size:0.72rem;transition:transform 0.3s;flex-shrink:0;}
     .tbs-acc-item.open .tbs-acc-arrow{transform:rotate(180deg);}
-    .tbs-acc-body{display:none;padding:0 1.5rem 1.25rem;font-size:0.85rem;color:#9a9080;line-height:1.8;}
+    .tbs-acc-body{display:none;padding:0 1.5rem 1.25rem 4.5rem;font-size:0.85rem;color:#9a9080;line-height:1.8;}
     .tbs-acc-item.open .tbs-acc-body{display:block;}
+    .tbs-tc-footer{text-align:center;margin-top:2.5rem;font-size:0.78rem;color:#3a3030;}
 
     /* CTA */
     .tbs-cta{padding:5rem 2rem;text-align:center;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.08);}
@@ -240,13 +247,19 @@
   <!-- TERMS & CONDITIONS -->
   <section class="tbs-tc">
     <div class="tbs-tc-inner">
-      <h2 class="tbs-section-title">Terms &amp; <span>Conditions</span></h2>
-      <p class="tbs-section-sub">Please read before purchasing a plan.</p>
+      <div style="text-align:center;">
+        <div class="tbs-tc-eyebrow"><i class="fas fa-file-alt"></i> Legal</div>
+        <h2 class="tbs-tc-title">Terms &amp; Conditions</h2>
+        <p class="tbs-tc-sub">Please read carefully before enrolling in any Total Brand Shoots plan.</p>
+      </div>
       <div class="tbs-accordion">
 
         <div class="tbs-acc-item open">
           <div class="tbs-acc-head" onclick="toggleAcc(this)">
-            <div class="tbs-acc-title"><i class="fas fa-rupee-sign"></i> Payment Terms</div>
+            <div class="tbs-acc-left">
+              <div class="tbs-acc-icon"><i class="fas fa-rupee-sign"></i></div>
+              <div class="tbs-acc-title">Payment Terms</div>
+            </div>
             <i class="fas fa-chevron-down tbs-acc-arrow"></i>
           </div>
           <div class="tbs-acc-body">
@@ -260,7 +273,10 @@
 
         <div class="tbs-acc-item">
           <div class="tbs-acc-head" onclick="toggleAcc(this)">
-            <div class="tbs-acc-title"><i class="fas fa-calendar-check"></i> Contract Duration</div>
+            <div class="tbs-acc-left">
+              <div class="tbs-acc-icon"><i class="fas fa-calendar-check"></i></div>
+              <div class="tbs-acc-title">Contract Duration</div>
+            </div>
             <i class="fas fa-chevron-down tbs-acc-arrow"></i>
           </div>
           <div class="tbs-acc-body">
@@ -272,7 +288,10 @@
 
         <div class="tbs-acc-item">
           <div class="tbs-acc-head" onclick="toggleAcc(this)">
-            <div class="tbs-acc-title"><i class="fas fa-ban"></i> Cancellation Policy</div>
+            <div class="tbs-acc-left">
+              <div class="tbs-acc-icon"><i class="fas fa-ban"></i></div>
+              <div class="tbs-acc-title">Cancellation Policy</div>
+            </div>
             <i class="fas fa-chevron-down tbs-acc-arrow"></i>
           </div>
           <div class="tbs-acc-body">
@@ -284,7 +303,10 @@
 
         <div class="tbs-acc-item">
           <div class="tbs-acc-head" onclick="toggleAcc(this)">
-            <div class="tbs-acc-title"><i class="fas fa-copyright"></i> Content Ownership</div>
+            <div class="tbs-acc-left">
+              <div class="tbs-acc-icon"><i class="fas fa-copyright"></i></div>
+              <div class="tbs-acc-title">Content Ownership</div>
+            </div>
             <i class="fas fa-chevron-down tbs-acc-arrow"></i>
           </div>
           <div class="tbs-acc-body">
@@ -296,7 +318,10 @@
 
         <div class="tbs-acc-item">
           <div class="tbs-acc-head" onclick="toggleAcc(this)">
-            <div class="tbs-acc-title"><i class="fas fa-box-open"></i> Deliverables &amp; Timelines</div>
+            <div class="tbs-acc-left">
+              <div class="tbs-acc-icon"><i class="fas fa-box-open"></i></div>
+              <div class="tbs-acc-title">Deliverables &amp; Timelines</div>
+            </div>
             <i class="fas fa-chevron-down tbs-acc-arrow"></i>
           </div>
           <div class="tbs-acc-body">
@@ -308,6 +333,7 @@
         </div>
 
       </div>
+      <p class="tbs-tc-footer">By enquiring or making a payment, you agree to these terms. Last updated: 2025.</p>
     </div>
   </section>
 
