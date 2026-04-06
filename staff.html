@@ -6,6 +6,16 @@
   <title>Staff Home - OG Shoots LUXE</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script>
+    // Early switchTab stub — prevents "switchTab is not defined" errors on click
+    window.switchTab = function(name, btn){
+      document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      var sec = document.getElementById('sec-' + name);
+      if(sec) sec.classList.add('active');
+      if(btn) btn.classList.add('active');
+    };
+  </script>
   <style>
 
   :root{
@@ -967,21 +977,25 @@
 
     // TAB SWITCHER
     function switchTab(name, btn){
-      document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
-      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-      document.getElementById('sec-' + name).classList.add('active');
-      btn.classList.add('active');
-      if(name === 'shoots') renderAssignedShoots();
-      if(name === 'videos') renderMyVideos();
-      if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); }
-      if(name === 'store') renderStore();
-      if(name === 'wallet') renderWallet();
-      if(name === 'payout') renderPayout();
-      if(name === 'testimonials') renderStvGrid();
-      if(name === 'profile') loadBankDetails();
-      if(name === 'address') loadStaffAddress();
-      if(name === 'aieditor') saie_init();
+      try {
+        document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        var sec = document.getElementById('sec-' + name);
+        if(sec) sec.classList.add('active');
+        if(btn) btn.classList.add('active');
+        try { if(name === 'shoots') renderAssignedShoots(); } catch(e){}
+        try { if(name === 'videos') renderMyVideos(); } catch(e){}
+        try { if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); } } catch(e){}
+        try { if(name === 'store') renderStore(); } catch(e){}
+        try { if(name === 'wallet') renderWallet(); } catch(e){}
+        try { if(name === 'payout') renderPayout(); } catch(e){}
+        try { if(name === 'testimonials') renderStvGrid(); } catch(e){}
+        try { if(name === 'profile') loadBankDetails(); } catch(e){}
+        try { if(name === 'address') loadStaffAddress(); } catch(e){}
+        try { if(name === 'aieditor') saie_init(); } catch(e){}
+      } catch(e){ console.error('switchTab error:', e); }
     }
+    window.switchTab = switchTab;
 
     function clearShootsFilter(){
       var mf = document.getElementById('shootsMonthFilter');
@@ -1885,35 +1899,34 @@
     }
 
     renderAssignedShoots();
-    // Also fetch directly from Firestore on load so shoots appear even before listener fires
+    // Fetch directly from Firestore on load — retry until fbListen is ready
     (async function(){
       try {
         var myId = String(localStorage.getItem('hs_staff_id'));
-        if(!window.fbListen) return;
+        if(!myId || myId === 'null') return;
+        // Wait up to 5s for hs-firebase.js to load
+        for(var _w=0; _w<10; _w++){
+          if(window.fbListen) break;
+          await new Promise(function(r){ setTimeout(r, 500); });
+        }
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
         var db      = fbStore.getFirestore(app);
-        var q       = fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId)));
-        var snap    = await fbStore.getDocs(q);
-        if(snap.empty){
-          // Try string staffId too
-          var q2 = fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId));
-          snap   = await fbStore.getDocs(q2);
-        }
-        if(!snap.empty){
-          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
-          var others = local.filter(function(x){ return String(x.staffId) !== myId; });
-          var fresh = [];
-          snap.forEach(function(d){
-            var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
-            delete data.createdAt; delete data.updatedAt;
-            fresh.push(data);
-          });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
-          renderAssignedShoots();
-        }
+        // Try both number and string staffId
+        var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId))));
+        if(snap.empty) snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId)));
+        var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
+        var fresh = [];
+        snap.forEach(function(d){
+          var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
+          delete data.createdAt; delete data.updatedAt;
+          fresh.push(data);
+        });
+        localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+        renderAssignedShoots();
       } catch(e){ console.warn('shoots fetch:', e); }
     })();
     setInterval(function(){ if(!_shootUploadInProgress){ renderAssignedShoots(); renderPayout(); } }, 5000);
@@ -2537,7 +2550,7 @@
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
           var payBtnId = 'payBtn_' + i;
-          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' data-name="'+encodeURIComponent(t.name)+'" data-price="'+t.price+'" data-idx="'+i+'" data-sizes="'+encodeURIComponent(sizeArr.join(','))+'" onclick="storePayNowBtn(this)" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;"+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
+          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' data-name="'+encodeURIComponent(t.name)+'" data-price="'+t.price+'" data-idx="'+i+'" data-sizes="'+encodeURIComponent(sizeArr.join(','))+'" onclick="storePayNowBtn(this)" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
