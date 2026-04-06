@@ -171,6 +171,7 @@
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
       <button class="tab-btn" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn"><i class="fas fa-chart-bar"></i> Hero Stats</button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
       <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
 
@@ -1932,6 +1933,32 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    </div>
+
+    <!-- HERO STATS TAB -->
+    <div class="tab-panel" id="tab-hero-stats">
+      <div class="about-form">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-chart-bar" style="color:#c9a84c;margin-right:0.5rem;"></i> Hero Statistics</h2>
+        <p style="font-size:0.8rem;color:#9a9080;margin-bottom:1.5rem;">These numbers appear in the hero section of the homepage.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reels Delivered</label>
+            <input type="text" id="hs_statReels" placeholder="e.g. 50,002+"/>
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <input type="text" id="hs_statRating" placeholder="e.g. 5.0/5"/>
+          </div>
+          <div class="form-group">
+            <label>Content Makers</label>
+            <input type="text" id="hs_statMakers" placeholder="e.g. 200+"/>
+          </div>
+        </div>
+        <button onclick="saveHeroStatsTab()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.5rem;"><i class="fas fa-save"></i> Save Stats</button>
+        <span id="heroStatsToast" style="display:none;margin-left:1rem;color:#4caf50;font-size:0.82rem;font-weight:700;"><i class="fas fa-check-circle"></i> Stats saved!</span>
+      </div>
+    </div>
+
     <!-- PAYMENTS TAB -->
     <div class="tab-panel" id="tab-payments">
       <div class="about-form">
@@ -2455,6 +2482,7 @@ Priority Support</textarea></div>
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
       if (tab === 'mkt-enquiries') renderMktEnquiries();
+      if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
@@ -6004,6 +6032,33 @@ Priority Support</textarea></div>
       } catch(e){
         el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error loading enquiries: '+e.message+'</p>';
       }
+    }
+
+    // ── HERO STATS TAB ────────────────────────────────────────────
+    function loadHeroStatsTab(){
+      var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+      document.getElementById('hs_statReels').value  = hp.statReels  || '';
+      document.getElementById('hs_statRating').value = hp.statRating || '';
+      document.getElementById('hs_statMakers').value = hp.statMakers || '';
+    }
+
+    async function saveHeroStatsTab(){
+      var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+      hp.statReels  = document.getElementById('hs_statReels').value.trim();
+      hp.statRating = document.getElementById('hs_statRating').value.trim();
+      hp.statMakers = document.getElementById('hs_statMakers').value.trim();
+      localStorage.setItem('hs_homepage', JSON.stringify(hp));
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='hs-stats';}) || fbMod.initializeApp(fbCfg,'hs-stats');
+        var db      = fbStore.getFirestore(app);
+        await fbStore.setDoc(fbStore.doc(db,'settings','homepage'),{statReels:hp.statReels,statRating:hp.statRating,statMakers:hp.statMakers},{merge:true});
+      }catch(e){ console.error(e); }
+      var toast = document.getElementById('heroStatsToast');
+      toast.style.display='inline';
+      setTimeout(function(){ toast.style.display='none'; }, 2500);
     }
 
     // ── PAYMENTS TAB ──────────────────────────────────────────────
