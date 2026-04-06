@@ -357,15 +357,33 @@
     </div>
   </section>
   <script>
-    function tbsSendEnquiry(e){
+    async function tbsSendEnquiry(e){
       e.preventDefault();
-      var name=document.getElementById('tbs_name').value;
-      var phone=document.getElementById('tbs_phone').value;
-      var brand=document.getElementById('tbs_brand').value;
-      var insta=document.getElementById('tbs_insta').value;
-      var msg=document.getElementById('tbs_msg').value;
-      var text='New Total Brand Shoots Enquiry%0A%0AName: '+encodeURIComponent(name)+'%0APhone: '+encodeURIComponent(phone)+'%0ABrand: '+encodeURIComponent(brand)+'%0AInstagram: '+encodeURIComponent(insta||'N/A')+'%0AMessage: '+encodeURIComponent(msg||'N/A');
-      window.open('https://wa.me/919999999999?text='+text,'_blank');
+      var btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Sending...';
+      var name  = document.getElementById('tbs_name').value.trim();
+      var phone = document.getElementById('tbs_phone').value.trim();
+      var brand = document.getElementById('tbs_brand').value.trim();
+      var insta = document.getElementById('tbs_insta').value.trim();
+      var msg   = document.getElementById('tbs_msg').value.trim();
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='tbs-enq';}) || fbMod.initializeApp(fbCfg,'tbs-enq');
+        var db      = fbStore.getFirestore(app);
+        await fbStore.addDoc(fbStore.collection(db,'marketing_enquiries'),{
+          name:name, phone:phone, brand:brand, instagram:insta||'', message:msg||'',
+          submittedAt: fbStore.serverTimestamp()
+        });
+        btn.innerHTML = '<i class="fas fa-check"></i> Sent!';
+        btn.style.background = '#4caf50';
+        e.target.reset();
+      } catch(err){
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Enquiry';
+        alert('Error: '+err.message);
+      }
     }
   </script>
 

@@ -170,6 +170,7 @@
       <button class="tab-btn" onclick="switchTab('press',this)" id="pressTabBtn"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+      <button class="tab-btn" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
       <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
 
@@ -1097,7 +1098,7 @@
 
       <!-- HERO STATS -->
       <div class="about-form" style="margin-bottom:1rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-chart-bar" style="color:#c9a84c;margin-right:0.5rem;"></i> Hero Stats</h2>
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-chart-bar" style="color:#c9a84c;margin-right:0.5rem;"></i> Hero Statistics</h2>
         <div class="form-row">
           <div class="form-group">
             <label>Reels Delivered</label>
@@ -1112,6 +1113,8 @@
           <label>Content Makers</label>
           <input type="text" id="hp_statMakers" placeholder="e.g. 500+"/>
         </div>
+        <button onclick="saveHeroStats()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.5rem;"><i class="fas fa-save"></i> Save Stats</button>
+        <span id="statsToast" style="display:none;margin-left:1rem;color:#4caf50;font-size:0.82rem;font-weight:700;"><i class="fas fa-check-circle"></i> Stats saved!</span>
       </div>
 
       <!-- HERO TEXT -->
@@ -1918,6 +1921,17 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    <!-- MARKETING ENQUIRIES TAB -->
+    <div class="tab-panel" id="tab-mkt-enquiries">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-bullhorn" style="color:#c9a84c;margin-right:0.5rem;"></i> Marketing Enquiries</h2>
+          <span style="font-size:0.8rem;color:#9a9080;" id="mktEnquiriesCount"></span>
+        </div>
+        <div id="mktEnquiriesList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
+
     <!-- PAYMENTS TAB -->
     <div class="tab-panel" id="tab-payments">
       <div class="about-form">
@@ -2440,6 +2454,7 @@ Priority Support</textarea></div>
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
+      if (tab === 'mkt-enquiries') renderMktEnquiries();
       if (tab === 'payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
@@ -5950,6 +5965,45 @@ Priority Support</textarea></div>
           +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
           +'</div>';
       }).join('');
+    }
+
+    // ── MARKETING ENQUIRIES TAB ───────────────────────────────────
+    async function renderMktEnquiries(){
+      var el = document.getElementById('mktEnquiriesList');
+      var countEl = document.getElementById('mktEnquiriesCount');
+      if(!el) return;
+      el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;">Loading...</p>';
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='mkt-enq';}) || fbMod.initializeApp(fbCfg,'mkt-enq');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'marketing_enquiries'), fbStore.orderBy('submittedAt','desc')));
+        var docs    = [];
+        snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+        if(countEl) countEl.textContent = docs.length + ' enquir' + (docs.length===1?'y':'ies');
+        // update badge
+        var badge = document.getElementById('mktEnquiriesBadge');
+        if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
+        if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No marketing enquiries yet.</p>'; return; }
+        el.innerHTML = docs.map(function(d){
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+( d.name||'—')+'</div>'
+            +'<div style="font-size:0.68rem;color:#6a6050;">'+( d.submittedAt ? new Date(d.submittedAt.seconds ? d.submittedAt.seconds*1000 : d.submittedAt).toLocaleString() : '' )+'</div>'
+            +'</div>'
+            +'<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.6rem;">'
+            +'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;margin-right:0.4rem;"></i>'+( d.phone||'—')+'</div>'
+            +(d.brand?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-store" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.brand+'</div>':'')
+            +(d.instagram?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fab fa-instagram" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.instagram+'</div>':'')
+            +'</div>'
+            +(d.message?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.6rem 0.85rem;">'+d.message+'</div>':'')
+            +'</div>';
+        }).join('');
+      } catch(e){
+        el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error loading enquiries: '+e.message+'</p>';
+      }
     }
 
     // ── PAYMENTS TAB ──────────────────────────────────────────────
