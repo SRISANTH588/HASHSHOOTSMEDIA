@@ -240,6 +240,7 @@
     .efb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);flex-shrink:0;}
     .btn-efb-submit{width:100%;background:linear-gradient(135deg,#f5a623,#c8860a);color:var(--text);border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.25s;}
     .btn-efb-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
+    @media(max-width:600px){
       .tab-btn{padding:0.75rem 0.85rem;font-size:0.75rem;}
       .stats-row{grid-template-columns:1fr 1fr;}
     }
@@ -2536,7 +2537,7 @@
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
           var payBtnId = 'payBtn_' + i;
-          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;"+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
+          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
