@@ -2536,9 +2536,7 @@
           var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
           var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;' : '';
           var payBtnId = 'payBtn_' + i;
-          var payBtn = (rp.enabled && rp.keyId && t.price)
-            ? '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;'+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>'
-            : '';
+          var payBtn = '<button id="'+payBtnId+'" '+(hasSizes?'disabled':'')+' onclick="storePayNow('+JSON.stringify(t.name)+','+t.price+','+i+','+JSON.stringify(sizeArr.join(','))+')" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-top:0.75rem;transition:all 0.2s;"+payBtnDisabled+'"><i class="fas fa-credit-card"></i> Pay Now \u20b9'+Number(t.price).toLocaleString('en-IN')+'</button>';
           return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;overflow:hidden;">'
             + imgHTML
             + '<div style="padding:1.1rem 1.25rem;">'
@@ -2559,8 +2557,8 @@
       var idMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to request my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
       var discountMailSubject = encodeURIComponent('ID Card Discount Request \u2014 ' + staffName);
       var discountMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI am writing to request a discount on my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
-      var idPayBtn = (rp.enabled && rp.keyId && idcard.price)
-        ? '<button onclick="storePayNow(\u0027OG Shoots ID Card\u0027,'+idcard.price+',-1)" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay \u20b9'+Number(idcard.price||0).toLocaleString('en-IN')+'</button>'
+      var idPayBtn = idcard.price
+        ? '<button onclick="storePayNow(\'OG Shoots ID Card\','+idcard.price+',-1)" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay \u20b9'+Number(idcard.price||0).toLocaleString('en-IN')+'</button>'
         : '';
 
       idEl.innerHTML = '<div style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:16px;overflow:hidden;">'
@@ -2602,7 +2600,7 @@
 
     function storePayNow(itemName, price, idx, sizesStr){
       var rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
-      if(!rp.enabled || !rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
+      if(!rp.keyId){ alert('Online payment is not available yet. Please use the email order option.'); return; }
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var selectedSize = idx >= 0 ? (window['_selectedSize_'+idx] || '') : '';
