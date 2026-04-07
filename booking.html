@@ -218,7 +218,7 @@
   <!-- PLAN SELECTION -->
   <div id="planStep" style="max-width:1100px;margin:0 auto;padding:0 2rem 3rem;">
     <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
-    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
+    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;" id="planStepSubtitle">Select a plan and click Book to continue</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:700px;margin:0 auto;" id="servicePlanGrid">
 
       <!-- HOURLY -->
@@ -523,6 +523,24 @@
       var planParam = params.get('plan');
       var serviceParam = params.get('service');
 
+      function hideOtherCards(selectedKey) {
+        document.querySelectorAll('.plan-card').forEach(function(c) {
+          if (c.id && c.id !== 'pc_' + selectedKey) {
+            c.style.display = 'none';
+          }
+        });
+        var grid = document.getElementById('servicePlanGrid');
+        if (grid) grid.style.maxWidth = '420px';
+        var subtitle = document.getElementById('planStepSubtitle');
+        if (subtitle) subtitle.textContent = 'Your selected plan — click Book to continue';
+        // Hide any section labels/dividers between plan groups
+        document.querySelectorAll('#planStep > div > div:not(#servicePlanGrid)').forEach(function(el){
+          if(!el.querySelector('.plan-card.selected') && !el.querySelector('#pc_'+selectedKey)){
+            el.style.display='none';
+          }
+        });
+      }
+
       if(planParam){
         var map = {
           'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
@@ -537,6 +555,7 @@
         if(key){
           setTimeout(function(){
             pickPlan(key);
+            hideOtherCards(key);
             bookSelectedPlan();
           }, 100);
         }
@@ -551,6 +570,7 @@
         var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
           pickPlan(planKey);
+          hideOtherCards(planKey);
           bookSelectedPlan();
           // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');

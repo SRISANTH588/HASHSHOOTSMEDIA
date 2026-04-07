@@ -104,14 +104,25 @@
     .tbs-cta-btn{display:inline-flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.95rem;font-weight:800;padding:1rem 2.5rem;border-radius:12px;text-decoration:none;transition:all 0.3s;}
     .tbs-cta-btn:hover{filter:brightness(1.1);transform:translateY(-2px);}
 
+    @media(max-width:900px){
+      .tbs-wi-grid{grid-template-columns:repeat(2,1fr)!important;}
+      .tbs-footer-grid{grid-template-columns:1fr 1fr!important;gap:2rem!important;}
+    }
     @media(max-width:768px){
       .tbs-cards{grid-template-columns:1fr;}
       .tbs-includes-grid{grid-template-columns:1fr;}
-      .tbs-wi-grid{grid-template-columns:1fr 1fr!important;}
-      .tbs-talk-grid{grid-template-columns:1fr!important;}
+      .tbs-talk-inner{grid-template-columns:1fr!important;gap:2rem!important;}
+      .tbs-form-row{grid-template-columns:1fr!important;}
+      .tbs-hero h1{font-size:clamp(2.8rem,10vw,4rem);}
+      .tbs-acc-body{padding-left:1.5rem!important;}
     }
     @media(max-width:480px){
       .tbs-wi-grid{grid-template-columns:1fr!important;}
+      .tbs-footer-grid{grid-template-columns:1fr!important;}
+      .tbs-hero{padding:7rem 1.25rem 5rem;}
+      .tbs-plans{padding:4rem 1.25rem;}
+      .tbs-card{padding:1.75rem 1.5rem;}
+      .tbs-card-price{font-size:2.4rem;}
     }
   </style>
 </head>
@@ -196,7 +207,7 @@
             <li><div class="tbs-feat-check"><i class="fas fa-check"></i></div> Content calendar</li>
             <li class="no"><div class="tbs-feat-cross"><i class="fas fa-times"></i></div> Marketing &amp; campaigns</li>
           </ul>
-          <a href="booking.html?plan=Total+Brand+Basic" class="tbs-btn tbs-btn-outline"><i class="fas fa-arrow-right"></i> Get Started</a>
+          <button type="button" onclick="selectPlan('Basic','14,000','6 months')" class="tbs-btn tbs-btn-outline"><i class="fas fa-arrow-right"></i> Enquire Now</button>
         </div>
 
         <!-- STANDARD -->
@@ -216,7 +227,7 @@
             <li><div class="tbs-feat-check"><i class="fas fa-check"></i></div> Content calendar</li>
             <li class="no"><div class="tbs-feat-cross"><i class="fas fa-times"></i></div> Marketing &amp; campaigns</li>
           </ul>
-          <a href="booking.html?plan=Total+Brand+Standard" class="tbs-btn tbs-btn-solid"><i class="fas fa-crown"></i> Get Started</a>
+          <button type="button" onclick="selectPlan('Standard','22,000','6 months')" class="tbs-btn tbs-btn-solid"><i class="fas fa-crown"></i> Enquire Now</button>
         </div>
 
         <!-- PREMIUM -->
@@ -236,7 +247,7 @@
             <li><div class="tbs-feat-check"><i class="fas fa-check"></i></div> Marketing &amp; campaigns</li>
             <li><div class="tbs-feat-check"><i class="fas fa-check"></i></div> Dedicated support</li>
           </ul>
-          <a href="booking.html?plan=Total+Brand+Premium" class="tbs-btn tbs-btn-outline"><i class="fas fa-arrow-right"></i> Get Started</a>
+          <button type="button" onclick="selectPlan('Premium','40,000','3 months')" class="tbs-btn tbs-btn-outline"><i class="fas fa-arrow-right"></i> Enquire Now</button>
         </div>
 
       </div>
@@ -339,8 +350,8 @@
   </section>
 
   <!-- LET'S TALK FORM -->
-  <section style="padding:5rem 2rem;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.08);">
-    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+  <section id="tbs-enquiry-form" style="padding:5rem 2rem;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.08);">
+    <div class="tbs-talk-inner" style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
 
       <!-- LEFT: Info -->
       <div>
@@ -366,7 +377,15 @@
       <!-- RIGHT: Form Card -->
       <div style="background:#161616;border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:2.5rem 2.25rem;">
         <form onsubmit="tbsSendEnquiry(event)" style="display:flex;flex-direction:column;gap:0.85rem;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;">
+          <input type="hidden" id="tbs_plan" value=""/>
+          <div id="tbs_plan_display" style="display:none;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.35);border-radius:10px;padding:0.75rem 1rem;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:0.6rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.2rem;">Selected Plan</div>
+              <div id="tbs_plan_label" style="font-size:0.95rem;font-weight:800;color:#fff;"></div>
+            </div>
+            <button type="button" onclick="clearPlan()" style="background:none;border:none;color:#6a6050;font-size:0.8rem;cursor:pointer;font-family:inherit;">&#10005; Change</button>
+          </div>
+          <div class="tbs-form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;">
             <input type="text" placeholder="Your Name" required id="tbs_name" style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
             <input type="tel" placeholder="Phone Number" required id="tbs_phone" style="background:#1e1e1e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;width:100%;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
           </div>
@@ -399,9 +418,10 @@
       var brand = document.getElementById('tbs_brand').value.trim();
       var insta = document.getElementById('tbs_insta').value.trim();
       var msg   = document.getElementById('tbs_msg').value.trim();
+        var plan  = document.getElementById('tbs_plan').value || 'Not selected';
       try{
         await addDoc(collection(db, 'marketing_enquiries'), {
-          name, phone, brand, instagram: insta || '', message: msg || '',
+          name, phone, brand, instagram: insta || '', message: msg || '', plan,
           submittedAt: serverTimestamp()
         });
         btn.innerHTML = '<i class="fas fa-check"></i> Sent!';
@@ -419,7 +439,7 @@
 
   <footer style="background:#0d0d0d;border-top:1px solid rgba(255,255,255,0.06);padding:3.5rem 2rem 0;">
     <div style="max-width:1100px;margin:0 auto;">
-      <div style="display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;">
+      <div class="tbs-footer-grid" style="display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;">
 
         <!-- Brand -->
         <div>
@@ -482,6 +502,17 @@
     function toggleAcc(head) {
       var item = head.parentElement;
       item.classList.toggle('open');
+    }
+    function selectPlan(name, price, duration) {
+      document.getElementById('tbs_plan').value = name;
+      document.getElementById('tbs_plan_label').textContent = name + ' Plan  —  ₹' + price + '  ·  ' + duration;
+      document.getElementById('tbs_plan_display').style.display = 'flex';
+      var form = document.getElementById('tbs-enquiry-form');
+      if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function clearPlan() {
+      document.getElementById('tbs_plan').value = '';
+      document.getElementById('tbs_plan_display').style.display = 'none';
     }
   </script>
 

@@ -61,6 +61,19 @@
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
     h1{font-size:1.8rem;font-weight:900;}h1 span{color:var(--gold);}
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
+    @media(max-width:900px){
+      .stats-row{grid-template-columns:repeat(2,1fr)!important;}
+      .container{padding:0 1rem;}
+      th,td{padding:0.75rem 0.85rem;font-size:0.8rem;}
+    }
+    @media(max-width:600px){
+      .stats-row{grid-template-columns:1fr 1fr!important;}
+      .page-header{flex-direction:column;align-items:flex-start;}
+      .filters{gap:0.5rem;}
+      .filter-btn{font-size:0.72rem;padding:0.38rem 0.8rem;}
+      .search-bar{max-width:100%;width:100%;}
+      h1{font-size:1.3rem;}
+    }
     .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
     .stat-card .num{font-size:2rem;font-weight:900;color:var(--gold);}
     .stat-card .lbl{font-size:0.8rem;color:var(--muted);margin-top:0.2rem;}
@@ -70,7 +83,8 @@
     .search-bar{flex:1;max-width:280px;background:var(--card);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.5rem 1rem;color:var(--text);font-size:0.875rem;font-family:inherit;outline:none;}
     .search-bar:focus{border-color:var(--gold);}
     .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-    table{width:100%;border-collapse:collapse;}
+    .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    table{width:100%;border-collapse:collapse;min-width:700px;}
     thead{background:rgba(201,168,76,0.1);}
     th{padding:1rem 1.25rem;text-align:left;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
     td{padding:1rem 1.25rem;font-size:0.875rem;border-top:1px solid rgba(201,168,76,0.04);vertical-align:middle;}
@@ -261,6 +275,7 @@
     </div>
 
     <div class="table-wrap">
+      <div class="table-scroll">
       <table>
         <thead>
           <tr>
@@ -276,6 +291,7 @@
         </thead>
         <tbody id="bookingsTable"></tbody>
       </table>
+      </div>
     </div>
     </div><!-- end tab-bookings -->
 
@@ -2298,7 +2314,7 @@ Priority Support</textarea></div>
             ${b.preferredCreatorName ? `<div style="color:#c9a84c;font-size:0.72rem;margin-top:2px;"><i class="fas fa-user-circle"></i> Prefers: ${b.preferredCreatorName}</div>` : ''}
             <div style="color:#777;font-size:0.7rem">${b.createdAt}</div>
           </td>
-          <td><span style="color:#c9a84c;font-weight:600">${b.service}</span></td>
+          <td><span style="color:#c9a84c;font-weight:600">${b.service}</span>${b.plan ? `<div style="margin-top:3px;"><span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.62rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;letter-spacing:1px;">${b.plan}</span></div>` : ''}</td>
           <td>${b.city}</td>
           <td>
             <div style="font-weight:600">${b.date}</div>
@@ -5605,6 +5621,7 @@ Priority Support</textarea></div>
           + '<div>'
           + '<div style="font-size:0.92rem;font-weight:800;color:#fff;">' + (q.name||'') + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">' + (q.email||'') + ' &nbsp;&middot;&nbsp; ' + (q.phone||'') + '</div>'
+          + (q.plan && q.plan!=='Not selected' ? '<div style="margin-top:0.3rem;"><span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.6rem;font-weight:900;padding:0.15rem 0.55rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;">' + q.plan + ' Plan</span></div>' : '')
           + '</div></div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;">'
           + badge
@@ -6059,13 +6076,30 @@ Priority Support</textarea></div>
         if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
         if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No marketing enquiries yet.</p>'; return; }
         el.innerHTML = docs.map(function(d){
-          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
-            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
-            +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+( d.name||'—')+'</div>'
-            +'<div style="font-size:0.68rem;color:#6a6050;">'+( d.submittedAt ? new Date(d.submittedAt.seconds ? d.submittedAt.seconds*1000 : d.submittedAt).toLocaleString() : '' )+'</div>'
+          var planColor = d.plan==='Premium' ? '#e8c96a' : d.plan==='Standard' ? '#c9a84c' : '#a07830';
+          var planBg    = d.plan==='Premium' ? 'rgba(232,201,106,0.12)' : d.plan==='Standard' ? 'rgba(201,168,76,0.12)' : 'rgba(160,120,48,0.1)';
+          var planBorder= d.plan==='Premium' ? 'rgba(232,201,106,0.4)' : d.plan==='Standard' ? 'rgba(201,168,76,0.4)' : 'rgba(160,120,48,0.3)';
+          var planInfo  = d.plan==='Premium' ? '&#8377;40,000 &middot; 3 months' : d.plan==='Standard' ? '&#8377;22,000 &middot; 6 months' : d.plan==='Basic' ? '&#8377;14,000 &middot; 6 months' : '';
+          var cardBorder= d.plan ? 'border:1px solid '+planBorder+';' : 'border:1px solid rgba(201,168,76,0.12);';
+          return '<div style="background:#111;'+cardBorder+'border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">'
+            +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+(d.name||'—')+'</div>'
+            +(d.plan && d.plan!=='Not selected'
+              ? '<div style="background:'+planBg+';border:1px solid '+planBorder+';color:'+planColor+';font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;">'+d.plan+' Plan</div>'
+              : '')
             +'</div>'
+            +'<div style="font-size:0.68rem;color:#6a6050;">'+(d.submittedAt ? new Date(d.submittedAt.seconds ? d.submittedAt.seconds*1000 : d.submittedAt).toLocaleString() : '')+'</div>'
+            +'</div>'
+            +(d.plan && d.plan!=='Not selected' && planInfo
+              ? '<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.85rem;display:flex;align-items:center;gap:0.5rem;">'
+                +'<i class="fas fa-tag" style="color:'+planColor+';font-size:0.75rem;"></i>'
+                +'<span style="font-size:0.8rem;font-weight:700;color:'+planColor+';">'+d.plan+' Plan</span>'
+                +'<span style="font-size:0.75rem;color:#6a6050;">— '+planInfo+'</span>'
+                +'</div>'
+              : '')
             +'<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.6rem;">'
-            +'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;margin-right:0.4rem;"></i>'+( d.phone||'—')+'</div>'
+            +'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;margin-right:0.4rem;"></i>'+(d.phone||'—')+'</div>'
             +(d.brand?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-store" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.brand+'</div>':'')
             +(d.instagram?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fab fa-instagram" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.instagram+'</div>':'')
             +'</div>'
