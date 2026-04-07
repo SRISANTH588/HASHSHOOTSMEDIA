@@ -420,15 +420,43 @@
 
         <div class="form-group">
           <label class="form-label">Date <span>*</span></label>
-          <div class="date-wrap">
-            <i class="fas fa-calendar-alt"></i>
-            <input type="date" id="bk_date" class="form-input" required/>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+            <select id="bk_day" class="form-input form-select" required>
+              <option value="">Day</option>
+            </select>
+            <select id="bk_month" class="form-input form-select" required>
+              <option value="">Month</option>
+              <option>January</option><option>February</option><option>March</option>
+              <option>April</option><option>May</option><option>June</option>
+              <option>July</option><option>August</option><option>September</option>
+              <option>October</option><option>November</option><option>December</option>
+            </select>
+            <select id="bk_year" class="form-input form-select" required>
+              <option value="">Year</option>
+            </select>
           </div>
+          <input type="hidden" id="bk_date" required/>
         </div>
 
         <div class="form-group">
           <label class="form-label">Time <span>*</span></label>
-          <input type="time" id="bk_time" class="form-input" required/>
+          <select id="bk_time" class="form-input form-select" required>
+            <option value="">Select Time</option>
+            <option>7:00 AM</option><option>7:30 AM</option>
+            <option>8:00 AM</option><option>8:30 AM</option>
+            <option>9:00 AM</option><option>9:30 AM</option>
+            <option>10:00 AM</option><option>10:30 AM</option>
+            <option>11:00 AM</option><option>11:30 AM</option>
+            <option>12:00 PM</option><option>12:30 PM</option>
+            <option>1:00 PM</option><option>1:30 PM</option>
+            <option>2:00 PM</option><option>2:30 PM</option>
+            <option>3:00 PM</option><option>3:30 PM</option>
+            <option>4:00 PM</option><option>4:30 PM</option>
+            <option>5:00 PM</option><option>5:30 PM</option>
+            <option>6:00 PM</option><option>6:30 PM</option>
+            <option>7:00 PM</option><option>7:30 PM</option>
+            <option>8:00 PM</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -482,7 +510,34 @@
   </div>
 
   <script>
-    document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
+    document.querySelector('input[type="date"]') && (document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0]);
+
+    // Populate day dropdown
+    var dayEl = document.getElementById('bk_day');
+    for(var d=1;d<=31;d++){ var o=document.createElement('option'); o.value=o.textContent=d; dayEl.appendChild(o); }
+
+    // Populate year dropdown (current year + 2 years ahead)
+    var yearEl = document.getElementById('bk_year');
+    var curYear = new Date().getFullYear();
+    for(var y=curYear;y<=curYear+2;y++){ var o=document.createElement('option'); o.value=o.textContent=y; yearEl.appendChild(o); }
+
+    // Set default to today
+    var today = new Date();
+    dayEl.value = today.getDate();
+    document.getElementById('bk_month').value = ['January','February','March','April','May','June','July','August','September','October','November','December'][today.getMonth()];
+    yearEl.value = today.getFullYear();
+
+    // Sync hidden date field whenever any dropdown changes
+    function syncDate(){
+      var d = document.getElementById('bk_day').value;
+      var m = document.getElementById('bk_month').value;
+      var y = document.getElementById('bk_year').value;
+      document.getElementById('bk_date').value = d && m && y ? d+' '+m+' '+y : '';
+    }
+    syncDate();
+    document.getElementById('bk_day').addEventListener('change', syncDate);
+    document.getElementById('bk_month').addEventListener('change', syncDate);
+    document.getElementById('bk_year').addEventListener('change', syncDate);
 
     var planData = {
       hourly:         { service:'Reel Shoot',         name:'Hourly Plan',      price:'\u20b91,699',  per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
