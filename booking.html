@@ -524,21 +524,45 @@
       var serviceParam = params.get('service');
 
       function hideOtherCards(selectedKey) {
+        // Hide all non-selected plan cards
         document.querySelectorAll('.plan-card').forEach(function(c) {
           if (c.id && c.id !== 'pc_' + selectedKey) {
             c.style.display = 'none';
           }
         });
-        var grid = document.getElementById('servicePlanGrid');
-        if (grid) grid.style.maxWidth = '420px';
         var subtitle = document.getElementById('planStepSubtitle');
-        if (subtitle) subtitle.textContent = 'Your selected plan — click Book to continue';
-        // Hide any section labels/dividers between plan groups
-        document.querySelectorAll('#planStep > div > div:not(#servicePlanGrid)').forEach(function(el){
-          if(!el.querySelector('.plan-card.selected') && !el.querySelector('#pc_'+selectedKey)){
-            el.style.display='none';
+        if (subtitle) subtitle.textContent = 'Your selected plan \u2014 click Book to continue';
+        // If it's a wedding plan, hide the general plans grid and show only the wedding section
+        // but hide the other wedding cards and the "starting from" text
+        var isWedding = selectedKey.indexOf('wedding_') === 0;
+        var isGeneral = selectedKey === 'hourly' || selectedKey === 'halfday';
+        // Hide the general plans grid if wedding selected
+        var generalGrid = document.getElementById('servicePlanGrid');
+        if (generalGrid && isWedding) generalGrid.style.display = 'none';
+        // Hide the wedding section if general selected
+        if (isGeneral) {
+          var weddingSection = document.querySelector('#planStep > div > div:nth-child(2)');
+          if (weddingSection) weddingSection.style.display = 'none';
+        }
+        // Shrink grid to single card
+        var wGrid = document.querySelector('#planStep div[style*="grid-template-columns:repeat(4"]');
+        if (wGrid) { wGrid.style.gridTemplateColumns = '1fr'; wGrid.style.maxWidth = '360px'; }
+        if (generalGrid && isGeneral) { generalGrid.style.gridTemplateColumns = '1fr'; generalGrid.style.maxWidth = '360px'; }
+        // Hide the reels/content section always when a specific plan is chosen
+        document.querySelectorAll('#planStep > div').forEach(function(sec) {
+          if (!sec.querySelector('#pc_' + selectedKey) && !sec.querySelector('button[onclick="bookSelectedPlan()"]')) {
+            sec.style.display = 'none';
           }
         });
+        // Make sure the parent of selected card is visible
+        var selCard = document.getElementById('pc_' + selectedKey);
+        if (selCard) {
+          var parent = selCard.parentElement;
+          while (parent && parent.id !== 'planStep') {
+            parent.style.display = '';
+            parent = parent.parentElement;
+          }
+        }
       }
 
       if(planParam){
@@ -546,7 +570,7 @@
           'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
           'Wedding':'wedding', 'Custom':'custom',
           'Basic':'wedding_basic', 'Silver':'wedding_silver',
-          'Gold':'wedding_gold',   'Luxe':'wedding_luxe',
+          'Gold':'wedding_gold', 'Luxe':'wedding_platinum', 'Platinum':'wedding_platinum',
           'Reel Shoot':'reel', 'Portrait Session':'portrait',
           'Product Shoot':'product', 'Event Coverage':'event',
           'Food Photography':'food'
