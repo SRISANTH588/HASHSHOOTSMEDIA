@@ -551,6 +551,8 @@
         if (subtitle) subtitle.textContent = 'Your selected plan — click Book to continue';
       }
 
+      var planHandled = false;
+
       if(planParam){
         var map = {
           'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
@@ -563,16 +565,15 @@
         };
         var key = map[planParam] || null;
         if(key){
+          planHandled = true;
           setTimeout(function(){
             pickPlan(key);
             hideOtherCards(key);
           }, 100);
-          // skip serviceParam block since plan is already set
-          return;
         }
       }
 
-      if(serviceParam){
+      if(!planHandled && serviceParam){
         var svcPlanMap = {
           'Reel Shoot':'reel', 'Portrait Session':'portrait', 'Food Photography':'food',
           'Wedding Photography':'wedding',
