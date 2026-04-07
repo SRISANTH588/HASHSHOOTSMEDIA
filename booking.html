@@ -567,6 +567,8 @@
             pickPlan(key);
             hideOtherCards(key);
           }, 100);
+          // skip serviceParam block since plan is already set
+          return;
         }
       }
 
