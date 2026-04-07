@@ -566,7 +566,6 @@
           setTimeout(function(){
             pickPlan(key);
             hideOtherCards(key);
-            bookSelectedPlan();
           }, 100);
         }
       }
@@ -581,7 +580,6 @@
         setTimeout(function(){
           pickPlan(planKey);
           hideOtherCards(planKey);
-          bookSelectedPlan();
           // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');
           if(sel){
