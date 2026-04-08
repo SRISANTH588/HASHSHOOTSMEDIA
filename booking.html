@@ -547,6 +547,9 @@
       wedding_silver: { service:'Wedding Photography', name:'Wedding — Silver',  price:'\u20b944,999', per:'+ GST', features:['Covers 3 Events','10 Reels Included','Shot on iPhone','Instant Reel Delivery','Complementary Pictures','SD Card for Raw Content'] },
       wedding_gold:   { service:'Wedding Photography', name:'Wedding — Gold',    price:'\u20b959,999', per:'+ GST', features:['Covers 4 Events','15 Reels Included','Shot on iPhone','Instant Reel Delivery','Complementary Pictures','SD Card for Raw Content'] },
       wedding_platinum:{ service:'Wedding Photography', name:'Wedding — Platinum',price:'\u20b999,999', per:'+ GST', features:['Complete Wedding Coverage','25 Reels Included','Shot on iPhone','Instant Reel Delivery','Interaction Videos + Portraits','SD Card for Raw Content'] },
+      tbs_basic:      { service:'Total Brand Shoots',   name:'Total Brand — Basic',    price:'\u20b914,000', per:'+ GST', features:['1 Reel/month','Instagram Management','Monthly Brand Shoot','Content Calendar','6 Months Contract'] },
+      tbs_standard:   { service:'Total Brand Shoots',   name:'Total Brand — Standard',  price:'\u20b922,000', per:'+ GST', features:['2 Reels/month','Instagram Management','Monthly Brand Shoot','Content Calendar','6 Months Contract'] },
+      tbs_premium:    { service:'Total Brand Shoots',   name:'Total Brand — Premium',   price:'\u20b940,000', per:'+ GST', features:['3 Reels/month','Instagram Management','Monthly Brand Shoot','Content Calendar','Marketing & Campaigns','Dedicated Support','3 Months Contract'] },
       reels_content:  { service:'Reels & Content',      name:'Reels & Content',  price:'Custom',       per:'',            features:['Cinematic visuals for premium brands','Quick turnaround — Cut. Polish. Launch.','Brand-aligned storytelling','Shot on latest iPhone & pro gear','Hassle-free booking & coordination'] },
       reel:           { service:'Reel Shoot',         name:'Reel Shoot',       price:'\u20b9999',    per:'starting',  features:['Quick 60-sec Reel','Shot on Latest iPhone','10 Min Delivery','Trained Content Maker'] },
       portrait:       { service:'Portrait Session',   name:'Portrait Session', price:'\u20b91,499',  per:'starting',  features:['Professional Headshots','Personal Branding','Lifestyle Portraits','Edited Delivery'] },
@@ -616,7 +619,8 @@
           'Gold':'wedding_gold', 'Luxe':'wedding_platinum', 'Platinum':'wedding_platinum',
           'Reel Shoot':'reel', 'Portrait Session':'portrait',
           'Product Shoot':'product', 'Event Coverage':'event',
-          'Food Photography':'food'
+          'Food Photography':'food',
+          'Total Brand Basic':'tbs_basic', 'Total Brand Standard':'tbs_standard', 'Total Brand Premium':'tbs_premium'
         };
         var key = map[planParam] || null;
         if(key){
@@ -632,6 +636,7 @@
         var svcPlanMap = {
           'Reel Shoot':'reel', 'Portrait Session':'portrait', 'Food Photography':'food',
           'Wedding Photography':'wedding',
+          'Total Brand Shoots':'tbs_basic',
           'Product Shoot':'product', 'Event Coverage':'event'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
