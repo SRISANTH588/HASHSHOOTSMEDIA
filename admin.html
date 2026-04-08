@@ -5081,7 +5081,11 @@ Priority Support</textarea></div>
     }
 
     function renderWithdrawList(){
-      var all = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]').slice().reverse();
+      var raw = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
+      // Deduplicate by id
+      var seen = {};
+      raw = raw.filter(function(r){ if(seen[r.id]) return false; seen[r.id]=true; return true; });
+      var all = raw.slice().reverse();
       var filtered = currentWdFilter === 'all' ? all : all.filter(function(r){ return r.status === currentWdFilter; });
       document.getElementById('wd_pendingCount').textContent  = all.filter(function(r){ return r.status === 'pending'; }).length;
       document.getElementById('wd_approvedCount').textContent = all.filter(function(r){ return r.status === 'approved'; }).length;

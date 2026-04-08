@@ -2494,8 +2494,8 @@
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
 
       // Save to Firebase — use setDoc with known ID to prevent duplicates
-      if(window.fbSave){
-        fbSave('payout_requests', newRequest).finally(function(){
+      if(window.fbUpdate){
+        fbUpdate('payout_requests', reqId, newRequest).finally(function(){
           window._payoutProcessing = false;
         });
       } else {
@@ -3150,12 +3150,16 @@
           var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
           myDocs.forEach(function(d) {
-            var idx = local.findIndex(function(x) { return String(x.id) === String(d._fbId || d.id); });
-            var merged = Object.assign({}, d, { id: d._fbId || d.id });
+            var docId = d._fbId || d.id;
+            var idx = local.findIndex(function(x) { return String(x.id) === String(docId) || String(x.id) === String(d._fbId); });
+            var merged = Object.assign({}, d, { id: docId });
             delete merged._fbId; delete merged.createdAt;
             if (idx > -1) { Object.assign(local[idx], merged); }
             else { local.push(merged); }
           });
+          // Deduplicate by id
+          var seen = {};
+          local = local.filter(function(r){ if(seen[r.id]) return false; seen[r.id]=true; return true; });
           localStorage.setItem('hs_payout_requests', JSON.stringify(local));
           renderPayout();
         }, 'createdAt');
