@@ -220,6 +220,12 @@
     document.getElementById('ctForm').style.display='none';
     document.getElementById('ctSuccess').style.display='block';
   }
+
+  // Pre-fill for business enquiry
+  if(new URLSearchParams(window.location.search).get('type')==='business'){
+    var ta=document.querySelector('.ct-textarea');
+    if(ta&&!ta.value) ta.value='Hi, I am interested in your Reels & Content service for my business. Please share more details about pricing and packages.';
+  }
 </script>
   <!-- FOOTER -->
   <section class="contact" id="contact">
