@@ -3061,14 +3061,19 @@
 
 
     // ── FIREBASE TWO-WAY SYNC FOR STAFF ─────────────────────────
-    (async function() {
+    async function initStaffFirebaseSync(){
+      // Wait up to 8s for hs-firebase.js to load
+      for(var _w=0; _w<16; _w++){
+        if(window.fbListen && window.fbListenDoc) break;
+        await new Promise(function(r){ setTimeout(r,500); });
+      }
+      if(!window.fbListen){ console.warn('fbListen not available'); return; }
+      var staffId = localStorage.getItem('hs_staff_id');
+      if(!staffId || staffId==='null'){ console.warn('No staffId for sync'); return; }
       try {
-        await new Promise(r => setTimeout(r, 1000)); // wait for hs-firebase.js
-        if (!window.fbListen) return;
-        var staffId = localStorage.getItem('hs_staff_id');
 
         // Sync bookings from Firebase so staff can see booking details
-        fbListen('bookings', function(docs) {
+        try{ fbListen('bookings', function(docs) {
           var local = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
           docs.forEach(function(d) {
             var idx = local.findIndex(function(x) { return String(x.id) === String(d._fbId || d.id); });
@@ -3078,10 +3083,10 @@
             else { local.push(merged); }
           });
           localStorage.setItem('hs_bookings', JSON.stringify(local));
-        }, 'createdAt');
+        }, 'createdAt'); }catch(e){ console.error('listener err',e); }
 
         // Listen to assigned shoots — admin assigns/updates
-        fbListen('assigned_shoots', function(docs) {
+        try{ fbListen('assigned_shoots', function(docs) {
           var myId = String(localStorage.getItem('hs_staff_id'));
           var myDocs = docs.filter(function(d) { return String(d.staffId) === myId; });
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
@@ -3093,7 +3098,7 @@
           });
           localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
           renderAssignedShoots();
-        });
+        }); }catch(e){ console.error('listener err',e); }
 
         // Listen to wallet — admin releases payment
         fbListenDoc('wallets', staffId, function(data) {
@@ -3112,7 +3117,7 @@
         });
 
         // Listen to payout requests — admin approves/rejects
-        fbListen('payout_requests', function(docs) {
+        try{ fbListen('payout_requests', function(docs) {
           var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
           myDocs.forEach(function(d) {
@@ -3128,10 +3133,10 @@
           local = local.filter(function(r){ if(seen[r.id]) return false; seen[r.id]=true; return true; });
           localStorage.setItem('hs_payout_requests', JSON.stringify(local));
           renderPayout();
-        }, 'createdAt');
+        }, 'createdAt'); }catch(e){ console.error('listener err',e); }
 
         // Listen to demo sessions — admin assigns demos
-        fbListen('demos', function(docs) {
+        try{ fbListen('demos', function(docs) {
           var myDocs = docs.filter(function(d) { return String(d.staffId) === String(localStorage.getItem('hs_staff_id')); });
           var local = JSON.parse(localStorage.getItem('hs_demos') || '[]');
           myDocs.forEach(function(d) {
@@ -3143,10 +3148,10 @@
           });
           localStorage.setItem('hs_demos', JSON.stringify(local));
           renderCreatorDemos();
-        }, 'createdAt');
+        }, 'createdAt'); }catch(e){ console.error('listener err',e); }
 
         // Listen to customer feedbacks — so staff sees them in real-time
-        fbListen('feedbacks', function(docs) {
+        try{ fbListen('feedbacks', function(docs) {
           var local = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
           docs.forEach(function(d) {
             var merged = Object.assign({}, d, { id: d._fbId || d.id });
@@ -3157,31 +3162,31 @@
           });
           localStorage.setItem('hs_feedbacks', JSON.stringify(local));
           renderCreatorFeedback();
-        }, 'createdAt');
+        }, 'createdAt'); }catch(e){ console.error('listener err',e); }
 
         // Listen to all settings docs
-        fbListenDoc('settings', 'homepage',      function(data){ localStorage.setItem('hs_homepage',       JSON.stringify(data)); });
-        fbListenDoc('settings', 'customer_page', function(data){ localStorage.setItem('hs_customer_page',  JSON.stringify(data)); });
-        fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
-        fbListenDoc('settings', 'tshirts',       function(data){ if(data.items){ localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); localStorage.setItem('hs_products', JSON.stringify(data.items)); } if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
-        fbListenDoc('settings', 'store_razorpay', function(data){ localStorage.setItem('hs_store_razorpay', JSON.stringify(data)); });
-        fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); });
-        fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); });
-        fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); });
-        fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); });
-        fbListenDoc('settings', 'press_stats',   function(data){ localStorage.setItem('hs_press_stats',    JSON.stringify(data)); });
+        try{ fbListenDoc('settings', 'homepage',      function(data){ localStorage.setItem('hs_homepage',       JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'customer_page', function(data){ localStorage.setItem('hs_customer_page',  JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
+        try{ fbListenDoc('settings', 'tshirts',       function(data){ if(data.items){ localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); localStorage.setItem('hs_products', JSON.stringify(data.items)); } if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
+        try{ fbListenDoc('settings', 'store_razorpay', function(data){ localStorage.setItem('hs_store_razorpay', JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
+        try{ fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'press_stats',   function(data){ localStorage.setItem('hs_press_stats',    JSON.stringify(data)); }); }catch(e){}
 
-        // Listen to bank details — admin may update them
-        fbListenDoc('staff_bank', staffId, function(data){
+        // Listen to bank details
+        try{ fbListenDoc('staff_bank', staffId, function(data){
           var key = 'hs_bank_' + staffId;
           var local = JSON.parse(localStorage.getItem(key) || '{}');
           var merged = Object.assign({}, local, data);
           delete merged._fbId; delete merged.updatedAt; delete merged.createdAt;
           localStorage.setItem(key, JSON.stringify(merged));
-        });
+        }); }catch(e){ console.error('bank listener:', e); }
 
-        // Listen to wallet — full sync including transactions
-        fbListenDoc('wallets', staffId, function(data){
+        // Listen to wallet
+        try{ fbListenDoc('wallets', staffId, function(data){
           var key = 'hs_wallet_' + staffId;
           var local = JSON.parse(localStorage.getItem(key) || '{}');
           if(data.balance     !== undefined) local.balance     = data.balance;
@@ -3196,11 +3201,15 @@
           renderPayout();
           var dashBal = document.getElementById('dashWalletBal');
           if(dashBal) dashBal.textContent = (local.balance||0).toLocaleString('en-IN');
-        });
+        }); }catch(e){ console.error('wallet listener:', e); }
 
         console.log('[Staff] Firebase two-way sync active');
       } catch(e) { console.error('Staff Firebase sync error:', e); }
-    })();
+    }
+
+    // Call sync on page load — also expose so login can call it
+    window.initStaffFirebaseSync = initStaffFirebaseSync;
+    initStaffFirebaseSync();
 
     // Logout
     function logout() {
