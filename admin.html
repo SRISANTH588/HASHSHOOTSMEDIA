@@ -1958,13 +1958,39 @@ Priority Support</textarea></div>
       <!-- Inline Edit Date/Time Modal -->
       <div id="oeEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
         <div style="background:#141414;border:1px solid rgba(201,168,76,0.25);border-radius:18px;padding:2rem;width:100%;max-width:440px;">
-          <div style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><i class="fas fa-calendar-edit" style="color:#c9a84c;margin-right:0.5rem;"></i> Edit Booking Date &amp; Time</div>
+          <div style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><i class="fas fa-calendar-edit" style="color:#c9a84c;margin-right:0.5rem;"></i> Reschedule Booking</div>
           <div style="font-size:0.8rem;color:#9a9080;margin-bottom:1.5rem;">Changes will sync to Firebase and notify the customer.</div>
-          <div id="oeEditBookingInfo" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;font-size:0.85rem;color:#c9a84c;"></div>
+          <div id="oeEditBookingInfo" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.85rem;color:#c9a84c;"></div>
+
           <label style="font-size:0.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:0.4rem;">New Date</label>
-          <input type="date" id="oeNewDate" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1rem;"/>
+          <input type="date" id="oeNewDate" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;margin-bottom:1.25rem;color-scheme:dark;"/>
+
           <label style="font-size:0.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:0.4rem;">New Time</label>
-          <input type="time" id="oeNewTime" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1.5rem;"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:1.5rem;">
+            <div>
+              <div style="font-size:0.65rem;color:#6a6050;margin-bottom:0.3rem;">Hour</div>
+              <select id="oeNewHour" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.75rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;">
+                <option value="">--</option>
+                <option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option>
+                <option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.65rem;color:#6a6050;margin-bottom:0.3rem;">Minute</div>
+              <select id="oeNewMin" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.75rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;">
+                <option value="">--</option>
+                <option>00</option><option>15</option><option>30</option><option>45</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.65rem;color:#6a6050;margin-bottom:0.3rem;">AM / PM</div>
+              <select id="oeNewAmPm" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 0.75rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;">
+                <option>AM</option>
+                <option>PM</option>
+              </select>
+            </div>
+          </div>
+
           <div style="display:flex;gap:0.75rem;">
             <button onclick="document.getElementById('oeEditModal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
             <button onclick="confirmOeEdit()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Save Changes</button>
@@ -5903,14 +5929,27 @@ Priority Support</textarea></div>
       if(!b) return;
       document.getElementById('oeEditBookingInfo').innerHTML = '<i class="fas fa-user"></i> <strong>'+b.name+'</strong> &nbsp;|&nbsp; '+b.service+' &nbsp;|&nbsp; '+b.city;
       document.getElementById('oeNewDate').value = b.date||'';
-      document.getElementById('oeNewTime').value = b.time||'';
+      // Parse existing time into dropdowns
+      var timeParts = (b.time||'').match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if(timeParts){
+        document.getElementById('oeNewHour').value  = timeParts[1].padStart(2,'0');
+        document.getElementById('oeNewMin').value   = timeParts[2].padStart(2,'0');
+        document.getElementById('oeNewAmPm').value  = timeParts[3].toUpperCase();
+      } else {
+        document.getElementById('oeNewHour').value  = '';
+        document.getElementById('oeNewMin').value   = '';
+        document.getElementById('oeNewAmPm').value  = 'AM';
+      }
       document.getElementById('oeNewDate').min = new Date().toISOString().split('T')[0];
       document.getElementById('oeEditModal').style.display = 'flex';
     }
 
     async function confirmOeEdit(){
       var newDate = document.getElementById('oeNewDate').value;
-      var newTime = document.getElementById('oeNewTime').value;
+      var hour    = document.getElementById('oeNewHour').value;
+      var min     = document.getElementById('oeNewMin').value;
+      var ampm    = document.getElementById('oeNewAmPm').value;
+      var newTime = (hour && min) ? (hour + ':' + min + ' ' + ampm) : '';
       if(!newDate||!newTime){ alert('Please select both date and time.'); return; }
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var idx = bookings.findIndex(function(x){ return String(x.id)===String(_oeEditId); });
