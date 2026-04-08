@@ -280,8 +280,6 @@
     <button class="tab-btn" onclick="switchTab('dashboard',this)"><i class="fas fa-home"></i> Dashboard</button>
     <button class="tab-btn active" onclick="switchTab('shoots',this)" id="shootsTabBtn"><i class="fas fa-camera"></i> Assigned Shoots <span class="notif" id="shootsPendingBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('demos',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="notif" id="demoPendingBadge" style="display:none;">0</span></button>
-    <button class="tab-btn" onclick="switchTab('upload',this)"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
-    <button class="tab-btn" onclick="switchTab('videos',this)"><i class="fas fa-photo-video"></i> My Videos</button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
     <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Shoot Feedback <span class="notif" id="feedbackNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
@@ -307,7 +305,7 @@
       </div>
       <div class="stats-row">
         <div class="stat-box"><div class="num" id="statShoots">0</div><div class="lbl">Assigned Shoots</div></div>
-        <div class="stat-box"><div class="num" id="statVideos">0</div><div class="lbl">Videos Uploaded</div></div>
+        <div class="stat-box"><div class="num" id="statVideos">0</div><div class="lbl">Shoots Done</div></div>
         <div class="stat-box"><div class="num" id="statDemos">0</div><div class="lbl">Demo Sessions</div></div>
       </div>
       <!-- Quick links -->
@@ -369,43 +367,6 @@
     </div>
 
     <!-- UPLOAD -->
-    <div class="section" id="sec-upload">
-      <div class="sec-title"><i class="fas fa-cloud-upload-alt"></i> Upload Shoot Videos</div>
-      <div class="upload-section">
-        <div class="upload-drop" id="uploadDrop">
-          <input type="file" id="videoFileInput" accept="video/*" onchange="onFileSelected(this)"/>
-          <div class="upload-drop-icon"><i class="fas fa-film"></i></div>
-          <p>Drag & drop your video here</p>
-          <span>or click to browse &nbsp;·&nbsp; MP4, MOV, WebM supported</span>
-        </div>
-        <div id="selectedFileInfo" style="display:none;margin-top:0.75rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.78rem;color:#c9a84c;font-weight:600;"></div>
-        <div class="upload-meta">
-          <input class="upload-input" type="text" id="uploadTitle" placeholder="Video title *"/>
-          <select class="upload-input" id="uploadCategory">
-            <option value="" disabled selected>Category</option>
-            <option>Demo Reel</option><option>Shoot Delivery</option><option>Event Coverage</option>
-            <option>Portrait Session</option><option>Wedding</option><option>Product Shoot</option><option>Other</option>
-          </select>
-          <input class="upload-input" type="date" id="uploadDate" title="Shoot Date"/>
-          <input class="upload-input" type="time" id="uploadTime" title="Shoot Time"/>
-        </div>
-        <div class="upload-progress-wrap" id="uploadProgressWrap">
-          <div class="upload-progress-label"><span id="uploadProgressLabel">Processing...</span><span id="uploadProgressPct">0%</span></div>
-          <div class="upload-progress-bar"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
-        </div>
-        <button class="btn-upload" id="uploadBtn" onclick="uploadStaffVideo()"><i class="fas fa-upload"></i> Upload Video</button>
-        <div class="upload-toast" id="uploadToast"><i class="fas fa-check-circle"></i> Video uploaded successfully!</div>
-      </div>
-    </div>
-
-    <!-- MY VIDEOS -->
-    <div class="section" id="sec-videos">
-      <div class="sec-title"><i class="fas fa-photo-video"></i> My Uploaded Videos</div>
-      <div id="myVideosGrid" class="videos-grid"></div>
-      <div id="myVideosEmpty" style="display:none;color:#6a5a40;font-size:0.82rem;text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:12px;"><i class="fas fa-film" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No videos uploaded yet.</div>
-    </div>
-
-    <!-- CLASSES -->
     <div class="section" id="sec-classes">
       <div class="sec-title"><i class="fas fa-robot"></i> AI Generated Classes</div>
       <div class="classes-grid">
@@ -1033,7 +994,7 @@
     // Stats
     var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
     document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId); }).length;
-    document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]').filter(function(v){ return v.staffId == staffId; }).length;
+    document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]').filter(function(v){ return String(v.assignId) && true; }).length;
     document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(staffId); }).length;
     var dashShootCount = document.getElementById('dashShootCount');
     if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId) && a.status === 'assigned'; }).length;
@@ -1573,62 +1534,43 @@
             : '<button onclick="markArrived('+a.id+')" style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,152,0,0.22)\'" onmouseout="this.style.background=\'rgba(255,152,0,0.12)\'"><i class="fas fa-map-marker-alt"></i> Mark Arrived at Location</button>';
         }
 
-        // Upload edited video + Mark Done
+        // SS Upload + WhatsApp + Mark Done
         var uploadHTML = '';
-        if(a.status === 'assigned' || a.status === 'done'){
-          var uploaded = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
-            .filter(function(v){ return String(v.assignId) === String(a.id) && !v.isFeedback; });
-          if(uploaded.length){
-            var fbVideos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]')
-              .filter(function(v){ return String(v.assignId) === String(a.id) && v.isFeedback; });
-            var fbVideoUploaded = fbVideos.length > 0;
+        if(a.status === 'assigned'){
+          var ssUploaded = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]')
+            .filter(function(v){ return String(v.assignId) === String(a.id); });
+          var hasSS = ssUploaded.length > 0;
 
-            var feedbackVideoZone = fbVideoUploaded
-              ? '<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:700;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> Feedback Video Uploaded</div>'
-              : '<div style="margin-bottom:0.75rem;background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.2);border-radius:10px;padding:0.85rem 1rem;">'
-                + '<div style="font-size:0.78rem;font-weight:800;color:#ce93d8;margin-bottom:0.4rem;"><i class="fas fa-video"></i> Upload Feedback Video — Required before marking Done</div>'
-                + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.65rem;">Record a short video at the event location showing the shoot is complete. This is mandatory before you can mark the shoot as done.</div>'
-                + '<div style="border:2px dashed rgba(156,39,176,0.3);border-radius:10px;padding:0.85rem;text-align:center;position:relative;background:rgba(156,39,176,0.02);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#ce93d8\'" onmouseout="this.style.borderColor=\'rgba(156,39,176,0.3)\'">'
-                + '<input type="file" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="onFeedbackVideoSelected(this,'+a.id+')" />'
-                + '<i class="fas fa-video" style="font-size:1.3rem;color:#ce93d8;opacity:0.6;margin-bottom:0.3rem;display:block;"></i>'
-                + '<div style="font-size:0.75rem;color:#9a9080;">Tap to record or upload feedback video</div>'
-                + '</div>'
-                + '<div id="fbVidInfo_'+a.id+'" style="display:none;margin-top:0.5rem;background:#0a0a0a;border:1px solid rgba(156,39,176,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#ce93d8;font-weight:600;"></div>'
-                + '<div id="fbVidProgress_'+a.id+'" style="display:none;margin-top:0.5rem;">'
-                + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;" id="fbVidProgressLabel_'+a.id+'">Uploading...</div>'
-                + '<div style="height:5px;background:rgba(201,168,76,0.06);border-radius:3px;overflow:hidden;"><div id="fbVidProgressFill_'+a.id+'" style="height:100%;background:linear-gradient(90deg,#9c27b0,#ce93d8);border-radius:3px;width:0%;transition:width 0.3s;"></div></div>'
-                + '</div>'
-                + '<button id="fbVidUploadBtn_'+a.id+'" onclick="uploadFeedbackVideo('+a.id+')" disabled style="margin-top:0.6rem;width:100%;background:#9c27b0;color:#fff;border:none;border-radius:9px;padding:0.55rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;opacity:0.5;"><i class="fas fa-upload"></i> Upload Feedback Video</button>'
-                + '</div>';
-
-            var doneBtn = a.status !== 'done'
-              ? (fbVideoUploaded
-                  ? '<button onclick="markShootDone('+a.id+')" style="margin-top:0.75rem;width:100%;background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-check-double"></i> Mark as Done — Notify Admin</button>'
-                  : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-lock"></i> Upload feedback video above to unlock Mark as Done</div>')
-              : '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
-            var payoutBtn = '';
-            // BUG 2 FIX: only show upload zone when status is 'assigned', not 'done'
-            uploadHTML = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:10px;padding:0.85rem 1rem;margin-top:0.5rem;">'
-              +'<div style="font-size:0.78rem;font-weight:700;color:#4caf50;margin-bottom:0.5rem;"><i class="fas fa-check-circle"></i> '+uploaded.length+' edited video'+(uploaded.length>1?'s':'')+' uploaded</div>'
-              +'<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
-              +uploaded.map(function(v){ return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-film" style="color:#c9a84c;"></i> '+v.title+'</div>'; }).join('')
-              +'</div>'
-              +(a.status === 'assigned' ? shootUploadZone(a.id) : '') // BUG 2 FIX
-              +feedbackVideoZone
-              +doneBtn
-              +payoutBtn
-              +'</div>';
-          } else {
-            // only show upload zone if still assigned, not done
-            if(a.status === 'assigned'){
-              uploadHTML = '<div style="margin-top:0.5rem;">'
-                +'<div style="font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-upload" style="color:#c9a84c;"></i> Upload Edited Video</div>'
-                +shootUploadZone(a.id)
-                +'</div>';
-            } else {
-              uploadHTML = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:9px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
-            }
-          }
+          uploadHTML = '<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.1rem 1.25rem;margin-top:0.75rem;">'
+            // Step 1: Send via WhatsApp
+            + '<div style="margin-bottom:1rem;">'
+            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">1</span> Send Edited Video via WhatsApp</div>'
+            + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Send the edited video to OG Shoots on WhatsApp before uploading screenshot.</div>'
+            + '<a href="https://wa.me/919999999999?text=Edited+video+for+Shoot+ID:+' + a.id + '+%E2%80%94+' + encodeURIComponent(a.service||'Shoot') + '+%E2%80%94+' + encodeURIComponent(a.clientName||'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.82rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i> Send on WhatsApp</a>'
+            + '</div>'
+            // Step 2: Upload SS
+            + '<div style="margin-bottom:1rem;">'
+            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">2</span> Upload Screenshot of Edited Video</div>'
+            + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Upload a screenshot of the edited video as proof of completion.</div>'
+            + (hasSS
+              ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Screenshot uploaded</div>'
+              : '<div style="position:relative;border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1rem;text-align:center;background:rgba(201,168,76,0.02);cursor:pointer;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.25)'">'
+                + '<input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="uploadShootSS(this,' + a.id + ')" />'
+                + '<i class="fas fa-image" style="font-size:1.5rem;color:#c9a84c;opacity:0.5;display:block;margin-bottom:0.3rem;"></i>'
+                + '<div style="font-size:0.75rem;color:#9a9080;">Tap to upload screenshot</div>'
+                + '</div>')
+            + '</div>'
+            // Step 3: Mark Done
+            + '<div>'
+            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">3</span> Mark Shoot as Complete</div>'
+            + (hasSS
+              ? '<button onclick="markShootDone(' + a.id + ')" style="width:100%;background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-check-double"></i> Complete Shoot — Notify Admin</button>'
+              : '<div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,152,0,0.06);border:1px solid rgba(255,152,0,0.2);border-radius:10px;padding:0.65rem 1rem;font-size:0.78rem;font-weight:700;color:#ff9800;"><i class="fas fa-lock"></i> Upload screenshot first to unlock</div>')
+            + '</div>'
+            + '</div>';
+        } else if(a.status === 'done'){
+          uploadHTML = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
+        }
         } else if(a.status === 'completed' || a.status === 'paid'){
           var paidLabel = a.status === 'paid'
             ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
@@ -1765,6 +1707,20 @@
     }
 
     function markShootDone(assignId){
+    function uploadShootSS(input, assignId){
+      var file = input.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var ss = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]');
+        ss.push({ assignId: assignId, url: e.target.result, uploadedAt: new Date().toLocaleString() });
+        localStorage.setItem('hs_shoot_ss', JSON.stringify(ss));
+        if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), { ssUploaded: true, ssUploadedAt: new Date().toLocaleString() });
+        renderShootReels();
+      };
+      reader.readAsDataURL(file);
+    }
+
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       var s = shoots.find(function(a){ return String(a.id) === String(assignId); }); // BUG 5 FIX
       if(!s) return;
