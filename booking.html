@@ -798,7 +798,8 @@
       if(d.email) localStorage.setItem('hs_user', d.email);
       if(d.email) localStorage.setItem('hs_customer_email', d.email);
       if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
-      if(d.name)  localStorage.setItem('hs_customer_name', d.name);
+      // Only save name to hs_customer_name if actually logged in — prevents guest booking name showing as logged-in user
+      if(d.name && localStorage.getItem('hs_role') === 'customer') localStorage.setItem('hs_customer_name', d.name);
       document.getElementById('bk_success').style.display = 'block';
       document.getElementById('bk_btn').style.display = 'none';
       document.querySelector('form').querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
