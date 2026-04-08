@@ -1507,7 +1507,10 @@
           +'<div style="font-size:0.72rem;color:#c9a84c;font-weight:700;margin-bottom:0.15rem;"><i class="fas fa-user-circle"></i> Creator: '+creatorName+'</div>'
           +'<div style="font-size:0.72rem;color:#9a9080;">Assigned on '+a.assignedAt+'</div>'
           +'</div>'
+          +'<div style="display:flex;align-items:center;gap:0.5rem;">'
           +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;">'+a.status.charAt(0).toUpperCase()+a.status.slice(1)+'</span>'
+          +(a.status === 'assigned' ? '<button onclick="deleteAssignedShoot('+a.id+')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;border-radius:8px;padding:0.3rem 0.65rem;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;" title="Delete shoot"><i class="fas fa-trash"></i></button>' : '')
+          +'</div>'
           +'</div>';
 
         // Details grid
@@ -1729,6 +1732,15 @@
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
       // Update assigned_shoots doc directly so admin sees 'done' status in real time
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
+      renderAssignedShoots();
+    }
+
+    function deleteAssignedShoot(assignId){
+      if(!confirm('Delete this shoot? This cannot be undone.')) return;
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      shoots = shoots.filter(function(a){ return String(a.id) !== String(assignId); });
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      if(window.fbDelete) fbDelete('assigned_shoots', String(assignId));
       renderAssignedShoots();
     }
 
