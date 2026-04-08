@@ -187,6 +187,7 @@
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
       <button class="tab-btn" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('biz-enquiries',this)" id="bizEnquiriesTabBtn"><i class="fas fa-briefcase"></i> Business Enquiries <span id="bizEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn"><i class="fas fa-chart-bar"></i> Hero Stats</button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
       <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
@@ -2059,6 +2060,21 @@ Priority Support</textarea></div>
 
     </div>
 
+    <!-- BUSINESS ENQUIRIES TAB -->
+    <div class="tab-panel" id="tab-biz-enquiries">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-briefcase" style="color:#c9a84c;margin-right:0.5rem;"></i> Business Enquiries</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#9a9080;" id="bizEnquiriesCount"></span>
+            <button onclick="fetchBizEnquiries()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:#6a6050;margin-bottom:1.25rem;">Enquiries from the <strong style="color:#fff;">For Business &amp; Brands — Reels &amp; Content</strong> card on the homepage.</p>
+        <div id="bizEnquiriesList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
+
     <!-- HERO STATS TAB -->
     <div class="tab-panel" id="tab-hero-stats">
       <div class="about-form">
@@ -2608,6 +2624,7 @@ Priority Support</textarea></div>
       if (tab === 'affiliates') renderAffiliateApps();
       if (tab === 'store-razorpay') loadStoreRazorpay();
       if (tab === 'mkt-enquiries') renderMktEnquiries();
+      if (tab === 'biz-enquiries') fetchBizEnquiries();
       if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
@@ -6278,6 +6295,44 @@ Priority Support</textarea></div>
           +'<div style="font-size:0.68rem;color:#777;">'+(f.submittedAt||'')+'</div>'
           +'</div>';
       }).join('');
+    }
+
+    // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
+    async function fetchBizEnquiries(){
+      var el = document.getElementById('bizEnquiriesList');
+      var countEl = document.getElementById('bizEnquiriesCount');
+      if(!el) return;
+      el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;">Loading...</p>';
+      try{
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+        var docs = [];
+        snap.forEach(function(d){
+          var data = d.data();
+          if(data.type === 'business') docs.push(Object.assign({id:d.id}, data));
+        });
+        docs.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+        if(countEl) countEl.textContent = docs.length + ' enquir'+(docs.length===1?'y':'ies');
+        var badge = document.getElementById('bizEnquiriesBadge');
+        if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
+        if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;"><i class="fas fa-briefcase" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.75rem;"></i>No business enquiries yet.</p>'; return; }
+        el.innerHTML = docs.map(function(d){
+          var ts = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleString() : '';
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.85rem;">'
+            +'<div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#c9a84c;flex-shrink:0;">'+(d.name?d.name[0].toUpperCase():'?')+'</div>'
+            +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(d.name||'—')+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">'+(d.email||'')+(d.phone&&d.phone!=='N/A'?' · '+d.phone:'')+'</div></div></div>'
+            +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.58rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;">Business</span>'
+            +'</div>'
+            +(d.message?'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin-bottom:0.5rem;">'+(d.message)+'</div>':'')
+            +'<div style="font-size:0.68rem;color:#777;">'+ts+'</div>'
+            +'</div>';
+        }).join('');
+      } catch(e){
+        el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';
+      }
     }
 
     // ── STORE RAZORPAY ───────────────────────────────────────────
