@@ -177,7 +177,8 @@
       <button class="tab-btn" onclick="switchTab('tawk',this)" id="tawkTabBtn"><i class="fas fa-comments"></i> Tawk.to</button>
       <button class="tab-btn" onclick="switchTab('settings',this)" id="settingsTabBtn"><i class="fas fa-sliders-h"></i> Settings</button>
       <button class="tab-btn" onclick="switchTab('cwallets',this)" id="cwalletsTabBtn"><i class="fas fa-wallet"></i> Customer Wallets</button>
-      <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-envelope"></i> Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn"><i class="fas fa-concierge-bell"></i> Service Enquiries <span id="enquiriesNotifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('order-enquiries',this)" id="orderEnquiriesTabBtn"><i class="fas fa-shopping-cart"></i> Order Enquiries <span id="orderEnquiriesBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('testimonial-videos',this)" id="testiVideosTabBtn"><i class="fas fa-video"></i> Client Testimonials</button>
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn"><i class="fas fa-edit"></i> Order Edits <span id="orderEditsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
@@ -1832,20 +1833,36 @@ Priority Support</textarea></div>
     </div><!-- end tab-cwallets -->
 
     <!-- ENQUIRIES TAB -->
+    <!-- SERVICE ENQUIRIES TAB -->
     <div class="tab-panel" id="tab-enquiries">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-envelope" style="color:#c9a84c;margin-right:0.5rem;"></i> Customer Enquiries</h2>
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-concierge-bell" style="color:#c9a84c;margin-right:0.5rem;"></i> Service Enquiries</h2>
           <div style="display:flex;gap:0.75rem;align-items:center;">
             <span style="font-size:0.8rem;color:#9a9080;" id="enquiriesCount"></span>
             <button onclick="fetchFirebaseEnquiries()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
             <button onclick="clearAllEnquiries()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
           </div>
         </div>
+        <p style="font-size:0.8rem;color:#6a6050;margin-bottom:1.25rem;">Enquiries from the Contact page and Business card (Reels &amp; Content service).</p>
         <div id="enquiriesList"></div>
       </div>
     </div><!-- end tab-enquiries -->
 
+    <!-- ORDER ENQUIRIES TAB -->
+    <div class="tab-panel" id="tab-order-enquiries">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-shopping-cart" style="color:#c9a84c;margin-right:0.5rem;"></i> Order Enquiries</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#9a9080;" id="orderEnquiriesCount"></span>
+            <button onclick="fetchOrderEnquiries()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:#6a6050;margin-bottom:1.25rem;">Enquiries from booking forms, Total Brand Shoots and Marketing enquiries.</p>
+        <div id="orderEnquiriesList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div><!-- end tab-order-enquiries -->
     <!-- TESTIMONIAL VIDEOS TAB -->
     <div class="tab-panel" id="tab-testimonial-videos">
       <div class="about-form">
@@ -2531,6 +2548,7 @@ Priority Support</textarea></div>
       if (tab === 'cwallets') renderCustWallets();
       if (tab === 'bookings') loadAll();
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
+      if (tab === 'order-enquiries') { fetchOrderEnquiries(); }
       if (tab === 'notifications') renderNotifications();
       if (tab === 'order-edits') loadOrderEdits();
       if (tab === 'blog') { renderBlogList(); }
@@ -5597,9 +5615,11 @@ Priority Support</textarea></div>
           var data = d.data();
           var msg = data.message || '';
           if(!msg) msg = 'Service: '+(data.service||'')+(data.city?' | City: '+data.city:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
-          local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
+          local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, type:data.type||'general', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
           localIds.push(d.id);
         });
+        // Filter: service enquiries only (general or no type)
+        local = local.filter(function(e){ return !e.type || e.type==='general' || e.type==='business'; });
         localStorage.setItem('hs_enquiries', JSON.stringify(local));
       } catch(e){ console.log('Firebase fetch error:',e); }
       renderEnquiries();
@@ -5635,6 +5655,56 @@ Priority Support</textarea></div>
           + '<div style="font-size:0.68rem;color:#777;margin-top:0.6rem;">' + (q.submittedAt||'') + '</div>'
           + '</div>';
       }).join('');
+    }
+
+
+    // ── ORDER ENQUIRIES ────────────────────────────────────────────
+    async function fetchOrderEnquiries(){
+      var el = document.getElementById('orderEnquiriesList');
+      var countEl = document.getElementById('orderEnquiriesCount');
+      if(!el) return;
+      el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;">Loading...</p>';
+      try{
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        // Merge from booking enquiries + marketing_enquiries
+        var docs = [];
+        // 1. Bookings with type=enquiry
+        var snap1 = await f.s.getDocs(f.s.query(f.s.collection(f.db,'enquiries'), f.s.orderBy('createdAt','desc')));
+        snap1.forEach(function(d){
+          var data = d.data();
+          if(data.type && data.type !== 'general') docs.push(Object.assign({id:d.id, _source:'booking'}, data));
+        });
+        // 2. marketing_enquiries (Total Brand Shoots)
+        var snap2 = await f.s.getDocs(f.s.query(f.s.collection(f.db,'marketing_enquiries'), f.s.orderBy('submittedAt','desc')));
+        snap2.forEach(function(d){
+          var data = d.data();
+          docs.push(Object.assign({id:d.id, _source:'marketing'}, data));
+        });
+        if(countEl) countEl.textContent = docs.length + ' enquir' + (docs.length===1?'y':'ies');
+        var badge = document.getElementById('orderEnquiriesBadge');
+        if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
+        if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No order enquiries yet.</p>'; return; }
+        el.innerHTML = docs.map(function(d){
+          var sourceLabel = d._source==='marketing'
+            ? '<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.58rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;">Total Brand Shoots</span>'
+            : '<span style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.58rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;">'+(d.type||'Booking')+'</span>';
+          var ts = d.submittedAt ? (d.submittedAt.seconds ? new Date(d.submittedAt.seconds*1000).toLocaleString() : d.submittedAt) : (d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleString() : '');
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.85rem;">'
+            +'<div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:0.95rem;font-weight:900;color:#c9a84c;flex-shrink:0;">'+(d.name?d.name[0].toUpperCase():'?')+'</div>'
+            +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(d.name||'—')+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">'+(d.phone||'')+(d.brand?' &nbsp;&middot;&nbsp; '+d.brand:'')+(d.instagram?' &nbsp;&middot;&nbsp; '+d.instagram:'')+'</div>'
+            +'</div></div>'
+            +sourceLabel
+            +'</div>'
+            +(d.message?'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin-bottom:0.5rem;">'+(d.message||'')+'</div>':'')
+            +'<div style="font-size:0.68rem;color:#777;">'+ts+'</div>'
+            +'</div>';
+        }).join('');
+      } catch(e){
+        el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';
+      }
     }
 
     function acceptEnquiry(btn, id){
