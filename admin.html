@@ -4873,7 +4873,8 @@ Priority Support</textarea></div>
           date: date, time: time, credit: splitCredit, notes: notes,
           totalCreators: selectedIds.length,
           status: 'assigned',
-          assignedAt: new Date().toLocaleString()
+          assignedAt: new Date().toLocaleString(),
+          createdAt: Date.now()
         });
         var walletKey = 'hs_wallet_' + staffId;
         var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
@@ -5881,21 +5882,24 @@ Priority Support</textarea></div>
       var list = document.getElementById('orderEditsList');
       list.innerHTML = '<div style="text-align:center;padding:2rem;color:#9a9080;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
       try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
-        var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'notifications'),fbStore.orderBy('createdAt','desc')));
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        // Load from order_edits collection (reschedule/cancel requests)
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'order_edits'), f.s.orderBy('createdAt','desc')));
         _oeItems = [];
         snap.forEach(function(d){ _oeItems.push(Object.assign({_id:d.id},d.data())); });
-        // Filter out already solved items
         _oeItems = _oeItems.filter(function(i){ return !i.solved; });
-      }catch(e){
-        // Fallback: read from allBookings for rescheduled/cancelled by customer
-        _oeItems = allBookings.filter(function(b){ return b.rescheduled || b.cancelledBy==='customer'; }).map(function(b){
-          return { _id:b.id, type: b.cancelledBy==='customer'?'cancellation':'reschedule', title: b.cancelledBy==='customer'?'Cancelled by Customer':'Rescheduled by Customer', body: b.name+' — '+b.service, customerName:b.name, customerPhone:b.phone, bookingId:String(b.id), reason:b.cancelReason||'', createdAt:b.cancelledAt||b.createdAt };
+        // Also check notifications for reschedule/cancel types not yet in order_edits
+        var snap2 = await f.s.getDocs(f.s.query(f.s.collection(f.db,'notifications'), f.s.orderBy('createdAt','desc')));
+        var existingIds = _oeItems.map(function(i){ return String(i._id); });
+        snap2.forEach(function(d){
+          var data = d.data();
+          if((data.type==='reschedule'||data.type==='cancellation') && !data.solved && !existingIds.includes(d.id)){
+            _oeItems.push(Object.assign({_id:d.id},data));
+          }
         });
+      }catch(e){
+        console.error('loadOrderEdits error:', e);
+        _oeItems = [];
       }
       renderOrderEdits();
     }
@@ -6007,10 +6011,11 @@ Priority Support</textarea></div>
 
     async function markOeSolved(itemId){
       if(!confirm('Mark this request as solved? It will be removed from the list.')) return;
-      // Mark solved in Firestore order_edits collection
       var f = await _fbAdmin();
-      if(f) try{ await f.s.setDoc(f.s.doc(f.db,'order_edits',String(itemId)),{solved:true,solvedAt:f.s.serverTimestamp()},{merge:true}); }catch(e){}
-      // Remove from local list and re-render
+      if(f) try{
+        await f.s.setDoc(f.s.doc(f.db,'order_edits',String(itemId)),{solved:true,solvedAt:f.s.serverTimestamp()},{merge:true});
+        await f.s.setDoc(f.s.doc(f.db,'notifications',String(itemId)),{solved:true,solvedAt:f.s.serverTimestamp()},{merge:true});
+      }catch(e){}
       _oeItems = _oeItems.filter(function(i){ return (i._id||String(i.bookingId)) !== String(itemId); });
       renderOrderEdits();
     }
