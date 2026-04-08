@@ -112,11 +112,11 @@
       <form id="ctForm" onsubmit="submitContact(event)">
         <div class="ct-field">
           <label class="ct-label">Name</label>
-          <input class="ct-input" type="text" placeholder="" required/>
+          <input class="ct-input" id="ct_name" type="text" placeholder="" required/>
         </div>
         <div class="ct-field">
           <label class="ct-label">Email</label>
-          <input class="ct-input" type="email" placeholder="" required/>
+          <input class="ct-input" id="ct_email" type="email" placeholder="" required/>
         </div>
         <div class="ct-field">
           <label class="ct-label">Phone Number</label>
@@ -131,12 +131,12 @@
                 <option>+971</option>
               </select>
             </div>
-            <input class="ct-input phone-num" type="tel" placeholder="Enter phone number"/>
+            <input class="ct-input phone-num" id="ct_phone" type="tel" placeholder="Enter phone number"/>
           </div>
         </div>
         <div class="ct-field">
           <label class="ct-label">Message</label>
-          <textarea class="ct-textarea" required></textarea>
+          <textarea class="ct-textarea" id="ct_message" required></textarea>
         </div>
         <button type="submit" class="ct-submit">Send Message <i class="fas fa-arrow-right"></i></button>
       </form>
@@ -167,12 +167,12 @@
 
   window.submitContact = async function(e){
     e.preventDefault();
-    var form = document.getElementById('ctForm');
-    var inputs = form.querySelectorAll('input, textarea');
-    var name    = inputs[0].value.trim();
-    var email   = inputs[1].value.trim();
-    var phone   = form.querySelector('.phone-num').value.trim();
-    var message = form.querySelector('textarea').value.trim();
+    var form    = document.getElementById('ctForm');
+    var name    = document.getElementById('ct_name').value.trim();
+    var email   = document.getElementById('ct_email').value.trim();
+    var phone   = document.getElementById('ct_phone').value.trim();
+    var message = document.getElementById('ct_message').value.trim();
+    var type    = new URLSearchParams(window.location.search).get('type') || 'general';
 
     // Save to Firebase Firestore
     try {
@@ -181,6 +181,7 @@
         email: email,
         phone: phone || 'N/A',
         message: message,
+        type: type,
         createdAt: serverTimestamp()
       });
     } catch(err) {
@@ -223,7 +224,7 @@
 
   // Pre-fill for business enquiry
   if(new URLSearchParams(window.location.search).get('type')==='business'){
-    var ta=document.querySelector('.ct-textarea');
+    var ta=document.getElementById('ct_message');
     if(ta&&!ta.value) ta.value='Hi, I am interested in your Reels & Content service for my business. Please share more details about pricing and packages.';
   }
 </script>
