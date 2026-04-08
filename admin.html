@@ -5654,26 +5654,23 @@ Priority Support</textarea></div>
 
     async function fetchFirebaseEnquiries(){
       try {
-        var { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var { getFirestore, collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg = { apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE', authDomain:'hash-shoots.firebaseapp.com', projectId:'hash-shoots', storageBucket:'hash-shoots.firebasestorage.app', messagingSenderId:'1093054616221', appId:'1:1093054616221:web:55bdebafc895acfd04fa74' };
-        var existing = getApps().find(function(a){ return a.name==='admin-app'; });
-        var fbApp = existing || initializeApp(fbCfg,'admin-app');
-        var fbDb = getFirestore(fbApp);
-        var snap = await getDocs(query(collection(fbDb,'enquiries'), orderBy('createdAt','desc')));
-        var local = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
-        var localIds = local.map(function(e){ return String(e.id); });
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+        var local = [];
         snap.forEach(function(d){
-          if(localIds.includes(d.id)) return;
           var data = d.data();
           var msg = data.message || '';
           if(!msg) msg = 'Service: '+(data.service||'')+(data.city?' | City: '+data.city:'')+(data.date?' | Date: '+data.date+' at '+(data.time||''):'');
           local.push({ id:d.id, name:data.name||'', phone:data.phone||'N/A', email:data.email||'', message:msg, type:data.type||'general', submittedAt:data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString() });
-          localIds.push(d.id);
         });
-        // Filter: service enquiries only (general or no type)
-        local = local.filter(function(e){ return !e.type || e.type==='general' || e.type==='business'; });
-        localStorage.setItem('hs_enquiries', JSON.stringify(local));
+        // Sort newest first client-side
+        local.sort(function(a,b){ return new Date(b.submittedAt) - new Date(a.submittedAt); });
+        // Service enquiries: general or business type only
+        var serviceEnquiries = local.filter(function(e){ return !e.type || e.type==='general' || e.type==='business'; });
+        localStorage.setItem('hs_enquiries', JSON.stringify(serviceEnquiries));
+        // Update badge
+        var badge = document.getElementById('enquiriesNotifBadge');
+        if(badge && serviceEnquiries.length){ badge.style.display='inline'; badge.textContent=serviceEnquiries.length; }
       } catch(e){ console.log('Firebase fetch error:',e); }
       renderEnquiries();
     }
@@ -5722,13 +5719,13 @@ Priority Support</textarea></div>
         // Merge from booking enquiries + marketing_enquiries
         var docs = [];
         // 1. Bookings with type=enquiry
-        var snap1 = await f.s.getDocs(f.s.query(f.s.collection(f.db,'enquiries'), f.s.orderBy('createdAt','desc')));
+        var snap1 = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
         snap1.forEach(function(d){
           var data = d.data();
-          if(data.type && data.type !== 'general') docs.push(Object.assign({id:d.id, _source:'booking'}, data));
+          if(data.type && data.type !== 'general' && data.type !== 'business') docs.push(Object.assign({id:d.id, _source:'booking'}, data));
         });
         // 2. marketing_enquiries (Total Brand Shoots)
-        var snap2 = await f.s.getDocs(f.s.query(f.s.collection(f.db,'marketing_enquiries'), f.s.orderBy('submittedAt','desc')));
+        var snap2 = await f.s.getDocs(f.s.collection(f.db,'marketing_enquiries'));
         snap2.forEach(function(d){
           var data = d.data();
           docs.push(Object.assign({id:d.id, _source:'marketing'}, data));
