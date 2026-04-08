@@ -926,6 +926,15 @@
         <div id="feedbackAdminList"></div>
       </div>
 
+      <!-- EVENT FEEDBACK FROM STAFF -->
+      <div style="margin-top:1.5rem;">
+        <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.25rem;"><i class="fas fa-clipboard-list" style="color:#c9a84c;margin-right:0.5rem;"></i>Event Feedback Collected by Staff</div>
+        <div style="font-size:0.78rem;color:#6a6050;margin-bottom:1rem;">Feedback collected from customers at the shoot location by the creator.</div>
+        <div class="table-wrap" style="padding:1.5rem;">
+          <div id="eventFeedbackAdminList"><p style="color:#9a9080;text-align:center;padding:2rem;">Loading...</p></div>
+        </div>
+      </div>
+
       <!-- CREATOR FEEDBACK SECTION -->
       <div style="margin-top:1.5rem;">
         <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-user-circle" style="color:#c9a84c;margin-right:0.5rem;"></i>Creator Shoot Feedback</div>
@@ -2604,6 +2613,7 @@ Priority Support</textarea></div>
       if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
       if (tab === 'feedback') renderFeedbackAdmin();
+      if (tab === 'feedback') renderEventFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
       if (tab === 'shoot-reels') renderShootReelsAdmin();
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
@@ -6240,6 +6250,34 @@ Priority Support</textarea></div>
       }
     }
 
+    // ── EVENT FEEDBACK ADMIN ─────────────────────────────────────────
+    function renderEventFeedbackAdmin(){
+      var el = document.getElementById('eventFeedbackAdminList');
+      if(!el) return;
+      var docs = JSON.parse(localStorage.getItem('hs_creator_feedbacks_admin')||'[]');
+      if(!docs.length){
+        el.innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;"><i class="fas fa-clipboard-list" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.75rem;"></i>No event feedback collected yet.</p>';
+        return;
+      }
+      el.innerHTML = docs.map(function(f){
+        var stars = '\u2605'.repeat(f.rating||0) + '\u2606'.repeat(5-(f.rating||0));
+        var starColor = (f.rating||0) >= 4 ? '#f5a623' : (f.rating||0) >= 3 ? '#ff9800' : '#f44336';
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;align-items:center;gap:0.85rem;">'
+          +'<div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#c9a84c;flex-shrink:0;">'+(f.staffName?f.staffName[0].toUpperCase():'S')+'</div>'
+          +'<div>'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(f.staffName||'Staff')+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">'+(f.service||'')+(f.clientName?' — '+(f.clientName):'')+(f.city?' · '+(f.city):'')+'</div>'
+          +'</div></div>'
+          +'<div style="font-size:1.1rem;color:'+starColor+';">'+stars+'</div>'
+          +'</div>'
+          +(f.comment?'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin-bottom:0.5rem;">'+(f.comment)+'</div>':'')
+          +'<div style="font-size:0.68rem;color:#777;">'+(f.submittedAt||'')+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
     // ── STORE RAZORPAY ───────────────────────────────────────────
     function loadStoreRazorpay(){
       var cfg = JSON.parse(localStorage.getItem('hs_store_razorpay')||'{}');
@@ -6584,6 +6622,17 @@ Priority Support</textarea></div>
             local.push(Object.assign({id:d.id}, data));
           });
           localStorage.setItem('hs_support_tickets', JSON.stringify(local));
+        });
+
+        // Real-time creator_feedbacks (event feedback collected by staff)
+        onSnapshot(query(collection(fbDb,'creator_feedbacks'), orderBy('submittedAt','desc')), function(snap){
+          var docs = [];
+          snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id}, d.data())); });
+          localStorage.setItem('hs_creator_feedbacks_admin', JSON.stringify(docs));
+          renderEventFeedbackAdmin();
+          // Update badge
+          var badge = document.getElementById('feedbackNotifBadge');
+          if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
         });
 
         // Real-time feedbacks
