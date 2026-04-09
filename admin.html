@@ -5731,9 +5731,13 @@ Priority Support</textarea></div>
       }
       el.innerHTML = list.map(function(q){
         var border = q.accepted ? 'border:1px solid rgba(76,175,80,0.35);background:rgba(76,175,80,0.05);' : 'border:1px solid rgba(201,168,76,0.12);background:#111;';
-        var badge = q.accepted
-          ? '<span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check"></i> Accepted</span>'
-          : '<button onclick="acceptEnquiry(this,\'' + String(q.id) + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>';
+        var badge = q.status === 'done'
+          ? '<span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check-double"></i> Done</span>'
+          : q.accepted
+          ? '<span style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check"></i> Accepted</span>'
+            + '<button onclick="markServiceEnquiryDone(\'' + String(q.id) + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>'
+          : '<button onclick="acceptEnquiry(this,\'' + String(q.id) + '\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+            + '<button onclick="markServiceEnquiryDone(\'' + String(q.id) + '\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>';
         return '<div style="border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;' + border + '">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;align-items:center;gap:0.85rem;">'
@@ -5862,13 +5866,24 @@ Priority Support</textarea></div>
       if(!confirm('Delete this enquiry?')) return;
       localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return String(q.id)!==String(id); })));
       renderEnquiries();
-      // Delete from Firestore so it doesn't come back
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f) return;
           await f.s.deleteDoc(f.s.doc(f.db,'enquiries',String(id)));
         } catch(e){ console.warn('deleteEnquiry Firestore:', e); }
       })();
+    }
+
+    async function markServiceEnquiryDone(id){
+      var enquiries = getEnquiries();
+      enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{status:'done'}) : e; });
+      localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
+      renderEnquiries();
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
+        showAssignToast('Enquiry marked as done!', true);
+      }catch(e){ console.warn('markServiceEnquiryDone:', e); }
     }
     function clearAllEnquiries(){
       if(!confirm('Delete ALL enquiries? This will also remove them from the database.')) return;
@@ -6277,6 +6292,14 @@ Priority Support</textarea></div>
           var planBorder= d.plan==='Premium' ? 'rgba(232,201,106,0.4)' : d.plan==='Standard' ? 'rgba(201,168,76,0.4)' : 'rgba(160,120,48,0.3)';
           var planInfo  = d.plan==='Premium' ? '&#8377;40,000 &middot; 3 months' : d.plan==='Standard' ? '&#8377;22,000 &middot; 6 months' : d.plan==='Basic' ? '&#8377;14,000 &middot; 6 months' : '';
           var cardBorder= d.plan ? 'border:1px solid '+planBorder+';' : 'border:1px solid rgba(201,168,76,0.12);';
+          var isDone = d.status === 'done'; var isAccepted = d.accepted || d.status === 'accepted';
+          var actionBtns = isDone
+            ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check-double"></i> Done</span>'
+            : (isAccepted
+              ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check"></i> Accepted</span>'
+              + '<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>'
+              : '<button onclick="acceptMktEnquiry(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+              + '<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>');
           return '<div style="background:#111;'+cardBorder+'border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
             +'<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">'
@@ -6285,8 +6308,10 @@ Priority Support</textarea></div>
               ? '<div style="background:'+planBg+';border:1px solid '+planBorder+';color:'+planColor+';font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;">'+d.plan+' Plan</div>'
               : '')
             +'</div>'
+            +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">'
+            + actionBtns
             +'<div style="font-size:0.68rem;color:#6a6050;">'+(d.submittedAt ? new Date(d.submittedAt.seconds ? d.submittedAt.seconds*1000 : d.submittedAt).toLocaleString() : '')+'</div>'
-            +'</div>'
+            +'</div></div>'
             +(d.plan && d.plan!=='Not selected' && planInfo
               ? '<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.85rem;display:flex;align-items:center;gap:0.5rem;">'
                 +'<i class="fas fa-tag" style="color:'+planColor+';font-size:0.75rem;"></i>'
@@ -6336,6 +6361,38 @@ Priority Support</textarea></div>
     }
 
     // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
+    async function acceptMktEnquiry(id){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{accepted:true,status:'accepted'},{merge:true});
+        showAssignToast('Enquiry accepted!', true);
+        renderMktEnquiries();
+      }catch(e){ alert('Error: '+e.message); }
+    }
+    async function markMktEnquiryDone(id){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
+        showAssignToast('Enquiry marked as done!', true);
+        renderMktEnquiries();
+      }catch(e){ alert('Error: '+e.message); }
+    }
+    async function acceptBizEnquiry(id){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'enquiries',String(id)),{accepted:true,status:'accepted'},{merge:true});
+        showAssignToast('Enquiry accepted!', true);
+        fetchBizEnquiries();
+      }catch(e){ alert('Error: '+e.message); }
+    }
+    async function markBizEnquiryDone(id){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
+        showAssignToast('Enquiry marked as done!', true);
+        fetchBizEnquiries();
+      }catch(e){ alert('Error: '+e.message); }
+    }
     async function fetchBizEnquiries(){
       var el = document.getElementById('bizEnquiriesList');
       var countEl = document.getElementById('bizEnquiriesCount');
@@ -6356,14 +6413,24 @@ Priority Support</textarea></div>
         if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;"><i class="fas fa-briefcase" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.75rem;"></i>No business enquiries yet.</p>'; return; }
         el.innerHTML = docs.map(function(d){
           var ts = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleString() : '';
+          var isDone = d.status === 'done'; var isAccepted = d.accepted || d.status === 'accepted';
+          var actionBtns = isDone
+            ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check-double"></i> Done</span>'
+            : (isAccepted
+              ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check"></i> Accepted</span>'
+              + '<button onclick="markBizEnquiryDone(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>'
+              : '<button onclick="acceptBizEnquiry(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+              + '<button onclick="markBizEnquiryDone(\''+d.id+'\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>');
           return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
             +'<div style="display:flex;align-items:center;gap:0.85rem;">'
             +'<div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#c9a84c;flex-shrink:0;">'+(d.name?d.name[0].toUpperCase():'?')+'</div>'
             +'<div><div style="font-size:0.92rem;font-weight:800;color:#fff;">'+(d.name||'—')+'</div>'
             +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">'+(d.email||'')+(d.phone&&d.phone!=='N/A'?' · '+d.phone:'')+'</div></div></div>'
+            +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">'
             +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.58rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;">Business</span>'
-            +'</div>'
+            + actionBtns
+            +'</div></div>'
             +(d.message?'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin-bottom:0.5rem;">'+(d.message)+'</div>':'')
             +'<div style="font-size:0.68rem;color:#777;">'+ts+'</div>'
             +'</div>';
