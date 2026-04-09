@@ -234,7 +234,7 @@ window.setCustWalletFirebase = async function(email, balance) {
 window.loadCustWalletFromFirebase = async function(email) {
   try {
     const db = await getDB();
-    const key = 'cw_' + email.replace(/[^a-zA-Z0-9]/g, '_');
+    const key = email.replace(/[.#$\[\]]/g,'_');
     const snap = await _fbStore.getDoc(_fbStore.doc(db, 'customer_wallets', key));
     if (snap.exists()) {
       const bal = snap.data().balance || 0;

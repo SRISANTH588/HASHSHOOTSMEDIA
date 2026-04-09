@@ -659,18 +659,34 @@
     (async function(){
       try {
         var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-        if(userEmail && window.loadCustWalletFromFirebase){
-          var bal = await loadCustWalletFromFirebase(userEmail);
-          var walletEl = document.getElementById('walletBal');
-          if(walletEl) walletEl.textContent = bal.toLocaleString('en-IN');
-        }
+        // wallet is now fetched below directly
       } catch(e){}
     })();
     const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
-    // Wallet
+    // Wallet — show localStorage first, then fetch live from Firebase
     document.getElementById('walletBal').textContent = localStorage.getItem('hs_cw_'+(localStorage.getItem('hs_user')||'')) || localStorage.getItem('hs_customer_wallet') || '0';
+    (async function(){
+      try {
+        var userEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').trim().toLowerCase();
+        if(!userEmail) return;
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-wallet';})||fbMod.initializeApp(fbCfg,'cust-wallet');
+        var db      = fbStore.getFirestore(app);
+        var key     = userEmail.replace(/[.#$\[\]]/g,'_');
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
+        if(snap.exists()){
+          var bal = snap.data().balance || 0;
+          localStorage.setItem('hs_cw_' + userEmail, String(bal));
+          localStorage.setItem('hs_customer_wallet', String(bal));
+          var walletEl = document.getElementById('walletBal');
+          if(walletEl) walletEl.textContent = Number(bal).toLocaleString('en-IN');
+        }
+      } catch(e){ console.warn('wallet fetch:', e); }
+    })();
 
     // Load admin messages for this customer
     (async function loadAdminMessages(){
