@@ -665,7 +665,7 @@
     const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
-    // Wallet — show localStorage first, then fetch live from Firebase
+    // Wallet — show localStorage first, then fetch live from Firebase and listen for updates
     document.getElementById('walletBal').textContent = localStorage.getItem('hs_cw_'+(localStorage.getItem('hs_user')||'')) || localStorage.getItem('hs_customer_wallet') || '0';
     (async function(){
       try {
@@ -677,6 +677,7 @@
         var app     = fbMod.getApps().find(function(a){return a.name==='cust-wallet';})||fbMod.initializeApp(fbCfg,'cust-wallet');
         var db      = fbStore.getFirestore(app);
         var key     = userEmail.replace(/[.#$\[\]]/g,'_');
+        // Initial fetch
         var snap    = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
         if(snap.exists()){
           var bal = snap.data().balance || 0;
@@ -685,6 +686,16 @@
           var walletEl = document.getElementById('walletBal');
           if(walletEl) walletEl.textContent = Number(bal).toLocaleString('en-IN');
         }
+        // Real-time listener on wallet_updates
+        fbStore.onSnapshot(fbStore.doc(db,'wallet_updates',key), function(d){
+          if(d.exists()){
+            var bal = d.data().balance || 0;
+            localStorage.setItem('hs_cw_' + userEmail, String(bal));
+            localStorage.setItem('hs_customer_wallet', String(bal));
+            var walletEl = document.getElementById('walletBal');
+            if(walletEl) walletEl.textContent = Number(bal).toLocaleString('en-IN');
+          }
+        });
       } catch(e){ console.warn('wallet fetch:', e); }
     })();
 

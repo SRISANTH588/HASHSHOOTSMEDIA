@@ -4593,7 +4593,9 @@ Priority Support</textarea></div>
       try{
         var f = await _fbAdmin(); if(!f) return;
         var key = email.replace(/[.#$\[\]]/g,'_');
-        await f.s.setDoc(f.s.doc(f.db,'customer_wallets',key),{email:email,balance:balance,updatedAt:f.s.serverTimestamp()},{merge:true});
+        await f.s.setDoc(f.s.doc(f.db,'customer_wallets',key),{email:email, balance:balance, updatedAt:f.s.serverTimestamp()},{merge:true});
+        // Also notify customer via a wallet_updates doc they can listen to
+        await f.s.setDoc(f.s.doc(f.db,'wallet_updates',key),{email:email, balance:balance, updatedAt:f.s.serverTimestamp()},{merge:true});
       }catch(e){ console.error('setCustWalletFirebase:',e); }
     };
 
@@ -4681,27 +4683,43 @@ Priority Support</textarea></div>
     }
 
     function setCustWallet(){
-      var email = document.getElementById('cwEmail').value.trim().toLowerCase();
+      var input = document.getElementById('cwEmail').value.trim().toLowerCase();
       var amt = parseInt(document.getElementById('cwAmount').value);
-      if(!email){ alert('Enter customer email.'); return; }
+      if(!input){ alert('Enter customer email or username.'); return; }
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      var email = resolveCustomerEmail(input);
       localStorage.setItem('hs_cw_' + email, amt);
       if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt);
-      showCwMsg('Balance set to ₹' + amt + ' for ' + email);
+      showCwMsg('Balance set to \u20b9' + amt + ' for ' + email);
       renderCustWallets();
     }
 
     function addCustWallet(){
-      var email = document.getElementById('cwEmail').value.trim().toLowerCase();
+      var input = document.getElementById('cwEmail').value.trim().toLowerCase();
       var amt = parseInt(document.getElementById('cwAmount').value);
-      if(!email){ alert('Enter customer email.'); return; }
-      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      if(!input){ alert('Enter customer email or username.'); return; }
+      if(isNaN(amt) || amt <= 0){ alert('Enter a valid amount.'); return; }
+      var email = resolveCustomerEmail(input);
       var cur = parseInt(localStorage.getItem('hs_cw_' + email) || '0');
       var newBal = cur + amt;
       localStorage.setItem('hs_cw_' + email, newBal);
       if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal);
-      showCwMsg('Added ₹' + amt + '. New balance: ₹' + newBal + ' for ' + email);
+      showCwMsg('Added \u20b9' + amt + '. New balance: \u20b9' + newBal + ' for ' + email);
       renderCustWallets();
+    }
+
+    // Resolve username to email by checking bookings/customers
+    function resolveCustomerEmail(input){
+      // If it looks like an email, use as-is
+      if(input.indexOf('@') > -1) return input;
+      // Try to find by name match in bookings
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
+      var match = bookings.find(function(b){
+        return (b.name||'').toLowerCase() === input || (b.phone||'') === input;
+      });
+      if(match && match.email) return match.email.toLowerCase();
+      // Return input as-is (admin may have typed email without @)
+      return input;
     }
 
     function showCwMsg(txt){
