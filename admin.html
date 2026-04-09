@@ -296,6 +296,16 @@
       </table>
       </div>
     </div>
+
+    <!-- DRESS CODE PHOTOS SECTION -->
+    <div class="about-form" style="margin-top:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.5rem;"></i> Staff Dress Code Photos <span id="dressPhotoBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.4rem;">0</span></h2>
+        <button onclick="renderDressPhotos()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+      <div id="dressPhotosList"><p style="color:#6a6050;font-size:0.85rem;">No dress code photos yet.</p></div>
+    </div>
+
     </div><!-- end tab-bookings -->
 
     <!-- ABOUT US TAB -->
@@ -2643,7 +2653,7 @@ Priority Support</textarea></div>
       if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
       if (tab === 'staff') fetchAndRenderStaff();
       if (tab === 'cwallets') renderCustWallets();
-      if (tab === 'bookings') loadAll();
+      if (tab === 'bookings') { loadAll(); renderDressPhotos(); }
       if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
       if (tab === 'order-enquiries') { fetchOrderEnquiries(); }
       if (tab === 'notifications') renderNotifications();
@@ -6443,6 +6453,32 @@ Priority Support</textarea></div>
       }).join('');
     }
 
+    // ── DRESS CODE PHOTOS ─────────────────────────────────────────
+    function renderDressPhotos(){
+      var el = document.getElementById('dressPhotosList');
+      if(!el) return;
+      var photos = JSON.parse(localStorage.getItem('hs_event_feedbacks_admin')||'[]')
+        .filter(function(f){ return f.dressPhoto; })
+        .slice().reverse();
+      var badge = document.getElementById('dressPhotoBadge');
+      if(badge){ badge.textContent = photos.length; badge.style.display = photos.length > 0 ? 'inline' : 'none'; }
+      if(!photos.length){
+        el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;">No dress code photos submitted yet.</p>';
+        return;
+      }
+      el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">'
+        + photos.map(function(f){
+          return '<div style="background:#111;border:1px solid rgba(245,166,35,0.2);border-radius:14px;overflow:hidden;">'
+            + '<img src="'+f.dressPhoto+'" style="width:100%;height:180px;object-fit:cover;display:block;"/>'
+            + '<div style="padding:0.85rem 1rem;">'
+            + '<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(f.staffName||'Staff')+'</div>'
+            + '<div style="font-size:0.72rem;color:#9a9080;">'+(f.service||'')+(f.clientName?' — '+f.clientName:'')+'</div>'
+            + '<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+(f.submittedAt||'')+'</div>'
+            + '</div></div>';
+        }).join('')
+        + '</div>';
+    }
+
     // ── SUPPORT TICKETS ──────────────────────────────────────────
     function renderSupportTickets(){
       var el = document.getElementById('supportTicketsList');
@@ -6913,14 +6949,12 @@ Priority Support</textarea></div>
         onSnapshot(collection(fbDb,'support_tickets'), function(snap){
           var fbDocs = [];
           snap.forEach(function(d){ fbDocs.push(Object.assign({id:d.id}, d.data())); });
-          // Fully replace local with Firebase data (source of truth)
           var local = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
           fbDocs.forEach(function(fb){
             var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id) || String(l._id)===String(fb.id); });
             if(idx > -1){ Object.assign(local[idx], fb); }
             else { local.push(fb); }
           });
-          // Deduplicate by id
           var seen = {};
           local = local.filter(function(t){ var k=String(t.id||t._id||''); if(seen[k]) return false; seen[k]=true; return true; });
           localStorage.setItem('hs_support_tickets', JSON.stringify(local));
@@ -6930,6 +6964,14 @@ Priority Support</textarea></div>
           if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
         });
 
+        // Real-time event_feedbacks (dress code photos from staff)
+        onSnapshot(collection(fbDb,'event_feedbacks'), function(snap){
+          var docs = [];
+          snap.forEach(function(d){ docs.push(Object.assign({id:d.id}, d.data())); });
+          docs.sort(function(a,b){ return (b.submittedAt||'') > (a.submittedAt||'') ? 1 : -1; });
+          localStorage.setItem('hs_event_feedbacks_admin', JSON.stringify(docs));
+          renderDressPhotos();
+        });
         // Real-time creator_feedbacks (event feedback collected by staff)
         onSnapshot(query(collection(fbDb,'creator_feedbacks'), orderBy('submittedAt','desc')), function(snap){
           var docs = [];
