@@ -55,7 +55,7 @@
         <div style="font-size:0.85rem;font-weight:700;">Call Us</div>
         <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">+91 63042 79351</div>
       </a>
-      <a href="https://wa.me/916304279351" target="_blank" style="flex:1;min-width:140px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
+      <a id="waLinkMain" href="https://wa.me/916304279351" target="_blank" style="flex:1;min-width:140px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
         <i class="fab fa-whatsapp" style="font-size:1.5rem;color:#25d366;display:block;margin-bottom:0.5rem;"></i>
         <div style="font-size:0.85rem;font-weight:700;">WhatsApp</div>
         <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Chat with us</div>
@@ -122,7 +122,7 @@
       if(window.Tawk_API && window.Tawk_API.maximize){
         window.Tawk_API.maximize();
       } else {
-        window.open('https://wa.me/916304279351','_blank');
+        window.open('https://wa.me/'+(localStorage.getItem('hs_admin_wa_number')||'916304279351'),'_blank');
       }
     }
 
@@ -145,5 +145,28 @@
 
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
   </script>
+<script>
+(function(){
+  var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+  var el = document.getElementById('waLinkMain');
+  if(el) el.href = 'https://wa.me/' + num;
+  // Also fetch from Firebase
+  import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function(m){
+    return import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function(s){
+      var cfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app=m.getApps().find(function(a){return a.name==='cs-wa';})||m.initializeApp(cfg,'cs-wa');
+      var db=s.getFirestore(app);
+      return s.getDoc(s.doc(db,'settings','admin_config'));
+    });
+  }).then(function(snap){
+    if(snap.exists&&snap.exists()&&snap.data().waNumber){
+      var n=snap.data().waNumber;
+      localStorage.setItem('hs_admin_wa_number',n);
+      var el=document.getElementById('waLinkMain');
+      if(el) el.href='https://wa.me/'+n;
+    }
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>

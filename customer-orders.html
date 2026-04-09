@@ -665,7 +665,7 @@
             <a href="mailto:support.ogshootsmedia@gmail.com" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;text-decoration:none;">
               <i class="fas fa-envelope"></i> Mail Us
             </a>
-            <a href="https://wa.me/916304279351" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;text-decoration:none;">
+            <a id="waLinkOrders" href="https://wa.me/916304279351" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;text-decoration:none;">
               <i class="fab fa-whatsapp"></i> Text Us
             </a>
             <a href="contact.html" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;text-decoration:none;">
@@ -805,5 +805,12 @@ s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <!--End of Tawk.to Script-->
+<script>
+(function(){
+  var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+  var el = document.getElementById('waLinkOrders');
+  if(el) el.href = 'https://wa.me/' + num;
+})();
+</script>
 </body>
 </html>

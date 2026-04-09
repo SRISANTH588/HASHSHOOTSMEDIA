@@ -315,7 +315,7 @@
         <p>We're available 10 AM – 8 PM IST, 7 days a week. For urgent cancellations, WhatsApp is the fastest way to reach us.</p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
           <a href="mailto:support.ogshootsmedia@gmail.com"><i class="fas fa-envelope"></i> Email Us</a>
-          <a href="https://wa.me/916304279351" target="_blank" style="background:#25d366;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          <a id="waLinkCancel" href="https://wa.me/916304279351" target="_blank" style="background:#25d366;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
         </div>
       </div>
     </div>
@@ -335,5 +335,12 @@
   </div>
 
 </div>
+<script>
+(function(){
+  var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+  var el = document.getElementById('waLinkCancel');
+  if(el) el.href = 'https://wa.me/' + num;
+})();
+</script>
 </body>
 </html>
