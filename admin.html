@@ -3672,6 +3672,8 @@ Priority Support</textarea></div>
       if(cur !== correctPass){ toast.textContent='❌ Current password is incorrect.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(function(){toast.style.display='none';},3000); return; }
       if(!nw || nw.length < 6){ toast.textContent='❌ New password must be at least 6 characters.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
       localStorage.setItem('hs_admin_password', nw);
+      // Sync to Firebase
+      (async function(){ var f=await _fbAdmin(); if(f) try{ await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{password:nw,updatedAt:f.s.serverTimestamp()},{merge:true}); }catch(e){} })();
       document.getElementById('set_curPass').value='';
       document.getElementById('set_newPass').value='';
       toast.textContent='✅ Password updated successfully!';
@@ -4585,6 +4587,16 @@ Priority Support</textarea></div>
       })();
       renderAssignedList();
     }
+
+    async function renderCustWallets(){
+    // Define Firebase sync for customer wallets
+    window.setCustWalletFirebase = async function(email, balance){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        var key = email.replace(/[.#$\[\]]/g,'_');
+        await f.s.setDoc(f.s.doc(f.db,'customer_wallets',key),{email:email,balance:balance,updatedAt:f.s.serverTimestamp()},{merge:true});
+      }catch(e){ console.error('setCustWalletFirebase:',e); }
+    };
 
     async function renderCustWallets(){
       var list = document.getElementById('cwList');
@@ -5682,8 +5694,11 @@ Priority Support</textarea></div>
         });
         // Sort newest first client-side
         local.sort(function(a,b){ return new Date(b.submittedAt) - new Date(a.submittedAt); });
-        // Service enquiries: general or business type only
-        var serviceEnquiries = local.filter(function(e){ return !e.type || e.type==='general' || e.type==='business'; });
+        // Service enquiries: general or business type only — exclude booking/order
+        var serviceEnquiries = local.filter(function(e){ 
+          var t = (e.type||'general').toLowerCase();
+          return t === 'general' || t === 'business';
+        });
         localStorage.setItem('hs_enquiries', JSON.stringify(serviceEnquiries));
         // Update badge
         var badge = document.getElementById('enquiriesNotifBadge');
@@ -5735,11 +5750,13 @@ Priority Support</textarea></div>
         var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
         // Merge from booking enquiries + marketing_enquiries
         var docs = [];
-        // 1. Bookings with type=enquiry
+        // 1. Bookings with type=enquiry — exclude booking/order types
         var snap1 = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
         snap1.forEach(function(d){
           var data = d.data();
-          if(data.type && data.type !== 'general' && data.type !== 'business') docs.push(Object.assign({id:d.id, _source:'booking'}, data));
+          var t = (data.type||'').toLowerCase();
+          // Only include non-general, non-business, non-booking types
+          if(t && t !== 'general' && t !== 'business' && t !== 'booking' && t !== 'order') docs.push(Object.assign({id:d.id, _source:'booking'}, data));
         });
         // 2. marketing_enquiries (Total Brand Shoots)
         var snap2 = await f.s.getDocs(f.s.collection(f.db,'marketing_enquiries'));
