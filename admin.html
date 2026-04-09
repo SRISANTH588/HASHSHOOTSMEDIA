@@ -2084,6 +2084,7 @@ Priority Support</textarea></div>
           <div style="display:flex;gap:0.75rem;align-items:center;">
             <span style="font-size:0.8rem;color:#9a9080;" id="supportTicketsCount"></span>
             <button onclick="renderSupportTickets()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button onclick="clearAllSupportTickets()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
           </div>
         </div>
         <div id="supportTicketsList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
@@ -3843,8 +3844,23 @@ Priority Support</textarea></div>
       })();
     }
 
-    function clearAllWithdrawals(){
-      if(!confirm('Delete ALL payout requests? This will also remove them from the database.')) return;
+    async function clearAllSupportTickets(){
+      if(!confirm('Delete ALL customer issues? This cannot be undone.')) return;
+      localStorage.removeItem('hs_support_tickets');
+      document.getElementById('supportTicketsList').innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;">No issues yet.</p>';
+      document.getElementById('supportTicketsCount').textContent = '0 tickets';
+      var badge = document.getElementById('supportTicketsBadge');
+      if(badge){ badge.style.display='none'; }
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        var snap = await f.s.getDocs(f.s.collection(f.db,'support_tickets'));
+        var batch = f.s.writeBatch(f.db);
+        snap.forEach(function(d){ batch.delete(d.ref); });
+        await batch.commit();
+      } catch(e){ console.warn('clearAllSupportTickets Firestore:', e); }
+    }
+
+    function clearAllWithdrawals(){      if(!confirm('Delete ALL payout requests? This will also remove them from the database.')) return;
       localStorage.removeItem('hs_payout_requests');
       window._payoutsCleared = true;
       loadWithdrawTab();
