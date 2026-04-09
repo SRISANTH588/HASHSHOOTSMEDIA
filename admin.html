@@ -188,6 +188,7 @@
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
       <button class="tab-btn" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('biz-enquiries',this)" id="bizEnquiriesTabBtn"><i class="fas fa-briefcase"></i> Business Enquiries <span id="bizEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('support-tickets',this)" id="supportTicketsTabBtn"><i class="fas fa-headset"></i> Customer Issues <span id="supportTicketsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn"><i class="fas fa-chart-bar"></i> Hero Stats</button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Payments</button>
       <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
@@ -2075,6 +2076,20 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    <!-- CUSTOMER ISSUES / SUPPORT TICKETS TAB -->
+    <div class="tab-panel" id="tab-support-tickets">
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-headset" style="color:#f44336;margin-right:0.5rem;"></i> Customer Issues</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#9a9080;" id="supportTicketsCount"></span>
+            <button onclick="renderSupportTickets()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+        </div>
+        <div id="supportTicketsList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
+
     <!-- HERO STATS TAB -->
     <div class="tab-panel" id="tab-hero-stats">
       <div class="about-form">
@@ -2625,6 +2640,7 @@ Priority Support</textarea></div>
       if (tab === 'store-razorpay') loadStoreRazorpay();
       if (tab === 'mkt-enquiries') renderMktEnquiries();
       if (tab === 'biz-enquiries') fetchBizEnquiries();
+      if (tab === 'support-tickets') renderSupportTickets();
       if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
@@ -6360,6 +6376,55 @@ Priority Support</textarea></div>
       }).join('');
     }
 
+    // ── SUPPORT TICKETS ──────────────────────────────────────────
+    function renderSupportTickets(){
+      var el = document.getElementById('supportTicketsList');
+      var countEl = document.getElementById('supportTicketsCount');
+      if(!el) return;
+      var tickets = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]').slice().reverse();
+      if(countEl) countEl.textContent = tickets.length + ' issue' + (tickets.length===1?'':'s');
+      var badge = document.getElementById('supportTicketsBadge');
+      var open = tickets.filter(function(t){ return t.status !== 'resolved'; }).length;
+      if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
+      if(!tickets.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
+        return;
+      }
+      var typeColors = {Bug:'#f44336',Complaint:'#ff9800',Suggestion:'#2196f3',Compliment:'#4caf50',Other:'#9a9080'};
+      el.innerHTML = tickets.map(function(t){
+        var tc = typeColors[t.type] || '#9a9080';
+        var isResolved = t.status === 'resolved';
+        var ts = t.createdAt ? (t.createdAt.seconds ? new Date(t.createdAt.seconds*1000).toLocaleString() : t.createdAt) : (t.submittedAt||'');
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+tc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+          +'<div>'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(t.name||t.customerName||'Customer')+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">'+(t.email||t.customerEmail||'')+(t.phone?' · '+t.phone:'')+'</div>'
+          +'</div>'
+          +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">'
+          +(t.type?'<span style="background:'+tc+'22;border:1px solid '+tc+'44;color:'+tc+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;">'+t.type+'</span>':'')
+          +(isResolved
+            ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-double"></i> Resolved</span>'
+            : '<button onclick="resolveTicket(\''+String(t.id||t._id)+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Resolved</button>')
+          +'</div></div>'
+          +(t.message||t.issue?'<div style="background:#0a0a0a;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:#c8a0a0;line-height:1.7;border-left:3px solid '+tc+';margin-bottom:0.5rem;">'+(t.message||t.issue||'')+'</div>':'')
+          +'<div style="font-size:0.68rem;color:#777;">'+ts+'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    async function resolveTicket(id){
+      var tickets = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
+      tickets = tickets.map(function(t){ return String(t.id||t._id)===String(id) ? Object.assign({},t,{status:'resolved'}) : t; });
+      localStorage.setItem('hs_support_tickets', JSON.stringify(tickets));
+      renderSupportTickets();
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        await f.s.setDoc(f.s.doc(f.db,'support_tickets',String(id)),{status:'resolved',resolvedAt:new Date().toLocaleString()},{merge:true});
+        showAssignToast('Ticket marked as resolved!', true);
+      }catch(e){ console.warn('resolveTicket:', e); }
+    }
+
     // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
     async function acceptMktEnquiry(id){
       try{
@@ -6784,6 +6849,11 @@ Priority Support</textarea></div>
             local.push(Object.assign({id:d.id}, data));
           });
           localStorage.setItem('hs_support_tickets', JSON.stringify(local));
+          if(document.getElementById('tab-support-tickets') && document.getElementById('tab-support-tickets').classList.contains('active')) renderSupportTickets();
+          // Update badge
+          var open = local.filter(function(t){ return t.status !== 'resolved'; }).length;
+          var badge = document.getElementById('supportTicketsBadge');
+          if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
         });
 
         // Real-time creator_feedbacks (event feedback collected by staff)
