@@ -4601,28 +4601,23 @@ Priority Support</textarea></div>
       var list = document.getElementById('cwList');
       if(!list) return;
 
-      // Fetch wallet balances from Firebase first
+      // Fetch customers from Firebase
+      var customers = [];
       try {
         var f = await _fbAdmin();
         if(f){
-          var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
-          snap.forEach(function(d){
-            var data = d.data();
-            if(data.email) localStorage.setItem('hs_cw_' + data.email, String(data.balance||0));
-          });
-        }
-      } catch(e){ console.warn('customer_wallets fetch:', e); }
-
-      // Also fetch customers from Firebase
-      var customers = [];
-      try {
-        var f2 = await _fbAdmin();
-        if(f2){
-          var csnap = await f2.s.getDocs(f2.s.collection(f2.db,'customers'));
+          var csnap = await f.s.getDocs(f.s.collection(f.db,'customers'));
           var seen = {};
           csnap.forEach(function(d){
             var c = d.data();
             if(c.email && !seen[c.email]){ seen[c.email]=true; customers.push({name:c.name||c.email, email:c.email, phone:c.phone||''}); }
+          });
+          // Also sync wallet balances from Firebase into localStorage
+          var wsnap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
+          wsnap.forEach(function(d){
+            var data = d.data();
+            // Only update localStorage if no pending local change
+            if(data.email && !window._cwPendingUpdate) localStorage.setItem('hs_cw_' + data.email, String(data.balance||0));
           });
         }
       } catch(e){}
@@ -4663,9 +4658,10 @@ Priority Support</textarea></div>
       var inp = document.getElementById('cw_inp_' + email);
       var amt = parseInt(inp ? inp.value : 0);
       if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      window._cwPendingUpdate = true;
       localStorage.setItem('hs_cw_' + email, amt);
       if(phone) localStorage.setItem('hs_cw_' + phone, amt);
-      if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, amt).finally(function(){ window._cwPendingUpdate = false; });
       inp.value = '';
       renderCustWallets();
     }
@@ -4673,12 +4669,13 @@ Priority Support</textarea></div>
     function addCustWalletRow(email, phone){
       var inp = document.getElementById('cw_inp_' + email);
       var amt = parseInt(inp ? inp.value : 0);
-      if(isNaN(amt) || amt < 0){ alert('Enter a valid amount.'); return; }
+      if(isNaN(amt) || amt <= 0){ alert('Enter a valid amount.'); return; }
       var cur = parseInt(localStorage.getItem('hs_cw_' + email) || localStorage.getItem('hs_cw_' + phone) || '0');
       var newBal = cur + amt;
+      window._cwPendingUpdate = true;
       localStorage.setItem('hs_cw_' + email, newBal);
       if(phone) localStorage.setItem('hs_cw_' + phone, newBal);
-      if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal);
+      if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal).finally(function(){ window._cwPendingUpdate = false; });
       inp.value = '';
       renderCustWallets();
     }
