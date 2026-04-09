@@ -6381,7 +6381,10 @@ Priority Support</textarea></div>
       var el = document.getElementById('supportTicketsList');
       var countEl = document.getElementById('supportTicketsCount');
       if(!el) return;
-      var tickets = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]').slice().reverse();
+      var seen = {};
+      var tickets = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]')
+        .filter(function(t){ var k=String(t.id||t._id||''); if(seen[k]) return false; seen[k]=true; return true; })
+        .slice().reverse();
       if(countEl) countEl.textContent = tickets.length + ' issue' + (tickets.length===1?'':'s');
       var badge = document.getElementById('supportTicketsBadge');
       var open = tickets.filter(function(t){ return t.status !== 'resolved'; }).length;
@@ -6841,16 +6844,20 @@ Priority Support</textarea></div>
 
         // Real-time support tickets
         onSnapshot(query(collection(fbDb,'support_tickets'), orderBy('createdAt','desc')), function(snap){
+          var fbDocs = [];
+          snap.forEach(function(d){ fbDocs.push(Object.assign({id:d.id}, d.data())); });
+          // Fully replace local with Firebase data (source of truth)
           var local = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
-          var ids = local.map(function(e){ return String(e.id||e._id||''); });
-          snap.forEach(function(d){
-            if(ids.includes(d.id)) return;
-            var data = d.data();
-            local.push(Object.assign({id:d.id}, data));
+          fbDocs.forEach(function(fb){
+            var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id) || String(l._id)===String(fb.id); });
+            if(idx > -1){ Object.assign(local[idx], fb); }
+            else { local.push(fb); }
           });
+          // Deduplicate by id
+          var seen = {};
+          local = local.filter(function(t){ var k=String(t.id||t._id||''); if(seen[k]) return false; seen[k]=true; return true; });
           localStorage.setItem('hs_support_tickets', JSON.stringify(local));
           if(document.getElementById('tab-support-tickets') && document.getElementById('tab-support-tickets').classList.contains('active')) renderSupportTickets();
-          // Update badge
           var open = local.filter(function(t){ return t.status !== 'resolved'; }).length;
           var badge = document.getElementById('supportTicketsBadge');
           if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
