@@ -5962,13 +5962,15 @@ Priority Support</textarea></div>
     function getNotifications(){ return JSON.parse(localStorage.getItem('hs_admin_notifs')||'[]'); }
     function saveNotifications(list){ localStorage.setItem('hs_admin_notifs', JSON.stringify(list)); }
 
-    function pushNotif(type, title, sub, actionTab){
+    function pushNotif(type, title, sub, actionTab, fbId){
       var notifs = getNotifications();
-      // avoid duplicate within 10 seconds
       var now = Date.now();
+      // Skip if already tracked by fbId
+      if(fbId && notifs.find(function(n){ return String(n.fbId)===String(fbId); })) return;
+      // Skip duplicate within 10 seconds
       var dup = notifs.find(function(n){ return n.type===type && n.title===title && (now - n.ts) < 10000; });
       if(dup) return;
-      notifs.push({ id: now, ts: now, type: type, title: title, sub: sub, actionTab: actionTab, read: false, time: new Date().toLocaleString() });
+      notifs.push({ id: now, ts: now, type: type, title: title, sub: sub, actionTab: actionTab, read: false, time: new Date().toLocaleString(), fbId: fbId||null });
       saveNotifications(notifs);
       updateNotifBadge();
     }
@@ -6184,8 +6186,17 @@ Priority Support</textarea></div>
     }
 
     function deleteNotif(id){
-      saveNotifications(getNotifications().filter(function(n){ return n.id !== id; }));
+      saveNotifications(getNotifications().filter(function(n){ return String(n.id) !== String(id); }));
       renderNotifications();
+      // Also delete from Firestore so it doesn't come back
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          // Try both collections
+          try{ await f.s.deleteDoc(f.s.doc(f.db,'admin_notifications',String(id))); }catch(e){}
+          try{ await f.s.deleteDoc(f.s.doc(f.db,'notifications',String(id))); }catch(e){}
+        }catch(e){ console.warn('deleteNotif Firestore:',e); }
+      })();
     }
 
     function clearAllNotifications(){
@@ -7168,7 +7179,11 @@ Priority Support</textarea></div>
           snap.docChanges().forEach(function(change){
             if(change.type==='added'){
               var data = change.doc.data();
-              if(!data.read) pushNotif('booking', data.title||'Payment Received', data.message||'New payment received', 'bookings');
+              var docId = change.doc.id;
+              // Skip if already in local notifications or already deleted
+              var existing = getNotifications().find(function(n){ return String(n.fbId)===String(docId); });
+              if(existing) return;
+              if(!data.read) pushNotif('booking', data.title||'Payment Received', data.message||'New payment received', 'bookings', docId);
             }
           });
         });
@@ -7179,11 +7194,13 @@ Priority Support</textarea></div>
           snap.docChanges().forEach(function(change){
             if(change.type==='added'){
               var data = change.doc.data();
+              var docId = change.doc.id;
+              var existing = getNotifications().find(function(n){ return String(n.fbId)===String(docId); });
+              if(existing) return;
               if(!data.read){
                 var tab = data.type==='cancellation' ? 'bookings' : 'bookings';
-                pushNotif(data.type||'booking', data.title||'Customer Action', data.body||'', tab);
-                // Mark as read so it doesn't re-fire
-                fbStore.setDoc(fbStore.doc(fbDb,'notifications',change.doc.id),{read:true},{merge:true}).catch(function(){});
+                pushNotif(data.type||'booking', data.title||'Customer Action', data.body||'', tab, docId);
+                fbStore.setDoc(fbStore.doc(fbDb,'notifications',docId),{read:true},{merge:true}).catch(function(){});
               }
             }
           });
