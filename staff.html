@@ -2559,6 +2559,28 @@
         + '<a href="mailto:' + contactEmail + '?subject=' + idMailSubject + '&body=' + idMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#f5a623;color:#000;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:all 0.2s;"><i class="fas fa-id-card"></i> Request ID Card</a>'
         + '<a href="mailto:' + discountEmail + '?subject=' + discountMailSubject + '&body=' + discountMailBody + '" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(245,166,35,0.1);color:#f5a623;border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s;"><i class="fas fa-envelope"></i> Write for Discount</a>'
         + '</div></div></div>';
+
+      // MY ORDERS HISTORY
+      var myOrders = JSON.parse(localStorage.getItem('hs_store_payments')||'[]')
+        .filter(function(o){ return String(o.staffId) === String(staffId); })
+        .slice().reverse();
+      var ordersHTML = '<div style="font-size:1rem;font-weight:800;color:#fff;margin-top:2rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-receipt" style="color:#c9a84c;"></i> My Orders</div>';
+      if(!myOrders.length){
+        ordersHTML += '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.82rem;">No orders yet.</div>';
+      } else {
+        ordersHTML += myOrders.map(function(o){
+          var isFailed = o.status === 'failed';
+          var statusBadge = isFailed
+            ? '<span style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-times-circle"></i> Failed</span>'
+            : '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span>';
+          return '<div class="order-item">'
+            + '<span class="order-status ' + (isFailed ? 'os-pending' : 'os-done') + '">' + (isFailed ? 'Failed' : 'Paid') + '</span>'
+            + '<h5>' + (o.item||'Item') + (o.size ? ' <span style="color:#c9a84c;font-size:0.72rem;">(' + o.size + ')</span>' : '') + '</h5>'
+            + '<p>\u20b9' + Number(o.amount||0).toLocaleString('en-IN') + ' &nbsp;&middot;&nbsp; ' + (o.paidAt||'') + (o.paymentId ? ' &nbsp;&middot;&nbsp; ' + o.paymentId : '') + '</p>'
+            + '</div>';
+        }).join('');
+      }
+      idEl.insertAdjacentHTML('afterend', ordersHTML);
     }
 
     // Razorpay payment for store items
