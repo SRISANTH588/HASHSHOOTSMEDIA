@@ -2633,27 +2633,29 @@
 
       function saveOrder(paymentId){
         var orderId = 'ORD_' + Date.now();
+        var isPending = paymentId && paymentId.startsWith('PENDING_');
         var order = {
           id: orderId, item: itemName, size: selectedSize, amount: price,
-          paymentId: paymentId, staffId: staffId, staffName: staffName,
-          paidAt: new Date().toLocaleString(), status: 'paid'
+          paymentId: paymentId || '', staffId: staffId, staffName: staffName,
+          paidAt: new Date().toLocaleString(),
+          status: isPending ? 'pending_payment' : 'paid'
         };
         var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
         payments.push(order);
         localStorage.setItem('hs_store_payments', JSON.stringify(payments));
-        if(window.fbSave){
-          fbSave('store_payments', order);
-          fbSave('store_orders', Object.assign({}, order, { type: 'store_purchase' }));
-          fbSave('admin_notifications', {
+        if(window.fbUpdate){
+          fbUpdate('store_payments', orderId, order);
+          fbUpdate('store_orders', orderId, Object.assign({}, order, { type: 'store_purchase' }));
+          fbUpdate('admin_notifications', 'notif_' + orderId, {
             type: 'store_order',
             title: '\uD83D\uDED2 New Store Order',
-            message: staffName + ' (ID: #' + staffId + ') ordered ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN') + (paymentId ? ' | Payment ID: ' + paymentId : ''),
+            message: staffName + ' (ID: #' + staffId + ') ordered ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN') + (paymentId && !isPending ? ' | Payment ID: ' + paymentId : ' | Pending Payment'),
             staffId: staffId, staffName: staffName, item: itemName,
-            size: selectedSize, amount: price, paymentId: paymentId,
-            orderId: orderId, read: false
+            size: selectedSize, amount: price, paymentId: paymentId||'',
+            orderId: orderId, read: false, createdAt: Date.now()
           });
         }
-        alert('\u2705 Order Placed!\n\nOrder ID: ' + orderId + (paymentId ? '\nPayment ID: ' + paymentId : '') + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
+        alert('\u2705 Order Placed!\n\nOrder ID: ' + orderId + (paymentId && !isPending ? '\nPayment ID: ' + paymentId : '\nPayment: Pending (Admin will collect)') + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
         renderStore();
       }
 
@@ -2670,33 +2672,7 @@
           prefill: { name: staffName },
           theme: { color: '#c9a84c' },
           handler: function(response){ saveOrder(response.razorpay_payment_id); },
-          modal: { ondismiss: function(){
-            var failedOrder = {
-              id: 'FAIL_' + Date.now(),
-              item: itemName,
-              size: selectedSize,
-              amount: price,
-              paymentId: null,
-              staffId: staffId,
-              staffName: staffName,
-              paidAt: new Date().toLocaleString(),
-              status: 'failed'
-            };
-            var payments = JSON.parse(localStorage.getItem('hs_store_payments')||'[]');
-            payments.push(failedOrder);
-            localStorage.setItem('hs_store_payments', JSON.stringify(payments));
-            if(window.fbSave){
-              fbSave('store_payments', failedOrder);
-              fbSave('admin_notifications', {
-                type: 'store_payment_failed',
-                title: '\u274C Store Payment Failed',
-                message: staffName + ' (ID: #' + staffId + ') payment failed for ' + itemName + (selectedSize ? ' \u2014 Size: ' + selectedSize : '') + ' \u2014 \u20b9' + price.toLocaleString('en-IN'),
-                staffId: staffId, staffName: staffName, item: itemName,
-                size: selectedSize, amount: price,
-                orderId: failedOrder.id, read: false
-              });
-            }
-          } }
+          modal: { ondismiss: function(){ /* user closed payment modal */ } }
         };
         new Razorpay(options).open();
       } else {

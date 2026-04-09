@@ -4169,6 +4169,10 @@ Priority Support</textarea></div>
           if(!snap.empty){
             orders = [];
             snap.forEach(function(d){ orders.push(Object.assign({id:d.id}, d.data())); });
+            // Deduplicate by id
+            var seen={}; orders=orders.filter(function(o){ if(seen[o.id])return false; seen[o.id]=true; return true; });
+            // Filter out failed/dismissed orders
+            orders = orders.filter(function(o){ return o.status !== 'failed'; });
             localStorage.setItem('hs_store_orders', JSON.stringify(orders));
           } else {
             // fallback to store_payments
@@ -4212,9 +4216,11 @@ Priority Support</textarea></div>
           + '<div style="font-size:0.68rem;color:#777;margin-top:0.1rem;">' + (o.paidAt||'') + '</div>'
           + '</div>'
           + '<div style="text-align:right;">'
-          + '<div style="font-size:1.2rem;font-weight:900;color:'+(o.status==='failed'?'#f44336':'#4caf50')+';">&#8377;' + Number(o.amount||0).toLocaleString('en-IN') + '</div>'
+          + '<div style="font-size:1.2rem;font-weight:900;color:'+(o.status==='failed'?'#f44336':o.status==='pending_payment'?'#ff9800':'#4caf50')+';">&#8377;' + Number(o.amount||0).toLocaleString('en-IN') + '</div>'
           + (o.status==='failed'
             ? '<span style="background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-times-circle"></i> Failed</span>'
+            : o.status==='pending_payment'
+            ? '<span style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-clock"></i> Pending Payment</span>'
             : '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas fa-check-circle"></i> Paid</span>')
           + '</div>'
           + '</div>';
