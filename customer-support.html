@@ -132,7 +132,7 @@
       if(!type || !msg){ alert('Please select an issue type and enter your message.'); return; }
       var tickets = JSON.parse(localStorage.getItem('hs_support_tickets') || '[]');
       var ticketId = 'tk_' + Date.now();
-      tickets.push({ id: ticketId, user: user, type: type, msg: msg, submittedAt: new Date().toLocaleString(), status: 'open' });
+      tickets.push({ id: ticketId, user: user, type: type, msg: msg, submittedAt: new Date().toLocaleString(), status: 'open', createdAt: Date.now() });
       localStorage.setItem('hs_support_tickets', JSON.stringify(tickets));
       if(window.fbUpdate) fbUpdate('support_tickets', ticketId, tickets[tickets.length-1]);
       else if(window.fbSave) fbSave('support_tickets', tickets[tickets.length-1]);

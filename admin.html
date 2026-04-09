@@ -6843,7 +6843,7 @@ Priority Support</textarea></div>
         });
 
         // Real-time support tickets
-        onSnapshot(query(collection(fbDb,'support_tickets'), orderBy('createdAt','desc')), function(snap){
+        onSnapshot(collection(fbDb,'support_tickets'), function(snap){
           var fbDocs = [];
           snap.forEach(function(d){ fbDocs.push(Object.assign({id:d.id}, d.data())); });
           // Fully replace local with Firebase data (source of truth)
@@ -7109,16 +7109,19 @@ Priority Support</textarea></div>
           if(currentTab==='assign') renderAssignedList();
         });
 
-        // Real-time payout_requests listener (canonical — upsert by id)
-        onSnapshot(query(collection(fbDb,'payout_requests'), orderBy('createdAt','desc')), function(snap){
+        // Real-time payout_requests listener
+        onSnapshot(collection(fbDb,'payout_requests'), function(snap){
           if(window._payoutsCleared) return;
           var local = JSON.parse(localStorage.getItem('hs_payout_requests')||'[]');
           snap.forEach(function(d){
             var data = d.data();
-            var idx = local.findIndex(function(x){ return String(x.id)===d.id; });
-            if(idx>-1){ local[idx] = Object.assign(local[idx], data); }
-            else { local.push(Object.assign({id:d.id},data)); }
+            var docId = data.id || d.id;
+            var idx = local.findIndex(function(x){ return String(x.id)===String(docId); });
+            if(idx>-1){ Object.assign(local[idx], data, {id:docId}); }
+            else { local.push(Object.assign({},data,{id:docId})); }
           });
+          // Deduplicate by id
+          var seen={}; local=local.filter(function(r){ if(seen[r.id])return false; seen[r.id]=true; return true; });
           localStorage.setItem('hs_payout_requests', JSON.stringify(local));
           updateWithdrawBadge();
           if(currentTab==='withdraw') renderWithdrawList();

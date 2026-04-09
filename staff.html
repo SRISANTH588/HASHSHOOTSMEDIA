@@ -2453,7 +2453,8 @@
         ifsc: bankData ? bankData.ifsc : '',
         upi: bankData ? (bankData.upi || '') : '',
         status: 'pending',
-        requestedAt: new Date().toLocaleString()
+        requestedAt: new Date().toLocaleString(),
+        createdAt: Date.now()
       };
 
       // Save to localStorage immediately (Firebase listener will merge/update)
