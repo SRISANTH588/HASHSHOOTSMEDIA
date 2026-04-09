@@ -1549,7 +1549,7 @@
             + '<div style="margin-bottom:1rem;">'
             + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">1</span> Send Edited Video via WhatsApp</div>'
             + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Send the edited video to OG Shoots on WhatsApp before uploading screenshot.</div>'
-            + '<a href="https://wa.me/919999999999?text=Edited+video+for+Shoot+ID:+' + a.id + '+%E2%80%94+' + encodeURIComponent(a.service||'Shoot') + '+%E2%80%94+' + encodeURIComponent(a.clientName||'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.82rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i> Send on WhatsApp</a>'
+            + '<a href="https://wa.me/' + (localStorage.getItem('hs_admin_wa_number')||'916304279351') + '?text=Edited+video+for+Shoot+ID:+' + a.id + '+%E2%80%94+' + encodeURIComponent(a.service||'Shoot') + '+%E2%80%94+' + encodeURIComponent(a.clientName||'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.82rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i> Send on WhatsApp</a>'
             + '</div>'
             // Step 2: Upload SS
             + '<div style="margin-bottom:1rem;">'
@@ -2939,15 +2939,54 @@
       alert('\u2705 Event feedback and dress code photo submitted successfully!');
     }
 
-    // DRESS PHOTO UPLOAD (standalone button)
     function openDressPhotoUpload(assignId){
-      efbAssignId = assignId;
-      efbDressPhotoData = null;
-      document.getElementById('efbPhotoPreview').style.display = 'none';
-      document.getElementById('efbClientName').value = 'Dress Code Photo';
-      efbStars = 5;
-      document.querySelectorAll('.efb-star').forEach(function(s){ s.classList.add('active'); });
-      document.getElementById('efbOverlay').classList.add('open');
+      window._dressPhotoAssignId = assignId;
+      window._dressPhotoData = null;
+      document.getElementById('dressPhotoPreview').style.display = 'none';
+      document.getElementById('dressPhotoOverlay').style.display = 'flex';
+    }
+    function closeDressPhotoModal(){
+      document.getElementById('dressPhotoOverlay').style.display = 'none';
+    }
+    function onDressPhotoSelected(input){
+      var file = input.files[0]; if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        window._dressPhotoData = e.target.result;
+        var img = document.getElementById('dressPhotoPreview');
+        img.src = window._dressPhotoData;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+    function submitDressPhoto(){
+      if(!window._dressPhotoData){ alert('Please take or upload your dress code photo.'); return; }
+      var assignId = window._dressPhotoAssignId;
+      var staffId = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+      var a = shoots.find(function(x){ return x.id === assignId; });
+      var entry = {
+        id: Date.now(), assignId: assignId,
+        staffId: staffId, staffName: staffName,
+        service: a ? a.service : '',
+        clientName: a ? a.clientName : '',
+        city: a ? (a.location || a.city) : '',
+        date: a ? a.date : '',
+        dressPhoto: window._dressPhotoData,
+        submittedAt: new Date().toLocaleString()
+      };
+      var list = JSON.parse(localStorage.getItem('hs_event_feedbacks') || '[]');
+      list.push(entry);
+      localStorage.setItem('hs_event_feedbacks', JSON.stringify(list));
+      if(window.fbSave) fbSave('event_feedbacks', entry);
+      var s = shoots.find(function(x){ return x.id === assignId; });
+      if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+        if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {dressPhotoSaved: true});
+      }
+      closeDressPhotoModal();
+      renderAssignedShoots();
+      alert('\u2705 Dress code photo submitted!');
     }
 
     // TESTIMONIAL VIDEOS (Staff)
@@ -3170,6 +3209,7 @@
         try{ fbListenDoc('settings', 'store_razorpay', function(data){ localStorage.setItem('hs_store_razorpay', JSON.stringify(data)); }); }catch(e){}
         try{ fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
         try{ fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'admin_config',   function(data){ if(data.waNumber) localStorage.setItem('hs_admin_wa_number', data.waNumber); }); }catch(e){}
         try{ fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); }); }catch(e){}
         try{ fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); }); }catch(e){}
         try{ fbListenDoc('settings', 'press_stats',   function(data){ localStorage.setItem('hs_press_stats',    JSON.stringify(data)); }); }catch(e){}
@@ -3309,6 +3349,30 @@
   </div>
 
   <!-- EVENT FEEDBACK MODAL -->
+  <!-- DRESS CODE PHOTO MODAL -->
+  <div id="dressPhotoOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:10003;align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.4);border-radius:20px;width:100%;max-width:420px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.9);">
+      <div style="padding:1.25rem 1.5rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-camera" style="color:#c9a84c;"></i> Upload Dress Code Photo</div>
+        <button onclick="closeDressPhotoModal()" style="background:none;border:none;color:#9a9080;font-size:1.1rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="padding:1.25rem 1.5rem;overflow-y:auto;flex:1;">
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1rem;line-height:1.6;">Take a photo of yourself in full dress code — T-shirt + ID card visible + shoes. Required for payment release.</p>
+        <div style="border:2px dashed rgba(201,168,76,0.3);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;position:relative;background:rgba(201,168,76,0.02);transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.6)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)'">
+          <input type="file" accept="image/*" capture="environment" onchange="onDressPhotoSelected(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;"/>
+          <i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.6;margin-bottom:0.5rem;display:block;"></i>
+          <div style="font-size:0.85rem;color:#9a9080;">Tap to take photo or upload from gallery</div>
+        </div>
+        <img id="dressPhotoPreview" style="display:none;width:100%;max-height:250px;object-fit:cover;border-radius:10px;margin-top:1rem;border:1px solid rgba(201,168,76,0.2);"/>
+      </div>
+      <div style="padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,0.08);display:flex;flex-direction:column;gap:0.65rem;">
+        <button onclick="submitDressPhoto()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;"><i class="fas fa-upload"></i> Submit Dress Code Photo</button>
+        <button onclick="closeDressPhotoModal()" style="background:transparent;border:none;color:#9a9080;font-size:0.8rem;cursor:pointer;font-family:inherit;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLECT EVENT FEEDBACK MODAL -->
   <div class="efb-overlay" id="efbOverlay">
     <div class="efb-box">
       <div class="efb-header">

@@ -1773,6 +1773,20 @@ Priority Support</textarea></div>
     <!-- SETTINGS TAB -->
     <div class="tab-panel" id="tab-settings">
 
+      <!-- WHATSAPP NUMBER -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fab fa-whatsapp" style="color:#25d366;margin-right:0.5rem;"></i> Admin WhatsApp Number</h2>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1rem;">Staff will send edited videos to this number. Include country code (e.g. 916304279351).</p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
+          <div style="flex:1;min-width:200px;">
+            <label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.4rem;">WhatsApp Number (with country code)</label>
+            <input type="text" id="set_waNumber" placeholder="e.g. 916304279351" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;"/>
+          </div>
+          <button onclick="saveWaNumber()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.5rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-whatsapp"></i> Save</button>
+        </div>
+        <div id="waNumberToast" style="display:none;margin-top:0.75rem;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> WhatsApp number saved!</div>
+      </div>
+
       <!-- CHANGE ADMIN PASSWORD -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-key" style="color:#c9a84c;margin-right:0.5rem;"></i> Change Admin Password</h2>
@@ -2642,6 +2656,7 @@ Priority Support</textarea></div>
       if (tab === 'mkt-enquiries') renderMktEnquiries();
       if (tab === 'biz-enquiries') fetchBizEnquiries();
       if (tab === 'support-tickets') renderSupportTickets();
+      if (tab === 'settings') loadSettingsTab();
       if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
@@ -3681,6 +3696,23 @@ Priority Support</textarea></div>
     }
 
     // SETTINGS
+    function loadSettingsTab(){
+      var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+      var el = document.getElementById('set_waNumber');
+      if(el) el.value = num;
+    }
+    async function saveWaNumber(){
+      var num = (document.getElementById('set_waNumber').value||'').trim().replace(/[^0-9]/g,'');
+      if(!num){ alert('Enter a valid WhatsApp number.'); return; }
+      localStorage.setItem('hs_admin_wa_number', num);
+      try{
+        var f = await _fbAdmin(); if(f)
+          await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{waNumber:num},{merge:true});
+      }catch(e){}
+      var t = document.getElementById('waNumberToast');
+      t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000);
+    }
+
     function changeAdminPassword(){
       var cur = document.getElementById('set_curPass').value;
       var nw = document.getElementById('set_newPass').value;
