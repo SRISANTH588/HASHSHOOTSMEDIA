@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff8e7"/>
+      <stop offset="35%" style="stop-color:#f5d78e"/>
+      <stop offset="65%" style="stop-color:#c9a84c"/>
+      <stop offset="100%" style="stop-color:#a07830"/>
+    </linearGradient>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" style="stop-color:#181408"/>
+      <stop offset="100%" style="stop-color:#080808"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="196" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="2"/>
+
+  <!-- Inner ring -->
+  <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+
+  <!-- Corner diamonds -->
+  <polygon points="200,28 206,36 200,44 194,36" fill="#c9a84c" opacity="0.9"/>
+  <polygon points="200,356 206,364 200,372 194,364" fill="#c9a84c" opacity="0.9"/>
+  <polygon points="28,200 36,194 44,200 36,206" fill="#c9a84c" opacity="0.9"/>
+  <polygon points="356,200 364,194 372,200 364,206" fill="#c9a84c" opacity="0.9"/>
+
+  <!-- OG large italic -->
+  <text
+    x="200"
+    y="220"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="160"
+    font-weight="900"
+    font-style="italic"
+    fill="url(#goldGrad)"
+    filter="url(#glow)"
+    text-anchor="middle"
+    letter-spacing="-4"
+  >OG</text>
+
+  <!-- SHOOTS below -->
+  <text
+    x="200"
+    y="268"
+    font-family="'Arial', 'Helvetica Neue', sans-serif"
+    font-size="36"
+    font-weight="900"
+    fill="#ffffff"
+    text-anchor="middle"
+    letter-spacing="10"
+    opacity="0.9"
+  >SHOOTS</text>
+
+  <!-- LUXE pill -->
+  <rect x="148" y="278" width="104" height="22" rx="5" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+  <text
+    x="200"
+    y="293"
+    font-family="'Arial', 'Helvetica Neue', sans-serif"
+    font-size="11"
+    font-weight="800"
+    fill="#c9a84c"
+    text-anchor="middle"
+    letter-spacing="6"
+  >✦ LUXE ✦</text>
+
+</svg>

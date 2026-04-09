@@ -347,6 +347,7 @@
       document.getElementById('loginArrow').style.display='none';
 
       // 1. Admin check (instant)
+      // Try to get latest password from Firebase first
       const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
       if(id.toUpperCase()==='SRISANTH' && p===correctPass){
         localStorage.setItem('hs_role','admin');
@@ -641,6 +642,21 @@
         }
       }
     });
+
+  // Fetch admin password from Firebase on page load
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='login-cfg';})||fbMod.initializeApp(fbCfg,'login-cfg');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
+      if(snap.exists() && snap.data().password){
+        localStorage.setItem('hs_admin_password', snap.data().password);
+      }
+    }catch(e){}
+  })();
   </script>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">

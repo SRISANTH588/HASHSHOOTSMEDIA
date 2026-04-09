@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <defs>
+    <!-- Gold gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5d78e;stop-opacity:1"/>
+      <stop offset="40%" style="stop-color:#c9a84c;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#a07830;stop-opacity:1"/>
+    </linearGradient>
+    <!-- Gold shimmer for OG -->
+    <linearGradient id="ogGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff8e7;stop-opacity:1"/>
+      <stop offset="30%" style="stop-color:#f5d78e;stop-opacity:1"/>
+      <stop offset="60%" style="stop-color:#c9a84c;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#a07830;stop-opacity:1"/>
+    </linearGradient>
+    <!-- Glow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Subtle shadow -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(201,168,76,0.4)"/>
+    </filter>
+    <!-- Background gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#111008;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="200" rx="16" fill="url(#bgGrad)"/>
+
+  <!-- Top gold line -->
+  <line x1="40" y1="18" x2="560" y2="18" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+  <!-- Bottom gold line -->
+  <line x1="40" y1="182" x2="560" y2="182" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+
+  <!-- Corner marks TL -->
+  <line x1="40" y1="18" x2="40" y2="42" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <line x1="40" y1="18" x2="64" y2="18" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <!-- Corner marks TR -->
+  <line x1="560" y1="18" x2="560" y2="42" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <line x1="560" y1="18" x2="536" y2="18" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <!-- Corner marks BL -->
+  <line x1="40" y1="182" x2="40" y2="158" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <line x1="40" y1="182" x2="64" y2="182" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <!-- Corner marks BR -->
+  <line x1="560" y1="182" x2="560" y2="158" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+  <line x1="560" y1="182" x2="536" y2="182" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- Diamond top center -->
+  <polygon points="300,26 305,32 300,38 295,32" fill="#c9a84c" opacity="0.8"/>
+
+  <!-- OG — large italic gold -->
+  <text
+    x="72"
+    y="138"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="110"
+    font-weight="900"
+    font-style="italic"
+    fill="url(#ogGrad)"
+    filter="url(#glow)"
+    letter-spacing="-2"
+  >OG</text>
+
+  <!-- Thin vertical divider -->
+  <line x1="258" y1="52" x2="258" y2="148" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- SHOOTS — elegant caps -->
+  <text
+    x="272"
+    y="118"
+    font-family="'Arial', 'Helvetica Neue', sans-serif"
+    font-size="52"
+    font-weight="900"
+    fill="#ffffff"
+    letter-spacing="6"
+    opacity="0.95"
+  >SHOOTS</text>
+
+  <!-- LUXE tag -->
+  <rect x="272" y="128" width="88" height="20" rx="4" fill="rgba(201,168,76,0.12)" stroke="rgba(201,168,76,0.35)" stroke-width="0.8"/>
+  <text
+    x="316"
+    y="142"
+    font-family="'Arial', 'Helvetica Neue', sans-serif"
+    font-size="11"
+    font-weight="800"
+    fill="#c9a84c"
+    letter-spacing="5"
+    text-anchor="middle"
+  >LUXE</text>
+
+  <!-- Star left of LUXE -->
+  <text x="276" y="142" font-size="8" fill="#c9a84c" opacity="0.7">✦</text>
+  <!-- Star right of LUXE -->
+  <text x="350" y="142" font-size="8" fill="#c9a84c" opacity="0.7">✦</text>
+
+  <!-- Tagline -->
+  <text
+    x="300"
+    y="168"
+    font-family="'Arial', 'Helvetica Neue', sans-serif"
+    font-size="10"
+    font-weight="600"
+    fill="#c9a84c"
+    letter-spacing="5"
+    text-anchor="middle"
+    opacity="0.55"
+  >INDIA'S PREMIUM CONTENT STUDIO</text>
+
+</svg>
