@@ -5848,6 +5848,13 @@ Priority Support</textarea></div>
       if(!confirm('Delete this enquiry?')) return;
       localStorage.setItem('hs_enquiries', JSON.stringify(getEnquiries().filter(function(q){ return String(q.id)!==String(id); })));
       renderEnquiries();
+      // Delete from Firestore so it doesn't come back
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          await f.s.deleteDoc(f.s.doc(f.db,'enquiries',String(id)));
+        } catch(e){ console.warn('deleteEnquiry Firestore:', e); }
+      })();
     }
     function clearAllEnquiries(){
       if(!confirm('Delete ALL enquiries? This will also remove them from the database.')) return;
@@ -6924,7 +6931,12 @@ Priority Support</textarea></div>
             });
           });
           if(!window._enquiriesCleared){
-            localStorage.setItem('hs_enquiries', JSON.stringify(fbEnquiries));
+            // Only store service enquiries (general/business), exclude booking/order types
+            var serviceOnly = fbEnquiries.filter(function(e){
+              var t = (e.type||'general').toLowerCase();
+              return t === 'general' || t === 'business';
+            });
+            localStorage.setItem('hs_enquiries', JSON.stringify(serviceOnly));
             if(currentTab==='enquiries') renderEnquiries();
             updateEnquiriesNotifBadge();
           }
