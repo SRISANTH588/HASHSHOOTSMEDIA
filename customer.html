@@ -424,6 +424,35 @@
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
 
+    // Sync customer data from Firestore on every load (cross-device support)
+    (async function(){
+      try{
+        var email = (localStorage.getItem('hs_user')||localStorage.getItem('hs_customer_email')||'').toLowerCase().trim();
+        if(!email) return;
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-sync';})||fbMod.initializeApp(fbCfg,'cust-sync');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        // Load customer profile
+        var profSnap = await fbStore.getDoc(fbStore.doc(db,'customers',key));
+        if(profSnap.exists()){
+          var d = profSnap.data();
+          if(d.name)  localStorage.setItem('hs_customer_name',  d.name);
+          if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
+          if(d.username) localStorage.setItem('hs_customer_username', d.username);
+        }
+        // Load bookings
+        var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email)));
+        if(!bSnap.empty){
+          var bList = [];
+          bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_bookings', JSON.stringify(bList));
+        }
+      } catch(e){ console.warn('customer sync:', e); }
+    })();
+
     function showTab(name, btn){
       document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); s.style.display='none'; });
       document.querySelectorAll('.ctab').forEach(function(b){ b.classList.remove('active'); });

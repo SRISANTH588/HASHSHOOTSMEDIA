@@ -171,6 +171,10 @@
           <i class="fas fa-arrow-right" id="loginArrow"></i>
         </button>
         <div class="divider">or</div>
+        <button onclick="googleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.75rem;background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"/> Continue with Google
+        </button>
+        <div style="margin-top:0.75rem;"></div>
         <p style="text-align:center;font-size:0.82rem;color:#888;">New customer? <a href="#" onclick="switchSubTab('signup')" style="color:#c9a84c;font-weight:700;">Sign Up</a></p>
       </div>
 
@@ -232,6 +236,10 @@
           <i class="fas fa-arrow-right" id="signupArrow"></i>
         </button>
         <div class="divider">or</div>
+        <button onclick="googleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.75rem;background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"/> Continue with Google
+        </button>
+        <div style="margin-top:0.75rem;"></div>
         <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#c9a84c;font-weight:700;">Login</a></p>
       </div>
     </div>
@@ -333,6 +341,56 @@
       document.getElementById('loginArrow').style.display='';
       const card=document.getElementById('loginCard');
       card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+    }
+
+    async function googleSignIn(){
+      try{
+        const fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        const fbAuth  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+        const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        const app     = fbMod.getApps().find(a=>a.name==='hs-google')||fbMod.initializeApp(fbCfg,'hs-google');
+        const auth    = fbAuth.getAuth(app);
+        const db      = fbStore.getFirestore(app);
+        const provider = new fbAuth.GoogleAuthProvider();
+        const result  = await fbAuth.signInWithPopup(auth, provider);
+        const user    = result.user;
+        const email   = user.email.toLowerCase();
+        const name    = user.displayName || email;
+        const phone   = user.phoneNumber || '';
+        // Check if customer already exists in Firestore
+        var key = email.replace(/[.#$\[\]]/g,'_');
+        var snap = await fbStore.getDoc(fbStore.doc(db,'customers',key));
+        var custData;
+        if(snap.exists()){
+          // Existing customer — load their data
+          custData = snap.data();
+        } else {
+          // New Google customer — create profile
+          custData = {name:name, email:email, phone:phone, username:email, joined:new Date().toISOString(), googleAuth:true};
+          await fbStore.setDoc(fbStore.doc(db,'customers',key), custData);
+          await fbStore.setDoc(fbStore.doc(db,'customers_by_email',email), {username:email, key:key});
+        }
+        // Set localStorage
+        localStorage.setItem('hs_role','customer');
+        localStorage.setItem('hs_user', email);
+        localStorage.setItem('hs_customer_email', email);
+        localStorage.setItem('hs_customer_name', custData.name||name);
+        localStorage.setItem('hs_customer_phone', custData.phone||phone);
+        localStorage.setItem('hs_customer_username', custData.username||email);
+        // Fetch bookings for this customer from Firestore
+        var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email)));
+        if(!bSnap.empty){
+          var bList = [];
+          bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_bookings', JSON.stringify(bList));
+        }
+        window.location.href = 'index.html';
+      } catch(e){
+        if(e.code !== 'auth/popup-closed-by-user'){
+          alert('Google Sign-In failed: ' + (e.message||e.code));
+        }
+      }
     }
 
     function unifiedLogin(){
