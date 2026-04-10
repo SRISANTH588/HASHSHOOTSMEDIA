@@ -235,10 +235,6 @@
           <div class="spinner" id="signupSpinner"></div>
           <i class="fas fa-arrow-right" id="signupArrow"></i>
         </button>
-        <div class="divider">or</div>
-        <button onclick="googleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.75rem;background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"/> Continue with Google
-        </button>
         <div style="margin-top:0.75rem;"></div>
         <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#c9a84c;font-weight:700;">Login</a></p>
       </div>
@@ -374,13 +370,13 @@
         var snap = await fbStore.getDoc(fbStore.doc(db,'customers',key));
         var custData;
         if(snap.exists()){
-          // Existing customer — load their data
+          // Existing Google customer — load their data
           custData = snap.data();
         } else {
-          // New Google customer — create profile
-          custData = {name:name, email:email, phone:phone, username:email, joined:new Date().toISOString(), googleAuth:true};
-          await fbStore.setDoc(fbStore.doc(db,'customers',key), custData);
-          await fbStore.setDoc(fbStore.doc(db,'customers_by_email',email), {username:email, key:key});
+          // No account found — block login, ask to sign up manually
+          await fbAuth.signOut(auth);
+          alert('No account found for ' + email + '.\n\nPlease sign up first using the Sign Up tab.');
+          return;
         }
         // Set localStorage
         localStorage.setItem('hs_role','customer');
@@ -744,10 +740,11 @@
         var name  = user.displayName || email;
         var key   = email.replace(/[.#$\[\]]/g,'_');
         var snap  = await fbStore.getDoc(fbStore.doc(db,'customers',key));
-        var custData = snap.exists() ? snap.data() : {name:name,email:email,phone:'',username:email,joined:new Date().toISOString(),googleAuth:true};
-        if(!snap.exists()){
-          await fbStore.setDoc(fbStore.doc(db,'customers',key), custData);
-          await fbStore.setDoc(fbStore.doc(db,'customers_by_email',email), {username:email,key:key});
+        var custData = snap.exists() ? snap.data() : null;
+        if(!custData){
+          await fbAuth.signOut(auth);
+          alert('No account found for ' + email + '.\n\nPlease sign up first using the Sign Up tab.');
+          return;
         }
         localStorage.setItem('hs_role','customer');
         localStorage.setItem('hs_user', email);
