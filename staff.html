@@ -1659,8 +1659,16 @@
         if(window.fbSave) fbSave('staff_videos', meta);
         if(fill) fill.style.width='100%';
         if(label) label.textContent='Done!';
+        if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML='<i class="fas fa-upload"></i> Upload Edited Video'; }
         delete shootFileMap[String(assignId)];
-        setTimeout(function(){ if(prog) prog.style.display='none'; renderAssignedShoots(); }, 800);
+        // Reset file input
+        var fi = document.getElementById('shootFileInfo_'+assignId);
+        if(fi) fi.style.display='none';
+        setTimeout(function(){
+          if(prog) prog.style.display='none';
+          renderAssignedShoots();
+          renderMyVideos();
+        }, 800);
       }
 
       // Try Cloudinary first so admin can watch the video
@@ -1709,6 +1717,16 @@
     }
 
     function markShootDone(assignId){
+      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var s = shoots.find(function(a){ return String(a.id) === String(assignId); });
+      if(!s) return;
+      s.status = 'done';
+      s.doneAt = new Date().toLocaleString();
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
+      renderAssignedShoots();
+    }
+
     function uploadShootSS(input, assignId){
       var file = input.files[0];
       if(!file) return;
@@ -1718,20 +1736,9 @@
         ss.push({ assignId: assignId, url: e.target.result, uploadedAt: new Date().toLocaleString() });
         localStorage.setItem('hs_shoot_ss', JSON.stringify(ss));
         if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), { ssUploaded: true, ssUploadedAt: new Date().toLocaleString() });
-        renderShootReels();
+        renderAssignedShoots();
       };
       reader.readAsDataURL(file);
-    }
-
-      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-      var s = shoots.find(function(a){ return String(a.id) === String(assignId); }); // BUG 5 FIX
-      if(!s) return;
-      s.status = 'done';
-      s.doneAt = new Date().toLocaleString();
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
-      // Update assigned_shoots doc directly so admin sees 'done' status in real time
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
-      renderAssignedShoots();
     }
 
     function deleteAssignedShoot(assignId){
@@ -2965,7 +2972,7 @@
       var staffId = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name') || 'Staff';
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
-      var a = shoots.find(function(x){ return x.id === assignId; });
+      var a = shoots.find(function(x){ return String(x.id) === String(assignId); });
       var entry = {
         id: Date.now(), assignId: assignId,
         staffId: staffId, staffName: staffName,
@@ -2980,8 +2987,10 @@
       list.push(entry);
       localStorage.setItem('hs_event_feedbacks', JSON.stringify(list));
       if(window.fbSave) fbSave('event_feedbacks', entry);
-      var s = shoots.find(function(x){ return x.id === assignId; });
-      if(s){ s.dressPhotoSaved = true; localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      var s = shoots.find(function(x){ return String(x.id) === String(assignId); });
+      if(s){
+        s.dressPhotoSaved = true;
+        localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
         if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {dressPhotoSaved: true});
       }
       closeDressPhotoModal();
