@@ -279,9 +279,11 @@
   <div class="tab-nav">
     <button class="tab-btn" onclick="switchTab('dashboard',this)"><i class="fas fa-home"></i> Dashboard</button>
     <button class="tab-btn active" onclick="switchTab('shoots',this)" id="shootsTabBtn"><i class="fas fa-camera"></i> Assigned Shoots <span class="notif" id="shootsPendingBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsTabBtn"><i class="fas fa-rupee-sign"></i> Payments <span class="notif" id="paymentsDoneBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('demos',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="notif" id="demoPendingBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
     <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Shoot Feedback <span class="notif" id="feedbackNotifBadge" style="display:none;">!</span></button>
+    <button class="tab-btn" onclick="switchTab('support',this)" id="supportTabBtn"><i class="fas fa-headset"></i> Support</button>
     <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
     <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
     <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-hand-holding-usd"></i> Payout <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
@@ -808,6 +810,107 @@
     </div><!-- end sec-aieditor -->
 
     <!-- BANK -->
+    <!-- PAYMENTS TAB -->
+    <div class="section" id="sec-payments">
+      <div class="sec-title"><i class="fas fa-rupee-sign"></i> My Payments</div>
+
+      <!-- Balance summary -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));border:1px solid rgba(76,175,80,0.3);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#4caf50;" id="pay_balance">&#8377;0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;">Available Balance</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(255,152,0,0.15),rgba(255,152,0,0.05));border:1px solid rgba(255,152,0,0.3);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#ff9800;" id="pay_pending">&#8377;0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;">Pending Payment</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:14px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;" id="pay_total">&#8377;0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;">Total Earned</div>
+        </div>
+      </div>
+
+      <!-- Done shoots awaiting payment -->
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;"><i class="fas fa-clock" style="color:#ff9800;margin-right:0.5rem;"></i>Shoots Awaiting Payment</div>
+          <span id="pay_doneCount" style="background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.7rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:50px;">0 pending</span>
+        </div>
+        <div id="pay_doneList"></div>
+      </div>
+
+      <!-- Request payout button -->
+      <div style="background:linear-gradient(135deg,rgba(76,175,80,0.12),rgba(33,150,243,0.08));border:1px solid rgba(76,175,80,0.3);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;"><i class="fas fa-money-bill-wave" style="color:#4caf50;"></i> Request Payout</div>
+          <div style="font-size:0.8rem;color:#9a9080;">Withdraw your earnings to your bank account</div>
+          <div style="font-size:0.85rem;color:#4caf50;font-weight:700;margin-top:0.3rem;">Available: &#8377;<span id="pay_quickBal">0</span></div>
+        </div>
+        <button onclick="openQuickPayout()" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:12px;padding:0.85rem 1.75rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-paper-plane"></i> Request Payout</button>
+      </div>
+
+      <!-- Payment history -->
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-history" style="color:#c9a84c;margin-right:0.5rem;"></i>Payment History</div>
+        <div id="pay_history"></div>
+      </div>
+    </div>
+
+    <!-- SUPPORT TAB -->
+    <div class="section" id="sec-support">
+      <div class="sec-title"><i class="fas fa-headset"></i> Customer Support</div>
+
+      <!-- Contact cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;">
+        <a href="https://wa.me/916304279351?text=Hi+OG+Shoots+Support,+I+need+help" target="_blank" style="background:linear-gradient(135deg,rgba(37,211,102,0.15),rgba(37,211,102,0.05));border:1px solid rgba(37,211,102,0.3);border-radius:16px;padding:1.5rem;text-decoration:none;display:flex;align-items:center;gap:1rem;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:48px;height:48px;background:#25d366;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-whatsapp" style="font-size:1.5rem;color:#fff;"></i></div>
+          <div><div style="font-size:0.95rem;font-weight:800;color:#fff;">WhatsApp Support</div><div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Chat with us instantly</div></div>
+        </a>
+        <a href="mailto:support.ogshootsmedia@gmail.com" style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:16px;padding:1.5rem;text-decoration:none;display:flex;align-items:center;gap:1rem;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-envelope" style="font-size:1.2rem;color:#fff;"></i></div>
+          <div><div style="font-size:0.95rem;font-weight:800;color:#fff;">Email Support</div><div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">support.ogshootsmedia@gmail.com</div></div>
+        </a>
+      </div>
+
+      <!-- Raise a ticket -->
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-ticket-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>Raise a Support Ticket</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Issue Type *</label>
+            <select id="sup_type" class="upload-input">
+              <option value="" disabled selected>Select issue</option>
+              <option>Payment Issue</option>
+              <option>Shoot Assignment Problem</option>
+              <option>App / Technical Issue</option>
+              <option>Payout Not Received</option>
+              <option>Profile / Account Issue</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Priority</label>
+            <select id="sup_priority" class="upload-input">
+              <option value="normal">Normal</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.35rem;">Describe your issue *</label>
+          <textarea id="sup_message" class="upload-input" style="min-height:90px;resize:vertical;" placeholder="Describe your issue in detail..."></textarea>
+        </div>
+        <button onclick="submitSupportTicket()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Ticket</button>
+        <div id="sup_toast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Ticket submitted! We will get back to you within 24 hours.</div>
+      </div>
+
+      <!-- My tickets -->
+      <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i>My Tickets</div>
+        <div id="sup_ticketList"></div>
+      </div>
+    </div>
+
     <div class="section" id="sec-bank">
       <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
       <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
@@ -950,6 +1053,8 @@
         try { if(name === 'store') renderStore(); } catch(e){}
         try { if(name === 'wallet') renderWallet(); } catch(e){}
         try { if(name === 'payout') renderPayout(); } catch(e){}
+        try { if(name === 'payments') renderPayments(); } catch(e){}
+        try { if(name === 'support') renderSupportTickets(); } catch(e){}
         try { if(name === 'testimonials') renderStvGrid(); } catch(e){}
         try { if(name === 'profile') loadBankDetails(); } catch(e){}
         try { if(name === 'address') loadStaffAddress(); } catch(e){}
@@ -998,6 +1103,12 @@
     document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(staffId); }).length;
     var dashShootCount = document.getElementById('dashShootCount');
     if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId) && a.status === 'assigned'; }).length;
+    // update payments badge
+    (function(){
+      var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(staffId) && a.status==='done'; }).length;
+      var badge = document.getElementById('paymentsDoneBadge');
+      if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
+    })();
     // update dashboard wallet balance
     var w = JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0}');
     var dashBal = document.getElementById('dashWalletBal');
@@ -1723,8 +1834,24 @@
       s.status = 'done';
       s.doneAt = new Date().toLocaleString();
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
+      // Notify admin via Firebase
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
+      if(window.fbSave) fbSave('admin_notifications', {
+        type: 'shoot_done',
+        title: '\u2705 Shoot Marked as Done',
+        message: (localStorage.getItem('hs_staff_name')||'Staff') + ' completed shoot: ' + (s.service||'') + ' \u2014 ' + (s.clientName||'') + '. Awaiting your approval & payment.',
+        assignId: String(assignId),
+        staffId: localStorage.getItem('hs_staff_id'),
+        staffName: localStorage.getItem('hs_staff_name')||'',
+        read: false
+      });
       renderAssignedShoots();
+      renderPayments();
+      // Update badge
+      var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(localStorage.getItem('hs_staff_id')) && a.status==='done'; }).length;
+      var badge = document.getElementById('paymentsDoneBadge');
+      if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
+      alert('\u2705 Shoot marked as done! Admin has been notified.');
     }
 
     function uploadShootSS(input, assignId){
@@ -3269,6 +3396,129 @@
     // Call sync on page load — also expose so login can call it
     window.initStaffFirebaseSync = initStaffFirebaseSync;
     initStaffFirebaseSync();
+
+    // ── PAYMENTS TAB ──────────────────────────────────────────
+    function renderPayments(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var w = getWallet();
+      var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
+        .filter(function(a){ return String(a.staffId)===String(staffId); });
+
+      // Balance cards
+      var balEl = document.getElementById('pay_balance');
+      var penEl = document.getElementById('pay_pending');
+      var totEl = document.getElementById('pay_total');
+      var qbEl  = document.getElementById('pay_quickBal');
+      if(balEl) balEl.textContent = (w.balance||0).toLocaleString('en-IN');
+      if(penEl) penEl.textContent = (w.pending||0).toLocaleString('en-IN');
+      if(totEl) totEl.textContent = (w.totalEarned||0).toLocaleString('en-IN');
+      if(qbEl)  qbEl.textContent  = (w.balance||0).toLocaleString('en-IN');
+
+      // Done shoots list
+      var doneList = assigns.filter(function(a){ return a.status==='done'||a.status==='completed'||a.status==='paid'; }).slice().reverse();
+      var badge = document.getElementById('paymentsDoneBadge');
+      var doneCount = assigns.filter(function(a){ return a.status==='done'; }).length;
+      if(badge){ badge.textContent=doneCount; badge.style.display=doneCount>0?'inline':'none'; }
+      var countEl = document.getElementById('pay_doneCount');
+      if(countEl) countEl.textContent = doneCount + ' pending';
+
+      var listEl = document.getElementById('pay_doneList');
+      if(!doneList.length){
+        listEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+      } else {
+        var statusColors = {done:'#ff9800',completed:'#4caf50',paid:'#2196f3'};
+        var statusLabels = {done:'Done — Awaiting Admin Approval',completed:'Completed — Awaiting Payment',paid:'Payment Released'};
+        listEl.innerHTML = doneList.map(function(a){
+          var sc = statusColors[a.status]||'#ff9800';
+          var sl = statusLabels[a.status]||a.status;
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-left:4px solid '+sc+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+            +'<div>'
+            +'<div style="font-size:0.95rem;font-weight:800;color:#fff;">'+a.service+' &#8212; '+(a.clientName||'')+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-calendar" style="color:#c9a84c;"></i> '+(a.date||'')+'&nbsp;&nbsp;<i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'')+'</div>'
+            +(a.doneAt?'<div style="font-size:0.68rem;color:#9c27b0;margin-top:0.15rem;"><i class="fas fa-flag-checkered"></i> Done: '+a.doneAt+'</div>':'')
+            +(a.status==='paid'&&a.credit?'<div style="font-size:0.82rem;font-weight:800;color:#2196f3;margin-top:0.3rem;"><i class="fas fa-check-double"></i> &#8377;'+Number(a.credit).toLocaleString('en-IN')+' Released</div>':'')
+            +'</div>'
+            +'<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">'+sl+'</span>'
+            +'</div>'
+            +'</div>';
+        }).join('');
+      }
+
+      // Payment history from wallet transactions
+      var histEl = document.getElementById('pay_history');
+      var txns = (w.transactions||[]).filter(function(t){ return t.type==='credit'; }).slice().reverse();
+      if(!txns.length){
+        histEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payments received yet.</div>';
+      } else {
+        histEl.innerHTML = txns.map(function(t){
+          return '<div style="background:#111;border:1px solid rgba(76,175,80,0.15);border-left:3px solid #4caf50;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+            +'<div>'
+            +'<div style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.15rem;">'+t.label+'</div>'
+            +'<div style="font-size:0.7rem;color:#9a9080;">'+t.date+(t.note?' &nbsp;&middot;&nbsp; '+t.note:'')+'</div>'
+            +'</div>'
+            +'<div style="font-size:1.1rem;font-weight:900;color:#4caf50;">+&#8377;'+Number(t.amount).toLocaleString('en-IN')+'</div>'
+            +'</div>';
+        }).join('');
+      }
+    }
+
+    // ── SUPPORT TAB ───────────────────────────────────────────
+    function submitSupportTicket(){
+      var type = (document.getElementById('sup_type')||{}).value||'';
+      var msg  = ((document.getElementById('sup_message')||{}).value||'').trim();
+      var pri  = (document.getElementById('sup_priority')||{}).value||'normal';
+      if(!type){ alert('Please select an issue type.'); return; }
+      if(!msg){ alert('Please describe your issue.'); return; }
+      var staffId   = localStorage.getItem('hs_staff_id');
+      var staffName = localStorage.getItem('hs_staff_name')||'Staff';
+      var ticket = {
+        id: Date.now(),
+        staffId: staffId, staffName: staffName,
+        type: type, message: msg, priority: pri,
+        status: 'open',
+        createdAt: new Date().toLocaleString()
+      };
+      var list = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
+      list.push(ticket);
+      localStorage.setItem('hs_support_tickets', JSON.stringify(list));
+      if(window.fbSave) fbSave('support_tickets', ticket);
+      if(window.fbSave) fbSave('admin_notifications', {
+        type: 'support_ticket',
+        title: '\uD83C\uDFAF Support Ticket: '+type,
+        message: staffName+' raised a '+(pri==='urgent'?'\uD83D\uDD34 URGENT':'')+' ticket: '+msg.slice(0,100),
+        staffId: staffId, staffName: staffName, priority: pri, read: false
+      });
+      document.getElementById('sup_type').value = '';
+      document.getElementById('sup_message').value = '';
+      var toast = document.getElementById('sup_toast');
+      if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 4000); }
+      renderSupportTickets();
+    }
+
+    function renderSupportTickets(){
+      var staffId = localStorage.getItem('hs_staff_id');
+      var list = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]')
+        .filter(function(t){ return String(t.staffId)===String(staffId); })
+        .slice().reverse();
+      var el = document.getElementById('sup_ticketList');
+      if(!list.length){
+        el.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-ticket-alt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No tickets raised yet.</div>';
+        return;
+      }
+      var sc = {open:'#ff9800',resolved:'#4caf50',closed:'#9a9080'};
+      el.innerHTML = list.map(function(t){
+        var c = sc[t.status]||'#ff9800';
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-left:3px solid '+c+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.4rem;">'
+          +'<div style="font-size:0.88rem;font-weight:800;color:#fff;">'+t.type+'</div>'
+          +'<span style="background:'+c+'22;border:1px solid '+c+'44;color:'+c+';font-size:0.65rem;font-weight:700;padding:0.18rem 0.6rem;border-radius:50px;">'+t.status.charAt(0).toUpperCase()+t.status.slice(1)+'</span>'
+          +'</div>'
+          +'<div style="font-size:0.82rem;color:#9a9080;margin-bottom:0.3rem;">'+t.message+'</div>'
+          +'<div style="font-size:0.65rem;color:#555;">'+t.createdAt+(t.priority==='urgent'?' &nbsp;&#128308; Urgent':'')+'</div>'
+          +'</div>';
+      }).join('');
+    }
 
     // Logout
     function logout() {
