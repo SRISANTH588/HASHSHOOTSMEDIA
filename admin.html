@@ -6509,7 +6509,11 @@ Priority Support</textarea></div>
         el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
         return;
       }
-      var typeColors = {Bug:'#f44336',Complaint:'#ff9800',Suggestion:'#2196f3',Compliment:'#4caf50',Other:'#9a9080'};
+      var typeColors = {
+        'Bug':'#f44336','Complaint':'#ff9800','Suggestion':'#2196f3','Compliment':'#4caf50','Other':'#9a9080',
+        'Payment Issue':'#f44336','Shoot Assignment Problem':'#ff9800','App / Technical Issue':'#2196f3',
+        'Payout Not Received':'#f44336','Profile / Account Issue':'#9c27b0'
+      };
       el.innerHTML = tickets.map(function(t){
         var tc = typeColors[t.type] || '#9a9080';
         var isResolved = t.status === 'resolved';
@@ -6517,8 +6521,9 @@ Priority Support</textarea></div>
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+tc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
           +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
           +'<div>'
-          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(t.name||t.customerName||'Customer')+'</div>'
-          +'<div style="font-size:0.72rem;color:#9a9080;">'+(t.email||t.customerEmail||'')+(t.phone?' · '+t.phone:'')+'</div>'
+          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(t.staffName||t.name||t.customerName||'Customer')+'</div>'
+          +'<div style="font-size:0.72rem;color:#9a9080;">'+(t.staffId?'Staff ID: #'+t.staffId+' &nbsp;&middot;&nbsp;':'')+(t.email||t.customerEmail||'')+(t.phone?' &middot; '+t.phone:'')+'</div>'
+          +(t.priority==='urgent'?'<div style="font-size:0.68rem;color:#f44336;font-weight:700;margin-top:0.2rem;">&#128308; URGENT</div>':'')
           +'</div>'
           +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">'
           +(t.type?'<span style="background:'+tc+'22;border:1px solid '+tc+'44;color:'+tc+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;">'+t.type+'</span>':'')
