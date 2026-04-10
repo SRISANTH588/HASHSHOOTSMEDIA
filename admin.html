@@ -5023,10 +5023,11 @@ Priority Support</textarea></div>
       selectedIds.forEach(function(staffId, idx){
         var staffMember = allStaff.find(function(s){ return String(s.id)===String(staffId); });
         names.push(staffMember ? staffMember.name : 'Unknown');
+        var shootId = Date.now() + idx;
         assigned.push({
-          id: Date.now() + idx,
+          id: shootId,
           bookingId: bookingId,
-          staffId: staffId,
+          staffId: String(staffId),
           staffName: staffMember ? staffMember.name : 'Unknown',
           staffPhone: staffMember ? (staffMember.phone || '') : '',
           staffEmail: staffMember ? (staffMember.email || '') : '',
@@ -7378,9 +7379,26 @@ Priority Support</textarea></div>
         // Real-time assigned_shoots listener
         onSnapshot(collection(fbDb,'assigned_shoots'), function(snap){
           var list = [];
-          snap.forEach(function(d){ list.push(d.data()); });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+          snap.forEach(function(d){
+            var data = d.data();
+            // Always use Firestore doc ID as the shoot id
+            if(!data.id) data.id = d.id;
+            list.push(data);
+          });
+          // Merge with local to preserve any offline changes
+          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+          list.forEach(function(fb){
+            var idx = local.findIndex(function(x){ return String(x.id)===String(fb.id); });
+            if(idx > -1){ Object.assign(local[idx], fb); }
+            else { local.push(fb); }
+          });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
           if(currentTab==='assign') renderAssignedList();
+          if(currentTab==='payments') renderAdminPayments();
+          // Update payments badge
+          var done = local.filter(function(a){ return a.status==='done'; }).length;
+          var badge = document.getElementById('paymentsAdminBadge');
+          if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
         });
 
         // Real-time payout_requests listener

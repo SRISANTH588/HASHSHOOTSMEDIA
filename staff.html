@@ -1968,14 +1968,16 @@
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
         var db      = fbStore.getFirestore(app);
-        // Try both number and string staffId
-        var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId))));
-        if(snap.empty) snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId)));
+        // Try string staffId first (admin stores as string), then number fallback
+        var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId)));
+        if(snap.empty) snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId))));
         var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
         var others = local.filter(function(x){ return String(x.staffId) !== myId; });
         var fresh = [];
         snap.forEach(function(d){
           var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
+          // Normalize staffId to string
+          data.staffId = String(data.staffId);
           delete data.createdAt; delete data.updatedAt;
           fresh.push(data);
         });
@@ -3214,11 +3216,12 @@
         // Listen to assigned shoots — admin assigns/updates
         try{ fbListen('assigned_shoots', function(docs) {
           var myId = String(localStorage.getItem('hs_staff_id'));
-          var myDocs = docs.filter(function(d) { return String(d.staffId) === myId; });
+          var myDocs = docs.filter(function(d) { return String(d.staffId) === myId || String(d._fbId) === myId; });
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
           var others = local.filter(function(x) { return String(x.staffId) !== myId; });
           var fresh = myDocs.map(function(d) {
             var merged = Object.assign({}, d, { id: d.id || d._fbId });
+            merged.staffId = String(merged.staffId);
             delete merged._fbId; delete merged.createdAt; delete merged.updatedAt;
             return merged;
           });
