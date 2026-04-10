@@ -164,6 +164,7 @@
       <button class="tab-btn" onclick="switchTab('videos',this)" id="videosTabBtn"><i class="fas fa-photo-video"></i> Staff Videos</button>
     <button class="tab-btn" onclick="switchTab('shoot-reels',this)" id="shootReelsTabBtn"><i class="fas fa-film"></i> Shoot Reels & Feedback <span class="notif" id="shootReelsNotifBadge" style="display:none;">0</span></button>
       <button class="tab-btn" onclick="switchTab('assign',this)" id="assignTabBtn"><i class="fas fa-tasks"></i> Assign Shoots</button>
+      <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsAdminTabBtn"><i class="fas fa-rupee-sign"></i> Payments <span id="paymentsAdminBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('homepage',this)" id="homepageTabBtn"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn"><i class="fas fa-heart"></i> Wedding Plans</button>
       <button class="tab-btn" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn"><i class="fas fa-comment-dots"></i> App Feedback <span id="appFeedbackBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
@@ -1132,6 +1133,33 @@
       </div>
 
     </div><!-- end tab-assign -->
+
+    <!-- PAYMENTS TAB -->
+    <div class="tab-panel" id="tab-payments" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-rupee-sign" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Payments</h2>
+        <span id="paymentsAdminCount" style="font-size:0.78rem;color:#9a9080;">0 pending</span>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(255,152,0,0.3);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#ff9800;" id="pm_statDone">0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Awaiting Payment</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.3);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#4caf50;" id="pm_statPaid">0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Paid</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.3);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;" id="pm_statTotal">&#8377;0</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Total Released</div>
+        </div>
+      </div>
+
+      <!-- Done shoots list -->
+      <div id="pm_list"></div>
+    </div><!-- end tab-payments -->
 
     <!-- HOME PAGE TAB -->
     <div class="tab-panel" id="tab-homepage">
@@ -2676,6 +2704,7 @@ Priority Support</textarea></div>
       if (tab === 'videos') renderStaffVideosAdmin();
       if (tab === 'shoot-reels') renderShootReelsAdmin();
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
+      if (tab === 'payments') renderAdminPayments();
     }
 
     // Activate first visible tab
@@ -5053,6 +5082,124 @@ Priority Support</textarea></div>
       renderAssignedList();
     }
 
+    // ── ADMIN PAYMENTS TAB ────────────────────────────────────────
+    function renderAdminPayments(){
+      var list = getAssignedShoots();
+      var done  = list.filter(function(a){ return a.status==='done'; });
+      var paid  = list.filter(function(a){ return a.status==='paid'; });
+      var totalReleased = paid.reduce(function(s,a){ return s+(Number(a.credit)||0); }, 0);
+
+      var dEl = document.getElementById('pm_statDone');
+      var pEl = document.getElementById('pm_statPaid');
+      var tEl = document.getElementById('pm_statTotal');
+      var cEl = document.getElementById('paymentsAdminCount');
+      var bEl = document.getElementById('paymentsAdminBadge');
+      if(dEl) dEl.textContent = done.length;
+      if(pEl) pEl.textContent = paid.length;
+      if(tEl) tEl.textContent = '\u20b9' + totalReleased.toLocaleString('en-IN');
+      if(cEl) cEl.textContent = done.length + ' pending';
+      if(bEl){ bEl.textContent=done.length; bEl.style.display=done.length>0?'inline':'none'; }
+
+      var el = document.getElementById('pm_list');
+      if(!el) return;
+      var allPayable = list.filter(function(a){ return a.status==='done'||a.status==='paid'; }).slice().reverse();
+      if(!allPayable.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-rupee-sign" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No shoots marked as done yet.</div>';
+        return;
+      }
+      el.innerHTML = allPayable.map(function(a){
+        var isPaid = a.status==='paid';
+        var borderColor = isPaid ? '#2196f3' : '#ff9800';
+        var creditVal = a.credit || 0;
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
+          +'<div style="flex:1;">'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+a.service+' &#8212; '+(a.clientName||'')+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: <strong style="color:#fff;">'+a.staffName+'</strong> &nbsp;&middot;&nbsp; <i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' '+a.time+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'')+'</div>'
+          +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
+          +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
+          +'</div>'
+          +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
+          +(isPaid
+            ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
+            : '<div style="display:flex;align-items:center;gap:0.5rem;">'
+              +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
+              +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+' " placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
+              +'</div>'
+              +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-paper-plane"></i> Release Payment</button>')
+          +'</div>'
+          +'</div>'
+          +'</div>';
+      }).join('');
+    }
+
+    async function adminReleasePayment(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return String(x.id)===String(id); });
+      if(!a){ alert('Shoot not found.'); return; }
+      if(a.status==='paid'){ alert('Payment already released.'); return; }
+
+      // Read amount from input
+      var inp = document.getElementById('pmCredit_'+id);
+      var amt = inp ? Number(inp.value) : Number(a.credit);
+      if(!amt || amt <= 0){ alert('Please enter a valid payment amount.'); return; }
+
+      if(!confirm('Release \u20b9'+amt.toLocaleString('en-IN')+' to '+a.staffName+'?')) return;
+
+      // Update assignment
+      a.credit = amt;
+      a.status = 'paid';
+      a.paidAt = new Date().toLocaleString();
+      saveAssignedShoots(list);
+
+      // Update staff wallet in localStorage
+      var walletKey = 'hs_wallet_'+a.staffId;
+      var wallet = JSON.parse(localStorage.getItem(walletKey)||'{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+      wallet.balance     = (wallet.balance||0) + amt;
+      wallet.totalEarned = (wallet.totalEarned||0) + amt;
+      wallet.pending     = Math.max(0,(wallet.pending||0) - amt);
+      if(!Array.isArray(wallet.transactions)) wallet.transactions=[];
+      wallet.transactions.push({ type:'credit', amount:amt, label:'Payment Released: '+(a.service||'Shoot'), note:(a.clientName||''), date:new Date().toLocaleString() });
+      localStorage.setItem(walletKey, JSON.stringify(wallet));
+
+      // Sync to Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(x){return x.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
+        var db      = fbStore.getFirestore(app);
+        // Mark shoot as paid
+        await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
+        // Update staff wallet in Firebase
+        await fbStore.setDoc(fbStore.doc(db,'wallets',String(a.staffId)),{
+          balance:wallet.balance, totalEarned:wallet.totalEarned,
+          pending:wallet.pending, withdrawn:wallet.withdrawn||0,
+          transactions:wallet.transactions,
+          updatedAt:fbStore.serverTimestamp()
+        },{merge:true});
+        // Notify staff
+        await fbStore.addDoc(fbStore.collection(db,'staff_notifications'),{
+          staffId:String(a.staffId), type:'payment',
+          title:'\uD83D\uDCB0 Payment Released',
+          message:'\u20b9'+amt.toLocaleString('en-IN')+' has been credited to your wallet for '+( a.service||'your shoot')+'.',
+          read:false, createdAt:fbStore.serverTimestamp()
+        });
+      }catch(e){
+        console.error('adminReleasePayment Firebase error:',e);
+        alert('Payment saved locally but Firebase sync failed: '+e.message);
+      }
+
+      renderAdminPayments();
+      renderAssignedList();
+      // Update badge
+      var done = getAssignedShoots().filter(function(a){ return a.status==='done'; }).length;
+      var badge = document.getElementById('paymentsAdminBadge');
+      if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
+      showAssignToast('\u2705 \u20b9'+amt.toLocaleString('en-IN')+' released to '+a.staffName+'! Wallet updated.', true);
+    }
+
     function renderAssignedList(){
       var list = getAssignedShoots().slice().reverse();
       document.getElementById('assignedCount').textContent = list.length + ' assignment(s)';
@@ -6223,7 +6370,7 @@ Priority Support</textarea></div>
 
     function notifView(tab, id){
       var tabBtnIds = {
-        'assign': 'assignTabBtn', 'bookings': 'bookingsTabBtn', 'enquiries': 'enquiriesTabBtn',
+        'assign': 'assignTabBtn', 'payments': 'paymentsAdminTabBtn', 'bookings': 'bookingsTabBtn', 'enquiries': 'enquiriesTabBtn',
         'notifications': 'notifTabBtn', 'order-edits': 'orderEditsTabBtn', 'feedback': 'feedbackTabBtn',
         'demo': 'demoTabBtn', 'shoot-reels': 'shootReelsTabBtn', 'app-feedback': 'appFeedbackTabBtn',
         'withdraw': 'withdrawTabBtn', 'testimonial-videos': 'testiVideosTabBtn',
