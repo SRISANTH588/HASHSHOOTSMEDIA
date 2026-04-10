@@ -3710,6 +3710,19 @@ Priority Support</textarea></div>
       var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
       var el = document.getElementById('set_waNumber');
       if(el) el.value = num;
+      // Fetch from Firebase in case it was updated
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          var snap = await f.s.getDoc(f.s.doc(f.db,'settings','admin_config'));
+          if(snap.exists() && snap.data().waNumber){
+            var waNum = snap.data().waNumber;
+            localStorage.setItem('hs_admin_wa_number', waNum);
+            var el2 = document.getElementById('set_waNumber');
+            if(el2) el2.value = waNum;
+          }
+        }catch(e){}
+      })();
     }
     async function saveWaNumber(){
       var num = (document.getElementById('set_waNumber').value||'').trim().replace(/[^0-9]/g,'');

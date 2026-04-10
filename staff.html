@@ -3210,6 +3210,18 @@
         try{ fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
         try{ fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); }); }catch(e){}
         try{ fbListenDoc('settings', 'admin_config',   function(data){ if(data.waNumber) localStorage.setItem('hs_admin_wa_number', data.waNumber); }); }catch(e){}
+        // Fetch admin WhatsApp number immediately on load
+        (async function(){
+          try{
+            var fbMod2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbSt2  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var fbCfg2 = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            var app2   = fbMod2.getApps().find(function(a){return a.name==='staff-cfg';})||fbMod2.initializeApp(fbCfg2,'staff-cfg');
+            var db2    = fbSt2.getFirestore(app2);
+            var snap2  = await fbSt2.getDoc(fbSt2.doc(db2,'settings','admin_config'));
+            if(snap2.exists() && snap2.data().waNumber) localStorage.setItem('hs_admin_wa_number', snap2.data().waNumber);
+          }catch(e){}
+        })();
         try{ fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); }); }catch(e){}
         try{ fbListenDoc('settings', 'press',         function(data){ if(data.items) localStorage.setItem('hs_press',  JSON.stringify(data.items)); }); }catch(e){}
         try{ fbListenDoc('settings', 'press_stats',   function(data){ localStorage.setItem('hs_press_stats',    JSON.stringify(data)); }); }catch(e){}
