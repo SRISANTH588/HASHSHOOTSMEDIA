@@ -8468,8 +8468,30 @@ Priority Support</textarea></div>
 
   function markPaid(id){
     var assigns=JSON.parse(localStorage.getItem('hs_assigned')||'[]');
-    assigns=assigns.map(function(a){if(String(a.id)===String(id)){a.status='paid';} return a;});
+    var shoot = assigns.find(function(a){return String(a.id)===String(id);});
+    assigns=assigns.map(function(a){if(String(a.id)===String(id)){a.status='paid';a.paidAt=new Date().toLocaleString();} return a;});
     localStorage.setItem('hs_assigned',JSON.stringify(assigns));
+    // Also update hs_assigned_shoots so staff page reflects paid status
+    var staffShoots=JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    staffShoots=staffShoots.map(function(a){if(String(a.id)===String(id)){a.status='paid';a.paidAt=new Date().toLocaleString();} return a;});
+    localStorage.setItem('hs_assigned_shoots',JSON.stringify(staffShoots));
+    // Sync to Firebase
+    if(window.fbUpdate){
+      fbUpdate('assigned_shoots',String(id),{status:'paid',paidAt:new Date().toLocaleString()});
+    }
+    // Send notification to staff
+    if(window.fbSave && shoot){
+      fbSave('staff_notifications',{
+        staffId: String((shoot.staffIds&&shoot.staffIds[0])||shoot.staffId||''),
+        type:'payment_released',
+        title:'💸 Payment Released!',
+        message:'Your payment for shoot "'+(shoot.bookingName||shoot.clientName||shoot.service||'')+'" has been released. Money will be in your bank within 24-48 hours.',
+        amount: shoot.credit||0,
+        shootId: String(id),
+        read: false,
+        createdAt: new Date().toLocaleString()
+      });
+    }
     loadPayoutsPanel();
   }
 
