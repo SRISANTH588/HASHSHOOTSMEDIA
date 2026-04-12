@@ -286,6 +286,8 @@
     <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
     <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
     <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-rupee-sign"></i> Payments <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
+    <button class="tab-btn" onclick="switchTab('invitations',this)" id="invitationsTabBtn"><i class="fas fa-envelope-open-text"></i> Invitations <span class="notif" id="invitationsNotifBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchTab('meetings',this)" id="meetingsTabBtn"><i class="fas fa-users"></i> Meetings <span class="notif" id="meetingsNotifBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('bank',this)" id="bankTabBtn"><i class="fas fa-university"></i> Bank</button>
     <button class="tab-btn" onclick="switchTab('testimonials',this)"><i class="fas fa-play-circle"></i> Testimonials</button>
     <button class="tab-btn" onclick="switchTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
@@ -865,6 +867,70 @@
       </div>
     </div>
 
+    <!-- INVITATIONS SECTION -->
+    <div class="section" id="sec-invitations">
+      <div class="sec-title"><i class="fas fa-envelope-open-text"></i> My Invitations</div>
+
+      <!-- Info banner -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(10,10,10,0.6));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.85rem;">
+        <div style="width:40px;height:40px;background:rgba(201,168,76,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-bell" style="color:#c9a84c;"></i></div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:#fff;">Invitations from Admin</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">Accept or decline invitations sent by the admin. Respond promptly.</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;margin-bottom:1.5rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(255,152,0,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#ff9800;" id="inv_pendingCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Pending</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#4caf50;" id="inv_acceptedCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Accepted</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#f44336;" id="inv_declinedCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Declined</div>
+        </div>
+      </div>
+
+      <div id="inv_list"><p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p></div>
+    </div>
+
+    <!-- MEETINGS SECTION -->
+    <div class="section" id="sec-meetings">
+      <div class="sec-title"><i class="fas fa-users"></i> Office Meetings</div>
+
+      <!-- Info banner -->
+      <div style="background:linear-gradient(135deg,rgba(33,150,243,0.12),rgba(10,10,10,0.6));border:1px solid rgba(33,150,243,0.25);border-radius:16px;padding:1.1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.85rem;">
+        <div style="width:40px;height:40px;background:rgba(33,150,243,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-calendar-check" style="color:#2196f3;"></i></div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:800;color:#fff;">Scheduled by Admin</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.1rem;">All office meetings scheduled by admin. Mark your attendance.</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;margin-bottom:1.5rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#2196f3;" id="meet_upcomingCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Upcoming</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#4caf50;" id="meet_attendingCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Attending</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:900;color:#c9a84c;" id="meet_totalCount">0</div>
+          <div style="font-size:0.65rem;color:#9a9080;">Total</div>
+        </div>
+      </div>
+
+      <div id="meet_list"><p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p></div>
+    </div>
+
     <div class="section" id="sec-bank">
       <div class="sec-title"><i class="fas fa-university"></i> Bank Account Details</div>
       <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
@@ -1012,6 +1078,8 @@
         try { if(name === 'profile') loadBankDetails(); } catch(e){}
         try { if(name === 'address') loadStaffAddress(); } catch(e){}
         try { if(name === 'aieditor') saie_init(); } catch(e){}
+        try { if(name === 'invitations') loadInvitations(); } catch(e){}
+        try { if(name === 'meetings') loadMeetings(); } catch(e){}
       } catch(e){ console.error('switchTab error:', e); }
     }
     window.switchTab = switchTab;
@@ -4329,6 +4397,140 @@
   </div>
 
   <script>
+  // ── INVITATIONS ──
+  async function loadInvitations(){
+    var staffId = localStorage.getItem('hs_staff_id');
+    var el = document.getElementById('inv_list');
+    if(!el) return;
+    el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    try {
+      var docs = await window.fbGetAll('invitations');
+      // filter for this staff or all-staff invitations
+      var mine = docs.filter(function(d){ return !d.staffId || String(d.staffId)===String(staffId) || d.staffId==='all'; });
+      mine.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
+      // update stats
+      var pending  = mine.filter(function(d){ return !d.responses||!d.responses[staffId]; }).length;
+      var accepted = mine.filter(function(d){ return d.responses&&d.responses[staffId]==='accepted'; }).length;
+      var declined = mine.filter(function(d){ return d.responses&&d.responses[staffId]==='declined'; }).length;
+      var sv=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+      sv('inv_pendingCount',pending); sv('inv_acceptedCount',accepted); sv('inv_declinedCount',declined);
+      // badge
+      var nb=document.getElementById('invitationsNotifBadge');
+      if(nb){if(pending>0){nb.textContent=pending;nb.style.display='';}else nb.style.display='none';}
+      if(!mine.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-envelope" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No invitations yet.</p>'; return; }
+      el.innerHTML = mine.map(function(d){
+        var resp = d.responses && d.responses[staffId];
+        var statusColor = resp==='accepted'?'#4caf50':resp==='declined'?'#f44336':'#ff9800';
+        var statusLabel = resp==='accepted'?'Accepted':resp==='declined'?'Declined':'Pending Response';
+        var ts = d.createdAt ? new Date(d.createdAt.seconds?d.createdAt.seconds*1000:d.createdAt).toLocaleString() : (d.date||'');
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-left:4px solid '+statusColor+';border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
+            +'<div>'
+              +'<div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">'+(d.title||'Invitation')+'</div>'
+              +'<div style="font-size:0.68rem;color:#6a6050;">'+ts+'</div>'
+            +'</div>'
+            +'<span style="font-size:0.65rem;font-weight:800;color:'+statusColor+';background:'+statusColor+'18;border:1px solid '+statusColor+'44;padding:0.2rem 0.65rem;border-radius:50px;">'+statusLabel+'</span>'
+          +'</div>'
+          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.85rem;line-height:1.6;">'+d.description+'</div>':'')
+          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
+            +(d.date?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Date</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.date+'</div></div>':'')
+            +(d.time?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Time</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.time+'</div></div>':'')
+            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
+            +(d.type?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-top:0.1rem;">'+d.type+'</div></div>':'')
+          +'</div>'
+          +(resp ? '' :
+            '<div style="display:flex;gap:0.65rem;">'
+              +'<button onclick="respondInvitation(\''+d._fbId+'\',\'accepted\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+              +'<button onclick="respondInvitation(\''+d._fbId+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Decline</button>'
+            +'</div>')
+        +'</div>';
+      }).join('');
+    } catch(e){
+      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error: '+e.message+'</p>';
+    }
+  }
+
+  async function respondInvitation(invId, response){
+    var staffId = localStorage.getItem('hs_staff_id');
+    if(!staffId||!invId) return;
+    try {
+      var update = {};
+      update['responses.'+staffId] = response;
+      update['responses.'+staffId+'_name'] = localStorage.getItem('hs_staff_name')||'Staff';
+      update['responses.'+staffId+'_at'] = new Date().toLocaleString();
+      await window.fbUpdate('invitations', invId, update);
+      loadInvitations();
+    } catch(e){ alert('Failed to respond: '+e.message); }
+  }
+
+  // ── MEETINGS ──
+  async function loadMeetings(){
+    var staffId = localStorage.getItem('hs_staff_id');
+    var el = document.getElementById('meet_list');
+    if(!el) return;
+    el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    try {
+      var docs = await window.fbGetAll('meetings');
+      docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
+      var now = new Date();
+      var upcoming = docs.filter(function(d){ return new Date(d.date+' '+(d.time||'00:00')) >= now; });
+      var attending = docs.filter(function(d){ return d.attendees&&d.attendees[staffId]==='attending'; });
+      var sv=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+      sv('meet_upcomingCount', upcoming.length);
+      sv('meet_attendingCount', attending.length);
+      sv('meet_totalCount', docs.length);
+      // badge
+      var nb=document.getElementById('meetingsNotifBadge');
+      if(nb){if(upcoming.length>0){nb.textContent=upcoming.length;nb.style.display='';}else nb.style.display='none';}
+      if(!docs.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-calendar" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No meetings scheduled yet.</p>'; return; }
+      el.innerHTML = docs.map(function(d){
+        var isPast = new Date(d.date+' '+(d.time||'00:00')) < now;
+        var myStatus = d.attendees && d.attendees[staffId];
+        var borderColor = isPast?'#6a6050':myStatus==='attending'?'#4caf50':myStatus==='declined'?'#f44336':'#2196f3';
+        var ts = d.date+(d.time?' at '+d.time:'');
+        return '<div style="background:#111;border:1px solid rgba(33,150,243,0.15);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;'+(isPast?'opacity:0.65;':'')+'">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
+            +'<div>'
+              +'<div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">'+(d.title||'Meeting')+'</div>'
+              +'<div style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-calendar-alt" style="margin-right:4px;"></i>'+ts+'</div>'
+            +'</div>'
+            +(isPast?'<span style="font-size:0.65rem;font-weight:800;color:#6a6050;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.2rem 0.65rem;border-radius:50px;">Past</span>'
+              :myStatus==='attending'?'<span style="font-size:0.65rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check"></i> Attending</span>'
+              :myStatus==='declined'?'<span style="font-size:0.65rem;font-weight:800;color:#f44336;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-times"></i> Declined</span>'
+              :'<span style="font-size:0.65rem;font-weight:800;color:#ff9800;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);padding:0.2rem 0.65rem;border-radius:50px;">Respond</span>')
+          +'</div>'
+          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.85rem;line-height:1.6;">'+d.description+'</div>':'')
+          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
+            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
+            +(d.duration?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Duration</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.duration+'</div></div>':'')
+            +(d.type?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:0.78rem;font-weight:700;color:#2196f3;margin-top:0.1rem;">'+d.type+'</div></div>':'')
+            +(d.link?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Link</div><a href="'+d.link+'" target="_blank" style="font-size:0.75rem;font-weight:700;color:#2196f3;margin-top:0.1rem;display:block;word-break:break-all;">Join</a></div>':'')
+          +'</div>'
+          +(!isPast && !myStatus ?
+            '<div style="display:flex;gap:0.65rem;">'
+              +'<button onclick="respondMeeting(\''+d._fbId+'\',\'attending\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> I\'ll Attend</button>'
+              +'<button onclick="respondMeeting(\''+d._fbId+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Can\'t Attend</button>'
+            +'</div>' : '')
+        +'</div>';
+      }).join('');
+    } catch(e){
+      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error: '+e.message+'</p>';
+    }
+  }
+
+  async function respondMeeting(meetId, response){
+    var staffId = localStorage.getItem('hs_staff_id');
+    if(!staffId||!meetId) return;
+    try {
+      var update = {};
+      update['attendees.'+staffId] = response;
+      update['attendees.'+staffId+'_name'] = localStorage.getItem('hs_staff_name')||'Staff';
+      update['attendees.'+staffId+'_at'] = new Date().toLocaleString();
+      await window.fbUpdate('meetings', meetId, update);
+      loadMeetings();
+    } catch(e){ alert('Failed to respond: '+e.message); }
+  }
+
   function showPaymentInfoModal(shoot){
     var modal = document.getElementById('paymentInfoModal');
     if(!modal) return;
