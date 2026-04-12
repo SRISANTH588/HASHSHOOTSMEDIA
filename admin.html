@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard - OG SHOOTS</title>
+  <title>Admin Dashboard - HASH SHOOTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -16,6 +16,49 @@
     --text:#f0ece0;--muted:#9a9080;
   }
 
+    /* ── SIDEBAR LAYOUT ── */
+    *{box-sizing:border-box;}
+    body{display:flex;min-height:100vh;overflow:hidden;}
+    #sidebar{width:240px;min-width:240px;height:100vh;background:#0a0a0a;border-right:1px solid rgba(201,168,76,0.1);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.15) transparent;}
+    #sidebar::-webkit-scrollbar{width:4px;}
+    #sidebar::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.15);border-radius:4px;}
+    #main-wrap{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh;overflow-y:auto;}
+    #topbar{background:rgba(8,8,8,0.98);border-bottom:1px solid rgba(201,168,76,0.1);padding:0.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);}
+    #topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+    #topbar-title span{color:var(--gold);}
+    .topbar-right{display:flex;align-items:center;gap:0.85rem;}
+    /* Sidebar brand */
+    .sb-brand{padding:1.4rem 1.25rem 1rem;border-bottom:1px solid rgba(201,168,76,0.08);}
+    .sb-logo{font-size:1.15rem;font-weight:900;color:#fff;letter-spacing:-0.5px;}
+    .sb-logo span{color:var(--gold);}
+    .sb-badge{display:inline-block;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-size:0.6rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;margin-top:0.35rem;letter-spacing:1px;}
+    /* Sidebar sections */
+    .sb-section{padding:0.85rem 0.75rem 0.25rem;}
+    .sb-section-label{font-size:0.58rem;font-weight:800;color:rgba(154,144,128,0.5);letter-spacing:2px;text-transform:uppercase;padding:0 0.5rem;margin-bottom:0.4rem;}
+    .sb-item{display:flex;align-items:center;gap:0.65rem;width:100%;padding:0.55rem 0.75rem;border-radius:9px;border:none;background:transparent;color:#9a9080;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.18s;text-align:left;position:relative;}
+    .sb-item i{width:16px;text-align:center;font-size:0.82rem;flex-shrink:0;}
+    .sb-item:hover{background:rgba(201,168,76,0.07);color:#d4c9a8;}
+    .sb-item.active{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+    .sb-item.active i{color:var(--gold);}
+    .sb-badge-pill{margin-left:auto;background:#f44336;color:#fff;font-size:0.55rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;min-width:16px;text-align:center;}
+    .sb-badge-pill.gold{background:var(--gold);color:#000;}
+    .sb-badge-pill.green{background:#4caf50;color:#fff;}
+    .sb-badge-pill.orange{background:#ff9800;color:#fff;}
+    .sb-divider{height:1px;background:rgba(201,168,76,0.07);margin:0.5rem 0.75rem;}
+    .sb-bottom{padding:0.85rem 0.75rem;border-top:1px solid rgba(201,168,76,0.08);margin-top:auto;}
+    /* Content area */
+    .container{max-width:1200px;margin:0 auto;padding:2rem 2rem;}
+    /* Responsive */
+    @media(max-width:768px){
+      #sidebar{width:200px;min-width:200px;}
+      #main-wrap{margin-left:200px;}
+    }
+    @media(max-width:600px){
+      #sidebar{transform:translateX(-100%);transition:transform 0.25s;}
+      #sidebar.open{transform:translateX(0);}
+      #main-wrap{margin-left:0;}
+      .container{padding:1rem;}
+    }
     .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid rgba(201,168,76,0.4);border-left:4px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
     @keyframes slideIn{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
     .notif-toast-title{font-size:0.88rem;font-weight:800;color:var(--text);margin-bottom:0.25rem;}
@@ -51,13 +94,9 @@
     .fb-live{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;}
     .fb-dot{width:6px;height:6px;background:#4caf50;border-radius:50%;animation:fbPulse 1.5s infinite;}
     @keyframes fbPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-    nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
-    .logo{font-size:1.4rem;font-weight:900;}.logo span{color:var(--gold);}
     .admin-badge{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.3rem 0.85rem;border-radius:50px;font-size:0.75rem;font-weight:700;}
-    .nav-right{display:flex;align-items:center;gap:1rem;}
-    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
+    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;width:100%;text-align:left;display:flex;align-items:center;gap:0.5rem;}
     .btn-logout:hover{border-color:var(--gold);color:var(--gold);}
-    .container{max-width:1100px;margin:2.5rem auto;padding:0 1.5rem;}
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
     h1{font-size:1.8rem;font-weight:900;}h1 span{color:var(--gold);}
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
@@ -108,9 +147,8 @@
     .empty i{font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.3;}
     .refresh-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;}
     .refresh-btn:hover{background:var(--gold);color:var(--text);}
-    .tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
-    .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(201,168,76,0.15);background:transparent;color:var(--muted);font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
-    .tab-btn.active,.tab-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
+    .tabs{display:none;}
+    .tab-btn{display:none;}
     .tab-panel{display:none;}
     .tab-panel.active{display:block;}
     .about-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;}
@@ -134,25 +172,119 @@
 <script src="hs-cloudinary.js"></script>
 </head>
 <body>
-  <nav>
+
+<!-- ── SIDEBAR ── -->
+<nav id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo"><span>HASH</span> SHOOTS</div>
+    <div class="sb-badge"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>ADMIN</div>
+  </div>
+
+  <!-- Overview -->
+  <div class="sb-section">
+    <div class="sb-section-label">Overview</div>
+    <button class="sb-item active" id="sb-bookings" onclick="sideSwitch('bookings',this)"><i class="fas fa-calendar-alt"></i> Bookings</button>
+    <button class="sb-item" id="sb-assign" onclick="sideSwitch('assign',this)"><i class="fas fa-tasks"></i> Assign Shoots</button>
+    <button class="sb-item" id="sb-payments" onclick="sideSwitch('payments',this)"><i class="fas fa-rupee-sign"></i> Payments <span class="sb-badge-pill" id="sb_paymentsAdminBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-withdraw" onclick="sideSwitch('withdraw',this)"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span class="sb-badge-pill green" id="sb_withdrawNotifBadge" style="display:none;">0</span></button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Staff -->
+  <div class="sb-section">
+    <div class="sb-section-label">Staff</div>
+    <button class="sb-item" id="sb-staff" onclick="sideSwitch('staff',this)"><i class="fas fa-users-cog"></i> Staff & Access</button>
+    <button class="sb-item" id="sb-demo" onclick="sideSwitch('demo',this)"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="sb-badge-pill gold" id="sb_demoNotifBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-videos" onclick="sideSwitch('videos',this)"><i class="fas fa-photo-video"></i> Staff Videos</button>
+    <button class="sb-item" id="sb-shoot-reels" onclick="sideSwitch('shoot-reels',this)"><i class="fas fa-film"></i> Shoot Reels <span class="sb-badge-pill gold" id="sb_shootReelsNotifBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-feedback" onclick="sideSwitch('feedback',this)"><i class="fas fa-star"></i> Feedback <span class="sb-badge-pill orange" id="sb_feedbackNotifBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-staffwallets" onclick="sideSwitch('staffwallets',this)"><i class="fas fa-wallet"></i> Staff Wallets</button>
+    <button class="sb-item" id="sb-staffbank" onclick="sideSwitch('staffbank',this)"><i class="fas fa-university"></i> Staff Bank</button>
+    <button class="sb-item" id="sb-staffaddress" onclick="sideSwitch('staffaddress',this)"><i class="fas fa-map-marker-alt"></i> Staff Addresses</button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Enquiries -->
+  <div class="sb-section">
+    <div class="sb-section-label">Enquiries</div>
+    <button class="sb-item" id="sb-enquiries" onclick="sideSwitch('enquiries',this)"><i class="fas fa-concierge-bell"></i> Service Enquiries <span class="sb-badge-pill gold" id="sb_enquiriesNotifBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-order-enquiries" onclick="sideSwitch('order-enquiries',this)"><i class="fas fa-shopping-cart"></i> Order Enquiries <span class="sb-badge-pill gold" id="sb_orderEnquiriesBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-mkt-enquiries" onclick="sideSwitch('mkt-enquiries',this)"><i class="fas fa-bullhorn"></i> Marketing <span class="sb-badge-pill gold" id="sb_mktEnquiriesBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-biz-enquiries" onclick="sideSwitch('biz-enquiries',this)"><i class="fas fa-briefcase"></i> Business <span class="sb-badge-pill gold" id="sb_bizEnquiriesBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-support-tickets" onclick="sideSwitch('support-tickets',this)"><i class="fas fa-headset"></i> Customer Issues <span class="sb-badge-pill" id="sb_supportTicketsBadge" style="display:none;">0</span></button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Store -->
+  <div class="sb-section">
+    <div class="sb-section-label">Store</div>
+    <button class="sb-item" id="sb-store" onclick="sideSwitch('store',this)"><i class="fas fa-store"></i> Store</button>
+    <button class="sb-item" id="sb-storeorders" onclick="sideSwitch('storeorders',this)"><i class="fas fa-shopping-bag"></i> Store Orders</button>
+    <button class="sb-item" id="sb-store-razorpay" onclick="sideSwitch('store-razorpay',this)"><i class="fas fa-credit-card"></i> Store Payment</button>
+    <button class="sb-item" id="sb-order-edits" onclick="sideSwitch('order-edits',this)"><i class="fas fa-edit"></i> Order Edits <span class="sb-badge-pill" id="sb_orderEditsBadge" style="display:none;">0</span></button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Content -->
+  <div class="sb-section">
+    <div class="sb-section-label">Content</div>
+    <button class="sb-item" id="sb-vibe" onclick="sideSwitch('vibe',this)"><i class="fas fa-fire"></i> Vibe Content</button>
+    <button class="sb-item" id="sb-testimonial-videos" onclick="sideSwitch('testimonial-videos',this)"><i class="fas fa-video"></i> Testimonials</button>
+    <button class="sb-item" id="sb-blog" onclick="sideSwitch('blog',this)"><i class="fas fa-pen-nib"></i> Blog</button>
+    <button class="sb-item" id="sb-press" onclick="sideSwitch('press',this)"><i class="fas fa-newspaper"></i> Press</button>
+    <button class="sb-item" id="sb-notifications" onclick="sideSwitch('notifications',this)"><i class="fas fa-bell"></i> Notifications <span class="sb-badge-pill gold" id="sb_notifBadge" style="display:none;">0</span></button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Applications -->
+  <div class="sb-section">
+    <div class="sb-section-label">Applications</div>
+    <button class="sb-item" id="sb-careers" onclick="sideSwitch('careers',this)"><i class="fas fa-briefcase"></i> Career Apps</button>
+    <button class="sb-item" id="sb-affiliates" onclick="sideSwitch('affiliates',this)"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Settings -->
+  <div class="sb-section">
+    <div class="sb-section-label">Settings</div>
+    <button class="sb-item" id="sb-opening" onclick="sideSwitch('opening',this)"><i class="fas fa-rocket"></i> Opening Screen</button>
+    <button class="sb-item" id="sb-homepage" onclick="sideSwitch('homepage',this)"><i class="fas fa-home"></i> Home Page</button>
+    <button class="sb-item" id="sb-about" onclick="sideSwitch('about',this)"><i class="fas fa-info-circle"></i> About Us</button>
+    <button class="sb-item" id="sb-customer" onclick="sideSwitch('customer',this)"><i class="fas fa-user"></i> Customer Page</button>
+    <button class="sb-item" id="sb-wedding-plans" onclick="sideSwitch('wedding-plans',this)"><i class="fas fa-heart"></i> Wedding Plans</button>
+    <button class="sb-item" id="sb-hero-stats" onclick="sideSwitch('hero-stats',this)"><i class="fas fa-chart-bar"></i> Hero Stats</button>
+    <button class="sb-item" id="sb-app-feedback" onclick="sideSwitch('app-feedback',this)"><i class="fas fa-comment-dots"></i> App Feedback <span class="sb-badge-pill gold" id="sb_appFeedbackBadge" style="display:none;">0</span></button>
+    <button class="sb-item" id="sb-cwallets" onclick="sideSwitch('cwallets',this)"><i class="fas fa-wallet"></i> Customer Wallets</button>
+    <button class="sb-item" id="sb-razorpay" onclick="sideSwitch('razorpay',this)"><i class="fas fa-credit-card"></i> Razorpay</button>
+    <button class="sb-item" id="sb-tawk" onclick="sideSwitch('tawk',this)"><i class="fas fa-comments"></i> Tawk.to</button>
+    <button class="sb-item" id="sb-settings" onclick="sideSwitch('settings',this)"><i class="fas fa-sliders-h"></i> Settings</button>
+  </div>
+
+  <div class="sb-bottom">
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</nav>
+
+<!-- ── MAIN WRAP ── -->
+<div id="main-wrap">
+
+  <!-- Topbar -->
+  <div id="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
-      <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
-      <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      <div id="topbar-title">Bookings <span>Manager</span></div>
     </div>
-    <div class="nav-right">
-      <span style="color:#9a9080;font-size:0.85rem;" id="adminNameDisplay"></span>
+    <div class="topbar-right">
+      <span id="adminNameDisplay" style="color:#9a9080;font-size:0.82rem;"></span>
+      <span id="fbStatusBadge" style="display:none;"></span>
       <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
-      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
-  </nav>
-
-  <div class="container">
-    <div class="page-header">
-      <h1>Admin <span>Dashboard</span></h1>
-      <span style="color:#9a9080;font-size:0.85rem;" id="lastUpdated"></span>
-    </div>
-
-    <div class="tabs">
+  </div>
       <button class="tab-btn" onclick="switchTab('opening',this)" id="openingTabBtn"><i class="fas fa-rocket"></i> Opening</button>
       <button class="tab-btn active" onclick="switchTab('bookings',this)" id="bookingsTabBtn"><i class="fas fa-calendar-alt"></i> Bookings</button>
       <button class="tab-btn" onclick="switchTab('about',this)" id="aboutTabBtn"><i class="fas fa-info-circle"></i> About Us</button>
@@ -196,6 +328,7 @@
 
     </div>
 
+  <div class="container">
     <!-- OPENING TAB -->
     <div class="tab-panel" id="tab-opening">
       <div class="about-form">
@@ -2659,10 +2792,9 @@ Priority Support</textarea></div>
     // TAB SWITCHING
     function switchTab(tab, btn) {
       currentTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + tab).classList.add('active');
+      var panel = document.getElementById('tab-' + tab);
+      if(panel) panel.classList.add('active');
       if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
       if (tab === 'wedding-plans') loadWeddingPlans();
@@ -2707,9 +2839,57 @@ Priority Support</textarea></div>
       if (tab === 'payments') renderAdminPayments();
     }
 
-    // Activate first visible tab
-    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
-    if(firstVisible) firstVisible.click();
+    // ── SIDEBAR NAVIGATION ──
+    var _tabTitles = {
+      'bookings':'Bookings <span>Manager</span>','assign':'Assign <span>Shoots</span>',
+      'payments':'Staff <span>Payments</span>','withdraw':'Staff <span>Withdraw</span>',
+      'staff':'Staff <span>& Access</span>','demo':'Demo <span>Sessions</span>',
+      'videos':'Staff <span>Videos</span>','shoot-reels':'Shoot <span>Reels</span>',
+      'feedback':'Feedback <span>& Reviews</span>','staffwallets':'Staff <span>Wallets</span>',
+      'staffbank':'Staff <span>Bank Accounts</span>','staffaddress':'Staff <span>Addresses</span>',
+      'enquiries':'Service <span>Enquiries</span>','order-enquiries':'Order <span>Enquiries</span>',
+      'mkt-enquiries':'Marketing <span>Enquiries</span>','biz-enquiries':'Business <span>Enquiries</span>',
+      'support-tickets':'Customer <span>Issues</span>','store':'Store <span>Manager</span>',
+      'storeorders':'Store <span>Orders</span>','store-razorpay':'Store <span>Payment</span>',
+      'order-edits':'Order <span>Edits</span>','vibe':'Vibe <span>Content</span>',
+      'testimonial-videos':'Client <span>Testimonials</span>','blog':'Blog <span>Manager</span>',
+      'press':'Press <span>Coverage</span>','notifications':'Push <span>Notifications</span>',
+      'careers':'Career <span>Applications</span>','affiliates':'Affiliate <span>Apps</span>',
+      'opening':'Opening <span>Screen</span>','homepage':'Home <span>Page</span>',
+      'about':'About <span>Us</span>','customer':'Customer <span>Page</span>',
+      'wedding-plans':'Wedding <span>Plans</span>','hero-stats':'Hero <span>Stats</span>',
+      'app-feedback':'App <span>Feedback</span>','cwallets':'Customer <span>Wallets</span>',
+      'razorpay':'Razorpay <span>Config</span>','tawk':'Tawk.to <span>Config</span>',
+      'settings':'App <span>Settings</span>'
+    };
+    function sideSwitch(tab, btn) {
+      document.querySelectorAll('.sb-item').forEach(function(b){ b.classList.remove('active'); });
+      if(btn) btn.classList.add('active');
+      var title = _tabTitles[tab] || tab;
+      document.getElementById('topbar-title').innerHTML = title;
+      switchTab(tab, btn || document.createElement('button'));
+    }
+    // Activate Bookings on load
+    sideSwitch('bookings', document.getElementById('sb-bookings'));
+    // Mirror old badge IDs to sidebar badge IDs
+    (function mirrorBadges(){
+      var map = {
+        'paymentsAdminBadge':'sb_paymentsAdminBadge','withdrawNotifBadge':'sb_withdrawNotifBadge',
+        'demoNotifBadge':'sb_demoNotifBadge','shootReelsNotifBadge':'sb_shootReelsNotifBadge',
+        'feedbackNotifBadge':'sb_feedbackNotifBadge','enquiriesNotifBadge':'sb_enquiriesNotifBadge',
+        'orderEnquiriesBadge':'sb_orderEnquiriesBadge','mktEnquiriesBadge':'sb_mktEnquiriesBadge',
+        'bizEnquiriesBadge':'sb_bizEnquiriesBadge','supportTicketsBadge':'sb_supportTicketsBadge',
+        'orderEditsBadge':'sb_orderEditsBadge','notifBadge':'sb_notifBadge',
+        'appFeedbackBadge':'sb_appFeedbackBadge'
+      };
+      setInterval(function(){
+        Object.keys(map).forEach(function(src){
+          var s = document.getElementById(src);
+          var d = document.getElementById(map[src]);
+          if(s && d){ d.textContent = s.textContent; d.style.display = s.style.display; }
+        });
+      }, 1000);
+    })();
 
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
@@ -7546,5 +7726,6 @@ Priority Support</textarea></div>
     });
 
   </script>
+</div><!-- end main-wrap -->
 </body>
 </html>
