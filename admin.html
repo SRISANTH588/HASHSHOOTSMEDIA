@@ -285,7 +285,7 @@
         <button class="nav-subitem" onclick="switchTab('press',document.getElementById('pressTabBtn'));setActiveSubitem(this)"><i class="fas fa-newspaper"></i> Press</button>
         <button class="nav-subitem" onclick="switchTab('careers',document.getElementById('careersTabBtn'));setActiveSubitem(this)"><i class="fas fa-briefcase"></i> Career Apps</button>
         <button class="nav-subitem" onclick="switchTab('affiliates',document.getElementById('affiliatesTabBtn'));setActiveSubitem(this)"><i class="fas fa-rupee-sign"></i> Affiliates</button>
-        <button class="nav-subitem" onclick="switchTab('mkt-enquiries',document.getElementById('mktEnquiriesTabBtn'));setActiveSubitem(this)"><i class="fas fa-bullhorn"></i> Marketing Enquiries</button>
+        <button class="nav-subitem" onclick="switchSideNav('marketing',document.getElementById('sideNav-marketing'));setActiveSubitem(this)"><i class="fas fa-bullhorn"></i> Marketing Enquiries</button>
         <button class="nav-subitem" onclick="switchTab('biz-enquiries',document.getElementById('bizEnquiriesTabBtn'));setActiveSubitem(this)"><i class="fas fa-briefcase"></i> Business Enquiries</button>
         <button class="nav-subitem" onclick="switchTab('support-tickets',document.getElementById('supportTicketsTabBtn'));setActiveSubitem(this)"><i class="fas fa-headset"></i> Customer Issues</button>
         <button class="nav-subitem" onclick="switchTab('hero-stats',document.getElementById('heroStatsTabBtn'));setActiveSubitem(this)"><i class="fas fa-chart-bar"></i> Hero Stats</button>
@@ -2733,12 +2733,11 @@ Priority Support</textarea></div>
 
     <!-- MARKETING ENQUIRIES TAB -->
     <div class="tab-panel" id="tab-mkt-enquiries">
-      <div class="about-form">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-bullhorn" style="color:#c9a84c;margin-right:0.5rem;"></i> Marketing Enquiries</h2>
-          <span style="font-size:0.8rem;color:#9a9080;" id="mktEnquiriesCount"></span>
-        </div>
-        <div id="mktEnquiriesList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      <div class="about-form" style="text-align:center;padding:3rem 2rem;">
+        <i class="fas fa-bullhorn" style="font-size:2.5rem;color:#ce93d8;margin-bottom:1rem;display:block;"></i>
+        <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;">Marketing Enquiries have moved</div>
+        <div style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">All marketing enquiries are now managed in the Digital Marketing tab.</div>
+        <button onclick="switchSideNav('marketing',document.getElementById('sideNav-marketing'))" style="background:linear-gradient(135deg,#9c27b0,#673ab7);border:none;color:#fff;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right" style="margin-right:0.5rem;"></i>Go to Digital Marketing</button>
       </div>
     </div>
 
@@ -3323,7 +3322,7 @@ Priority Support</textarea></div>
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
       if (tab === 'store-razorpay') loadStoreRazorpay();
-      if (tab === 'mkt-enquiries') renderMktEnquiries();
+      if (tab === 'mkt-enquiries') { switchSideNav('marketing', document.getElementById('sideNav-marketing')); return; }
       if (tab === 'biz-enquiries') fetchBizEnquiries();
       if (tab === 'support-tickets') renderSupportTickets();
       if (tab === 'settings') loadSettingsTab();
@@ -7342,7 +7341,7 @@ Priority Support</textarea></div>
         var f = await _fbAdmin(); if(!f) return;
         await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{accepted:true,status:'accepted'},{merge:true});
         showAssignToast('Enquiry accepted!', true);
-        renderMktEnquiries();
+        loadMarketingPanel();
       }catch(e){ alert('Error: '+e.message); }
     }
     async function markMktEnquiryDone(id){
@@ -7350,7 +7349,7 @@ Priority Support</textarea></div>
         var f = await _fbAdmin(); if(!f) return;
         await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
         showAssignToast('Enquiry marked as done!', true);
-        renderMktEnquiries();
+        loadMarketingPanel();
       }catch(e){ alert('Error: '+e.message); }
     }
     async function acceptBizEnquiry(id){
