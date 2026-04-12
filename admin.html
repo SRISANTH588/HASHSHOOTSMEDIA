@@ -8402,7 +8402,7 @@ Priority Support</textarea></div>
   // ── APPLICATIONS PANEL DATA ──
   function loadPayoutsPanel(){
     var staff    = JSON.parse(localStorage.getItem('hs_staff')||'[]');
-    var assigns  = JSON.parse(localStorage.getItem('hs_assigned')||'[]');
+    var assigns  = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
     var done     = assigns.filter(function(a){return a.status==='done';});
     var paid     = assigns.filter(function(a){return a.status==='paid';});
     var pendingAmt=0, totalAmt=0;
@@ -8426,7 +8426,7 @@ Priority Support</textarea></div>
         var rc={creator:'#c9a84c',editor:'#2196f3',pr:'#9c27b0',manager:'#4caf50',support:'#ff9800'};
         sl.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.85rem;">'+staff.map(function(s){
           var w=JSON.parse(localStorage.getItem('hs_wallet_'+s.id)||'{"pending":0,"balance":0}');
-          var mine=assigns.filter(function(a){return (a.staffIds||[a.staffId]).indexOf(String(s.id))>-1;});
+          var mine=assigns.filter(function(a){return String(a.staffId)===String(s.id)||(a.staffIds||[]).indexOf(String(s.id))>-1;});
           var doneCnt=mine.filter(function(a){return a.status==='done';}).length;
           var paidCnt=mine.filter(function(a){return a.status==='paid';}).length;
           var c=rc[s.role]||'#9a9080';
@@ -8451,45 +8451,52 @@ Priority Support</textarea></div>
     // Assigns awaiting payout
     var al=document.getElementById('py_assignList');
     if(al){
-      if(!done.length){al.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:1.5rem;">No pending payouts.</p>';}
+      if(!done.length){al.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:1.5rem;"><i class="fas fa-check-circle" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No pending payouts.</p>';}
       else{
-        al.innerHTML='<div style="display:flex;flex-direction:column;gap:0.6rem;">'+done.map(function(a){
-          var names=(a.staffNames||[a.staffName]||[]).join(', ');
-          return '<div style="display:flex;align-items:center;justify-content:space-between;background:#0d0d0d;border:1px solid rgba(255,152,0,0.12);border-radius:10px;padding:0.75rem 1rem;">'
-            +'<div><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+(a.bookingName||a.clientName||'Shoot')+'</div>'
-            +'<div style="font-size:0.7rem;color:#9a9080;">'+names+' &bull; '+(a.date||'')+'</div></div>'
-            +'<div style="text-align:right;"><div style="font-size:0.9rem;font-weight:900;color:#ff9800;">₹'+(a.credit||0)+'</div>'
-            +'<button onclick="markPaid(\''+a.id+'\')" style="margin-top:0.3rem;background:#4caf50;color:#fff;border:none;border-radius:6px;padding:0.25rem 0.65rem;font-size:0.68rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Paid</button></div>'
+        al.innerHTML='<div style="display:flex;flex-direction:column;gap:0.75rem;">'+done.map(function(a){
+          var staffName = a.staffName||(a.staffNames&&a.staffNames[0])||'Staff';
+          var client    = a.clientName||a.bookingName||a.service||'Shoot';
+          var service   = a.service||'';
+          var date      = a.date||'';
+          var time      = a.time||'';
+          var location  = a.location||a.city||'';
+          var doneAt    = a.doneAt||'';
+          var credit    = a.credit||0;
+          return '<div style="background:#0d0d0d;border:1px solid rgba(255,152,0,0.2);border-left:4px solid #ff9800;border-radius:14px;padding:1.1rem 1.25rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
+              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;">'+client+'</div>'
+              +'<div style="font-size:0.7rem;color:#ff9800;font-weight:700;margin-top:0.15rem;"><i class="fas fa-user" style="margin-right:3px;"></i>'+staffName+'</div></div>'
+              +'<div style="text-align:right;"><div style="font-size:1.1rem;font-weight:900;color:#ff9800;">₹'+Number(credit).toLocaleString('en-IN')+'</div>'
+              +'<div style="font-size:0.6rem;color:#6a6050;">payout amount</div></div>'
+            +'</div>'
+            +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.85rem;">'
+              +(service?'<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.5rem 0.65rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Service</div><div style="font-size:0.75rem;font-weight:700;color:#d4c9a8;margin-top:0.1rem;">'+service+'</div></div>':'')
+              +(date?'<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.5rem 0.65rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Date</div><div style="font-size:0.75rem;font-weight:700;color:#d4c9a8;margin-top:0.1rem;">'+date+' '+time+'</div></div>':'')
+              +(location?'<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.5rem 0.65rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Location</div><div style="font-size:0.75rem;font-weight:700;color:#d4c9a8;margin-top:0.1rem;">'+location+'</div></div>':'')
+            +'</div>'
+            +(doneAt?'<div style="font-size:0.68rem;color:#9c27b0;margin-bottom:0.75rem;"><i class="fas fa-flag-checkered" style="margin-right:4px;"></i>Marked done: '+doneAt+'</div>':'')
+            +'<button onclick="markPaid(\''+a.id+'\')" style="width:100%;background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:9px;padding:0.65rem;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-check-double"></i> Mark as Paid — Release ₹'+Number(credit).toLocaleString('en-IN')+'</button>'
           +'</div>';
         }).join('')+'</div>';
       }
     }
-  }
 
   function markPaid(id){
-    var assigns=JSON.parse(localStorage.getItem('hs_assigned')||'[]');
-    var shoot = assigns.find(function(a){return String(a.id)===String(id);});
-    assigns=assigns.map(function(a){if(String(a.id)===String(id)){a.status='paid';a.paidAt=new Date().toLocaleString();} return a;});
-    localStorage.setItem('hs_assigned',JSON.stringify(assigns));
-    // Also update hs_assigned_shoots so staff page reflects paid status
-    var staffShoots=JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-    staffShoots=staffShoots.map(function(a){if(String(a.id)===String(id)){a.status='paid';a.paidAt=new Date().toLocaleString();} return a;});
-    localStorage.setItem('hs_assigned_shoots',JSON.stringify(staffShoots));
-    // Sync to Firebase
-    if(window.fbUpdate){
-      fbUpdate('assigned_shoots',String(id),{status:'paid',paidAt:new Date().toLocaleString()});
-    }
-    // Send notification to staff
-    if(window.fbSave && shoot){
+    var assigns=JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var shoot=assigns.find(function(a){return String(a.id)===String(id);});
+    assigns=assigns.map(function(a){if(String(a.id)===String(id)){a.status='paid';a.paidAt=new Date().toLocaleString();}return a;});
+    localStorage.setItem('hs_assigned_shoots',JSON.stringify(assigns));
+    if(window.fbUpdate) fbUpdate('assigned_shoots',String(id),{status:'paid',paidAt:new Date().toLocaleString()});
+    if(window.fbSave&&shoot){
       fbSave('staff_notifications',{
-        staffId: String((shoot.staffIds&&shoot.staffIds[0])||shoot.staffId||''),
+        staffId:String(shoot.staffId||''),
         type:'payment_released',
         title:'💸 Payment Released!',
-        message:'Your payment for shoot "'+(shoot.bookingName||shoot.clientName||shoot.service||'')+'" has been released. Money will be in your bank within 24-48 hours.',
-        amount: shoot.credit||0,
-        shootId: String(id),
-        read: false,
-        createdAt: new Date().toLocaleString()
+        message:'Your payment for "'+(shoot.service||shoot.clientName||'')+'" has been released. Money will be in your bank within 24-48 hours.',
+        amount:shoot.credit||0,
+        shootId:String(id),
+        read:false,
+        createdAt:new Date().toLocaleString()
       });
     }
     loadPayoutsPanel();
