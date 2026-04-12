@@ -2102,13 +2102,100 @@ Priority Support</textarea></div>
 
     <!-- MARKETING ENQUIRIES TAB -->
     <div class="tab-panel" id="tab-mkt-enquiries">
-      <div class="about-form">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-bullhorn" style="color:#c9a84c;margin-right:0.5rem;"></i> Marketing Enquiries</h2>
-          <span style="font-size:0.8rem;color:#9a9080;" id="mktEnquiriesCount"></span>
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,rgba(156,39,176,0.15),rgba(33,150,243,0.08));border:1px solid rgba(156,39,176,0.3);border-radius:20px;padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#9c27b0,#673ab7);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(156,39,176,0.35);">
+            <i class="fas fa-bullhorn" style="color:#fff;font-size:1.2rem;"></i>
+          </div>
+          <div>
+            <div style="font-size:1.2rem;font-weight:900;color:#fff;">Digital Marketing Hub</div>
+            <div style="font-size:0.78rem;color:#9a9080;margin-top:0.2rem;">Manage all marketing enquiries, plans &amp; campaigns</div>
+          </div>
         </div>
-        <div id="mktEnquiriesList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+        <button onclick="renderMktEnquiries()" style="background:rgba(156,39,176,0.15);border:1px solid rgba(156,39,176,0.3);color:#ce93d8;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
       </div>
+
+      <!-- KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:1.5rem;">
+        <div style="background:#111;border:1px solid rgba(156,39,176,0.2);border-radius:14px;padding:1rem 1.1rem;">
+          <div style="font-size:0.6rem;font-weight:800;color:#9a9080;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;">Total</div>
+          <div style="font-size:1.8rem;font-weight:900;color:#ce93d8;" id="mkt_total">—</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,152,0,0.2);border-radius:14px;padding:1rem 1.1rem;">
+          <div style="font-size:0.6rem;font-weight:800;color:#9a9080;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;">New</div>
+          <div style="font-size:1.8rem;font-weight:900;color:#ff9800;" id="mkt_new">—</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(33,150,243,0.2);border-radius:14px;padding:1rem 1.1rem;">
+          <div style="font-size:0.6rem;font-weight:800;color:#9a9080;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;">Accepted</div>
+          <div style="font-size:1.8rem;font-weight:900;color:#2196f3;" id="mkt_accepted">—</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1rem 1.1rem;">
+          <div style="font-size:0.6rem;font-weight:800;color:#9a9080;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;">Done</div>
+          <div style="font-size:1.8rem;font-weight:900;color:#4caf50;" id="mkt_done">—</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1rem 1.1rem;">
+          <div style="font-size:0.6rem;font-weight:800;color:#9a9080;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.4rem;">Premium</div>
+          <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;" id="mkt_premium">—</div>
+        </div>
+      </div>
+
+      <!-- Plan Cards -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:linear-gradient(135deg,rgba(160,120,48,0.12),rgba(0,0,0,0.4));border:1px solid rgba(160,120,48,0.3);border-radius:16px;padding:1.25rem;">
+          <div style="font-size:0.65rem;font-weight:800;color:#a07830;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-leaf" style="margin-right:4px;"></i>Basic Plan</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#fff;">&#8377;14,000</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">6 months</div>
+          <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.3rem;">
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#a07830;margin-right:5px;"></i>Social Media Management</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#a07830;margin-right:5px;"></i>Content Creation (8 posts/mo)</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#a07830;margin-right:5px;"></i>Monthly Report</div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(0,0,0,0.4));border:1px solid rgba(201,168,76,0.35);border-radius:16px;padding:1.25rem;">
+          <div style="font-size:0.65rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="margin-right:4px;"></i>Standard Plan</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#fff;">&#8377;22,000</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">6 months</div>
+          <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.3rem;">
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Everything in Basic</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Reels &amp; Video Content (4/mo)</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Paid Ad Campaigns</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Weekly Analytics</div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(232,201,106,0.15),rgba(0,0,0,0.4));border:1px solid rgba(232,201,106,0.45);border-radius:16px;padding:1.25rem;position:relative;">
+          <div style="position:absolute;top:0.6rem;right:0.75rem;font-size:0.58rem;font-weight:900;color:#000;background:#e8c96a;padding:0.15rem 0.5rem;border-radius:50px;">BEST</div>
+          <div style="font-size:0.65rem;font-weight:800;color:#e8c96a;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-gem" style="margin-right:4px;"></i>Premium Plan</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#fff;">&#8377;40,000</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">3 months</div>
+          <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.3rem;">
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#e8c96a;margin-right:5px;"></i>Everything in Standard</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#e8c96a;margin-right:5px;"></i>Dedicated Account Manager</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#e8c96a;margin-right:5px;"></i>Influencer Collaborations</div>
+            <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#e8c96a;margin-right:5px;"></i>Priority Support 24/7</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;">
+        <button class="filter-btn active" id="mktFilter_all" onclick="filterMkt('all',this)">All</button>
+        <button class="filter-btn" id="mktFilter_new" onclick="filterMkt('new',this)">New</button>
+        <button class="filter-btn" id="mktFilter_accepted" onclick="filterMkt('accepted',this)">Accepted</button>
+        <button class="filter-btn" id="mktFilter_done" onclick="filterMkt('done',this)">Done</button>
+        <button class="filter-btn" onclick="filterMkt('Premium',this)">&#128142; Premium</button>
+        <button class="filter-btn" onclick="filterMkt('Standard',this)">&#127942; Standard</button>
+        <button class="filter-btn" onclick="filterMkt('Basic',this)">&#127807; Basic</button>
+        <input id="mkt_search" type="text" placeholder="&#128269; Search name, brand, phone..." oninput="renderMktList()" style="flex:1;min-width:180px;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.45rem 0.85rem;color:#fff;font-family:inherit;font-size:0.8rem;outline:none;">
+      </div>
+
+      <!-- Enquiries list -->
+      <div style="background:#111;border:1px solid rgba(156,39,176,0.1);border-radius:16px;padding:1.25rem 1.5rem;">
+        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-inbox" style="color:#ce93d8;margin-right:0.5rem;"></i>Marketing Enquiries <span id="mktEnquiriesCount" style="font-size:0.72rem;color:#6a6050;font-weight:600;"></span></div>
+        <div id="mktEnquiriesList"><p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:2rem;">Loading...</p></div>
+      </div>
+
     </div>
 
     </div>
@@ -6521,11 +6608,78 @@ Priority Support</textarea></div>
     }
 
     // ── MARKETING ENQUIRIES TAB ───────────────────────────────────
-    async function renderMktEnquiries(){
+    var _mktDocs = [];
+    var _mktFilter = 'all';
+
+    function filterMkt(f, btn) {
+      _mktFilter = f;
+      document.querySelectorAll('#tab-mkt-enquiries .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      if(btn) btn.classList.add('active');
+      renderMktList();
+    }
+
+    function renderMktList() {
       var el = document.getElementById('mktEnquiriesList');
       var countEl = document.getElementById('mktEnquiriesCount');
       if(!el) return;
-      el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;">Loading...</p>';
+      var search = (document.getElementById('mkt_search')||{}).value||'';
+      var docs = _mktDocs.filter(function(d){
+        if(_mktFilter==='new'      && (d.accepted||d.status==='done')) return false;
+        if(_mktFilter==='accepted' && !(d.accepted||d.status==='accepted')) return false;
+        if(_mktFilter==='done'     && d.status!=='done') return false;
+        if(_mktFilter==='Premium'  && d.plan!=='Premium') return false;
+        if(_mktFilter==='Standard' && d.plan!=='Standard') return false;
+        if(_mktFilter==='Basic'    && d.plan!=='Basic') return false;
+        if(search){ var s=search.toLowerCase(); return (d.name||'').toLowerCase().includes(s)||(d.phone||'').includes(s)||(d.brand||'').toLowerCase().includes(s)||(d.message||'').toLowerCase().includes(s); }
+        return true;
+      });
+      if(countEl) countEl.textContent = docs.length+' result'+(docs.length===1?'':'s');
+      if(!docs.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:2rem;">No enquiries found.</p>'; return; }
+      var pc=function(p){return p==='Premium'?'#e8c96a':p==='Standard'?'#c9a84c':'#a07830';};
+      var pb=function(p){return p==='Premium'?'rgba(232,201,106,0.12)':p==='Standard'?'rgba(201,168,76,0.12)':'rgba(160,120,48,0.1)';};
+      var pbo=function(p){return p==='Premium'?'rgba(232,201,106,0.4)':p==='Standard'?'rgba(201,168,76,0.4)':'rgba(160,120,48,0.3)';};
+      var pi=function(p){return p==='Premium'?'&#8377;40,000 &middot; 3 months':p==='Standard'?'&#8377;22,000 &middot; 6 months':p==='Basic'?'&#8377;14,000 &middot; 6 months':'';};
+      el.innerHTML = docs.map(function(d){
+        var isDone=d.status==='done'; var isAcc=d.accepted||d.status==='accepted';
+        var statusBadge = isDone
+          ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check-double"></i> Done</span>'
+          : isAcc
+            ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.65rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check"></i> Accepted</span>'
+            : '<span style="background:rgba(255,152,0,0.12);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.65rem;font-weight:800;padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-clock"></i> New</span>';
+        var actionBtns = isDone ? ''
+          : isAcc
+            ? '<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>'
+            : '<button onclick="acceptMktEnquiry(\''+d.id+'\')" style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+              +'<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>';
+        var ts = d.submittedAt ? new Date(d.submittedAt.seconds?d.submittedAt.seconds*1000:d.submittedAt).toLocaleString() : '';
+        var borderColor = d.plan ? pbo(d.plan) : 'rgba(156,39,176,0.15)';
+        var leftColor   = d.plan ? pc(d.plan)  : '#9c27b0';
+        return '<div style="background:#0d0d0d;border:1px solid '+borderColor+';border-left:4px solid '+leftColor+';border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
+              +'<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+(d.name||'—')+'</div>'
+              +(d.plan&&d.plan!=='Not selected'?'<div style="background:'+pb(d.plan)+';border:1px solid '+pbo(d.plan)+';color:'+pc(d.plan)+';font-size:0.6rem;font-weight:900;padding:0.18rem 0.65rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;">'+d.plan+'</div>':'')
+              +statusBadge
+            +'</div>'
+            +'<div style="font-size:0.65rem;color:#4a4030;">'+ts+'</div>'
+          +'</div>'
+          +'<div style="display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:0.65rem;">'
+            +(d.phone?'<div style="font-size:0.78rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;margin-right:4px;"></i><a href="tel:'+d.phone+'" style="color:#9a9080;text-decoration:none;">'+d.phone+'</a></div>':'')
+            +(d.brand?'<div style="font-size:0.78rem;color:#9a9080;"><i class="fas fa-store" style="color:#c9a84c;margin-right:4px;"></i>'+d.brand+'</div>':'')
+            +(d.instagram?'<div style="font-size:0.78rem;color:#9a9080;"><i class="fab fa-instagram" style="color:#e1306c;margin-right:4px;"></i>'+d.instagram+'</div>':'')
+            +(d.email?'<div style="font-size:0.78rem;color:#9a9080;"><i class="fas fa-envelope" style="color:#c9a84c;margin-right:4px;"></i>'+d.email+'</div>':'')
+          +'</div>'
+          +(d.plan&&d.plan!=='Not selected'&&pi(d.plan)?'<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:0.45rem 0.85rem;margin-bottom:0.65rem;font-size:0.75rem;color:'+pc(d.plan)+';"><i class="fas fa-tag" style="margin-right:5px;"></i>'+d.plan+' Plan — '+pi(d.plan)+'</div>':'')
+          +(d.message?'<div style="font-size:0.78rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.55rem 0.85rem;margin-bottom:0.65rem;">'+d.message+'</div>':'')
+          +(actionBtns?'<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">'+actionBtns+'</div>':'')
+        +'</div>';
+      }).join('');
+    }
+
+    async function renderMktEnquiries(){
+      var el = document.getElementById('mktEnquiriesList');
+      if(!el) return;
+      el.innerHTML = '<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
       try{
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -6533,56 +6687,23 @@ Priority Support</textarea></div>
         var app     = fbMod.getApps().find(function(a){return a.name==='mkt-enq';}) || fbMod.initializeApp(fbCfg,'mkt-enq');
         var db      = fbStore.getFirestore(app);
         var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'marketing_enquiries'), fbStore.orderBy('submittedAt','desc')));
-        var docs    = [];
-        snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
-        if(countEl) countEl.textContent = docs.length + ' enquir' + (docs.length===1?'y':'ies');
-        // update badge
+        _mktDocs = [];
+        snap.forEach(function(d){ _mktDocs.push(Object.assign({id:d.id},d.data())); });
+        // KPIs
+        var kv=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+        kv('mkt_total',   _mktDocs.length);
+        kv('mkt_new',     _mktDocs.filter(function(d){return !d.accepted&&d.status!=='done';}).length);
+        kv('mkt_accepted',_mktDocs.filter(function(d){return d.accepted||d.status==='accepted';}).length);
+        kv('mkt_done',    _mktDocs.filter(function(d){return d.status==='done';}).length);
+        kv('mkt_premium', _mktDocs.filter(function(d){return d.plan==='Premium';}).length);
+        // Badge
         var badge = document.getElementById('mktEnquiriesBadge');
-        if(badge && docs.length){ badge.style.display='inline'; badge.textContent=docs.length; }
-        if(!docs.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No marketing enquiries yet.</p>'; return; }
-        el.innerHTML = docs.map(function(d){
-          var planColor = d.plan==='Premium' ? '#e8c96a' : d.plan==='Standard' ? '#c9a84c' : '#a07830';
-          var planBg    = d.plan==='Premium' ? 'rgba(232,201,106,0.12)' : d.plan==='Standard' ? 'rgba(201,168,76,0.12)' : 'rgba(160,120,48,0.1)';
-          var planBorder= d.plan==='Premium' ? 'rgba(232,201,106,0.4)' : d.plan==='Standard' ? 'rgba(201,168,76,0.4)' : 'rgba(160,120,48,0.3)';
-          var planInfo  = d.plan==='Premium' ? '&#8377;40,000 &middot; 3 months' : d.plan==='Standard' ? '&#8377;22,000 &middot; 6 months' : d.plan==='Basic' ? '&#8377;14,000 &middot; 6 months' : '';
-          var cardBorder= d.plan ? 'border:1px solid '+planBorder+';' : 'border:1px solid rgba(201,168,76,0.12);';
-          var isDone = d.status === 'done'; var isAccepted = d.accepted || d.status === 'accepted';
-          var actionBtns = isDone
-            ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check-double"></i> Done</span>'
-            : (isAccepted
-              ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:6px;"><i class="fas fa-check"></i> Accepted</span>'
-              + '<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>'
-              : '<button onclick="acceptMktEnquiry(\''+d.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
-              + '<button onclick="markMktEnquiryDone(\''+d.id+'\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Mark Done</button>');
-          return '<div style="background:#111;'+cardBorder+'border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;">'
-            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
-            +'<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">'
-            +'<div style="font-size:1rem;font-weight:800;color:#fff;">'+(d.name||'—')+'</div>'
-            +(d.plan && d.plan!=='Not selected'
-              ? '<div style="background:'+planBg+';border:1px solid '+planBorder+';color:'+planColor+';font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;">'+d.plan+' Plan</div>'
-              : '')
-            +'</div>'
-            +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">'
-            + actionBtns
-            +'<div style="font-size:0.68rem;color:#6a6050;">'+(d.submittedAt ? new Date(d.submittedAt.seconds ? d.submittedAt.seconds*1000 : d.submittedAt).toLocaleString() : '')+'</div>'
-            +'</div></div>'
-            +(d.plan && d.plan!=='Not selected' && planInfo
-              ? '<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.85rem;display:flex;align-items:center;gap:0.5rem;">'
-                +'<i class="fas fa-tag" style="color:'+planColor+';font-size:0.75rem;"></i>'
-                +'<span style="font-size:0.8rem;font-weight:700;color:'+planColor+';">'+d.plan+' Plan</span>'
-                +'<span style="font-size:0.75rem;color:#6a6050;">— '+planInfo+'</span>'
-                +'</div>'
-              : '')
-            +'<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.6rem;">'
-            +'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;margin-right:0.4rem;"></i>'+(d.phone||'—')+'</div>'
-            +(d.brand?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fas fa-store" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.brand+'</div>':'')
-            +(d.instagram?'<div style="font-size:0.82rem;color:#9a9080;"><i class="fab fa-instagram" style="color:#c9a84c;margin-right:0.4rem;"></i>'+d.instagram+'</div>':'')
-            +'</div>'
-            +(d.message?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.6rem 0.85rem;">'+d.message+'</div>':'')
-            +'</div>';
-        }).join('');
+        var newCount = _mktDocs.filter(function(d){return !d.accepted&&d.status!=='done';}).length;
+        if(badge){ badge.textContent=newCount; badge.style.display=newCount>0?'inline':'none'; }
+        renderMktList();
       } catch(e){
-        el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error loading enquiries: '+e.message+'</p>';
+        var el2=document.getElementById('mktEnquiriesList');
+        if(el2) el2.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';
       }
     }
 
