@@ -8143,9 +8143,7 @@ Priority Support</textarea></div>
 
   // ── DASHBOARD PANEL DATA ──
   function loadDashboardPanel(){
-    if(window.hsSyncFromFirebase){
-      window.hsSyncFromFirebase().then(function(){ _renderDashboardPanel(); });
-    } else { _renderDashboardPanel(); }
+    _renderDashboardPanel();
   }
   function _renderDashboardPanel(){
     var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
@@ -8414,10 +8412,7 @@ Priority Support</textarea></div>
 
   // ── APPLICATIONS PANEL DATA ──
   function loadPayoutsPanel(){
-    // Pull latest from Firebase first, then render
-    if(window.hsSyncFromFirebase){
-      window.hsSyncFromFirebase().then(function(){ _renderPayoutsPanel(); });
-    } else { _renderPayoutsPanel(); }
+    _renderPayoutsPanel();
   }
   function _renderPayoutsPanel(){
     var staff    = JSON.parse(localStorage.getItem('hs_staff')||'[]');
