@@ -160,10 +160,14 @@
   function mktLogin(){
     var u = document.getElementById('mktUser').value.trim().toLowerCase();
     var p = document.getElementById('mktPass').value.trim();
+    var errEl = document.getElementById('loginErr');
+    if(!u || !p){ errEl.style.display='block'; errEl.textContent='Please enter username and password.'; return; }
     var match = MKT_USERS.find(function(x){ return x.username === u && x.password === p; });
-    if(!match){ document.getElementById('loginErr').style.display='block'; return; }
+    if(!match){ errEl.style.display='block'; errEl.textContent='Invalid credentials. Try: marketing / ogmarketing2025'; return; }
+    errEl.style.display='none';
     localStorage.setItem('hs_mkt_logged','1');
     localStorage.setItem('hs_mkt_user', u);
+    localStorage.setItem('hs_role','marketing');
     showPortal();
   }
 
@@ -180,10 +184,12 @@
   }
 
   // Check if already logged in (own login or via main login page)
-  if(localStorage.getItem('hs_mkt_logged')==='1' || localStorage.getItem('hs_role')==='marketing'){
-    localStorage.setItem('hs_mkt_logged','1');
-    showPortal();
-  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(localStorage.getItem('hs_mkt_logged')==='1' || localStorage.getItem('hs_role')==='marketing'){
+      localStorage.setItem('hs_mkt_logged','1');
+      showPortal();
+    }
+  });
 
   // ── TAB SWITCH ───────────────────────────────────────────────
   function switchMktTab(name, btn){
