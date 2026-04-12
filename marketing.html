@@ -145,19 +145,13 @@
 
     <!-- MEETINGS -->
     <div class="panel" id="panel-meetings">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
-        <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-calendar-alt"></i> Meetings</div>
-        <button onclick="openAddMeeting()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Schedule Meeting</button>
-      </div>
+      <div class="sec-title"><i class="fas fa-calendar-alt"></i> Meetings from Admin</div>
       <div id="meetingsList"></div>
     </div>
 
     <!-- INVITATIONS -->
     <div class="panel" id="panel-invitations">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
-        <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-envelope-open-text"></i> Invitations</div>
-        <button onclick="openSendInvite()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Send Invitation</button>
-      </div>
+      <div class="sec-title"><i class="fas fa-envelope-open-text"></i> Invitations from Admin</div>
       <div id="invitationsList"></div>
     </div>
 
@@ -512,8 +506,78 @@
     try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_leads',lead.id),lead,{merge:true}); }catch(e){}
   }
 
-  // ── MEETINGS ───────────────────────────────────────────────────
-  function renderMeetings(){
+  // ── MEETINGS (from admin) ─────────────────────────────────────────
+  async function renderMeetings(){
+    var el = document.getElementById('meetingsList');
+    if(!el) return;
+    el.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'meetings'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
+      if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar-alt"></i>No meetings scheduled yet.</div>'; return; }
+      var now = new Date();
+      el.innerHTML = docs.map(function(m){
+        var isPast = new Date((m.date||'')+' '+(m.time||'00:00')) < now;
+        var bc = isPast?'#4a4030':'#2196f3';
+        return '<div class="card" style="border-left:3px solid '+bc+';'+(isPast?'opacity:0.7;':'')+'">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          +'<div><div class="card-title">'+m.title+'</div>'
+          +'<div class="card-meta" style="color:#2196f3;"><i class="fas fa-calendar-alt"></i> '+(m.date||'')+(m.time?' at '+m.time:'')+(m.venue?' · '+m.venue:'')+'</div></div>'
+          +(isPast?'<span style="font-size:0.62rem;color:#6a6050;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:0.18rem 0.55rem;border-radius:50px;">Past</span>':'<span style="font-size:0.62rem;color:#2196f3;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);padding:0.18rem 0.55rem;border-radius:50px;">Upcoming</span>')
+          +'</div>'
+          +(m.description?'<div class="card-msg">'+m.description+'</div>':'')
+          +(m.link?'<a href="'+m.link+'" target="_blank" style="font-size:0.75rem;color:#2196f3;font-weight:700;"><i class="fas fa-video"></i> Join Meeting</a>':'')
+          +'</div>';
+      }).join('');
+    }catch(e){ el.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i>Error: '+e.message+'</div>'; }
+  }
+
+  // ── INVITATIONS (from admin) ─────────────────────────────────────────
+  async function renderInvitations(){
+    var el = document.getElementById('invitationsList');
+    if(!el) return;
+    el.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'invitations'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      docs.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
+      if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-envelope-open-text"></i>No invitations yet.</div>'; return; }
+      el.innerHTML = docs.map(function(inv){
+        var mktResp = inv.responses&&inv.responses['marketing'];
+        var sc = mktResp==='accepted'?'#4caf50':mktResp==='declined'?'#f44336':'#ff9800';
+        var sl = mktResp==='accepted'?'Accepted':mktResp==='declined'?'Declined':'Pending';
+        return '<div class="card" style="border-left:3px solid '+sc+';">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          +'<div><div class="card-title">'+(inv.title||'Invitation')+'</div>'
+          +'<div class="card-meta">'+(inv.date||'')+(inv.time?' at '+inv.time:'')+(inv.venue?' · '+inv.venue:'')+'</div></div>'
+          +'<span style="font-size:0.65rem;font-weight:800;color:'+sc+';background:'+sc+'18;border:1px solid '+sc+'44;padding:0.2rem 0.65rem;border-radius:50px;">'+sl+'</span>'
+          +'</div>'
+          +(inv.description?'<div class="card-msg">'+inv.description+'</div>':'')
+          +(!mktResp?'<div style="display:flex;gap:0.5rem;margin-top:0.5rem;">'
+            +'<button onclick="respondMktInvitation(\''+inv.id+'\',\'accepted\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.55rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+            +'<button onclick="respondMktInvitation(\''+inv.id+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.55rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Decline</button>'
+            +'</div>':'')
+          +'</div>';
+      }).join('');
+    }catch(e){ el.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i>Error: '+e.message+'</div>'; }
+  }
+
+  async function respondMktInvitation(invId, response){
+    try{
+      var f = await getFirebase();
+      var update = {};
+      update['responses.marketing'] = response;
+      update['responses.marketing_name'] = 'Marketing Team';
+      update['responses.marketing_at'] = new Date().toLocaleString();
+      await f.s.setDoc(f.s.doc(f.db,'invitations',invId), update, {merge:true});
+      renderInvitations();
+    }catch(e){ alert('Error: '+e.message); }
+  }
     var el = document.getElementById('meetingsList');
     var meetings = JSON.parse(localStorage.getItem('mkt_meetings')||'[]').slice().reverse();
     if(!meetings.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar-alt"></i>No meetings scheduled yet.</div>'; return; }
@@ -531,71 +595,6 @@
         (m.notes?'<div class="card-msg">'+m.notes+'</div>':'')+
         '</div>';
     }).join('');
-  }
-
-  function openAddMeeting(){
-    var title = prompt('Meeting Title *'); if(!title) return;
-    var client = prompt('Client / Company Name');
-    var date = prompt('Date (e.g. 2025-04-10)');
-    var time = prompt('Time (e.g. 11:00 AM)');
-    var location = prompt('Location / Platform (e.g. Zoom, Office)');
-    var notes = prompt('Notes');
-    var m = {id:'mtg_'+Date.now(), title:title, client:client||'', date:date||'', time:time||'', location:location||'', notes:notes||'', status:'scheduled', addedAt:new Date().toLocaleString()};
-    var meetings = JSON.parse(localStorage.getItem('mkt_meetings')||'[]');
-    meetings.push(m);
-    localStorage.setItem('mkt_meetings', JSON.stringify(meetings));
-    (async function(){ try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_meetings',m.id),m,{merge:true}); }catch(e){} })();
-    renderMeetings();
-  }
-
-  function markMeetingDone(id){
-    var meetings = JSON.parse(localStorage.getItem('mkt_meetings')||'[]');
-    meetings = meetings.map(function(m){ return m.id===id ? Object.assign({},m,{status:'done'}) : m; });
-    localStorage.setItem('mkt_meetings', JSON.stringify(meetings));
-    (async function(){ try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_meetings',id),{status:'done'},{merge:true}); }catch(e){} })();
-    renderMeetings();
-  }
-
-  function deleteMeeting(id){
-    if(!confirm('Delete this meeting?')) return;
-    var meetings = JSON.parse(localStorage.getItem('mkt_meetings')||'[]').filter(function(m){ return m.id!==id; });
-    localStorage.setItem('mkt_meetings', JSON.stringify(meetings));
-    renderMeetings();
-  }
-
-  // ── INVITATIONS ───────────────────────────────────────────────────
-  function renderInvitations(){
-    var el = document.getElementById('invitationsList');
-    var invites = JSON.parse(localStorage.getItem('mkt_invitations')||'[]').slice().reverse();
-    if(!invites.length){ el.innerHTML='<div class="empty"><i class="fas fa-envelope-open-text"></i>No invitations sent yet.</div>'; return; }
-    el.innerHTML = invites.map(function(inv){
-      return '<div class="card">'+
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'+
-        '<div><div class="card-title">'+inv.to+'</div>'+
-        '<div class="card-meta">'+(inv.phone||inv.email||'')+'</div></div>'+
-        '<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;">'+inv.type+'</span>'+
-        '</div>'+
-        '<div class="card-msg">'+inv.message+'</div>'+
-        '<div style="display:flex;gap:0.5rem;margin-top:0.5rem;">'+
-        '<a href="https://wa.me/91'+inv.phone.replace(/[^0-9]/g,'')+encodeURIComponent('?text='+inv.message)+'" target="_blank" style="background:#25d366;color:#fff;border:none;border-radius:6px;padding:0.3rem 0.75rem;font-size:0.72rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i> Send WhatsApp</a>'+
-        '</div>'+
-        '<div style="font-size:0.65rem;color:#777;margin-top:0.4rem;">'+inv.sentAt+'</div>'+
-        '</div>';
-    }).join('');
-  }
-
-  function openSendInvite(){
-    var to = prompt('Recipient Name *'); if(!to) return;
-    var phone = prompt('Phone Number');
-    var email = prompt('Email');
-    var type = prompt('Invitation Type (e.g. Shoot Offer, Event, Collaboration)');
-    var message = prompt('Message *'); if(!message) return;
-    var inv = {id:'inv_'+Date.now(), to:to, phone:phone||'', email:email||'', type:type||'General', message:message, sentAt:new Date().toLocaleString()};
-    var invites = JSON.parse(localStorage.getItem('mkt_invitations')||'[]');
-    invites.push(inv);
-    localStorage.setItem('mkt_invitations', JSON.stringify(invites));
-    (async function(){ try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_invitations',inv.id),inv,{merge:true}); }catch(e){} })();
-    renderInvitations();
   }
 
   // ── PROFILE ───────────────────────────────────────────────────
