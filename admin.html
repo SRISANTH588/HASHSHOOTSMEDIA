@@ -4965,7 +4965,10 @@ Priority Support</textarea></div>
         var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')));
         var fbBookings = [];
         bSnap.forEach(function(d){ var data=d.data(); fbBookings.push(Object.assign({id:d.id},data)); });
-        if(fbBookings.length){ bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }); }
+        if(fbBookings.length){
+          localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+          bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
+        }
         // Fetch staff from Firestore
         var sSnap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
         var staffList = [];
@@ -5428,6 +5431,8 @@ Priority Support</textarea></div>
       // Push payment release to Firebase so staff wallet updates on any device
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'paid', paidAt:a.paidAt, credit:a.credit});
       if(window.fbUpdate) fbUpdate('wallets', String(a.staffId), {balance:wallet.balance, totalEarned:wallet.totalEarned, pending:wallet.pending, lastUpdated:new Date().toLocaleString()});
+      if(window.fbSave) fbSave('wallet_transactions', {staffId:String(a.staffId),staffName:a.staffName,type:'credit',amount:a.credit,label:'Payment Released: '+(a.service||'Shoot'),note:(a.clientName||'')+' — '+(a.location||a.city||''),assignId:String(a.id)});
+      if(window.fbSave) fbSave('staff_notifications', {staffId:String(a.staffId),type:'payment',title:'💰 Payment Released',message:'₹'+Number(a.credit).toLocaleString('en-IN')+' credited to your wallet for '+(a.service||'your shoot')+'.',read:false});
       renderAssignedList();
       updateCreatorPendingPayments();
       showAssignToast('\u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
@@ -7515,18 +7520,10 @@ Priority Support</textarea></div>
           var list = [];
           snap.forEach(function(d){
             var data = d.data();
-            // Always use Firestore doc ID as the shoot id
             if(!data.id) data.id = d.id;
             list.push(data);
           });
-          // Merge with local to preserve any offline changes
-          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-          list.forEach(function(fb){
-            var idx = local.findIndex(function(x){ return String(x.id)===String(fb.id); });
-            if(idx > -1){ Object.assign(local[idx], fb); }
-            else { local.push(fb); }
-          });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
           if(currentTab==='assign') renderAssignedList();
           if(currentTab==='payments') renderAdminPayments();
           // Update payments badge
