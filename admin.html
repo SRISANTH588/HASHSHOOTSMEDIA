@@ -224,6 +224,12 @@
         <span class="nav-badge gold" id="bookingsNavBadge" style="display:none;">0</span>
       </button>
 
+      <!-- PAYOUTS -->
+      <button class="nav-item" id="sideNav-payouts" onclick="switchSideNav('payouts',this)">
+        <i class="fas fa-rupee-sign"></i> Payouts
+        <span class="nav-badge" id="payoutsNavBadge" style="display:none;background:#f44336;">0</span>
+      </button>
+
       <!-- APPLICATIONS -->
       <button class="nav-item" id="sideNav-applications" onclick="switchSideNav('applications',this)">
         <i class="fas fa-layer-group"></i> Applications
@@ -784,6 +790,46 @@
     </div>
 
     </div><!-- end tab-bookings -->
+
+    <!-- ═══ PAYOUTS PANEL ═══ -->
+    <div class="tab-panel" id="tab-payouts">
+      <!-- KPI row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(255,152,0,0.2);border-radius:14px;padding:1.1rem 1.25rem;">
+          <div style="width:32px;height:32px;background:rgba(255,152,0,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;"><i class="fas fa-clock" style="color:#ff9800;"></i></div>
+          <div style="font-size:1.8rem;font-weight:900;color:#ff9800;" id="py_pendingCount">0</div>
+          <div style="font-size:0.72rem;color:#9a9080;">Awaiting Payment</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1.1rem 1.25rem;">
+          <div style="width:32px;height:32px;background:rgba(76,175,80,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i></div>
+          <div style="font-size:1.8rem;font-weight:900;color:#4caf50;" id="py_paidCount">0</div>
+          <div style="font-size:0.72rem;color:#9a9080;">Paid Out</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:1.1rem 1.25rem;">
+          <div style="width:32px;height:32px;background:rgba(201,168,76,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;"></i></div>
+          <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;" id="py_totalAmt">₹0</div>
+          <div style="font-size:0.72rem;color:#9a9080;">Total Released</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.2);border-radius:14px;padding:1.1rem 1.25rem;">
+          <div style="width:32px;height:32px;background:rgba(244,67,54,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;"><i class="fas fa-wallet" style="color:#f44336;"></i></div>
+          <div style="font-size:1.8rem;font-weight:900;color:#f44336;" id="py_pendingAmt">₹0</div>
+          <div style="font-size:0.72rem;color:#9a9080;">Pending Amount</div>
+        </div>
+      </div>
+      <!-- Staff payout list -->
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:1.25rem 1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <div style="font-size:0.9rem;font-weight:800;color:#fff;"><i class="fas fa-users" style="color:#c9a84c;margin-right:0.5rem;"></i>Staff Payout Status</div>
+          <button onclick="loadPayoutsPanel()" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+        <div id="py_staffList"><p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:2rem;">Loading...</p></div>
+      </div>
+      <!-- Assigned shoots pending payment -->
+      <div style="background:#111;border:1px solid rgba(255,152,0,0.1);border-radius:16px;padding:1.25rem 1.5rem;margin-top:1rem;">
+        <div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-list" style="color:#ff9800;margin-right:0.5rem;"></i>Shoots Awaiting Payout</div>
+        <div id="py_assignList"><p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:2rem;">Loading...</p></div>
+      </div>
+    </div><!-- end tab-payouts -->
 
     <!-- ABOUT US TAB -->
     <div class="tab-panel" id="tab-about">
@@ -8031,16 +8077,18 @@ Priority Support</textarea></div>
     _sideSection = section;
     document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
-    ['dashboard','applications','video-contents','bookings'].forEach(function(p){
+    ['dashboard','applications','video-contents','bookings','payouts'].forEach(function(p){
       var el = document.getElementById('tab-'+p);
       if(el) el.classList.remove('active');
     });
+    // also hide all settings tab-panels
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
     if(section !== 'settings'){
       document.getElementById('settingsSubmenu').classList.remove('open');
       document.getElementById('settingsChevron').style.transform = '';
     }
-    var titles = { dashboard:'Admin Dashboard', applications:'Applications', 'video-contents':'Video Contents', bookings:'Bookings' };
-    document.getElementById('topbarTitle').innerHTML = titles[section] ? titles[section].replace(/(\w+)$/, '<span>$1</span>') : section;
+    var titles = { dashboard:'Admin <span>Dashboard</span>', applications:'Applications', 'video-contents':'Video Contents', bookings:'Bookings <span>Manager</span>', payouts:'Staff <span>Payouts</span>' };
+    document.getElementById('topbarTitle').innerHTML = titles[section] || section;
     if(section === 'dashboard'){
       document.getElementById('tab-dashboard').classList.add('active');
       loadDashboardPanel();
@@ -8054,10 +8102,12 @@ Priority Support</textarea></div>
       loadVideoContentsPanel();
     }
     if(section === 'bookings'){
-      // Show the bookings tab panel directly
       var bk = document.getElementById('tab-bookings');
       if(bk){ bk.classList.add('active'); loadAll(); renderDressPhotos(); }
-      document.getElementById('topbarTitle').innerHTML = 'Bookings <span>Manager</span>';
+    }
+    if(section === 'payouts'){
+      var py = document.getElementById('tab-payouts');
+      if(py){ py.classList.add('active'); loadPayoutsPanel(); }
     }
   }
 
@@ -8069,8 +8119,7 @@ Priority Support</textarea></div>
     chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
     document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
-    // Hide main panels, show the active tab-panel
-    ['dashboard','applications','video-contents'].forEach(function(p){
+    ['dashboard','applications','video-contents','bookings','payouts'].forEach(function(p){
       var el = document.getElementById('tab-'+p);
       if(el) el.classList.remove('active');
     });
@@ -8351,6 +8400,79 @@ Priority Support</textarea></div>
   }
 
   // ── APPLICATIONS PANEL DATA ──
+  function loadPayoutsPanel(){
+    var staff    = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+    var assigns  = JSON.parse(localStorage.getItem('hs_assigned')||'[]');
+    var done     = assigns.filter(function(a){return a.status==='done';});
+    var paid     = assigns.filter(function(a){return a.status==='paid';});
+    var pendingAmt=0, totalAmt=0;
+    staff.forEach(function(s){
+      var w=JSON.parse(localStorage.getItem('hs_wallet_'+s.id)||'{"pending":0,"balance":0}');
+      pendingAmt+=(w.pending||0); totalAmt+=(w.balance||0);
+    });
+    var el=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+    el('py_pendingCount', done.length);
+    el('py_paidCount',    paid.length);
+    el('py_totalAmt',     '\u20b9'+totalAmt.toLocaleString('en-IN'));
+    el('py_pendingAmt',   '\u20b9'+pendingAmt.toLocaleString('en-IN'));
+    // Payout badge
+    var pb=document.getElementById('payoutsNavBadge');
+    if(pb){if(done.length>0){pb.textContent=done.length;pb.style.display='';}else{pb.style.display='none';}}
+    // Staff list
+    var sl=document.getElementById('py_staffList');
+    if(sl){
+      if(!staff.length){sl.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:1.5rem;">No staff yet.</p>';}
+      else{
+        var rc={creator:'#c9a84c',editor:'#2196f3',pr:'#9c27b0',manager:'#4caf50',support:'#ff9800'};
+        sl.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.85rem;">'+staff.map(function(s){
+          var w=JSON.parse(localStorage.getItem('hs_wallet_'+s.id)||'{"pending":0,"balance":0}');
+          var mine=assigns.filter(function(a){return (a.staffIds||[a.staffId]).indexOf(String(s.id))>-1;});
+          var doneCnt=mine.filter(function(a){return a.status==='done';}).length;
+          var paidCnt=mine.filter(function(a){return a.status==='paid';}).length;
+          var c=rc[s.role]||'#9a9080';
+          var init=(s.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          return '<div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;">'
+            +'<div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:0.85rem;">'
+              +'<div style="width:36px;height:36px;border-radius:10px;background:'+c+'22;border:1px solid '+c+'44;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:900;color:'+c+';">'+init+'</div>'
+              +'<div><div style="font-size:0.85rem;font-weight:800;color:#fff;">'+s.name+'</div><div style="font-size:0.65rem;color:'+c+';font-weight:700;text-transform:uppercase;">'+s.role+'</div></div>'
+            +'</div>'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">'
+              +'<div style="background:rgba(201,168,76,0.06);border-radius:8px;padding:0.5rem;text-align:center;"><div style="font-size:1rem;font-weight:900;color:#c9a84c;">₹'+(w.balance||0).toLocaleString('en-IN')+'</div><div style="font-size:0.6rem;color:#6a6050;">Wallet</div></div>'
+              +'<div style="background:rgba(244,67,54,0.06);border-radius:8px;padding:0.5rem;text-align:center;"><div style="font-size:1rem;font-weight:900;color:#f44336;">₹'+(w.pending||0).toLocaleString('en-IN')+'</div><div style="font-size:0.6rem;color:#6a6050;">Pending</div></div>'
+            +'</div>'
+            +'<div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#6a6050;">'
+              +'<span><i class="fas fa-check" style="color:#4caf50;margin-right:3px;"></i>'+doneCnt+' awaiting pay</span>'
+              +'<span><i class="fas fa-money-bill" style="color:#2196f3;margin-right:3px;"></i>'+paidCnt+' paid</span>'
+            +'</div>'
+          +'</div>';
+        }).join('')+'</div>';
+      }
+    }
+    // Assigns awaiting payout
+    var al=document.getElementById('py_assignList');
+    if(al){
+      if(!done.length){al.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:1.5rem;">No pending payouts.</p>';}
+      else{
+        al.innerHTML='<div style="display:flex;flex-direction:column;gap:0.6rem;">'+done.map(function(a){
+          var names=(a.staffNames||[a.staffName]||[]).join(', ');
+          return '<div style="display:flex;align-items:center;justify-content:space-between;background:#0d0d0d;border:1px solid rgba(255,152,0,0.12);border-radius:10px;padding:0.75rem 1rem;">'
+            +'<div><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+(a.bookingName||a.clientName||'Shoot')+'</div>'
+            +'<div style="font-size:0.7rem;color:#9a9080;">'+names+' &bull; '+(a.date||'')+'</div></div>'
+            +'<div style="text-align:right;"><div style="font-size:0.9rem;font-weight:900;color:#ff9800;">₹'+(a.credit||0)+'</div>'
+            +'<button onclick="markPaid(\''+a.id+'\')" style="margin-top:0.3rem;background:#4caf50;color:#fff;border:none;border-radius:6px;padding:0.25rem 0.65rem;font-size:0.68rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Paid</button></div>'
+          +'</div>';
+        }).join('')+'</div>';
+      }
+    }
+  }
+
+  function markPaid(id){
+    var assigns=JSON.parse(localStorage.getItem('hs_assigned')||'[]');
+    assigns=assigns.map(function(a){if(String(a.id)===String(id)){a.status='paid';} return a;});
+    localStorage.setItem('hs_assigned',JSON.stringify(assigns));
+    loadPayoutsPanel();
+  }
+
   function loadApplicationsPanel(){
     var demos = getDemos ? getDemos() : [];
     var careers = JSON.parse(localStorage.getItem('hs_career_apps')||'[]');
