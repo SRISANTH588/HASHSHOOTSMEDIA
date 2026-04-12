@@ -66,7 +66,7 @@
 <body>
 
 <!-- LOGIN -->
-<div class="login-wrap" id="loginWrap">
+<div class="login-wrap" id="loginWrap" style="display:none;">
   <div class="login-card">
     <div class="login-logo">
       <h1><span>OG</span> SHOOTS</h1>
@@ -187,7 +187,12 @@
   document.addEventListener('DOMContentLoaded', function(){
     if(localStorage.getItem('hs_mkt_logged')==='1' || localStorage.getItem('hs_role')==='marketing'){
       localStorage.setItem('hs_mkt_logged','1');
-      showPortal();
+      document.getElementById('loginWrap').style.display='none';
+      document.getElementById('portal').style.display='block';
+      loadAll();
+    } else {
+      document.getElementById('loginWrap').style.display='flex';
+      document.getElementById('portal').style.display='none';
     }
   });
 
