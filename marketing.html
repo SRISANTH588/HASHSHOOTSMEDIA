@@ -140,8 +140,16 @@
 </div>
 
 <script>
+  // Auth guard — allow if logged in via main login page
+  if(localStorage.getItem('hs_role') !== 'marketing' && !sessionStorage.getItem('mkt_logged_in')){
+    // Check if coming from main login
+    if(localStorage.getItem('hs_role') !== 'marketing'){
+      // Will be handled by internal login form below
+    }
+  }
   // ── CREDENTIALS ──────────────────────────────────────────────
   var MKT_USERS = [
+    { username: 'marketing', password: 'ogmarketing2025' },
     { username: 'marketing', password: 'mkt@2025' },
     { username: 'mktteam',   password: 'ogshoots@mkt' }
   ];
@@ -171,8 +179,11 @@
     loadAll();
   }
 
-  // Check if already logged in
-  if(localStorage.getItem('hs_mkt_logged')==='1') showPortal();
+  // Check if already logged in (own login or via main login page)
+  if(localStorage.getItem('hs_mkt_logged')==='1' || localStorage.getItem('hs_role')==='marketing'){
+    localStorage.setItem('hs_mkt_logged','1');
+    showPortal();
+  }
 
   // ── TAB SWITCH ───────────────────────────────────────────────
   function switchMktTab(name, btn){

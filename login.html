@@ -419,6 +419,13 @@
         localStorage.setItem('hs_admin_name','SRISANTH');
         window.location.href='admin.html'; return;
       }
+      // Marketing team login
+      if(id.toLowerCase()==='marketing' && p==='ogmarketing2025'){
+        localStorage.setItem('hs_role','marketing');
+        localStorage.setItem('hs_marketing_name','Marketing Team');
+        window.location.href='marketing.html'; return;
+      }
+
       // 2nd admin: SUMANTH
       if(id.toUpperCase()==='SUMANTH' && p==='SUMANTH@2007'){
         localStorage.setItem('hs_role','admin');
