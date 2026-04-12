@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marketing Portal — OG Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#080808;color:#f0ece0;min-height:100vh;}
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+    .login-card{background:#111;border:1px solid rgba(201,168,76,0.25);border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:0 30px 80px rgba(0,0,0,0.6);}
+    .login-logo{text-align:center;margin-bottom:2rem;}
+    .login-logo h1{font-size:1.6rem;font-weight:900;color:#fff;}
+    .login-logo h1 span{color:#c9a84c;}
+    .login-logo p{font-size:0.82rem;color:#9a9080;margin-top:0.3rem;}
+    .form-group{margin-bottom:1rem;}
+    .form-group label{font-size:0.78rem;font-weight:700;color:#9a9080;display:block;margin-bottom:0.4rem;}
+    .form-group input{width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+    .form-group input:focus{border-color:#c9a84c;}
+    .btn-login{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:0.5rem;}
+    .err{display:none;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;margin-bottom:1rem;}
+    /* PORTAL */
+    .portal{display:none;}
+    nav{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(201,168,76,0.15);padding:0.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .nav-logo{font-size:1.2rem;font-weight:900;color:#fff;}.nav-logo span{color:#c9a84c;}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .nav-badge{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.85rem;border-radius:50px;}
+    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .tab-nav{background:#0f0f0f;border-bottom:1px solid rgba(201,168,76,0.06);padding:0 2rem;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+    .tab-nav::-webkit-scrollbar{display:none;}
+    .tab-btn{padding:0.85rem 1.25rem;background:none;border:none;border-bottom:2px solid transparent;color:#9a9080;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
+    .tab-btn.active{color:#c9a84c;border-bottom-color:#c9a84c;}
+    .tab-btn .badge{background:#c9a84c;color:#000;font-size:0.55rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;}
+    .page{max-width:1100px;margin:2rem auto;padding:0 1.5rem;}
+    .panel{display:none;}.panel.active{display:block;}
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat{background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;text-align:center;}
+    .stat .num{font-size:2rem;font-weight:900;color:#c9a84c;}
+    .stat .lbl{font-size:0.72rem;color:#9a9080;margin-top:0.2rem;}
+    /* CARDS */
+    .card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
+    .card-title{font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+    .card-meta{font-size:0.72rem;color:#9a9080;}
+    .card-msg{background:#0a0a0a;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin:0.75rem 0;}
+    .btn-accept{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-done{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .badge-accepted{background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .badge-done{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .badge-type{font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;}
+    .sec-title{font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;}
+    .sec-title i{color:#c9a84c;}
+    .empty{text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;}
+    .empty i{font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;}
+    .booking-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
+    .status-badge{font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;}
+    .s-pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
+    .s-confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
+    .s-completed{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
+    @media(max-width:600px){.tab-btn{padding:0.75rem 0.85rem;font-size:0.75rem;}.stats{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <h1><span>OG</span> SHOOTS</h1>
+      <p>Marketing Team Portal</p>
+    </div>
+    <div class="err" id="loginErr">Invalid credentials.</div>
+    <div class="form-group">
+      <label><i class="fas fa-user"></i> Username</label>
+      <input type="text" id="mktUser" placeholder="Enter username" onkeydown="if(event.key==='Enter') mktLogin()"/>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-lock"></i> Password</label>
+      <input type="password" id="mktPass" placeholder="Enter password" onkeydown="if(event.key==='Enter') mktLogin()"/>
+    </div>
+    <button class="btn-login" onclick="mktLogin()"><i class="fas fa-sign-in-alt"></i> &nbsp;Login</button>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div class="portal" id="portal">
+  <nav>
+    <div class="nav-logo"><span>OG</span> SHOOTS <sup style="font-size:0.4em;color:#c9a84c;letter-spacing:2px;">MARKETING</sup></div>
+    <div class="nav-right">
+      <span class="nav-badge"><i class="fas fa-bullhorn"></i> Marketing Team</span>
+      <button class="btn-logout" onclick="mktLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchMktTab('dashboard',this)"><i class="fas fa-chart-bar"></i> Dashboard</button>
+    <button class="tab-btn" onclick="switchMktTab('service',this)"><i class="fas fa-concierge-bell"></i> Service Enquiries <span class="badge" id="svcBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('marketing',this)"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span class="badge" id="mktBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('business',this)"><i class="fas fa-briefcase"></i> Business Enquiries <span class="badge" id="bizBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('bookings',this)"><i class="fas fa-calendar-check"></i> Bookings</button>
+  </div>
+
+  <div class="page">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats" id="statsRow"></div>
+      <div class="sec-title"><i class="fas fa-clock"></i> Recent Enquiries</div>
+      <div id="recentList"></div>
+    </div>
+
+    <!-- SERVICE ENQUIRIES -->
+    <div class="panel" id="panel-service">
+      <div class="sec-title"><i class="fas fa-concierge-bell"></i> Service Enquiries</div>
+      <div id="svcList"></div>
+    </div>
+
+    <!-- MARKETING ENQUIRIES -->
+    <div class="panel" id="panel-marketing">
+      <div class="sec-title"><i class="fas fa-bullhorn"></i> Marketing Enquiries</div>
+      <div id="mktList"></div>
+    </div>
+
+    <!-- BUSINESS ENQUIRIES -->
+    <div class="panel" id="panel-business">
+      <div class="sec-title"><i class="fas fa-briefcase"></i> Business Enquiries</div>
+      <div id="bizList"></div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="panel" id="panel-bookings">
+      <div class="sec-title"><i class="fas fa-calendar-check"></i> All Bookings</div>
+      <div id="bookingsList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── CREDENTIALS ──────────────────────────────────────────────
+  var MKT_USERS = [
+    { username: 'marketing', password: 'mkt@2025' },
+    { username: 'mktteam',   password: 'ogshoots@mkt' }
+  ];
+
+  var FB_CFG = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+
+  // ── AUTH ─────────────────────────────────────────────────────
+  function mktLogin(){
+    var u = document.getElementById('mktUser').value.trim().toLowerCase();
+    var p = document.getElementById('mktPass').value.trim();
+    var match = MKT_USERS.find(function(x){ return x.username === u && x.password === p; });
+    if(!match){ document.getElementById('loginErr').style.display='block'; return; }
+    localStorage.setItem('hs_mkt_logged','1');
+    localStorage.setItem('hs_mkt_user', u);
+    showPortal();
+  }
+
+  function mktLogout(){
+    localStorage.removeItem('hs_mkt_logged');
+    document.getElementById('portal').style.display='none';
+    document.getElementById('loginWrap').style.display='flex';
+  }
+
+  function showPortal(){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('portal').style.display='block';
+    loadAll();
+  }
+
+  // Check if already logged in
+  if(localStorage.getItem('hs_mkt_logged')==='1') showPortal();
+
+  // ── TAB SWITCH ───────────────────────────────────────────────
+  function switchMktTab(name, btn){
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('panel-'+name).classList.add('active');
+    if(btn) btn.classList.add('active');
+  }
+
+  // ── FIREBASE ─────────────────────────────────────────────────
+  var _fbApp = null, _fbDb = null, _fbStore = null;
+  async function getFirebase(){
+    if(_fbDb) return {db:_fbDb, s:_fbStore};
+    var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    _fbApp   = fbMod.getApps().find(function(a){return a.name==='mkt-portal';})||fbMod.initializeApp(FB_CFG,'mkt-portal');
+    _fbDb    = fbStore.getFirestore(_fbApp);
+    _fbStore = fbStore;
+    return {db:_fbDb, s:_fbStore};
+  }
+
+  // ── LOAD ALL DATA ────────────────────────────────────────────
+  async function loadAll(){
+    await Promise.all([loadServiceEnquiries(), loadMktEnquiries(), loadBizEnquiries(), loadBookings()]);
+    renderDashboard();
+  }
+
+  var _svc=[], _mkt=[], _biz=[], _bookings=[];
+
+  async function loadServiceEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+      _svc = [];
+      snap.forEach(function(d){
+        var data = d.data();
+        var t = (data.type||'general').toLowerCase();
+        if(t==='general'||t==='business'||!data.type) _svc.push(Object.assign({id:d.id},data));
+      });
+      _svc.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderServiceEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadMktEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'marketing_enquiries'));
+      _mkt = [];
+      snap.forEach(function(d){ _mkt.push(Object.assign({id:d.id},d.data())); });
+      _mkt.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
+      renderMktEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadBizEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+      _biz = [];
+      snap.forEach(function(d){
+        var data = d.data();
+        if((data.type||'').toLowerCase()==='business') _biz.push(Object.assign({id:d.id},data));
+      });
+      _biz.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderBizEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadBookings(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'bookings'));
+      _bookings = [];
+      snap.forEach(function(d){ _bookings.push(Object.assign({id:d.id},d.data())); });
+      _bookings.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderBookings();
+    }catch(e){ console.warn(e); }
+  }
+
+  // ── RENDER DASHBOARD ─────────────────────────────────────────
+  function renderDashboard(){
+    var statsEl = document.getElementById('statsRow');
+    statsEl.innerHTML =
+      stat(_svc.length, 'Service Enquiries', '#c9a84c') +
+      stat(_mkt.length, 'Marketing Enquiries', '#2196f3') +
+      stat(_biz.length, 'Business Enquiries', '#9c27b0') +
+      stat(_bookings.length, 'Total Bookings', '#4caf50') +
+      stat(_bookings.filter(function(b){ return b.status==='pending'; }).length, 'Pending Bookings', '#ff9800') +
+      stat([..._svc,..._mkt,..._biz].filter(function(e){ return e.status==='done'; }).length, 'Closed Leads', '#f44336');
+
+    // Recent 5 from all enquiries
+    var all = [].concat(
+      _svc.map(function(e){ return Object.assign({_src:'Service'},e); }),
+      _mkt.map(function(e){ return Object.assign({_src:'Marketing'},e); }),
+      _biz.map(function(e){ return Object.assign({_src:'Business'},e); })
+    ).slice(0,8);
+
+    var recentEl = document.getElementById('recentList');
+    if(!all.length){ recentEl.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i>No enquiries yet.</div>'; return; }
+    recentEl.innerHTML = all.map(function(e){
+      var srcColor = e._src==='Marketing'?'#2196f3':e._src==='Business'?'#9c27b0':'#c9a84c';
+      return '<div class="card" style="border-left:3px solid '+srcColor+';">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'+
+        '<div><div class="card-title">'+(e.name||'—')+'</div>'+
+        '<div class="card-meta">'+(e.phone||e.email||'')+'</div></div>'+
+        '<span class="badge-type" style="background:'+srcColor+'22;border:1px solid '+srcColor+'44;color:'+srcColor+';">'+e._src+'</span>'+
+        '</div>'+
+        (e.message?'<div class="card-msg">'+e.message+'</div>':'')+
+        '<div style="font-size:0.65rem;color:#777;">'+formatTs(e.createdAt||e.submittedAt)+'</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  function stat(num, lbl, color){
+    return '<div class="stat"><div class="num" style="color:'+color+';">'+num+'</div><div class="lbl">'+lbl+'</div></div>';
+  }
+
+  // ── RENDER SERVICE ENQUIRIES ──────────────────────────────────
+  function renderServiceEnquiries(){
+    var el = document.getElementById('svcList');
+    var badge = document.getElementById('svcBadge');
+    var open = _svc.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_svc.length){ el.innerHTML='<div class="empty"><i class="fas fa-concierge-bell"></i>No service enquiries yet.</div>'; return; }
+    el.innerHTML = _svc.map(function(e){ return enquiryCard(e,'enquiries'); }).join('');
+  }
+
+  // ── RENDER MARKETING ENQUIRIES ────────────────────────────────
+  function renderMktEnquiries(){
+    var el = document.getElementById('mktList');
+    var badge = document.getElementById('mktBadge');
+    var open = _mkt.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_mkt.length){ el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i>No marketing enquiries yet.</div>'; return; }
+    el.innerHTML = _mkt.map(function(e){ return enquiryCard(e,'marketing_enquiries'); }).join('');
+  }
+
+  // ── RENDER BUSINESS ENQUIRIES ─────────────────────────────────
+  function renderBizEnquiries(){
+    var el = document.getElementById('bizList');
+    var badge = document.getElementById('bizBadge');
+    var open = _biz.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_biz.length){ el.innerHTML='<div class="empty"><i class="fas fa-briefcase"></i>No business enquiries yet.</div>'; return; }
+    el.innerHTML = _biz.map(function(e){ return enquiryCard(e,'enquiries'); }).join('');
+  }
+
+  function enquiryCard(e, collection){
+    var isDone = e.status==='done';
+    var isAccepted = e.accepted || e.status==='accepted';
+    var actions = isDone
+      ? '<span class="badge-done"><i class="fas fa-check-double"></i> Done</span>'
+      : (isAccepted
+        ? '<span class="badge-accepted"><i class="fas fa-check"></i> Accepted</span> <button class="btn-done" onclick="markDone(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check-double"></i> Mark Done</button>'
+        : '<button class="btn-accept" onclick="acceptEnq(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check"></i> Accept</button> <button class="btn-done" onclick="markDone(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check-double"></i> Mark Done</button>');
+    return '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;">'+
+      '<div><div class="card-title">'+(e.name||'—')+'</div>'+
+      '<div class="card-meta">'+(e.phone||'')+(e.email?' · '+e.email:'')+(e.brand?' · '+e.brand:'')+'</div></div>'+
+      '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">'+actions+'</div>'+
+      '</div>'+
+      (e.plan&&e.plan!=='Not selected'?'<div style="margin-bottom:0.5rem;"><span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.65rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;">'+e.plan+' Plan</span></div>':'')+
+      (e.message?'<div class="card-msg">'+e.message+'</div>':'')+
+      '<div style="font-size:0.65rem;color:#777;">'+formatTs(e.createdAt||e.submittedAt)+'</div>'+
+      '</div>';
+  }
+
+  // ── RENDER BOOKINGS ───────────────────────────────────────────
+  function renderBookings(){
+    var el = document.getElementById('bookingsList');
+    if(!_bookings.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar"></i>No bookings yet.</div>'; return; }
+    el.innerHTML = _bookings.map(function(b){
+      var sc = b.status==='confirmed'?'s-confirmed':b.status==='completed'?'s-completed':'s-pending';
+      return '<div class="card">'+
+        '<div class="booking-row">'+
+        '<div><div class="card-title">'+(b.name||'—')+'</div>'+
+        '<div class="card-meta">'+(b.service||'')+(b.city?' · '+b.city:'')+(b.date?' · '+b.date:'')+'</div>'+
+        '<div class="card-meta">'+(b.phone||'')+(b.email?' · '+b.email:'')+'</div></div>'+
+        '<span class="status-badge '+sc+'">'+(b.status||'pending')+'</span>'+
+        '</div></div>';
+    }).join('');
+  }
+
+  // ── ACTIONS ───────────────────────────────────────────────────
+  async function acceptEnq(id, collection){
+    try{
+      var f = await getFirebase();
+      await f.s.setDoc(f.s.doc(f.db,collection,String(id)),{accepted:true,status:'accepted'},{merge:true});
+      await loadAll();
+    }catch(e){ alert('Error: '+e.message); }
+  }
+
+  async function markDone(id, collection){
+    try{
+      var f = await getFirebase();
+      await f.s.setDoc(f.s.doc(f.db,collection,String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
+      await loadAll();
+    }catch(e){ alert('Error: '+e.message); }
+  }
+
+  // ── HELPERS ───────────────────────────────────────────────────
+  function formatTs(ts){
+    if(!ts) return '';
+    if(ts && ts.seconds) return new Date(ts.seconds*1000).toLocaleString();
+    return String(ts);
+  }
+</script>
+</body>
+</html>
