@@ -1804,7 +1804,8 @@
       var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(localStorage.getItem('hs_staff_id')) && a.status==='done'; }).length;
       var badge = document.getElementById('paymentsDoneBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
-      alert('\u2705 Shoot marked as done! Admin has been notified.');
+      // Show payment info modal
+      showPaymentInfoModal(s);
     }
 
     function uploadShootSS(input, assignId){
@@ -4215,6 +4216,90 @@
         window._payoutProcessing = false;
       }
     }
+  </script>
+
+  <!-- PAYMENT INFO MODAL -->
+  <div id="paymentInfoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:99999;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(10px);">
+    <div style="background:linear-gradient(145deg,#0f0f0f,#141414);border:1px solid rgba(201,168,76,0.35);border-radius:24px;width:100%;max-width:400px;padding:2rem;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 60px rgba(201,168,76,0.06);">
+      <!-- Glow -->
+      <div style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:120px;height:120px;background:radial-gradient(circle,rgba(201,168,76,0.15),transparent 70%);pointer-events:none;"></div>
+      <!-- Icon -->
+      <div style="text-align:center;margin-bottom:1.25rem;">
+        <div style="width:64px;height:64px;background:linear-gradient(135deg,rgba(76,175,80,0.2),rgba(76,175,80,0.05));border:2px solid rgba(76,175,80,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+          <i class="fas fa-check" style="color:#4caf50;font-size:1.5rem;"></i>
+        </div>
+        <div style="font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Shoot Marked as Done!</div>
+        <div style="font-size:0.78rem;color:#9a9080;">Great work! Your payment is being processed.</div>
+      </div>
+      <!-- Payment info card -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+          <div style="width:36px;height:36px;background:rgba(201,168,76,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-university" style="color:#c9a84c;"></i></div>
+          <div>
+            <div style="font-size:0.85rem;font-weight:800;color:#fff;">Direct Bank Transfer</div>
+            <div style="font-size:0.68rem;color:#9a9080;">Sent to your registered bank account</div>
+          </div>
+        </div>
+        <!-- Timeline -->
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div style="width:28px;height:28px;background:rgba(201,168,76,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check-circle" style="color:#c9a84c;font-size:0.7rem;"></i></div>
+            <div style="flex:1;">
+              <div style="font-size:0.78rem;font-weight:700;color:#fff;">Shoot Completed</div>
+              <div style="font-size:0.65rem;color:#9a9080;">Admin notified &amp; reviewing now</div>
+            </div>
+            <span style="font-size:0.62rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);padding:0.15rem 0.45rem;border-radius:50px;">DONE</span>
+          </div>
+          <div style="width:1px;height:16px;background:rgba(201,168,76,0.15);margin-left:13px;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div style="width:28px;height:28px;background:rgba(255,152,0,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#ff9800;font-size:0.7rem;"></i></div>
+            <div style="flex:1;">
+              <div style="font-size:0.78rem;font-weight:700;color:#fff;">Payment Processing</div>
+              <div style="font-size:0.65rem;color:#9a9080;">Admin approves &amp; releases payment</div>
+            </div>
+            <span style="font-size:0.62rem;font-weight:800;color:#ff9800;background:rgba(255,152,0,0.1);padding:0.15rem 0.45rem;border-radius:50px;">PENDING</span>
+          </div>
+          <div style="width:1px;height:16px;background:rgba(201,168,76,0.15);margin-left:13px;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;opacity:0.5;">
+            <div style="width:28px;height:28px;background:rgba(33,150,243,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-money-bill-wave" style="color:#2196f3;font-size:0.7rem;"></i></div>
+            <div style="flex:1;">
+              <div style="font-size:0.78rem;font-weight:700;color:#fff;">Money in Your Account</div>
+              <div style="font-size:0.65rem;color:#9a9080;">Direct bank transfer completed</div>
+            </div>
+            <span style="font-size:0.62rem;font-weight:800;color:#2196f3;background:rgba(33,150,243,0.1);padding:0.15rem 0.45rem;border-radius:50px;">SOON</span>
+          </div>
+        </div>
+      </div>
+      <!-- Time notice -->
+      <div style="background:rgba(76,175,80,0.07);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:0.85rem 1rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:0.65rem;">
+        <i class="fas fa-info-circle" style="color:#4caf50;margin-top:0.1rem;flex-shrink:0;"></i>
+        <div>
+          <div style="font-size:0.8rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">Your money will be sent directly to your bank account within <span style="color:#4caf50;">24 to 48 hours</span>.</div>
+          <div style="font-size:0.7rem;color:#9a9080;line-height:1.5;">If you have not received your payment after 48 hours, please contact us immediately.</div>
+        </div>
+      </div>
+      <!-- Contact button -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <a id="payModalContactBtn" href="#" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:12px;padding:0.75rem;font-size:0.8rem;font-weight:700;text-decoration:none;">
+          <i class="fab fa-whatsapp"></i> Contact Us
+        </a>
+        <button onclick="document.getElementById('paymentInfoModal').style.display='none'" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:0.75rem;font-size:0.8rem;font-weight:900;cursor:pointer;font-family:inherit;">
+          <i class="fas fa-check"></i> Got it!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function showPaymentInfoModal(shoot){
+    var modal = document.getElementById('paymentInfoModal');
+    if(!modal) return;
+    // Set WhatsApp contact link
+    var waNum = localStorage.getItem('hs_wa_number')||'916304279351';
+    var msg = encodeURIComponent('Hi, I completed shoot "'+(shoot.service||shoot.clientName||'')+'" on '+(shoot.doneAt||new Date().toLocaleString())+' but have not received my payment yet. Please check.');
+    document.getElementById('payModalContactBtn').href = 'https://wa.me/'+waNum+'?text='+msg;
+    modal.style.display = 'flex';
+  }
   </script>
 
 </body>
