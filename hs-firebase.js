@@ -445,3 +445,198 @@ window.saveSettingToFirebase   = window.saveSettingsToFirebase;
 window.loadSettingFromFirebase = window.loadSettingsFromFirebase;
 
 console.log('[OG Shoots] hs-firebase.js ready — project: hash-shoots');
+
+// ── UNIVERSAL SYNC ENGINE ─────────────────────────────────────────────────────
+// Maps every localStorage key → Firestore collection.
+// On page load: pulls Firebase → localStorage (Firebase wins).
+// On every write: saves to localStorage AND Firebase simultaneously.
+// Real-time listeners keep localStorage always in sync with Firebase.
+
+const HS_SYNC_MAP = [
+  { ls: 'hs_bookings',         col: 'bookings',          isArray: true  },
+  { ls: 'hs_staff',            col: 'staff',             isArray: true  },
+  { ls: 'hs_assigned_shoots',  col: 'assigned_shoots',   isArray: true  },
+  { ls: 'hs_career_apps',      col: 'career_apps',       isArray: true  },
+  { ls: 'hs_affiliate_apps',   col: 'affiliate_apps',    isArray: true  },
+  { ls: 'hs_enquiries',        col: 'enquiries',         isArray: true  },
+  { ls: 'hs_payout_requests',  col: 'payout_requests',   isArray: true  },
+  { ls: 'hs_notifications',    col: 'admin_notifications',isArray: true },
+  { ls: 'hs_staff_videos',     col: 'staff_videos',      isArray: true  },
+  { ls: 'hs_about',            col: 'config',            isArray: false, docId: 'about'    },
+  { ls: 'hs_homepage',         col: 'config',            isArray: false, docId: 'homepage' },
+  { ls: 'hs_customer_page',    col: 'config',            isArray: false, docId: 'customer_page' },
+  { ls: 'hs_opening',          col: 'config',            isArray: false, docId: 'opening'  },
+];
+
+// ── Pull all collections from Firebase into localStorage on load ──
+window.hsSyncFromFirebase = async function() {
+  try {
+    const db = await getDB();
+    for (const m of HS_SYNC_MAP) {
+      try {
+        if (m.isArray) {
+          const snap = await _fbStore.getDocs(_fbStore.collection(db, m.col));
+          const docs = [];
+          snap.forEach(d => docs.push({ _fbId: d.id, id: d.id, ...d.data() }));
+          if (docs.length) localStorage.setItem(m.ls, JSON.stringify(docs));
+        } else {
+          const snap = await _fbStore.getDoc(_fbStore.doc(db, m.col, m.docId));
+          if (snap.exists()) localStorage.setItem(m.ls, JSON.stringify(snap.data()));
+        }
+      } catch(e) { console.warn('[sync] pull failed:', m.col, e.message); }
+    }
+    // Wallets — pull per staff
+    const staffRaw = localStorage.getItem('hs_staff');
+    if (staffRaw) {
+      const staff = JSON.parse(staffRaw);
+      for (const s of staff) {
+        try {
+          const snap = await _fbStore.getDoc(_fbStore.doc(db, 'wallets', String(s.id)));
+          if (snap.exists()) localStorage.setItem('hs_wallet_' + s.id, JSON.stringify(snap.data()));
+        } catch(e) {}
+      }
+    }
+    console.log('[OG Shoots] Firebase → localStorage sync complete');
+  } catch(e) { console.error('[hsSyncFromFirebase]', e); }
+};
+
+// ── Real-time listeners: Firebase → localStorage (live updates) ──
+window.hsStartListeners = async function() {
+  try {
+    const db = await getDB();
+    for (const m of HS_SYNC_MAP) {
+      if (!m.isArray) continue;
+      try {
+        _fbStore.onSnapshot(_fbStore.collection(db, m.col), snap => {
+          const docs = [];
+          snap.forEach(d => docs.push({ _fbId: d.id, id: d.id, ...d.data() }));
+          localStorage.setItem(m.ls, JSON.stringify(docs));
+          // Dispatch event so any open page can react
+          window.dispatchEvent(new CustomEvent('hs_sync', { detail: { key: m.ls, col: m.col } }));
+        });
+      } catch(e) { console.warn('[listener] failed:', m.col, e.message); }
+    }
+    console.log('[OG Shoots] Real-time listeners active');
+  } catch(e) { console.error('[hsStartListeners]', e); }
+};
+
+// ── Write helpers: localStorage + Firebase simultaneously ──
+
+// Save/update a single item in an array collection
+window.hsSave = async function(lsKey, col, item) {
+  // Ensure item has an id
+  if (!item.id) item.id = Date.now().toString();
+  // localStorage
+  const arr = JSON.parse(localStorage.getItem(lsKey) || '[]');
+  const idx = arr.findIndex(x => String(x.id) === String(item.id));
+  if (idx > -1) arr[idx] = { ...arr[idx], ...item };
+  else arr.push(item);
+  localStorage.setItem(lsKey, JSON.stringify(arr));
+  // Firebase
+  try {
+    const db = await getDB();
+    await _fbStore.setDoc(_fbStore.doc(db, col, String(item.id)), { ...item, updatedAt: _fbStore.serverTimestamp() }, { merge: true });
+  } catch(e) { console.warn('[hsSave] Firebase write failed:', col, e.message); }
+  return item.id;
+};
+
+// Update a field on an existing item
+window.hsUpdate = async function(lsKey, col, id, data) {
+  const arr = JSON.parse(localStorage.getItem(lsKey) || '[]');
+  const updated = arr.map(x => String(x.id) === String(id) ? { ...x, ...data } : x);
+  localStorage.setItem(lsKey, JSON.stringify(updated));
+  try {
+    const db = await getDB();
+    await _fbStore.setDoc(_fbStore.doc(db, col, String(id)), { ...data, updatedAt: _fbStore.serverTimestamp() }, { merge: true });
+  } catch(e) { console.warn('[hsUpdate] Firebase write failed:', col, e.message); }
+};
+
+// Delete an item
+window.hsDelete = async function(lsKey, col, id) {
+  const arr = JSON.parse(localStorage.getItem(lsKey) || '[]').filter(x => String(x.id) !== String(id));
+  localStorage.setItem(lsKey, JSON.stringify(arr));
+  try {
+    const db = await getDB();
+    await _fbStore.deleteDoc(_fbStore.doc(db, col, String(id)));
+  } catch(e) { console.warn('[hsDelete] Firebase delete failed:', col, e.message); }
+};
+
+// Save a config doc (non-array)
+window.hsSaveConfig = async function(lsKey, col, docId, data) {
+  localStorage.setItem(lsKey, JSON.stringify(data));
+  try {
+    const db = await getDB();
+    await _fbStore.setDoc(_fbStore.doc(db, col, docId), { ...data, updatedAt: _fbStore.serverTimestamp() }, { merge: true });
+  } catch(e) { console.warn('[hsSaveConfig] Firebase write failed:', col, e.message); }
+};
+
+// ── Auto-start on page load ──
+(async function() {
+  await hsSyncFromFirebase();
+  await hsStartListeners();
+})();
+
+console.log('[OG Shoots] Universal sync engine loaded');
+
+// ── localStorage INTERCEPTOR ──────────────────────────────────────────────────
+// Wraps localStorage.setItem so every write to a synced key
+// automatically fires to Firebase. Zero changes needed in existing code.
+
+const HS_LS_TO_COL = {
+  'hs_bookings':        { col: 'bookings',           isArray: true  },
+  'hs_staff':           { col: 'staff',              isArray: true  },
+  'hs_assigned_shoots': { col: 'assigned_shoots',    isArray: true  },
+  'hs_career_apps':     { col: 'career_apps',        isArray: true  },
+  'hs_affiliate_apps':  { col: 'affiliate_apps',     isArray: true  },
+  'hs_enquiries':       { col: 'enquiries',          isArray: true  },
+  'hs_payout_requests': { col: 'payout_requests',    isArray: true  },
+  'hs_notifications':   { col: 'admin_notifications',isArray: true  },
+  'hs_staff_videos':    { col: 'staff_videos',       isArray: true  },
+  'hs_about':           { col: 'config', docId: 'about',         isArray: false },
+  'hs_homepage':        { col: 'config', docId: 'homepage',      isArray: false },
+  'hs_customer_page':   { col: 'config', docId: 'customer_page', isArray: false },
+  'hs_opening':         { col: 'config', docId: 'opening',       isArray: false },
+};
+
+// Wallet keys are dynamic: hs_wallet_<staffId>
+const HS_WALLET_PREFIX = 'hs_wallet_';
+
+const _origSetItem = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(key, value) {
+  _origSetItem(key, value);
+  // Sync to Firebase async (non-blocking)
+  const map = HS_LS_TO_COL[key];
+  if (map) {
+    (async () => {
+      try {
+        const db = await getDB();
+        if (map.isArray) {
+          const items = JSON.parse(value || '[]');
+          if (!Array.isArray(items)) return;
+          for (const item of items) {
+            const docId = String(item.id || item._fbId || Date.now());
+            const clean = { ...item };
+            delete clean._fbId;
+            await _fbStore.setDoc(_fbStore.doc(db, map.col, docId), { ...clean, _synced: true }, { merge: true });
+          }
+        } else {
+          const data = JSON.parse(value || '{}');
+          await _fbStore.setDoc(_fbStore.doc(db, map.col, map.docId), { ...data, _synced: true }, { merge: true });
+        }
+      } catch(e) { /* silent — localStorage already saved */ }
+    })();
+  }
+  // Wallet sync
+  if (key.startsWith(HS_WALLET_PREFIX)) {
+    const staffId = key.replace(HS_WALLET_PREFIX, '');
+    (async () => {
+      try {
+        const db = await getDB();
+        const data = JSON.parse(value || '{}');
+        await _fbStore.setDoc(_fbStore.doc(db, 'wallets', staffId), { ...data, _synced: true }, { merge: true });
+      } catch(e) {}
+    })();
+  }
+};
+
+console.log('[OG Shoots] localStorage interceptor active — all writes sync to Firebase');

@@ -3232,6 +3232,14 @@ Priority Support</textarea></div>
 
     // Activate Dashboard on load
     switchSideNav('dashboard', document.getElementById('sideNav-dashboard'));
+    // Auto-refresh dashboard and payouts when Firebase syncs
+    window.addEventListener('hs_sync', function(e){
+      var key = e.detail && e.detail.key;
+      if(['hs_bookings','hs_staff','hs_assigned_shoots'].indexOf(key) > -1){
+        if(document.getElementById('tab-dashboard').classList.contains('active')) _renderDashboardPanel();
+        if(document.getElementById('tab-payouts') && document.getElementById('tab-payouts').classList.contains('active')) _renderPayoutsPanel();
+      }
+    });
 
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
@@ -8135,6 +8143,11 @@ Priority Support</textarea></div>
 
   // ── DASHBOARD PANEL DATA ──
   function loadDashboardPanel(){
+    if(window.hsSyncFromFirebase){
+      window.hsSyncFromFirebase().then(function(){ _renderDashboardPanel(); });
+    } else { _renderDashboardPanel(); }
+  }
+  function _renderDashboardPanel(){
     var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
     var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
     var feedbacks = getFeedbacks ? getFeedbacks() : [];
@@ -8401,6 +8414,12 @@ Priority Support</textarea></div>
 
   // ── APPLICATIONS PANEL DATA ──
   function loadPayoutsPanel(){
+    // Pull latest from Firebase first, then render
+    if(window.hsSyncFromFirebase){
+      window.hsSyncFromFirebase().then(function(){ _renderPayoutsPanel(); });
+    } else { _renderPayoutsPanel(); }
+  }
+  function _renderPayoutsPanel(){
     var staff    = JSON.parse(localStorage.getItem('hs_staff')||'[]');
     var assigns  = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
     var done     = assigns.filter(function(a){return a.status==='done';});

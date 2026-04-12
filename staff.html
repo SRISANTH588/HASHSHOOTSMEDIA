@@ -1987,6 +1987,11 @@
       } catch(e){ console.warn('shoots fetch:', e); }
     })();
     setInterval(function(){ if(!_shootUploadInProgress){ renderAssignedShoots(); renderPayout(); } }, 5000);
+    // Auto-refresh payments when Firebase syncs
+    window.addEventListener('hs_sync', function(e){
+      var key = e.detail && e.detail.key;
+      if(key === 'hs_assigned_shoots' || key === 'hs_notifications') renderPayout();
+    });
 
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
