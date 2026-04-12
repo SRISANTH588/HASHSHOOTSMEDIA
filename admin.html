@@ -309,6 +309,189 @@
 
     </div>
 
+    <!-- ═══ DASHBOARD PANEL ═══ -->
+    <div class="tab-panel active" id="tab-dashboard">
+
+      <!-- Stats Row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <div style="width:38px;height:38px;background:rgba(201,168,76,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-alt" style="color:#c9a84c;"></i></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#4caf50;background:rgba(76,175,80,0.1);padding:0.2rem 0.5rem;border-radius:50px;">LIVE</span>
+          </div>
+          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="db_totalBookings">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Bookings</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(255,152,0,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <div style="width:38px;height:38px;background:rgba(255,152,0,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-clock" style="color:#ff9800;"></i></div>
+          </div>
+          <div style="font-size:2rem;font-weight:900;color:#ff9800;" id="db_pendingBookings">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Pending Bookings</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <div style="width:38px;height:38px;background:rgba(76,175,80,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-check-circle" style="color:#4caf50;"></i></div>
+          </div>
+          <div style="font-size:2rem;font-weight:900;color:#4caf50;" id="db_completedBookings">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Completed</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <div style="width:38px;height:38px;background:rgba(33,150,243,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-users" style="color:#2196f3;"></i></div>
+          </div>
+          <div style="font-size:2rem;font-weight:900;color:#2196f3;" id="db_totalStaff">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Staff</div>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.15);border-radius:16px;padding:1.25rem 1.5rem;cursor:pointer;" onclick="switchSideNav('applications',document.getElementById('sideNav-applications'))">
+          <div style="width:38px;height:38px;background:rgba(244,67,54,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-layer-group" style="color:#f44336;"></i></div>
+          <div style="font-size:2rem;font-weight:900;color:#f44336;" id="db_totalApps">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Applications</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(156,39,176,0.15);border-radius:16px;padding:1.25rem 1.5rem;cursor:pointer;" onclick="switchSideNav('videos',document.getElementById('sideNav-videos'))">
+          <div style="width:38px;height:38px;background:rgba(156,39,176,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-film" style="color:#9c27b0;"></i></div>
+          <div style="font-size:2rem;font-weight:900;color:#9c27b0;" id="db_totalVideos">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Video Contents</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="width:38px;height:38px;background:rgba(245,166,35,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-star" style="color:#f5a623;"></i></div>
+          <div style="font-size:2rem;font-weight:900;color:#f5a623;" id="db_avgRating">0.0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Avg Rating</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="width:38px;height:38px;background:rgba(201,168,76,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;"></i></div>
+          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="db_pendingPay">₹0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Pending Payouts</div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Recent Bookings + Quick Actions -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:1.25rem;">
+
+        <!-- Recent Bookings -->
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+            <div style="font-size:0.95rem;font-weight:800;color:#fff;"><i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.5rem;"></i>Recent Bookings</div>
+            <button onclick="switchSideNav('applications',document.getElementById('sideNav-applications'))" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">View All</button>
+          </div>
+          <div id="db_recentBookings"><p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;">Loading...</p></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-bolt" style="color:#c9a84c;margin-right:0.5rem;"></i>Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;">
+            <button onclick="toggleSettingsMenu(document.getElementById('sideNav-settings'));document.querySelector('.nav-subitem:nth-child(2)').click()" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#d4c9a8;padding:0.65rem 1rem;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:0.65rem;"><i class="fas fa-calendar-plus" style="color:#c9a84c;width:16px;"></i> New Booking</button>
+            <button onclick="toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.15);color:#d4c9a8;padding:0.65rem 1rem;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:0.65rem;" onclick="switchTab('assign',document.getElementById('assignTabBtn'));setActiveSubitem(this)"><i class="fas fa-tasks" style="color:#4caf50;width:16px;"></i> Assign Shoot</button>
+            <button onclick="switchTab('staff',document.getElementById('staffTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.15);color:#d4c9a8;padding:0.65rem 1rem;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:0.65rem;"><i class="fas fa-user-plus" style="color:#2196f3;width:16px;"></i> Add Staff</button>
+            <button onclick="switchTab('payments',document.getElementById('paymentsAdminTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.15);color:#d4c9a8;padding:0.65rem 1rem;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:0.65rem;"><i class="fas fa-rupee-sign" style="color:#f44336;width:16px;"></i> Release Payments</button>
+            <button onclick="switchTab('notifications',document.getElementById('notifTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="background:rgba(156,39,176,0.08);border:1px solid rgba(156,39,176,0.15);color:#d4c9a8;padding:0.65rem 1rem;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:0.65rem;"><i class="fas fa-bell" style="color:#9c27b0;width:16px;"></i> Notifications</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- end tab-dashboard -->
+
+    <!-- ═══ APPLICATIONS PANEL ═══ -->
+    <div class="tab-panel" id="tab-applications">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="ap_demos">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Demo Sessions</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#2196f3;" id="ap_careers">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Career Apps</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#4caf50;" id="ap_affiliates">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Affiliate Apps</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#f44336;" id="ap_enquiries">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Enquiries</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-chalkboard-teacher" style="color:#c9a84c;margin-right:0.5rem;"></i>Demo Sessions
+            <button onclick="switchTab('demo',document.getElementById('demoTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="ap_demoList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-concierge-bell" style="color:#c9a84c;margin-right:0.5rem;"></i>Service Enquiries
+            <button onclick="switchTab('enquiries',document.getElementById('enquiriesTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="ap_enquiryList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-briefcase" style="color:#c9a84c;margin-right:0.5rem;"></i>Career Applications
+            <button onclick="switchTab('careers',document.getElementById('careersTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="ap_careerList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;margin-right:0.5rem;"></i>Affiliate Applications
+            <button onclick="switchTab('affiliates',document.getElementById('affiliatesTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="ap_affiliateList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+      </div>
+    </div><!-- end tab-applications -->
+
+    <!-- ═══ VIDEO CONTENTS PANEL ═══ -->
+    <div class="tab-panel" id="tab-video-contents">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="vc_total">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Videos</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#4caf50;" id="vc_reels">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Shoot Reels</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(156,39,176,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#9c27b0;" id="vc_feedback">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Feedback Videos</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
+          <div style="font-size:2rem;font-weight:900;color:#2196f3;" id="vc_vibe">0</div>
+          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Vibe Content</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-film" style="color:#c9a84c;margin-right:0.5rem;"></i>Shoot Reels
+            <button onclick="switchTab('shoot-reels',document.getElementById('shootReelsTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="vc_reelsList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-photo-video" style="color:#c9a84c;margin-right:0.5rem;"></i>Staff Videos
+            <button onclick="switchTab('videos',document.getElementById('videosTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="vc_staffList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-fire" style="color:#c9a84c;margin-right:0.5rem;"></i>Vibe Content
+            <button onclick="switchTab('vibe',document.getElementById('vibeTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="vc_vibeList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-video" style="color:#c9a84c;margin-right:0.5rem;"></i>Client Testimonials
+            <button onclick="switchTab('testimonial-videos',document.getElementById('testiVideosTabBtn'));toggleSettingsMenu(document.getElementById('sideNav-settings'));" style="float:right;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">Manage</button>
+          </div>
+          <div id="vc_testiList"><p style="color:#6a6050;font-size:0.82rem;">Loading...</p></div>
+        </div>
+      </div>
+    </div><!-- end tab-video-contents -->
+
     <!-- OPENING TAB -->
     <div class="tab-panel" id="tab-opening">
       <div class="about-form">
@@ -2821,9 +3004,8 @@ Priority Support</textarea></div>
       if (tab === 'payments') renderAdminPayments();
     }
 
-    // Activate first visible tab
-    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
-    if(firstVisible) firstVisible.click();
+    // Activate Dashboard on load
+    switchSideNav('dashboard', document.getElementById('sideNav-dashboard'));
 
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
@@ -7668,17 +7850,31 @@ Priority Support</textarea></div>
   function switchSideNav(section, btn) {
     _sideSection = section;
     document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    // Update topbar title
-    var titles = { dashboard:'Dashboard', applications:'Applications', videos:'Video Contents' };
-    document.getElementById('topbarTitle').innerHTML = titles[section] + ' <span style="color:#c9a84c;"></span>';
-    // Show correct tab panel
-    if(section === 'dashboard') switchTab('bookings', document.getElementById('bookingsTabBtn'));
-    if(section === 'applications') switchTab('demo', document.getElementById('demoTabBtn'));
-    if(section === 'videos') switchTab('shoot-reels', document.getElementById('shootReelsTabBtn'));
-    // Close settings submenu
-    document.getElementById('settingsSubmenu').classList.remove('open');
-    document.getElementById('settingsChevron').style.transform = '';
+    if(btn) btn.classList.add('active');
+    // Hide all main panels
+    ['dashboard','applications','video-contents'].forEach(function(p){
+      var el = document.getElementById('tab-'+p);
+      if(el) el.classList.remove('active');
+    });
+    // Also hide settings submenu when switching main sections
+    if(section !== 'settings'){
+      document.getElementById('settingsSubmenu').classList.remove('open');
+      document.getElementById('settingsChevron').style.transform = '';
+    }
+    var titles = { dashboard:'Admin Dashboard', applications:'Applications', 'video-contents':'Video Contents' };
+    document.getElementById('topbarTitle').innerHTML = titles[section] || section;
+    if(section === 'dashboard'){
+      document.getElementById('tab-dashboard').classList.add('active');
+      loadDashboardPanel();
+    }
+    if(section === 'applications'){
+      document.getElementById('tab-applications').classList.add('active');
+      loadApplicationsPanel();
+    }
+    if(section === 'videos'){
+      document.getElementById('tab-video-contents').classList.add('active');
+      loadVideoContentsPanel();
+    }
   }
 
   function toggleSettingsMenu(btn) {
@@ -7687,18 +7883,135 @@ Priority Support</textarea></div>
     var isOpen = menu.classList.contains('open');
     menu.classList.toggle('open');
     chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-    // Mark nav item active
     document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    document.getElementById('topbarTitle').innerHTML = 'App <span style="color:#c9a84c;">Settings</span>';
+    if(btn) btn.classList.add('active');
+    // Hide main panels, show the active tab-panel
+    ['dashboard','applications','video-contents'].forEach(function(p){
+      var el = document.getElementById('tab-'+p);
+      if(el) el.classList.remove('active');
+    });
+    document.getElementById('topbarTitle').innerHTML = 'App Settings';
   }
 
   function setActiveSubitem(el) {
     document.querySelectorAll('.nav-subitem').forEach(function(b){ b.classList.remove('active'); });
     el.classList.add('active');
-    // Update topbar title from button text
     var txt = el.textContent.trim();
     document.getElementById('topbarTitle').innerHTML = txt;
+  }
+
+  // ── DASHBOARD PANEL DATA ──
+  function loadDashboardPanel(){
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+    var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+    var feedbacks = getFeedbacks ? getFeedbacks() : [];
+    document.getElementById('db_totalBookings').textContent = bookings.length;
+    document.getElementById('db_pendingBookings').textContent = bookings.filter(function(b){return b.status==='pending';}).length;
+    document.getElementById('db_completedBookings').textContent = bookings.filter(function(b){return b.status==='completed';}).length;
+    document.getElementById('db_totalStaff').textContent = staff.length;
+    // Avg rating
+    var avg = 0;
+    if(feedbacks.length){ var sum=feedbacks.reduce(function(a,b){return a+(b.rating||0);},0); avg=(sum/feedbacks.length).toFixed(1); }
+    document.getElementById('db_avgRating').textContent = avg;
+    // Pending payouts
+    var totalPending = 0;
+    staff.forEach(function(s){ var w=JSON.parse(localStorage.getItem('hs_wallet_'+s.id)||'{"pending":0}'); totalPending+=(w.pending||0); });
+    document.getElementById('db_pendingPay').textContent = '\u20b9'+totalPending.toLocaleString('en-IN');
+    // Apps count
+    var demos = getDemos ? getDemos() : [];
+    var careers = JSON.parse(localStorage.getItem('hs_career_apps')||'[]');
+    var affiliates = JSON.parse(localStorage.getItem('hs_affiliate_apps')||'[]');
+    var enquiries = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+    document.getElementById('db_totalApps').textContent = demos.length + careers.length + affiliates.length;
+    // Videos count
+    var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+    document.getElementById('db_totalVideos').textContent = videos.length;
+    // Recent bookings
+    var recent = bookings.slice().reverse().slice(0,5);
+    var rb = document.getElementById('db_recentBookings');
+    if(!recent.length){ rb.innerHTML='<p style="color:#6a6050;font-size:0.82rem;text-align:center;padding:1.5rem;">No bookings yet.</p>'; return; }
+    rb.innerHTML = recent.map(function(b){
+      var colors={pending:'#ff9800',confirmed:'#4caf50',completed:'#2196f3',cancelled:'#f44336'};
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0;border-bottom:1px solid rgba(201,168,76,0.06);">'
+        +'<div><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+b.name+'</div><div style="font-size:0.7rem;color:#9a9080;">'+b.service+' &bull; '+b.city+'</div></div>'
+        +'<span style="font-size:0.68rem;font-weight:800;color:'+(colors[b.status]||'#fff')+';background:rgba(0,0,0,0.3);padding:0.2rem 0.55rem;border-radius:50px;">'+b.status+'</span>'
+        +'</div>';
+    }).join('');
+  }
+
+  // ── APPLICATIONS PANEL DATA ──
+  function loadApplicationsPanel(){
+    var demos = getDemos ? getDemos() : [];
+    var careers = JSON.parse(localStorage.getItem('hs_career_apps')||'[]');
+    var affiliates = JSON.parse(localStorage.getItem('hs_affiliate_apps')||'[]');
+    var enquiries = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+    document.getElementById('ap_demos').textContent = demos.length;
+    document.getElementById('ap_careers').textContent = careers.length;
+    document.getElementById('ap_affiliates').textContent = affiliates.length;
+    document.getElementById('ap_enquiries').textContent = enquiries.length;
+    // Demo list
+    var dl = document.getElementById('ap_demoList');
+    if(!demos.length){ dl.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No demo sessions.</p>'; }
+    else dl.innerHTML=demos.slice(-4).reverse().map(function(d){
+      var sc={pending:'#ff9800',submitted:'#4caf50',approved:'#2196f3',rejected:'#f44336'};
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="font-size:0.8rem;font-weight:700;color:#fff;">'+d.title+'</div><span style="font-size:0.65rem;font-weight:800;color:'+(sc[d.status]||'#fff')+';">'+d.status+'</span></div>';
+    }).join('');
+    // Enquiry list
+    var el = document.getElementById('ap_enquiryList');
+    if(!enquiries.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No enquiries.</p>'; }
+    else el.innerHTML=enquiries.slice(-4).reverse().map(function(e){
+      return '<div style="padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="font-size:0.8rem;font-weight:700;color:#fff;">'+(e.name||'Unknown')+'</div><div style="font-size:0.7rem;color:#9a9080;">'+(e.service||e.message||'')+'</div></div>';
+    }).join('');
+    // Career list
+    var cl = document.getElementById('ap_careerList');
+    if(!careers.length){ cl.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No career applications.</p>'; }
+    else cl.innerHTML=careers.slice(-4).reverse().map(function(c){
+      return '<div style="padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="font-size:0.8rem;font-weight:700;color:#fff;">'+(c.name||'Unknown')+'</div><div style="font-size:0.7rem;color:#9a9080;">'+(c.role||c.position||'')+'</div></div>';
+    }).join('');
+    // Affiliate list
+    var al = document.getElementById('ap_affiliateList');
+    if(!affiliates.length){ al.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No affiliate applications.</p>'; }
+    else al.innerHTML=affiliates.slice(-4).reverse().map(function(a){
+      return '<div style="padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="font-size:0.8rem;font-weight:700;color:#fff;">'+(a.name||'Unknown')+'</div><div style="font-size:0.7rem;color:#9a9080;">'+(a.city||a.phone||'')+'</div></div>';
+    }).join('');
+  }
+
+  // ── VIDEO CONTENTS PANEL DATA ──
+  function loadVideoContentsPanel(){
+    var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
+    var reels = videos.filter(function(v){return v.type==='shoot'||!v.type;});
+    var fbVids = videos.filter(function(v){return v.type==='feedback';});
+    document.getElementById('vc_total').textContent = videos.length;
+    document.getElementById('vc_reels').textContent = reels.length;
+    document.getElementById('vc_feedback').textContent = fbVids.length;
+    // Vibe count from Firebase async
+    fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/vibe_items?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE')
+      .then(function(r){return r.json();})
+      .then(function(d){ document.getElementById('vc_vibe').textContent=(d.documents||[]).length; })
+      .catch(function(){});
+    // Reels list
+    var rl = document.getElementById('vc_reelsList');
+    if(!reels.length){ rl.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No shoot reels yet.</p>'; }
+    else rl.innerHTML=reels.slice(-4).reverse().map(function(v){
+      return '<div style="display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        +'<div style="width:36px;height:36px;background:#111;border-radius:8px;overflow:hidden;flex-shrink:0;">'
+        +(v.cloudUrl?'<video src="'+v.cloudUrl+'" style="width:100%;height:100%;object-fit:cover;"></video>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:#c9a84c;font-size:0.8rem;"></i></div>')+'</div>'
+        +'<div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+(v.staffName||'Staff')+'</div><div style="font-size:0.68rem;color:#9a9080;">'+(v.service||v.type||'Reel')+'</div></div>'
+        +'</div>';
+    }).join('');
+    // Staff videos list
+    var sl = document.getElementById('vc_staffList');
+    var allVids = videos.slice(-4).reverse();
+    if(!allVids.length){ sl.innerHTML='<p style="color:#6a6050;font-size:0.8rem;">No staff videos yet.</p>'; }
+    else sl.innerHTML=allVids.map(function(v){
+      return '<div style="display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        +'<div style="width:36px;height:36px;background:#111;border-radius:8px;overflow:hidden;flex-shrink:0;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="color:#9c27b0;font-size:0.8rem;"></i></div></div>'
+        +'<div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+(v.staffName||'Staff')+'</div><div style="font-size:0.68rem;color:#9a9080;">'+(v.uploadedAt||'')+'</div></div>'
+        +'</div>';
+    }).join('');
+    // Vibe & testi placeholders
+    document.getElementById('vc_vibeList').innerHTML='<p style="color:#6a6050;font-size:0.8rem;">Loading from Firebase...</p>';
+    document.getElementById('vc_testiList').innerHTML='<p style="color:#6a6050;font-size:0.8rem;">See Client Testimonials tab.</p>';
   }
   </script>
 </body>
