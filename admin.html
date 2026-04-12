@@ -2509,8 +2509,9 @@ Priority Support</textarea></div>
     document.getElementById('adminNameDisplay').textContent = '\uD83D\uDC4B ' + adminName + ' (' + adminRole + ')';
 
     // Hide tabs staff can't access (admin sees all)
-    document.querySelectorAll('.tab-btn').forEach(function(btn){
-      var m = btn.getAttribute('onclick').match(/'([^']+)'/);
+    document.querySelectorAll('.tab-btn, .sb-item').forEach(function(btn){
+      var attr = btn.getAttribute('onclick') || '';
+      var m = attr.match(/'([^']+)'/);
       if(m && !hasAccess(m[1])) btn.style.display = 'none';
     });
 
@@ -2865,12 +2866,14 @@ Priority Support</textarea></div>
     function sideSwitch(tab, btn) {
       document.querySelectorAll('.sb-item').forEach(function(b){ b.classList.remove('active'); });
       if(btn) btn.classList.add('active');
-      var title = _tabTitles[tab] || tab;
-      document.getElementById('topbar-title').innerHTML = title;
-      switchTab(tab, btn || document.createElement('button'));
+      var titleEl = document.getElementById('topbar-title');
+      if(titleEl) titleEl.innerHTML = _tabTitles[tab] || tab;
+      switchTab(tab);
     }
     // Activate Bookings on load
-    sideSwitch('bookings', document.getElementById('sb-bookings'));
+    document.addEventListener('DOMContentLoaded', function(){
+      sideSwitch('bookings', document.getElementById('sb-bookings'));
+    });
     // Mirror old badge IDs to sidebar badge IDs
     (function mirrorBadges(){
       var map = {
