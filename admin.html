@@ -505,6 +505,41 @@
         </div>
       </div>
 
+      <!-- ── PROGRESS GRAPHS ── -->
+      <div class="db-section-title"><i class="fas fa-chart-area" style="color:#c9a84c;"></i> Progress Graphs</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:0.5rem;">
+
+        <!-- Bookings Status Donut -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:1.25rem 1.4rem;">
+          <div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-circle-notch" style="color:#c9a84c;margin-right:0.5rem;"></i>Bookings Status</div>
+          <div style="display:flex;align-items:center;gap:1.25rem;">
+            <div style="position:relative;width:90px;height:90px;flex-shrink:0;">
+              <canvas id="graph_bookingDonut" width="90" height="90"></canvas>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <div style="font-size:1.1rem;font-weight:900;color:#fff;" id="graph_bookingTotal">0</div>
+                <div style="font-size:0.55rem;color:#6a6050;font-weight:700;">TOTAL</div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.5rem;" id="graph_bookingLegend"></div>
+          </div>
+        </div>
+
+        <!-- Staff Performance Bar -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:1.25rem 1.4rem;">
+          <div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-user-chart" style="color:#2196f3;margin-right:0.5rem;"></i>Staff Shoot Completion</div>
+          <div id="graph_staffBars" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+        </div>
+
+        <!-- Weekly Activity Sparkline -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:1.25rem 1.4rem;">
+          <div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.25rem;"><i class="fas fa-wave-square" style="color:#4caf50;margin-right:0.5rem;"></i>Bookings This Week</div>
+          <div style="font-size:0.68rem;color:#6a6050;margin-bottom:0.85rem;">Daily booking activity</div>
+          <canvas id="graph_weekLine" width="100%" height="80" style="width:100%;display:block;"></canvas>
+          <div id="graph_weekLabels" style="display:flex;justify-content:space-between;margin-top:0.4rem;"></div>
+        </div>
+
+      </div>
+
       <!-- Bottom Row: Recent Orders + Recent Staff Applications + Quick Actions -->
       <div style="display:grid;grid-template-columns:1fr 1fr 300px;gap:1.25rem;">
 
@@ -8199,6 +8234,120 @@ Priority Support</textarea></div>
     var pendingCount = bookings.filter(function(b){return b.status==='pending';}).length;
     var bnb = document.getElementById('bookingsNavBadge');
     if(bnb){ if(pendingCount>0){bnb.textContent=pendingCount;bnb.style.display='';} else{bnb.style.display='none';} }
+
+    // ── GRAPHS ──
+    // 1. Bookings Donut
+    (function(){
+      var pending  = bookings.filter(function(b){return b.status==='pending';}).length;
+      var confirmed= bookings.filter(function(b){return b.status==='confirmed';}).length;
+      var completed= bookings.filter(function(b){return b.status==='completed';}).length;
+      var cancelled= bookings.filter(function(b){return b.status==='cancelled';}).length;
+      var total    = bookings.length||1;
+      var el = document.getElementById('graph_bookingTotal');
+      if(el) el.textContent = bookings.length;
+      // Legend
+      var leg = document.getElementById('graph_bookingLegend');
+      if(leg) leg.innerHTML = [
+        {l:'Pending',  v:pending,  c:'#ff9800'},
+        {l:'Confirmed',v:confirmed,c:'#2196f3'},
+        {l:'Completed',v:completed,c:'#4caf50'},
+        {l:'Cancelled',v:cancelled,c:'#f44336'}
+      ].map(function(s){
+        return '<div style="display:flex;align-items:center;gap:0.5rem;">'
+          +'<div style="width:8px;height:8px;border-radius:50%;background:'+s.c+';flex-shrink:0;"></div>'
+          +'<span style="font-size:0.7rem;color:#9a9080;flex:1;">'+s.l+'</span>'
+          +'<span style="font-size:0.75rem;font-weight:800;color:#fff;">'+s.v+'</span>'
+          +'</div>';
+      }).join('');
+      // Canvas donut
+      var cv = document.getElementById('graph_bookingDonut');
+      if(!cv) return;
+      var ctx = cv.getContext('2d');
+      var segs = [{v:pending,c:'#ff9800'},{v:confirmed,c:'#2196f3'},{v:completed,c:'#4caf50'},{v:cancelled,c:'#f44336'}];
+      var cx=45,cy=45,r=38,ir=26,start=-Math.PI/2;
+      ctx.clearRect(0,0,90,90);
+      segs.forEach(function(s){
+        if(!s.v) return;
+        var angle=(s.v/total)*2*Math.PI;
+        ctx.beginPath(); ctx.moveTo(cx,cy);
+        ctx.arc(cx,cy,r,start,start+angle);
+        ctx.closePath(); ctx.fillStyle=s.c; ctx.fill();
+        start+=angle;
+      });
+      // Inner hole
+      ctx.beginPath(); ctx.arc(cx,cy,ir,0,2*Math.PI);
+      ctx.fillStyle='#111'; ctx.fill();
+    })();
+
+    // 2. Staff Completion Bars
+    (function(){
+      var sb = document.getElementById('graph_staffBars');
+      if(!sb) return;
+      var assigns = JSON.parse(localStorage.getItem('hs_assigned')||'[]');
+      if(!staff.length){ sb.innerHTML='<p style="color:#4a4030;font-size:0.78rem;text-align:center;padding:1rem;">No staff yet.</p>'; return; }
+      var roleColors={creator:'#c9a84c',editor:'#2196f3',pr:'#9c27b0',manager:'#4caf50',support:'#ff9800'};
+      sb.innerHTML = staff.slice(0,6).map(function(s){
+        var mine = assigns.filter(function(a){return (a.staffIds||[a.staffId]).indexOf(String(s.id))>-1;});
+        var done = mine.filter(function(a){return a.status==='done'||a.status==='paid';}).length;
+        var pct  = mine.length ? Math.round((done/mine.length)*100) : 0;
+        var rc   = roleColors[s.role]||'#9a9080';
+        var init = (s.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+        return '<div style="display:flex;align-items:center;gap:0.6rem;">'
+          +'<div style="width:26px;height:26px;border-radius:7px;background:'+rc+'22;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:900;color:'+rc+';flex-shrink:0;">'+init+'</div>'
+          +'<div style="flex:1;">'
+            +'<div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;"><span style="font-size:0.72rem;font-weight:700;color:#d4c9a8;">'+s.name+'</span><span style="font-size:0.68rem;font-weight:800;color:'+rc+';">'+pct+'%</span></div>'
+            +'<div style="height:5px;background:rgba(255,255,255,0.06);border-radius:50px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+rc+';border-radius:50px;"></div></div>'
+            +'<div style="font-size:0.62rem;color:#4a4030;margin-top:0.15rem;">'+done+'/'+mine.length+' shoots done</div>'
+          +'</div>'
+        +'</div>';
+      }).join('');
+    })();
+
+    // 3. Weekly Bookings Sparkline
+    (function(){
+      var cv = document.getElementById('graph_weekLine');
+      var labelsEl = document.getElementById('graph_weekLabels');
+      if(!cv) return;
+      var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var counts=[0,0,0,0,0,0,0];
+      var now=new Date();
+      bookings.forEach(function(b){
+        var d=new Date(b.createdAt||b.timestamp||0);
+        var diff=Math.floor((now-d)/(1000*60*60*24));
+        if(diff>=0&&diff<7) counts[6-diff]++;
+      });
+      var today=now.getDay();
+      var labels=[];
+      for(var i=6;i>=0;i--){ labels.push(days[(today-i+7)%7]); }
+      if(labelsEl) labelsEl.innerHTML=labels.map(function(l){
+        return '<span style="font-size:0.6rem;color:#4a4030;font-weight:600;">'+l+'</span>';
+      }).join('');
+      var W=cv.offsetWidth||260, H=80;
+      cv.width=W; cv.height=H;
+      var ctx=cv.getContext('2d');
+      var max=Math.max.apply(null,counts)||1;
+      var pts=counts.map(function(v,i){ return {x:i*(W/(counts.length-1)),y:H-8-((v/max)*(H-20))}; });
+      // Gradient fill
+      var grad=ctx.createLinearGradient(0,0,0,H);
+      grad.addColorStop(0,'rgba(201,168,76,0.25)'); grad.addColorStop(1,'rgba(201,168,76,0)');
+      ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+      pts.forEach(function(p){ ctx.lineTo(p.x,p.y); });
+      ctx.lineTo(pts[pts.length-1].x,H); ctx.lineTo(0,H); ctx.closePath();
+      ctx.fillStyle=grad; ctx.fill();
+      // Line
+      ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+      pts.forEach(function(p){ ctx.lineTo(p.x,p.y); });
+      ctx.strokeStyle='#c9a84c'; ctx.lineWidth=2; ctx.stroke();
+      // Dots
+      pts.forEach(function(p,i){
+        ctx.beginPath(); ctx.arc(p.x,p.y,3,0,2*Math.PI);
+        ctx.fillStyle=counts[i]>0?'#c9a84c':'#333'; ctx.fill();
+        if(counts[i]>0){
+          ctx.fillStyle='#fff'; ctx.font='bold 9px Inter,sans-serif'; ctx.textAlign='center';
+          ctx.fillText(counts[i],p.x,p.y-6);
+        }
+      });
+    })();
   }
 
   // ── APPLICATIONS PANEL DATA ──
