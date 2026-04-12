@@ -8183,9 +8183,6 @@ Priority Support</textarea></div>
       if(!e.target.closest('#as_time_display')&&!e.target.closest('#as_time_picker')){var tp=document.getElementById('as_time_picker');if(tp)tp.style.display='none';}
     });
 
-  </script>
-
-  <script>
   // ── SIDEBAR NAVIGATION ──
   var _sideSection = 'dashboard';
 
@@ -8598,6 +8595,7 @@ Priority Support</textarea></div>
         }).join('')+'</div>';
       }
     }
+  }
 
   function markPaid(id){
     var assigns=JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
