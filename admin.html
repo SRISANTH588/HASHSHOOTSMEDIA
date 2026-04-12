@@ -343,6 +343,22 @@
     </div>
 
     <!-- ═══ DASHBOARD PANEL ═══ -->
+    <style>
+      .db-section-title{font-size:0.72rem;font-weight:800;color:#6a5a40;letter-spacing:2px;text-transform:uppercase;margin:1.5rem 0 0.75rem;display:flex;align-items:center;gap:0.5rem;}
+      .db-section-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.1);}
+      .db-kpi{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 1.1rem;}
+      .db-kpi .num{font-size:1.75rem;font-weight:900;line-height:1;}
+      .db-kpi .lbl{font-size:0.68rem;color:#6a6050;margin-top:0.25rem;font-weight:600;}
+      .db-kpi .sub{font-size:0.62rem;color:#4a4030;margin-top:0.1rem;}
+      .db-card{background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:1.25rem 1.4rem;}
+      .db-card-title{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;}
+      .db-row{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+      .db-row:last-child{border-bottom:none;}
+      .db-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:900;flex-shrink:0;}
+      .db-badge{font-size:0.62rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;}
+      .db-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:50px;overflow:hidden;margin:0 0.5rem;}
+      .db-bar{height:100%;border-radius:50px;transition:width 0.6s;}
+    </style>
     <div class="tab-panel active" id="tab-dashboard">
 
       <!-- Welcome Bar -->
@@ -370,60 +386,79 @@
         </div>
       </div>
 
-      <!-- Stats Row 1: Bookings -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-            <div style="width:38px;height:38px;background:rgba(201,168,76,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-alt" style="color:#c9a84c;"></i></div>
-            <span style="font-size:0.65rem;font-weight:700;color:#4caf50;background:rgba(76,175,80,0.1);padding:0.2rem 0.5rem;border-radius:50px;">LIVE</span>
-          </div>
-          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="db_totalBookings">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Bookings</div>
+      <!-- ── CUSTOMER OVERVIEW ── -->
+      <div class="db-section-title"><i class="fas fa-users" style="color:#c9a84c;"></i> Customer Overview</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:0.5rem;">
+        <div class="db-kpi" style="border-color:rgba(201,168,76,0.2);">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;"><div style="width:30px;height:30px;background:rgba(201,168,76,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-alt" style="color:#c9a84c;font-size:0.75rem;"></i></div><span style="font-size:0.6rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);padding:0.15rem 0.4rem;border-radius:50px;">LIVE</span></div>
+          <div class="num" style="color:#c9a84c;" id="db_totalBookings">0</div>
+          <div class="lbl">Total Bookings</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(255,152,0,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-            <div style="width:38px;height:38px;background:rgba(255,152,0,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-clock" style="color:#ff9800;"></i></div>
-          </div>
-          <div style="font-size:2rem;font-weight:900;color:#ff9800;" id="db_pendingBookings">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Pending Bookings</div>
+        <div class="db-kpi" style="border-color:rgba(255,152,0,0.2);">
+          <div style="width:30px;height:30px;background:rgba(255,152,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-clock" style="color:#ff9800;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#ff9800;" id="db_pendingBookings">0</div>
+          <div class="lbl">Pending</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-            <div style="width:38px;height:38px;background:rgba(76,175,80,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-check-circle" style="color:#4caf50;"></i></div>
-          </div>
-          <div style="font-size:2rem;font-weight:900;color:#4caf50;" id="db_completedBookings">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Completed</div>
+        <div class="db-kpi" style="border-color:rgba(33,150,243,0.2);">
+          <div style="width:30px;height:30px;background:rgba(33,150,243,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-check" style="color:#2196f3;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#2196f3;" id="db_confirmedBookings">0</div>
+          <div class="lbl">Confirmed</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(33,150,243,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-            <div style="width:38px;height:38px;background:rgba(33,150,243,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-users" style="color:#2196f3;"></i></div>
-          </div>
-          <div style="font-size:2rem;font-weight:900;color:#2196f3;" id="db_totalStaff">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Total Staff</div>
+        <div class="db-kpi" style="border-color:rgba(76,175,80,0.2);">
+          <div style="width:30px;height:30px;background:rgba(76,175,80,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-flag-checkered" style="color:#4caf50;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#4caf50;" id="db_completedBookings">0</div>
+          <div class="lbl">Completed</div>
+        </div>
+        <div class="db-kpi" style="border-color:rgba(245,166,35,0.2);">
+          <div style="width:30px;height:30px;background:rgba(245,166,35,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-star" style="color:#f5a623;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#f5a623;" id="db_avgRating">0.0</div>
+          <div class="lbl">Avg Rating</div>
         </div>
       </div>
 
-      <!-- Second Row -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(244,67,54,0.15);border-radius:16px;padding:1.25rem 1.5rem;cursor:pointer;" onclick="switchSideNav('applications',document.getElementById('sideNav-applications'))">
-          <div style="width:38px;height:38px;background:rgba(244,67,54,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-layer-group" style="color:#f44336;"></i></div>
-          <div style="font-size:2rem;font-weight:900;color:#f44336;" id="db_totalApps">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Applications</div>
+      <!-- ── BUSINESS METRICS ── -->
+      <div class="db-section-title"><i class="fas fa-chart-bar" style="color:#c9a84c;"></i> Business Metrics</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:0.5rem;">
+        <div class="db-kpi" style="border-color:rgba(33,150,243,0.2);cursor:pointer;" onclick="switchSideNav('applications',document.getElementById('sideNav-applications'))">
+          <div style="width:30px;height:30px;background:rgba(33,150,243,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-users" style="color:#2196f3;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#2196f3;" id="db_totalStaff">0</div>
+          <div class="lbl">Total Staff</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(156,39,176,0.15);border-radius:16px;padding:1.25rem 1.5rem;cursor:pointer;" onclick="switchSideNav('videos',document.getElementById('sideNav-videos'))">
-          <div style="width:38px;height:38px;background:rgba(156,39,176,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-film" style="color:#9c27b0;"></i></div>
-          <div style="font-size:2rem;font-weight:900;color:#9c27b0;" id="db_totalVideos">0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Video Contents</div>
+        <div class="db-kpi" style="border-color:rgba(244,67,54,0.2);cursor:pointer;" onclick="switchSideNav('applications',document.getElementById('sideNav-applications'))">
+          <div style="width:30px;height:30px;background:rgba(244,67,54,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-layer-group" style="color:#f44336;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#f44336;" id="db_totalApps">0</div>
+          <div class="lbl">Applications</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="width:38px;height:38px;background:rgba(245,166,35,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-star" style="color:#f5a623;"></i></div>
-          <div style="font-size:2rem;font-weight:900;color:#f5a623;" id="db_avgRating">0.0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Avg Rating</div>
+        <div class="db-kpi" style="border-color:rgba(156,39,176,0.2);cursor:pointer;" onclick="switchSideNav('videos',document.getElementById('sideNav-videos'))">
+          <div style="width:30px;height:30px;background:rgba(156,39,176,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-film" style="color:#9c27b0;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#9c27b0;" id="db_totalVideos">0</div>
+          <div class="lbl">Video Contents</div>
         </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.25rem 1.5rem;">
-          <div style="width:38px;height:38px;background:rgba(201,168,76,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;"></i></div>
-          <div style="font-size:2rem;font-weight:900;color:#c9a84c;" id="db_pendingPay">₹0</div>
-          <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Pending Payouts</div>
+        <div class="db-kpi" style="border-color:rgba(201,168,76,0.2);">
+          <div style="width:30px;height:30px;background:rgba(201,168,76,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;"><i class="fas fa-rupee-sign" style="color:#c9a84c;font-size:0.75rem;"></i></div>
+          <div class="num" style="color:#c9a84c;" id="db_pendingPay">₹0</div>
+          <div class="lbl">Pending Payouts</div>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMER ACTIVITY TABLE ── -->
+      <div class="db-section-title"><i class="fas fa-user-check" style="color:#c9a84c;"></i> Customer Activity</div>
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.1);border-radius:16px;overflow:hidden;margin-bottom:0.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid rgba(201,168,76,0.08);">
+          <span style="font-size:0.82rem;font-weight:800;color:#fff;">Recent Customer Bookings</span>
+          <button onclick="switchSideNav('bookings',document.getElementById('sideNav-bookings'))" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.25rem 0.7rem;border-radius:7px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">View All →</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;min-width:600px;">
+            <thead><tr style="background:rgba(201,168,76,0.06);">
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.65rem;font-weight:700;color:#6a6050;text-transform:uppercase;letter-spacing:0.5px;">Customer</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.65rem;font-weight:700;color:#6a6050;text-transform:uppercase;letter-spacing:0.5px;">Service</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.65rem;font-weight:700;color:#6a6050;text-transform:uppercase;letter-spacing:0.5px;">City</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.65rem;font-weight:700;color:#6a6050;text-transform:uppercase;letter-spacing:0.5px;">Date</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.65rem;font-weight:700;color:#6a6050;text-transform:uppercase;letter-spacing:0.5px;">Status</th>
+            </tr></thead>
+            <tbody id="db_customerTable"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#4a4030;font-size:0.82rem;">Loading...</td></tr></tbody>
+          </table>
         </div>
       </div>
 
@@ -8021,6 +8056,8 @@ Priority Support</textarea></div>
     var feedbacks = getFeedbacks ? getFeedbacks() : [];
     document.getElementById('db_totalBookings').textContent = bookings.length;
     document.getElementById('db_pendingBookings').textContent = bookings.filter(function(b){return b.status==='pending';}).length;
+    var confirmedEl = document.getElementById('db_confirmedBookings');
+    if(confirmedEl) confirmedEl.textContent = bookings.filter(function(b){return b.status==='confirmed';}).length;
     document.getElementById('db_completedBookings').textContent = bookings.filter(function(b){return b.status==='completed';}).length;
     document.getElementById('db_totalStaff').textContent = staff.length;
     // Avg rating
@@ -8102,6 +8139,23 @@ Priority Support</textarea></div>
           +'</div>';
         }).join('');
       }
+    }
+    // Customer Activity Table
+    var ct = document.getElementById('db_customerTable');
+    if(ct){
+      var recent8 = bookings.slice().reverse().slice(0,8);
+      if(!recent8.length){ ct.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:#4a4030;font-size:0.82rem;">No bookings yet.</td></tr>'; }
+      else { ct.innerHTML = recent8.map(function(b){
+        var sc={pending:'#ff9800',confirmed:'#2196f3',completed:'#4caf50',cancelled:'#f44336'};
+        var c=sc[b.status]||'#9a9080';
+        return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">'
+          +'<td style="padding:0.65rem 1rem;"><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+b.name+'</div><div style="font-size:0.68rem;color:#6a6050;">'+(b.phone||'')+'</div></td>'
+          +'<td style="padding:0.65rem 1rem;font-size:0.78rem;color:#d4c9a8;">'+(b.service||'')+'</td>'
+          +'<td style="padding:0.65rem 1rem;font-size:0.78rem;color:#9a9080;">'+(b.city||'')+'</td>'
+          +'<td style="padding:0.65rem 1rem;font-size:0.72rem;color:#6a6050;">'+(b.date||'')+'</td>'
+          +'<td style="padding:0.65rem 1rem;"><span style="font-size:0.65rem;font-weight:800;color:'+c+';background:'+c+'18;border:1px solid '+c+'44;padding:0.18rem 0.55rem;border-radius:50px;">'+b.status+'</span></td>'
+          +'</tr>';
+      }).join(''); }
     }
     var recent = bookings.slice().reverse().slice(0,6);
     var ro = document.getElementById('db_recentOrders');
