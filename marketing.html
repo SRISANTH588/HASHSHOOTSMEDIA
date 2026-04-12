@@ -516,6 +516,8 @@
       var snap = await f.s.getDocs(f.s.collection(f.db,'meetings'));
       var docs = [];
       snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      // Filter: show if toMarketing is true or staffId is 'all'
+      docs = docs.filter(function(d){ return d.toMarketing || d.staffId==='all' || !d.staffId; });
       docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
       if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar-alt"></i>No meetings scheduled yet.</div>'; return; }
       var now = new Date();
@@ -545,6 +547,8 @@
       var snap = await f.s.getDocs(f.s.collection(f.db,'invitations'));
       var docs = [];
       snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      // Filter: show if toMarketing is true or staffId is 'all'
+      docs = docs.filter(function(d){ return d.toMarketing || d.staffId==='all' || !d.staffId; });
       docs.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
       if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-envelope-open-text"></i>No invitations yet.</div>'; return; }
       el.innerHTML = docs.map(function(inv){

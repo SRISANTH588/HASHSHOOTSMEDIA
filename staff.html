@@ -4406,7 +4406,7 @@
     try {
       var docs = await window.fbGetAll('invitations');
       // filter for this staff or all-staff invitations
-      var mine = docs.filter(function(d){ return !d.staffId || String(d.staffId)===String(staffId) || d.staffId==='all'; });
+      var mine = docs.filter(function(d){ return !d.staffId || d.staffId==='all' || String(d.staffId)===String(staffId) || (Array.isArray(d.staffId) && d.staffId.map(String).includes(String(staffId))); });
       mine.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
       // update stats
       var pending  = mine.filter(function(d){ return !d.responses||!d.responses[staffId]; }).length;

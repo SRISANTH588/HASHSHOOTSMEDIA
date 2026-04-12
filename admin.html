@@ -2228,9 +2228,11 @@ Priority Support</textarea></div>
           <div class="form-group" style="margin-bottom:1rem;"><label>Description</label><textarea id="inv_desc" placeholder="Details about the invitation..."></textarea></div>
           <div class="form-group" style="margin-bottom:1rem;">
             <label>Send To</label>
-            <select id="inv_staffTarget" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
-              <option value="all">All Staff</option>
-            </select>
+            <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;">
+              <div style="margin-bottom:0.6rem;"><label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#d4c9a8;cursor:pointer;"><input type="checkbox" id="inv_toAll" onchange="toggleInvAll(this)" style="accent-color:#c9a84c;"/> All Staff &amp; Marketing</label></div>
+              <div style="margin-bottom:0.4rem;"><label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#d4c9a8;cursor:pointer;"><input type="checkbox" id="inv_toMarketing" style="accent-color:#c9a84c;"/> Marketing Team</label></div>
+              <div id="inv_staffCheckboxes" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;"></div>
+            </div>
           </div>
           <button class="btn-save-about" onclick="sendInvitation()"><i class="fas fa-paper-plane"></i> Send Invitation</button>
           <div id="inv_toast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Invitation sent!</div>
@@ -2268,6 +2270,14 @@ Priority Support</textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
             <div class="form-group"><label>Meeting Link (optional)</label><input type="text" id="meet_link" placeholder="https://meet.google.com/..."/></div>
             <div class="form-group"><label>Agenda / Description</label><textarea id="meet_desc" placeholder="Meeting agenda and details..."></textarea></div>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Invite</label>
+            <div style="background:#111;border:1px solid rgba(33,150,243,0.15);border-radius:10px;padding:0.85rem 1rem;">
+              <div style="margin-bottom:0.6rem;"><label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#d4c9a8;cursor:pointer;"><input type="checkbox" id="meet_toAll" onchange="toggleMeetAll(this)" style="accent-color:#2196f3;"/> All Staff &amp; Marketing</label></div>
+              <div style="margin-bottom:0.4rem;"><label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#d4c9a8;cursor:pointer;"><input type="checkbox" id="meet_toMarketing" style="accent-color:#2196f3;"/> Marketing Team</label></div>
+              <div id="meet_staffCheckboxes" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;"></div>
+            </div>
           </div>
           <button class="btn-save-about" onclick="scheduleMeeting()"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
           <div id="meet_toast" style="display:none;margin-top:0.75rem;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Meeting scheduled!</div>
@@ -6778,13 +6788,16 @@ Priority Support</textarea></div>
 
     // ── ADMIN INVITATIONS ──
     async function loadAdminInvitations(){
-      // Populate staff dropdown
-      var sel = document.getElementById('inv_staffTarget');
-      if(sel){
-        var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
-        sel.innerHTML = '<option value="all">All Staff</option>'
-          + staff.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('');
-      }
+      // Populate staff checkboxes
+      var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+      var cb = document.getElementById('inv_staffCheckboxes');
+      if(cb) cb.innerHTML = staff.map(function(s){
+        return '<label style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:#d4c9a8;cursor:pointer;background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:0.3rem 0.65rem;"><input type="checkbox" class="inv_staff_cb" value="'+s.id+'" style="accent-color:#c9a84c;"/> '+s.name+'</label>';
+      }).join('');
+      var mkcb = document.getElementById('meet_staffCheckboxes');
+      if(mkcb) mkcb.innerHTML = staff.map(function(s){
+        return '<label style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:#d4c9a8;cursor:pointer;background:#0a0a0a;border:1px solid rgba(33,150,243,0.12);border-radius:8px;padding:0.3rem 0.65rem;"><input type="checkbox" class="meet_staff_cb" value="'+s.id+'" style="accent-color:#2196f3;"/> '+s.name+'</label>';
+      }).join('');
       var el = document.getElementById('inv_adminList');
       if(!el) return;
       el.innerHTML = '<p style="color:#6a6050;font-size:0.82rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
@@ -6816,6 +6829,15 @@ Priority Support</textarea></div>
       } catch(e){ el.innerHTML='<p style="color:#f44336;font-size:0.82rem;">Error: '+e.message+'</p>'; }
     }
 
+    function toggleInvAll(cb){
+      document.querySelectorAll('.inv_staff_cb').forEach(function(c){ c.checked=cb.checked; });
+      var mk = document.getElementById('inv_toMarketing'); if(mk) mk.checked=cb.checked;
+    }
+    function toggleMeetAll(cb){
+      document.querySelectorAll('.meet_staff_cb').forEach(function(c){ c.checked=cb.checked; });
+      var mk = document.getElementById('meet_toMarketing'); if(mk) mk.checked=cb.checked;
+    }
+
     async function sendInvitation(){
       var title = document.getElementById('inv_title').value.trim();
       var type  = document.getElementById('inv_type').value;
@@ -6823,20 +6845,29 @@ Priority Support</textarea></div>
       var time  = document.getElementById('inv_time').value;
       var venue = document.getElementById('inv_venue').value.trim();
       var desc  = document.getElementById('inv_desc').value.trim();
-      var staffId = document.getElementById('inv_staffTarget').value;
       if(!title||!date){ alert('Title and Date are required.'); return; }
+      // Collect recipients
+      var toMarketing = document.getElementById('inv_toMarketing').checked;
+      var staffIds = Array.from(document.querySelectorAll('.inv_staff_cb:checked')).map(function(c){ return c.value; });
+      var toAll = document.getElementById('inv_toAll').checked;
+      var recipients = toAll ? 'all' : (staffIds.length ? staffIds : []);
+      if(!toAll && !staffIds.length && !toMarketing){ alert('Please select at least one recipient.'); return; }
       try {
         await window.fbSave('invitations', {
           title, type, date, time, venue, description: desc,
-          staffId, responses: {}, createdAt: new Date().toLocaleString()
+          staffId: toAll ? 'all' : staffIds,
+          toMarketing: toMarketing || toAll,
+          responses: {}, createdAt: new Date().toLocaleString()
         });
-        // Notify staff
         await window.fbSave('admin_notifications', {
           type:'invitation', title:'\uD83D\uDCE8 New Invitation: '+title,
           message:'You have a new invitation for '+date+(time?' at '+time:'')+(venue?' at '+venue:''),
-          staffId, read:false, createdAt:new Date().toLocaleString()
+          staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
         ['inv_title','inv_date','inv_time','inv_venue','inv_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        document.querySelectorAll('.inv_staff_cb').forEach(function(c){ c.checked=false; });
+        var mk=document.getElementById('inv_toMarketing'); if(mk) mk.checked=false;
+        var al=document.getElementById('inv_toAll'); if(al) al.checked=false;
         var t=document.getElementById('inv_toast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},2500);}
         loadAdminInvitations();
       } catch(e){ alert('Error: '+e.message); }
@@ -6897,18 +6928,26 @@ Priority Support</textarea></div>
       var link     = document.getElementById('meet_link').value.trim();
       var desc     = document.getElementById('meet_desc').value.trim();
       if(!title||!date||!time){ alert('Title, Date and Time are required.'); return; }
+      var toAll = document.getElementById('meet_toAll').checked;
+      var toMarketing = document.getElementById('meet_toMarketing').checked;
+      var staffIds = Array.from(document.querySelectorAll('.meet_staff_cb:checked')).map(function(c){ return c.value; });
+      if(!toAll && !staffIds.length && !toMarketing){ alert('Please select at least one attendee.'); return; }
       try {
         await window.fbSave('meetings', {
           title, type, date, time, duration, venue, link, description: desc,
+          staffId: toAll ? 'all' : staffIds,
+          toMarketing: toMarketing || toAll,
           attendees: {}, createdAt: new Date().toLocaleString()
         });
-        // Notify all staff
         await window.fbSave('admin_notifications', {
           type:'meeting', title:'\uD83D\uDC65 Meeting Scheduled: '+title,
           message:'New meeting on '+date+' at '+time+(venue?' at '+venue:''),
-          staffId:'all', read:false, createdAt:new Date().toLocaleString()
+          staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
         ['meet_title','meet_date','meet_time','meet_duration','meet_venue','meet_link','meet_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        document.querySelectorAll('.meet_staff_cb').forEach(function(c){ c.checked=false; });
+        var mk=document.getElementById('meet_toMarketing'); if(mk) mk.checked=false;
+        var al=document.getElementById('meet_toAll'); if(al) al.checked=false;
         var t=document.getElementById('meet_toast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},2500);}
         loadAdminMeetings();
       } catch(e){ alert('Error: '+e.message); }
