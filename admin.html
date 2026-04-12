@@ -647,7 +647,7 @@
     </div>
 
     <!-- BOOKINGS TAB -->
-    <div class="tab-panel active" id="tab-bookings">
+    <div class="tab-panel" id="tab-bookings">
 
     <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
       <div class="stat-card"><div class="num" id="totalCount">0</div><div class="lbl">Total Bookings</div></div>
@@ -7961,7 +7961,7 @@ Priority Support</textarea></div>
     _sideSection = section;
     document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
-    ['dashboard','applications','video-contents','bookings-main'].forEach(function(p){
+    ['dashboard','applications','video-contents','bookings'].forEach(function(p){
       var el = document.getElementById('tab-'+p);
       if(el) el.classList.remove('active');
     });
