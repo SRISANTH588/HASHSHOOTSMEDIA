@@ -137,10 +137,51 @@
 
     <!-- LEADS -->
     <div class="panel" id="panel-leads">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
-        <div class="sec-title" style="margin-bottom:0;"><i class="fas fa-user-plus"></i> Lead Management</div>
-        <button onclick="openAddLead()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.55rem 1.25rem;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add Lead</button>
+      <div class="sec-title"><i class="fas fa-user-plus"></i> Lead Management</div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.75rem;margin-bottom:1.5rem;" id="leadStatsRow"></div>
+
+      <!-- Add Lead Form -->
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-plus-circle" style="color:#c9a84c;"></i> Add New Lead</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Name *</label><input type="text" id="lead_name" placeholder="e.g. Rahul Verma" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Phone</label><input type="tel" id="lead_phone" placeholder="+91 XXXXXXXXXX" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Email</label><input type="email" id="lead_email" placeholder="email@example.com" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Source</label>
+            <select id="lead_source" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;">
+              <option value="">Select source</option>
+              <option>Instagram</option><option>WhatsApp</option><option>Referral</option><option>Walk-in</option><option>Website</option><option>Facebook</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Interested Service</label>
+            <select id="lead_service" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;">
+              <option value="">Select service</option>
+              <option>Reels Shoot</option><option>Wedding Photography</option><option>Portrait Session</option><option>Product Shoot</option><option>Event Coverage</option><option>Brand Shoot</option><option>Other</option>
+            </select>
+          </div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Budget (₹)</label><input type="number" id="lead_budget" placeholder="e.g. 5000" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="margin-bottom:0.75rem;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Notes</label><textarea id="lead_notes" placeholder="Any additional notes..." style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:60px;"></textarea></div>
+        <button onclick="addLead()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add Lead</button>
+        <div id="leadToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Lead added!</div>
       </div>
+
+      <!-- Filter -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <button onclick="filterLeads('all',this)" class="lead-filter active" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">All</button>
+        <button onclick="filterLeads('new',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">New</button>
+        <button onclick="filterLeads('contacted',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Contacted</button>
+        <button onclick="filterLeads('interested',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Interested</button>
+        <button onclick="filterLeads('closed',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Closed</button>
+        <button onclick="filterLeads('lost',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Lost</button>
+      </div>
+
       <div id="leadsList"></div>
     </div>
 
@@ -446,45 +487,80 @@
   }
 
   // ── LEADS ───────────────────────────────────────────────────
+  var _leadFilter = 'all';
+
+  function filterLeads(status, btn){
+    _leadFilter = status;
+    document.querySelectorAll('.lead-filter').forEach(function(b){
+      b.style.background='#0a0a0a'; b.style.borderColor='#333'; b.style.color='#9a9080';
+    });
+    if(btn){ btn.style.background='rgba(201,168,76,0.15)'; btn.style.borderColor='rgba(201,168,76,0.4)'; btn.style.color='#c9a84c'; }
+    renderLeads();
+  }
+
   function renderLeads(){
     var el = document.getElementById('leadsList');
-    var leads = JSON.parse(localStorage.getItem('mkt_leads')||'[]').slice().reverse();
-    var badge = document.getElementById('leadsBadge');
-    var open = leads.filter(function(l){ return l.status!=='closed'; }).length;
-    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
-    if(!leads.length){ el.innerHTML='<div class="empty"><i class="fas fa-user-plus"></i>No leads yet. Add your first lead.</div>'; return; }
+    var all = JSON.parse(localStorage.getItem('mkt_leads')||'[]').slice().reverse();
     var statusColors = {new:'#c9a84c',contacted:'#2196f3',interested:'#ff9800',closed:'#4caf50',lost:'#f44336'};
+    var statsEl = document.getElementById('leadStatsRow');
+    if(statsEl){
+      statsEl.innerHTML = Object.keys(statusColors).map(function(s){
+        var count = all.filter(function(l){ return l.status===s; }).length;
+        return '<div class="stat"><div class="num" style="color:'+statusColors[s]+';font-size:1.6rem;">'+count+'</div><div class="lbl">'+s.charAt(0).toUpperCase()+s.slice(1)+'</div></div>';
+      }).join('');
+    }
+    var badge = document.getElementById('leadsBadge');
+    var open = all.filter(function(l){ return l.status!=='closed'&&l.status!=='lost'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    var leads = _leadFilter==='all' ? all : all.filter(function(l){ return l.status===_leadFilter; });
+    if(!leads.length){ el.innerHTML='<div class="empty"><i class="fas fa-user-plus"></i>No leads'+((_leadFilter!=='all')?' with status "'+_leadFilter+'"':'')+'. Add one above.</div>'; return; }
     el.innerHTML = leads.map(function(l){
       var sc = statusColors[l.status]||'#c9a84c';
-      return '<div class="card" style="border-left:3px solid '+sc+';">' +
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'+
-        '<div><div class="card-title">'+l.name+'</div>'+
-        '<div class="card-meta">'+(l.phone||'')+(l.email?' · '+l.email:'')+'</div>'+
-        '<div class="card-meta">'+(l.source||'')+(l.service?' · '+l.service:'')+'</div></div>'+
+      var waLink = l.phone ? '<a href="https://wa.me/91'+l.phone.replace(/[^0-9]/g,'')+'" target="_blank" style="background:#25d366;color:#fff;border:none;border-radius:6px;padding:0.25rem 0.5rem;font-size:0.72rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i></a>' : '';
+      return '<div class="card" style="border-left:3px solid '+sc+';">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;">'+
+        '<div>'+
+        '<div class="card-title">'+l.name+'</div>'+
+        '<div class="card-meta">'+(l.phone?'<i class="fas fa-phone" style="color:#c9a84c;margin-right:3px;"></i>'+l.phone+' &nbsp;':'')+(l.email?'<i class="fas fa-envelope" style="color:#c9a84c;margin-right:3px;"></i>'+l.email:'')+'</div>'+
+        '<div class="card-meta" style="margin-top:0.2rem;">'+
+        (l.source?'<span style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;margin-right:0.3rem;">'+l.source+'</span>':'')+
+        (l.service?'<span style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);color:#2196f3;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;margin-right:0.3rem;">'+l.service+'</span>':'')+
+        (l.budget?'<span style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);color:#4caf50;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;">₹'+Number(l.budget).toLocaleString('en-IN')+'</span>':'')+
+        '</div></div>'+
         '<div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">'+
-        '<select onchange="updateLeadStatus(\''+l.id+'\',this.value)" style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:0.25rem 0.5rem;color:#fff;font-size:0.72rem;font-family:inherit;outline:none;">'+
+        '<select onchange="updateLeadStatus(\''+l.id+'\',this.value)" style="background:#0a0a0a;border:1px solid '+sc+'44;border-radius:6px;padding:0.25rem 0.5rem;color:'+sc+';font-size:0.72rem;font-family:inherit;outline:none;font-weight:700;">'+
         ['new','contacted','interested','closed','lost'].map(function(s){ return '<option value="'+s+'"'+(l.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>'; }).join('')+
         '</select>'+
+        waLink+
         '<button onclick="deleteLead(\''+l.id+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:6px;padding:0.25rem 0.5rem;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'+
         '</div></div>'+
         (l.notes?'<div class="card-msg">'+l.notes+'</div>':'')+
-        '<div style="font-size:0.65rem;color:#777;">'+l.addedAt+'</div>'+
+        '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">Added: '+l.addedAt+'</div>'+
         '</div>';
     }).join('');
   }
 
-  function openAddLead(){
-    var name = prompt('Lead Name *'); if(!name) return;
-    var phone = prompt('Phone Number');
-    var email = prompt('Email');
-    var source = prompt('Source (e.g. Instagram, Referral, Walk-in)');
-    var service = prompt('Interested Service');
-    var notes = prompt('Notes');
-    var lead = {id:'lead_'+Date.now(), name:name, phone:phone||'', email:email||'', source:source||'', service:service||'', notes:notes||'', status:'new', addedAt:new Date().toLocaleString()};
+  function addLead(){
+    var name = document.getElementById('lead_name').value.trim();
+    if(!name){ alert('Name is required.'); return; }
+    var lead = {
+      id:'lead_'+Date.now(), name:name,
+      phone:document.getElementById('lead_phone').value.trim(),
+      email:document.getElementById('lead_email').value.trim(),
+      source:document.getElementById('lead_source').value,
+      service:document.getElementById('lead_service').value,
+      budget:document.getElementById('lead_budget').value,
+      notes:document.getElementById('lead_notes').value.trim(),
+      status:'new', addedAt:new Date().toLocaleString()
+    };
     var leads = JSON.parse(localStorage.getItem('mkt_leads')||'[]');
     leads.push(lead);
     localStorage.setItem('mkt_leads', JSON.stringify(leads));
     saveMktLeadToFirebase(lead);
+    ['lead_name','lead_phone','lead_email','lead_budget','lead_notes'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('lead_source').value='';
+    document.getElementById('lead_service').value='';
+    var t=document.getElementById('leadToast'); t.style.display='block'; setTimeout(function(){ t.style.display='none'; },2500);
     renderLeads();
   }
 
