@@ -5350,16 +5350,31 @@ Priority Support</textarea></div>
           date: new Date().toLocaleString()
         });
         localStorage.setItem(walletKey, JSON.stringify(wallet));
+        // Sync wallet to Firebase
+        (async function(sid, w){
+          try{ var f=await _fbAdmin(); if(f) await f.s.setDoc(f.s.doc(f.db,'wallets',String(sid)),{balance:w.balance||0,totalEarned:w.totalEarned||0,pending:w.pending||0,withdrawn:w.withdrawn||0,transactions:w.transactions||[]},{merge:true}); }catch(e){}
+        })(staffId, wallet);
         var staffList = getStaff();
         var sm = staffList.find(function(s){ return String(s.id)===String(staffId); });
         if(sm){ sm.shootCredit = splitCredit; saveStaff(staffList); }
       });
 
       saveAssignedShoots(assigned);
-      // Push to Firebase so staff sees on any device — use fbUpdate with known ID to prevent duplicates
-      assigned.slice(-selectedIds.length).forEach(function(a){
-        if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), a);
-      });
+      // Push to Firebase so staff sees on any device
+      var newAssigns = assigned.slice(-selectedIds.length);
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          for(var i=0;i<newAssigns.length;i++){
+            var a = newAssigns[i];
+            var docData = Object.assign({}, a);
+            delete docData.createdAt; // remove timestamp number to avoid conflicts
+            docData.staffId = Number(a.staffId) || a.staffId; // ensure number
+            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)), docData, {merge:true});
+          }
+          console.log('Assigned shoots saved to Firebase');
+        }catch(e){ console.error('assignShoot Firebase error:',e); }
+      })();
 
       document.getElementById('as_booking').value='';
       document.getElementById('as_date').value='';
