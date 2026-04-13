@@ -5149,7 +5149,7 @@ Priority Support</textarea></div>
     async function populateAssignSelects(autoBookingId){
       // bookings dropdown — fetch from Firestore first
       var bSel = document.getElementById('as_booking');
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.status==='pending'||b.status==='confirmed'||b.status==='enquiry'||!b.status; });
       // Also try Firestore for fresh bookings
       try {
         var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -5162,7 +5162,7 @@ Priority Support</textarea></div>
         bSnap.forEach(function(d){ var data=d.data(); fbBookings.push(Object.assign({id:d.id},data)); });
         if(fbBookings.length){
           localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
-          bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; });
+          bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'||b.status==='enquiry'||!b.status; });
         }
         // Fetch staff from Firestore
         var sSnap = await fbStore.getDocs(fbStore.collection(fbDb,'staff'));
@@ -5307,9 +5307,10 @@ Priority Support</textarea></div>
       var totalCredit = Number(document.getElementById('as_credit').value) || 0;
       var notes       = document.getElementById('as_notes').value.trim();
 
-      if(!bookingId || !selectedIds.length || !date || !time){
-        showAssignToast('Please select a booking, at least one creator, date and time.', false); return;
-      }
+      if(!bookingId){ showAssignToast('Please select a booking.', false); return; }
+      if(!selectedIds.length){ showAssignToast('Please select at least one creator.', false); return; }
+      if(!date){ showAssignToast('Please pick a date using the calendar.', false); return; }
+      if(!time){ showAssignToast('Please pick a time using the time picker.', false); return; }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var booking  = bookings.find(function(b){ return String(b.id)===String(bookingId); });
