@@ -582,25 +582,6 @@
       renderInvitations();
     }catch(e){ alert('Error: '+e.message); }
   }
-    var el = document.getElementById('meetingsList');
-    var meetings = JSON.parse(localStorage.getItem('mkt_meetings')||'[]').slice().reverse();
-    if(!meetings.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar-alt"></i>No meetings scheduled yet.</div>'; return; }
-    el.innerHTML = meetings.map(function(m){
-      var isDone = m.status==='done';
-      return '<div class="card" style="border-left:3px solid '+(isDone?'#4caf50':'#c9a84c')+';">'+
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">'+
-        '<div><div class="card-title">'+m.title+'</div>'+
-        '<div class="card-meta">'+(m.client||'')+(m.date?' · '+m.date:'')+(m.time?' at '+m.time:'')+'</div>'+
-        '<div class="card-meta">'+(m.location||'')+'</div></div>'+
-        '<div style="display:flex;gap:0.4rem;">'+
-        (!isDone?'<button onclick="markMeetingDone(\''+m.id+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.25rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Done</button>':'')+
-        '<button onclick="deleteMeeting(\''+m.id+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:6px;padding:0.25rem 0.5rem;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'+
-        '</div></div>'+
-        (m.notes?'<div class="card-msg">'+m.notes+'</div>':'')+
-        '</div>';
-    }).join('');
-  }
-
   // ── PROFILE ───────────────────────────────────────────────────
   async function saveMktProfile(){
     var data = { name:document.getElementById('mkt_pName').value.trim(), phone:document.getElementById('mkt_pPhone').value.trim(), email:document.getElementById('mkt_pEmail').value.trim(), role:document.getElementById('mkt_pRole').value.trim() };
