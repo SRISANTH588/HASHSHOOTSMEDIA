@@ -495,6 +495,16 @@
         <ul id="planFeatures" class="plan-box-features"></ul>
       </div>
 
+      <!-- COUPON CODE -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.78rem;font-weight:700;color:#9a9080;margin-bottom:0.5rem;"><i class="fas fa-tag" style="color:#c9a84c;"></i> Have a coupon code?</div>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" id="couponInput" placeholder="Enter coupon code" style="flex:1;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.65rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;text-transform:uppercase;"/>
+          <button onclick="applyCoupon()" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:10px;padding:0.65rem 1.25rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Apply</button>
+        </div>
+        <div id="couponMsg" style="display:none;margin-top:0.5rem;font-size:0.8rem;font-weight:600;border-radius:8px;padding:0.4rem 0.85rem;"></div>
+      </div>
+
       <!-- T&C -->
       <div class="tnc-box">
         <label class="tnc-check">
@@ -729,7 +739,64 @@
       document.getElementById('confirmBtn').disabled = !document.getElementById('tncCheck').checked;
     }
 
-    function closeReview() {
+    var _appliedCoupon = null;
+
+    async function applyCoupon(){
+      var code = (document.getElementById('couponInput').value||'').trim().toUpperCase();
+      var msgEl = document.getElementById('couponMsg');
+      if(!code){ showCouponMsg('Please enter a coupon code.','#f44336'); return; }
+      // Fetch coupons from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='coupon';})||fbMod.initializeApp(fbCfg,'coupon');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'coupons',code));
+        if(!snap.exists()){ _appliedCoupon=null; showCouponMsg('Invalid coupon code.','#f44336'); return; }
+        var c = snap.data();
+        if(!c.active){ _appliedCoupon=null; showCouponMsg('This coupon is no longer active.','#f44336'); return; }
+        if(c.expiryDate && new Date(c.expiryDate) < new Date()){ _appliedCoupon=null; showCouponMsg('This coupon has expired.','#f44336'); return; }
+        if(c.usageLimit && (c.usedCount||0) >= c.usageLimit){ _appliedCoupon=null; showCouponMsg('This coupon has reached its usage limit.','#f44336'); return; }
+        _appliedCoupon = Object.assign({code:code}, c);
+        var discText = c.type==='percent' ? c.value+'% OFF' : '\u20b9'+Number(c.value).toLocaleString('en-IN')+' OFF';
+        showCouponMsg('\u2705 Coupon applied! You get '+discText, '#4caf50');
+        updatePriceWithCoupon();
+      }catch(e){ showCouponMsg('Error applying coupon. Try again.','#f44336'); }
+    }
+
+    function showCouponMsg(msg, color){
+      var el = document.getElementById('couponMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.style.color = color;
+      el.style.background = color==='#4caf50' ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)';
+      el.style.border = '1px solid '+(color==='#4caf50'?'rgba(76,175,80,0.3)':'rgba(244,67,54,0.3)');
+    }
+
+    function updatePriceWithCoupon(){
+      if(!_appliedCoupon) return;
+      var priceEl = document.getElementById('planPrice');
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      if(!plan) return;
+      var rawPrice = parseInt((plan.price||'').replace(/[^0-9]/g,''));
+      if(!rawPrice) return;
+      var discount = _appliedCoupon.type==='percent' ? Math.round(rawPrice*_appliedCoupon.value/100) : _appliedCoupon.value;
+      var finalPrice = Math.max(0, rawPrice - discount);
+      priceEl.innerHTML = '<span style="text-decoration:line-through;color:#6a6050;font-size:0.8em;">\u20b9'+rawPrice.toLocaleString('en-IN')+'</span> \u20b9'+finalPrice.toLocaleString('en-IN')+(plan.per?' <span>'+plan.per+'</span>':'');
+    }
+
+    function removeCoupon(){
+      _appliedCoupon = null;
+      document.getElementById('couponInput').value = '';
+      document.getElementById('couponMsg').style.display = 'none';
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      if(plan){
+        var priceEl = document.getElementById('planPrice');
+        priceEl.innerHTML = plan.price + (plan.per ? ' <span>'+plan.per+'</span>' : '');
+      }
+    }
+
       document.getElementById('reviewModal').classList.remove('open');
     }
 
@@ -739,10 +806,12 @@
       var id  = Date.now();
       var d   = pendingData;
       var planInfo = (selectedPlanKey && planData[selectedPlanKey]) ? planData[selectedPlanKey].name + ' ' + planData[selectedPlanKey].price : d.service;
+      var couponCode = _appliedCoupon ? _appliedCoupon.code : '';
+      var couponDiscount = _appliedCoupon ? _appliedCoupon.value+(_appliedCoupon.type==='percent'?'%':'') : '';
 
       // Save locally
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id:id, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', plan:planInfo, status:'pending', createdAt:now });
+      bookings.push({ id:id, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', plan:planInfo, coupon:couponCode, discount:couponDiscount, status:'pending', createdAt:now });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       // Send to Firebase (works from ANY device worldwide)

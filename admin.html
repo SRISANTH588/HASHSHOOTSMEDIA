@@ -175,6 +175,7 @@
       <button class="tab-btn" onclick="switchTab('staffbank',this)" id="staffBankTabBtn"><i class="fas fa-university"></i> Staff Bank Accounts</button>
       <button class="tab-btn" onclick="switchTab('staffaddress',this)" id="staffAddressTabBtn"><i class="fas fa-map-marker-alt"></i> Staff Addresses</button>
       <button class="tab-btn" onclick="switchTab('razorpay',this)" id="razorpayTabBtn"><i class="fas fa-credit-card"></i> Razorpay</button>
+      <button class="tab-btn" onclick="switchTab('coupons',this)" id="couponsTabBtn"><i class="fas fa-tag"></i> Coupons</button>
       <button class="tab-btn" onclick="switchTab('tawk',this)" id="tawkTabBtn"><i class="fas fa-comments"></i> Tawk.to</button>
       <button class="tab-btn" onclick="switchTab('settings',this)" id="settingsTabBtn"><i class="fas fa-sliders-h"></i> Settings</button>
       <button class="tab-btn" onclick="switchTab('cwallets',this)" id="cwalletsTabBtn"><i class="fas fa-wallet"></i> Customer Wallets</button>
@@ -1811,6 +1812,37 @@ Priority Support</textarea></div>
     </div><!-- end tab-tawk -->
 
     <!-- SETTINGS TAB -->
+    <!-- COUPONS TAB -->
+    <div class="tab-panel" id="tab-coupons">
+      <div class="about-form">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-tag" style="color:#c9a84c;margin-right:0.5rem;"></i> Coupon Codes</h2>
+        <!-- Create Coupon -->
+        <div style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
+          <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1.25rem;"><i class="fas fa-plus-circle" style="color:#c9a84c;"></i> Create New Coupon</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div class="form-group"><label>Coupon Code *</label><input type="text" id="cp_code" placeholder="e.g. SAVE20" style="text-transform:uppercase;"/></div>
+            <div class="form-group"><label>Discount Type</label>
+              <select id="cp_type" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;">
+                <option value="percent">Percentage (%)</option>
+                <option value="flat">Flat Amount (&#8377;)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Discount Value *</label><input type="number" id="cp_value" placeholder="e.g. 20"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div class="form-group"><label>Expiry Date</label><input type="date" id="cp_expiry"/></div>
+            <div class="form-group"><label>Usage Limit</label><input type="number" id="cp_limit" placeholder="Leave blank = unlimited"/></div>
+            <div class="form-group"><label>Description</label><input type="text" id="cp_desc" placeholder="e.g. New Year Offer"/></div>
+          </div>
+          <button class="btn-save-about" onclick="createCoupon()"><i class="fas fa-plus"></i> Create Coupon</button>
+          <div id="cpToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Coupon created!</div>
+        </div>
+        <!-- Coupons List -->
+        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> All Coupons</div>
+        <div id="couponsList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
+
     <div class="tab-panel" id="tab-settings">
 
       <!-- WHATSAPP NUMBER -->
@@ -2874,6 +2906,7 @@ Priority Support</textarea></div>
       if (tab === 'biz-enquiries') fetchBizEnquiries();
       if (tab === 'support-tickets') renderSupportTickets();
       if (tab === 'settings') loadSettingsTab();
+      if (tab === 'coupons') loadCoupons();
       if (tab === 'hero-stats') loadHeroStatsTab();
       if (tab === 'payments') renderAdminPayments();
       if (tab === 'txn-payments') renderPaymentsTab();
@@ -3914,6 +3947,76 @@ Priority Support</textarea></div>
     }
 
     // SETTINGS
+    // ── COUPONS ───────────────────────────────────────────────────
+    async function createCoupon(){
+      var code  = (document.getElementById('cp_code').value||'').trim().toUpperCase();
+      var type  = document.getElementById('cp_type').value;
+      var value = parseFloat(document.getElementById('cp_value').value);
+      var expiry= document.getElementById('cp_expiry').value;
+      var limit = parseInt(document.getElementById('cp_limit').value)||0;
+      var desc  = document.getElementById('cp_desc').value.trim();
+      if(!code||!value){ alert('Code and Discount Value are required.'); return; }
+      if(type==='percent'&&(value<=0||value>100)){ alert('Percentage must be between 1 and 100.'); return; }
+      try{
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        await f.s.setDoc(f.s.doc(f.db,'coupons',code),{
+          code, type, value, description:desc,
+          expiryDate: expiry||null,
+          usageLimit: limit||null,
+          usedCount: 0,
+          active: true,
+          createdAt: new Date().toLocaleString()
+        });
+        ['cp_code','cp_value','cp_expiry','cp_limit','cp_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        var t=document.getElementById('cpToast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},2500);}
+        loadCoupons();
+      }catch(e){ alert('Error: '+e.message); }
+    }
+
+    async function loadCoupons(){
+      var el = document.getElementById('couponsList');
+      if(!el) return;
+      el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+      try{
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        var snap = await f.s.getDocs(f.s.collection(f.db,'coupons'));
+        var docs = [];
+        snap.forEach(function(d){ docs.push(Object.assign({_id:d.id},d.data())); });
+        if(!docs.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;">No coupons yet.</p>'; return; }
+        el.innerHTML = docs.map(function(c){
+          var discText = c.type==='percent' ? c.value+'% OFF' : '\u20b9'+Number(c.value).toLocaleString('en-IN')+' OFF';
+          var isExpired = c.expiryDate && new Date(c.expiryDate) < new Date();
+          var statusColor = !c.active||isExpired ? '#f44336' : '#4caf50';
+          var statusLabel = !c.active ? 'Inactive' : isExpired ? 'Expired' : 'Active';
+          return '<div style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
+            +'<div>'
+            +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.3rem;">'
+            +'<span style="font-size:1rem;font-weight:900;color:#c9a84c;letter-spacing:2px;">'+c.code+'</span>'
+            +'<span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.65rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;">'+discText+'</span>'
+            +'<span style="background:'+statusColor+'18;border:1px solid '+statusColor+'44;color:'+statusColor+';font-size:0.65rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;">'+statusLabel+'</span>'
+            +'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;">'
+            +(c.description?c.description+' &nbsp;&middot;&nbsp; ':'')
+            +(c.expiryDate?'Expires: '+c.expiryDate+' &nbsp;&middot;&nbsp; ':'')
+            +'Used: '+(c.usedCount||0)+(c.usageLimit?'/'+c.usageLimit:'')
+            +'</div></div>'
+            +'<div style="display:flex;gap:0.5rem;">'
+            +'<button onclick="toggleCoupon(\''+c._id+'\','+(!c.active)+')" style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);color:#ff9800;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">'+(c.active?'Deactivate':'Activate')+'</button>'
+            +'<button onclick="deleteCoupon(\''+c._id+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'</div></div>';
+        }).join('');
+      }catch(e){ el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>'; }
+    }
+
+    async function toggleCoupon(code, active){
+      try{ var f=await _fbAdmin(); if(!f) return; await f.s.setDoc(f.s.doc(f.db,'coupons',code),{active:active},{merge:true}); loadCoupons(); }catch(e){ alert('Error: '+e.message); }
+    }
+
+    async function deleteCoupon(code){
+      if(!confirm('Delete coupon '+code+'?')) return;
+      try{ var f=await _fbAdmin(); if(!f) return; await f.s.deleteDoc(f.s.doc(f.db,'coupons',code)); loadCoupons(); }catch(e){ alert('Error: '+e.message); }
+    }
+
     function loadSettingsTab(){
       var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
       var el = document.getElementById('set_waNumber');
