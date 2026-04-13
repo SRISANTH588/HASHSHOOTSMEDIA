@@ -3331,8 +3331,20 @@
           fbStL.onSnapshot(fbStL.query(fbStL.collection(fbDbL,'assigned_shoots'),fbStL.where('staffId','==',myId)), function(snap){
             var myDocs = [];
             snap.forEach(function(d){ var data=d.data(); myDocs.push(Object.assign({id:d.id},data)); });
-            localStorage.setItem('hs_assigned_shoots', JSON.stringify(myDocs));
-            renderAssignedShoots();
+            // Also query by numeric staffId
+            fbStL.getDocs(fbStL.query(fbStL.collection(fbDbL,'assigned_shoots'),fbStL.where('staffId','==',Number(myId)))).then(function(snap2){
+              snap2.forEach(function(d){
+                var data=d.data();
+                if(!myDocs.find(function(x){ return String(x.id)===String(d.id); })) myDocs.push(Object.assign({id:d.id},data));
+              });
+              localStorage.setItem('hs_assigned_shoots', JSON.stringify(myDocs));
+              renderAssignedShoots();
+              renderPayout();
+            }).catch(function(){ 
+              localStorage.setItem('hs_assigned_shoots', JSON.stringify(myDocs));
+              renderAssignedShoots();
+              renderPayout();
+            });
           });
         }catch(e){ console.error('assigned_shoots listener err',e); }
 
