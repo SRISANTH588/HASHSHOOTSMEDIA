@@ -4488,131 +4488,84 @@
     if(!el) return;
     el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     try {
-      var docs = await window.fbGetAll('invitations');
-      // filter for this staff or all-staff invitations
-      var mine = docs.filter(function(d){ return !d.staffId || d.staffId==='all' || String(d.staffId)===String(staffId) || (Array.isArray(d.staffId) && d.staffId.map(String).includes(String(staffId))); });
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDocs(fbStore.collection(db,'invitations'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
+      var mine = docs.filter(function(d){
+        return !d.staffIds || d.staffIds.length===0 || d.staffIds.map(String).includes(String(staffId)) || d.toAll;
+      });
       mine.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
-      // update stats
-      var pending  = mine.filter(function(d){ return !d.responses||!d.responses[staffId]; }).length;
-      var accepted = mine.filter(function(d){ return d.responses&&d.responses[staffId]==='accepted'; }).length;
-      var declined = mine.filter(function(d){ return d.responses&&d.responses[staffId]==='declined'; }).length;
-      var sv=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
-      sv('inv_pendingCount',pending); sv('inv_acceptedCount',accepted); sv('inv_declinedCount',declined);
-      // badge
-      var nb=document.getElementById('invitationsNotifBadge');
-      if(nb){if(pending>0){nb.textContent=pending;nb.style.display='';}else nb.style.display='none';}
+      var nb = document.getElementById('invitationsNotifBadge');
+      if(nb){ if(mine.length>0){nb.textContent=mine.length;nb.style.display='';}else nb.style.display='none'; }
       if(!mine.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-envelope" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No invitations yet.</p>'; return; }
       el.innerHTML = mine.map(function(d){
-        var resp = d.responses && d.responses[staffId];
-        var statusColor = resp==='accepted'?'#4caf50':resp==='declined'?'#f44336':'#ff9800';
-        var statusLabel = resp==='accepted'?'Accepted':resp==='declined'?'Declined':'Pending Response';
-        var ts = d.createdAt ? new Date(d.createdAt.seconds?d.createdAt.seconds*1000:d.createdAt).toLocaleString() : (d.date||'');
-        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-left:4px solid '+statusColor+';border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;">'
-          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
-            +'<div>'
-              +'<div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">'+(d.title||'Invitation')+'</div>'
-              +'<div style="font-size:0.68rem;color:#6a6050;">'+ts+'</div>'
-            +'</div>'
-            +'<span style="font-size:0.65rem;font-weight:800;color:'+statusColor+';background:'+statusColor+'18;border:1px solid '+statusColor+'44;padding:0.2rem 0.65rem;border-radius:50px;">'+statusLabel+'</span>'
+        var ts = d.date || (d.createdAt ? new Date(d.createdAt.seconds?d.createdAt.seconds*1000:d.createdAt).toLocaleString() : '');
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.2);border-left:4px solid #c9a84c;border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+(d.title||'Invitation')+'</div>'
+            +'<span style="font-size:0.65rem;font-weight:800;color:#c9a84c;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:0.2rem 0.65rem;border-radius:50px;">'+(d.type||'Invitation')+'</span>'
           +'</div>'
-          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.85rem;line-height:1.6;">'+d.description+'</div>':'')
-          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
-            +(d.date?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Date</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.date+'</div></div>':'')
-            +(d.time?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Time</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.time+'</div></div>':'')
-            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
-            +(d.type?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-top:0.1rem;">'+d.type+'</div></div>':'')
+          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.75rem;line-height:1.6;">'+d.description+'</div>':'')
+          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.5rem;">'
+            +(d.date?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Date</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.date+'</div></div>':'')
+            +(d.time?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Time</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.time+'</div></div>':'')
+            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
           +'</div>'
-          +(resp ? '' :
-            '<div style="display:flex;gap:0.65rem;">'
-              +'<button onclick="respondInvitation(\''+d._fbId+'\',\'accepted\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
-              +'<button onclick="respondInvitation(\''+d._fbId+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Decline</button>'
-            +'</div>')
-        +'</div>';
+          +'</div>';
       }).join('');
     } catch(e){
-      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error: '+e.message+'</p>';
+      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error loading invitations: '+e.message+'</p>';
     }
   }
 
-  async function respondInvitation(invId, response){
-    var staffId = localStorage.getItem('hs_staff_id');
-    if(!staffId||!invId) return;
-    try {
-      var update = {};
-      update['responses.'+staffId] = response;
-      update['responses.'+staffId+'_name'] = localStorage.getItem('hs_staff_name')||'Staff';
-      update['responses.'+staffId+'_at'] = new Date().toLocaleString();
-      await window.fbUpdate('invitations', invId, update);
-      loadInvitations();
-    } catch(e){ alert('Failed to respond: '+e.message); }
-  }
-
-  // ── MEETINGS ──
   async function loadMeetings(){
     var staffId = localStorage.getItem('hs_staff_id');
     var el = document.getElementById('meet_list');
     if(!el) return;
     el.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     try {
-      var docs = await window.fbGetAll('meetings');
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDocs(fbStore.collection(db,'meetings'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
       docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
-      var now = new Date();
-      var upcoming = docs.filter(function(d){ return new Date(d.date+' '+(d.time||'00:00')) >= now; });
-      var attending = docs.filter(function(d){ return d.attendees&&d.attendees[staffId]==='attending'; });
-      var sv=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
-      sv('meet_upcomingCount', upcoming.length);
-      sv('meet_attendingCount', attending.length);
-      sv('meet_totalCount', docs.length);
-      // badge
-      var nb=document.getElementById('meetingsNotifBadge');
-      if(nb){if(upcoming.length>0){nb.textContent=upcoming.length;nb.style.display='';}else nb.style.display='none';}
+      var nb = document.getElementById('meetingsNotifBadge');
+      if(nb){ if(docs.length>0){nb.textContent=docs.length;nb.style.display='';}else nb.style.display='none'; }
       if(!docs.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-calendar" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No meetings scheduled yet.</p>'; return; }
+      var now = new Date();
       el.innerHTML = docs.map(function(d){
-        var isPast = new Date(d.date+' '+(d.time||'00:00')) < now;
-        var myStatus = d.attendees && d.attendees[staffId];
-        var borderColor = isPast?'#6a6050':myStatus==='attending'?'#4caf50':myStatus==='declined'?'#f44336':'#2196f3';
-        var ts = d.date+(d.time?' at '+d.time:'');
+        var isPast = d.date && new Date(d.date+' '+(d.time||'00:00')) < now;
+        var borderColor = isPast ? '#6a6050' : '#2196f3';
         return '<div style="background:#111;border:1px solid rgba(33,150,243,0.15);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;'+(isPast?'opacity:0.65;':'')+'">'
-          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
-            +'<div>'
-              +'<div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.2rem;">'+(d.title||'Meeting')+'</div>'
-              +'<div style="font-size:0.72rem;color:#2196f3;font-weight:700;"><i class="fas fa-calendar-alt" style="margin-right:4px;"></i>'+ts+'</div>'
-            +'</div>'
-            +(isPast?'<span style="font-size:0.65rem;font-weight:800;color:#6a6050;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.2rem 0.65rem;border-radius:50px;">Past</span>'
-              :myStatus==='attending'?'<span style="font-size:0.65rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-check"></i> Attending</span>'
-              :myStatus==='declined'?'<span style="font-size:0.65rem;font-weight:800;color:#f44336;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-times"></i> Declined</span>'
-              :'<span style="font-size:0.65rem;font-weight:800;color:#ff9800;background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);padding:0.2rem 0.65rem;border-radius:50px;">Respond</span>')
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+            +'<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+(d.title||'Meeting')+'</div>'
+            +(isPast
+              ? '<span style="font-size:0.65rem;font-weight:800;color:#6a6050;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.2rem 0.65rem;border-radius:50px;">Past</span>'
+              : '<span style="font-size:0.65rem;font-weight:800;color:#2196f3;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);padding:0.2rem 0.65rem;border-radius:50px;">Upcoming</span>')
           +'</div>'
-          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.85rem;line-height:1.6;">'+d.description+'</div>':'')
-          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:0.85rem;">'
-            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
-            +(d.duration?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Duration</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.duration+'</div></div>':'')
-            +(d.type?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:0.78rem;font-weight:700;color:#2196f3;margin-top:0.1rem;">'+d.type+'</div></div>':'')
-            +(d.link?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#4a4030;font-weight:700;text-transform:uppercase;">Link</div><a href="'+d.link+'" target="_blank" style="font-size:0.75rem;font-weight:700;color:#2196f3;margin-top:0.1rem;display:block;word-break:break-all;">Join</a></div>':'')
+          +(d.description?'<div style="font-size:0.82rem;color:#b8b0a0;background:rgba(255,255,255,0.03);border-radius:9px;padding:0.65rem 0.85rem;margin-bottom:0.75rem;line-height:1.6;">'+d.description+'</div>':'')
+          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.5rem;">'
+            +(d.date?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Date</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.date+'</div></div>':'')
+            +(d.time?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Time</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.time+'</div></div>':'')
+            +(d.venue?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Venue</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.venue+'</div></div>':'')
+            +(d.duration?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Duration</div><div style="font-size:0.78rem;font-weight:700;color:#fff;margin-top:0.1rem;">'+d.duration+'</div></div>':'')
+            +(d.type?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:0.78rem;font-weight:700;color:#2196f3;margin-top:0.1rem;">'+d.type+'</div></div>':'')
+            +(d.link?'<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;"><div style="font-size:0.58rem;color:#6a6050;font-weight:700;text-transform:uppercase;">Link</div><a href="'+d.link+'" target="_blank" style="font-size:0.75rem;font-weight:700;color:#2196f3;margin-top:0.1rem;display:block;">Join Meeting</a></div>':'')
           +'</div>'
-          +(!isPast && !myStatus ?
-            '<div style="display:flex;gap:0.65rem;">'
-              +'<button onclick="respondMeeting(\''+d._fbId+'\',\'attending\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> I\'ll Attend</button>'
-              +'<button onclick="respondMeeting(\''+d._fbId+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.6rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Can\'t Attend</button>'
-            +'</div>' : '')
-        +'</div>';
+          +'</div>';
       }).join('');
     } catch(e){
-      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error: '+e.message+'</p>';
+      el.innerHTML='<p style="color:#f44336;font-size:0.82rem;text-align:center;padding:2rem;">Error loading meetings: '+e.message+'</p>';
     }
-  }
-
-  async function respondMeeting(meetId, response){
-    var staffId = localStorage.getItem('hs_staff_id');
-    if(!staffId||!meetId) return;
-    try {
-      var update = {};
-      update['attendees.'+staffId] = response;
-      update['attendees.'+staffId+'_name'] = localStorage.getItem('hs_staff_name')||'Staff';
-      update['attendees.'+staffId+'_at'] = new Date().toLocaleString();
-      await window.fbUpdate('meetings', meetId, update);
-      loadMeetings();
-    } catch(e){ alert('Failed to respond: '+e.message); }
   }
 
   function showPaymentInfoModal(shoot){
