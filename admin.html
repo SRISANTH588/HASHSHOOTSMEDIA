@@ -5205,7 +5205,7 @@ Priority Support</textarea></div>
         var staffList = getStaff();
         var sList = document.getElementById('as_staff_list');
         if(!staffList.length){
-          sList.innerHTML = '<div style="color:#9a9080;font-size:0.82rem;">No staff accounts yet.</div>';
+          sList.innerHTML = '<div style="color:#f44336;font-size:0.82rem;"><i class="fas fa-exclamation-circle"></i> No staff found. <button onclick="populateAssignSelects()" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:0.5rem;"><i class="fas fa-sync"></i> Retry</button></div>';
         } else {
           sList.innerHTML = staffList.map(function(s){
             return '<label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;padding:0.35rem 0.5rem;border-radius:7px;">'
@@ -5214,6 +5214,9 @@ Priority Support</textarea></div>
               +'<span style="font-size:0.72rem;color:#9a9080;">('+s.role+')</span>'
               +'</label>';
           }).join('');
+          sList.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+            cb.addEventListener('change', updatePayoutPreview);
+          });
         }
       }
       // Populate bookings dropdown
@@ -5309,10 +5312,14 @@ Priority Support</textarea></div>
 
       console.log('assignShoot called:', {bookingId, selectedIds, date, time, totalCredit});
 
-      if(!bookingId){ alert('Please select a booking from the dropdown.'); return; }
-      if(!selectedIds.length){ alert('Please check at least one creator checkbox.'); return; }
-      if(!date){ alert('Please pick a date using the calendar picker.'); return; }
-      if(!time){ alert('Please pick a time using the time picker.'); return; }
+      if(!bookingId){ showAssignToast('Please select a booking from the dropdown.', false); return; }
+      if(!selectedIds.length){ showAssignToast('Please check at least one creator checkbox.', false); return; }
+      if(!date){ showAssignToast('Please pick a shoot date using the calendar picker.', false); return; }
+      if(!time){ // auto-confirm current time picker value if not confirmed
+        confirmTime();
+        time = document.getElementById('as_time').value;
+        if(!time){ showAssignToast('Please pick a shoot time using the time picker.', false); return; }
+      }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var booking  = bookings.find(function(b){ return String(b.id)===String(bookingId); });
