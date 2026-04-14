@@ -1123,7 +1123,7 @@
           <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
         </div>
         <button class="btn-save-about" onclick="assignShoot()"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
-        <div id="asToast" style="display:none;padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-weight:700;margin-top:1rem;"></div>
+        <div id="asToast" style="display:none;padding:0.85rem 1.1rem;border-radius:10px;font-size:0.88rem;font-weight:700;margin-top:1rem;border:1px solid;"></div>
       </div>
 
       <!-- ASSIGNED LIST -->
@@ -5313,15 +5313,19 @@ Priority Support</textarea></div>
       var totalCredit = Number(document.getElementById('as_credit').value) || 0;
       var notes       = document.getElementById('as_notes').value.trim();
 
-      console.log('assignShoot called:', {bookingId, selectedIds, date, time, totalCredit});
+      // Show what's missing so user knows exactly what to fill
+      var missing = [];
+      if(!bookingId) missing.push('Booking');
+      if(!selectedIds.length) missing.push('Creator');
+      if(!date) missing.push('Date');
+      if(!time){ confirmTime(); time = document.getElementById('as_time').value; if(!time) missing.push('Time'); }
 
-      if(!bookingId){ showAssignToast('Please select a booking from the dropdown.', false); return; }
-      if(!selectedIds.length){ showAssignToast('Please check at least one creator checkbox.', false); return; }
-      if(!date){ showAssignToast('Please pick a shoot date using the calendar picker.', false); return; }
-      if(!time){ // auto-confirm current time picker value if not confirmed
-        confirmTime();
-        time = document.getElementById('as_time').value;
-        if(!time){ showAssignToast('Please pick a shoot time using the time picker.', false); return; }
+      if(missing.length){
+        showAssignToast('\u274c Missing: ' + missing.join(', ') + '. Please fill all fields.', false);
+        // Also scroll to the toast so user sees it
+        var t = document.getElementById('asToast');
+        if(t) t.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
       }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
