@@ -1710,7 +1710,7 @@
             ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
             : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed &#8212; Awaiting Payment</div>';
           // Check if feedback already given
-          var existingFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]').find(function(f){ return f.assignId === a.id; });
+          var existingFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]').find(function(f){ return String(f.assignId) === String(a.id); });
           var feedbackSection = existingFb
             ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;color:#4caf50;"><i class="fas fa-star"></i> Feedback Submitted &#8212; ' + '\u2605'.repeat(existingFb.rating) + '</div>'
             : '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">'
@@ -2281,15 +2281,16 @@
     function setCreatorStars(id, val){
       creatorSelectedStars[id] = val;
       document.querySelectorAll('.cstar[data-id="' + id + '"]').forEach(function(s){
+        s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#555';
         s.classList.toggle('active', Number(s.dataset.val) <= val);
       });
     }
 
     function renderCreatorShootFeedback(){
-      var staffId = Number(localStorage.getItem('hs_staff_id'));
+      var staffId = String(localStorage.getItem('hs_staff_id'));
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]')
-        .filter(function(a){ return a.staffId === staffId && (a.status === 'completed' || a.status === 'paid'); })
+        .filter(function(a){ return String(a.staffId) === staffId && (a.status === 'completed' || a.status === 'paid'); })
         .filter(function(a){ return _fbDateMatch(a.date || ''); });
       var el = document.getElementById('creatorShootFeedbackList');
       if(!assigned.length){
@@ -2318,7 +2319,7 @@
           + '<div style="font-size:0.7rem;color:#c9a84c;font-weight:700;margin-bottom:0.1rem;"><i class="fas fa-user-circle"></i> Creator: ' + creatorName + '</div>'
           + '<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + a.city + ' &nbsp;·&nbsp; ' + a.date + '</div>'
           + '<div style="display:flex;gap:0.3rem;margin-bottom:0.65rem;">' + [1,2,3,4,5].map(function(v){
-              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')">&#9733;</span>'; // BUG 6 FIX
+              return '<span class="cstar star" data-id="' + a.id + '" data-val="' + v + '" onclick="setCreatorStars(' + a.id + ',' + v + ')" style="font-size:1.6rem;cursor:pointer;color:#555;transition:color 0.15s;">&#9733;</span>';
             }).join('') + '</div>'
           + '<textarea id="cfb_' + a.id + '" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:65px;" placeholder="How was the shoot? Any notes..."></textarea>'
           + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
