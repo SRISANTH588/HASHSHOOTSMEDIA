@@ -5452,6 +5452,15 @@ Shoot saved locally. Staff may not see it.");
           +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'')+'</div>'
           +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
           +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
+          +((!isPaid && a.bankDetails && a.bankDetails.accNo)
+            ? '<div style="margin-top:0.6rem;background:rgba(76,175,80,0.07);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.6rem 0.85rem;">'
+              +'<div style="font-size:0.65rem;font-weight:800;color:#4caf50;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem;"><i class="fas fa-university"></i> Bank Account</div>'
+              +'<div style="font-size:0.78rem;color:#d4c9a8;font-weight:700;">'+a.bankDetails.bankName+'</div>'
+              +'<div style="font-size:0.75rem;color:#9a9080;">A/C: '+a.bankDetails.accNo+' &nbsp;|&nbsp; IFSC: '+a.bankDetails.ifsc+'</div>'
+              +(a.bankDetails.upi?'<div style="font-size:0.72rem;color:#9a9080;">UPI: '+a.bankDetails.upi+'</div>':'')
+              +'</div>'
+            : (!isPaid ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#ff9800;"><i class="fas fa-exclamation-triangle"></i> No bank details added by staff yet.</div>' : '')
+          )
           +'</div>'
           +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
           +(isPaid

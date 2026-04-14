@@ -1854,25 +1854,41 @@
       if(!s) return;
       s.status = 'done';
       s.doneAt = new Date().toLocaleString();
+      // Get staff bank details to attach
+      var staffId = localStorage.getItem('hs_staff_id');
+      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      if(bankData) s.bankDetails = bankData;
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
-      // Notify admin via Firebase
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {status:'done', doneAt:s.doneAt});
-      if(window.fbSave) fbSave('admin_notifications', {
-        type: 'shoot_done',
-        title: '\u2705 Shoot Marked as Done',
-        message: (localStorage.getItem('hs_staff_name')||'Staff') + ' completed shoot: ' + (s.service||'') + ' \u2014 ' + (s.clientName||'') + '. Awaiting your approval & payment.',
-        assignId: String(assignId),
-        staffId: localStorage.getItem('hs_staff_id'),
-        staffName: localStorage.getItem('hs_staff_name')||'',
-        read: false
-      });
+      // Update Firebase directly
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+          var db      = fbStore.getFirestore(app);
+          var updateData = {status:'done', doneAt:s.doneAt};
+          if(bankData) updateData.bankDetails = bankData;
+          await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)), updateData, {merge:true});
+          // Notify admin
+          await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
+            type: 'shoot_done',
+            title: 'Shoot Marked as Done',
+            message: (localStorage.getItem('hs_staff_name')||'Staff') + ' completed: ' + (s.service||'') + ' for ' + (s.clientName||'') + '. Awaiting payment.',
+            assignId: String(assignId),
+            staffId: String(staffId),
+            staffName: localStorage.getItem('hs_staff_name')||'',
+            bankDetails: bankData || null,
+            read: false,
+            createdAt: fbStore.serverTimestamp()
+          });
+        }catch(e){ console.error('markShootDone Firebase error:', e); }
+      })();
       renderAssignedShoots();
-      renderPayments();
-      // Update badge
-      var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(localStorage.getItem('hs_staff_id')) && a.status==='done'; }).length;
+      renderPayout();
+      var done = shoots.filter(function(a){ return String(a.staffId)===String(staffId) && a.status==='done'; }).length;
       var badge = document.getElementById('paymentsDoneBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
-      // Show payment info modal
       showPaymentInfoModal(s);
     }
 
@@ -1895,7 +1911,18 @@
       var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
       shoots = shoots.filter(function(a){ return String(a.id) !== String(assignId); });
       localStorage.setItem('hs_assigned_shoots', JSON.stringify(shoots));
-      if(window.fbDelete) fbDelete('assigned_shoots', String(assignId));
+      // Delete from Firebase directly
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+          var db      = fbStore.getFirestore(app);
+          await fbStore.deleteDoc(fbStore.doc(db,'assigned_shoots',String(assignId)));
+          console.log('Deleted from Firebase:', assignId);
+        }catch(e){ console.error('Firebase delete error:', e); }
+      })();
       renderAssignedShoots();
     }
 
