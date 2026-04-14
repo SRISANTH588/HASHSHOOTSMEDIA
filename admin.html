@@ -2561,7 +2561,7 @@ Priority Support</textarea></div>
     if(_role !== 'admin' && _role !== 'staff') { window.location.href='login.html'; }
 
     // One-time cleanup: remove test/fake videos injected by old fix scripts
-    (function(){
+    ;(function(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
       var cleaned = videos.filter(function(v){
         var url = v.cloudUrl || '';
@@ -5362,8 +5362,7 @@ Priority Support</textarea></div>
             console.log("Shoot saved to Firebase for staff:", sid);
           }catch(e){
             console.error("Firebase save error:", e);
-            alert("Firebase sync failed: " + e.message + "
-Shoot saved locally. Staff may not see it.");
+            alert("Firebase sync failed: " + e.message + "\nShoot saved locally. Staff may not see it.");
           }
         })(staffId, wallet, shootData);
       });
@@ -5676,7 +5675,6 @@ Shoot saved locally. Staff may not see it.");
       }catch(e){ console.error("releasePayment Firebase error:",e); alert("Firebase sync failed: "+e.message); }
       renderAssignedList(); updateCreatorPendingPayments();
       showAssignToast("✅ ₹" + Number(a.credit).toLocaleString("en-IN") + " released to " + a.staffName + "!", true);
-    }
     }
 
     // STAFF WITHDRAW TAB
