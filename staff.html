@@ -2022,42 +2022,63 @@
     }
 
     renderAssignedShoots();
-    // Fetch directly from Firestore on load — retry until fbListen is ready
-    (async function(){
+    // Fetch assigned shoots directly from Firestore — no dependency on fbListen
+    (async function fetchMyShootsFromFirebase(){
       try {
-        var myId = String(localStorage.getItem('hs_staff_id'));
-        if(!myId || myId === 'null') return;
-        // Wait up to 5s for hs-firebase.js to load
-        for(var _w=0; _w<10; _w++){
-          if(window.fbListen) break;
-          await new Promise(function(r){ setTimeout(r, 500); });
-        }
+        var myId = String(localStorage.getItem('hs_staff_id')||'');
+        if(!myId || myId === 'null' || myId === '') return;
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
         var db      = fbStore.getFirestore(app);
-        // Try string staffId first (admin stores as string), then number fallback
-        var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId)));
-        if(snap.empty) snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId))));
-        // Also fetch all and filter manually as final fallback
-        var allSnap = snap.empty ? await fbStore.getDocs(fbStore.collection(db,'assigned_shoots')) : snap;
-        var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
-        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
+        // Fetch ALL assigned_shoots and filter by staffId — avoids index/type issues
+        var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
         var fresh = [];
         allSnap.forEach(function(d){
           var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
           data.staffId = String(data.staffId);
-          // Only include shoots for this staff member
-          if(String(data.staffId) !== myId) return;
-          delete data.createdAt; delete data.updatedAt;
-          fresh.push(data);
+          if(data.staffId === myId) fresh.push(data);
         });
+        // Merge with local (keep other staff's shoots, replace mine with fresh)
+        var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
+        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
         localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
         renderAssignedShoots();
-      } catch(e){ console.warn('shoots fetch:', e); }
+        console.log('Shoots synced from Firebase:', fresh.length, 'shoots for staff', myId);
+      } catch(e){ console.warn('shoots fetch error:', e); }
     })();
-    setInterval(function(){ if(!_shootUploadInProgress){ renderAssignedShoots(); renderPayout(); } }, 5000);
+    // Re-sync every 10 seconds
+    setInterval(function(){
+      if(!_shootUploadInProgress){
+        renderAssignedShoots();
+        renderPayout();
+      }
+    }, 5000);
+    setInterval(function fetchMyShootsLoop(){
+      var myId = String(localStorage.getItem('hs_staff_id')||'');
+      if(!myId || myId==='null') return;
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';});
+          if(!app) return;
+          var db = fbStore.getFirestore(app);
+          var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
+          var fresh = [];
+          allSnap.forEach(function(d){
+            var data = Object.assign({},d.data(),{id:d.data().id||d.id});
+            data.staffId = String(data.staffId);
+            if(data.staffId===myId) fresh.push(data);
+          });
+          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+          var others = local.filter(function(x){ return String(x.staffId)!==myId; });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+          renderAssignedShoots();
+        }catch(e){}
+      })();
+    }, 10000);
     // Auto-refresh payments when Firebase syncs
     window.addEventListener('hs_sync', function(e){
       var key = e.detail && e.detail.key;
