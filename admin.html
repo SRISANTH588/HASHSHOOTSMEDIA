@@ -1138,10 +1138,13 @@
     </div><!-- end tab-assign -->
 
     <!-- PAYMENTS TAB -->
-    <div class="tab-panel" id="tab-payments" style="display:none;">
+    <div class="tab-panel" id="tab-payments">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-rupee-sign" style="color:#c9a84c;margin-right:0.5rem;"></i> Staff Payments</h2>
-        <span id="paymentsAdminCount" style="font-size:0.78rem;color:#9a9080;">0 pending</span>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span id="paymentsAdminCount" style="font-size:0.78rem;color:#9a9080;">0 pending</span>
+          <button onclick="renderAdminPayments()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
       </div>
 
       <!-- Stats -->
@@ -2908,7 +2911,7 @@ Priority Support</textarea></div>
       if (tab === 'settings') loadSettingsTab();
       if (tab === 'coupons') loadCoupons();
       if (tab === 'hero-stats') loadHeroStatsTab();
-      if (tab === 'payments') renderAdminPayments();
+      if (tab === 'payments') { renderAdminPayments(); populateAssignSelects(); }
       if (tab === 'txn-payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
