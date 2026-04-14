@@ -2911,7 +2911,25 @@ Priority Support</textarea></div>
       if (tab === 'settings') loadSettingsTab();
       if (tab === 'coupons') loadCoupons();
       if (tab === 'hero-stats') loadHeroStatsTab();
-      if (tab === 'payments') { renderAdminPayments(); populateAssignSelects(); }
+      if (tab === 'payments') {
+        // Fetch fresh assigned shoots + bank details from Firebase then render
+        (async function(){
+          try{
+            var f = await _fbAdmin(); if(!f){ renderAdminPayments(); return; }
+            var snap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+            var list = [];
+            snap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; list.push(data); });
+            if(list.length) localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+            // Also fetch bank details for each staff
+            var bankSnap = await f.s.getDocs(f.s.collection(f.db,'staff_bank'));
+            bankSnap.forEach(function(d){
+              var data = d.data();
+              if(data.staffId) localStorage.setItem('hs_bank_'+data.staffId, JSON.stringify(data));
+            });
+          }catch(e){ console.warn('payments tab sync:', e); }
+          renderAdminPayments();
+        })();
+      }
       if (tab === 'txn-payments') renderPaymentsTab();
       if (tab === 'storeorders') renderStoreOrders();
       if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
@@ -5403,23 +5421,39 @@ Shoot saved locally. Staff may not see it.");
         var isPaid = a.status==='paid';
         var borderColor = isPaid ? '#2196f3' : '#ff9800';
         var creditVal = a.credit || 0;
+        // Get bank details — from shoot record OR from localStorage
+        var bank = a.bankDetails || JSON.parse(localStorage.getItem('hs_bank_'+a.staffId)||'null');
+        var bankHtml = '';
+        if(!isPaid){
+          if(bank && bank.accNo){
+            bankHtml = '<div style="margin-top:0.75rem;background:rgba(76,175,80,0.07);border:1px solid rgba(76,175,80,0.25);border-radius:10px;padding:0.75rem 1rem;">'
+              +'<div style="font-size:0.65rem;font-weight:800;color:#4caf50;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-university"></i> Bank Account — Send Payment Here</div>'
+              +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">'
+              +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Bank Name</div><div style="font-size:0.8rem;color:#fff;font-weight:700;">'+(bank.bankName||'—')+'</div></div>'
+              +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Account No.</div><div style="font-size:0.8rem;color:#fff;font-weight:700;">'+(bank.accNo||'—')+'</div></div>'
+              +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">IFSC Code</div><div style="font-size:0.8rem;color:#fff;font-weight:700;">'+(bank.ifsc||'—')+'</div></div>'
+              +(bank.upi?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">UPI ID</div><div style="font-size:0.8rem;color:#c9a84c;font-weight:700;">'+bank.upi+'</div></div>':'')
+              +(bank.holderName?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Account Holder</div><div style="font-size:0.8rem;color:#fff;font-weight:700;">'+bank.holderName+'</div></div>':'')
+              +'</div></div>';
+          } else {
+            bankHtml = '<div style="margin-top:0.6rem;background:rgba(255,152,0,0.07);border:1px solid rgba(255,152,0,0.2);border-radius:9px;padding:0.6rem 0.85rem;font-size:0.75rem;color:#ff9800;"><i class="fas fa-exclamation-triangle"></i> Staff has not added bank details yet.</div>';
+          }
+        } else {
+          if(bank && bank.accNo){
+            bankHtml = '<div style="margin-top:0.6rem;background:rgba(33,150,243,0.05);border:1px solid rgba(33,150,243,0.15);border-radius:9px;padding:0.6rem 0.85rem;font-size:0.75rem;color:#9a9080;"><i class="fas fa-university" style="color:#2196f3;"></i> Paid to: '+(bank.bankName||'')+(bank.accNo?' — A/C: '+bank.accNo:'')+'</div>';
+          }
+        }
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
           +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
           +'<div style="flex:1;">'
-          +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+a.service+' &#8212; '+(a.clientName||'')+'</div>'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+(a.service||'Shoot')+' &mdash; '+(a.clientName||'')+'</div>'
           +'<div style="font-size:0.75rem;color:#9a9080;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: <strong style="color:#fff;">'+a.staffName+'</strong> &nbsp;&middot;&nbsp; <i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' '+a.time+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'')+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'—')+'</div>'
+          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Client: '+(a.clientPhone||'—')+'</div>'
+          +(a.notes?'<div style="font-size:0.72rem;color:#777;margin-top:0.2rem;"><i class="fas fa-sticky-note"></i> '+a.notes+'</div>':'')
           +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
           +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
-          +((!isPaid && a.bankDetails && a.bankDetails.accNo)
-            ? '<div style="margin-top:0.6rem;background:rgba(76,175,80,0.07);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.6rem 0.85rem;">'
-              +'<div style="font-size:0.65rem;font-weight:800;color:#4caf50;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem;"><i class="fas fa-university"></i> Bank Account</div>'
-              +'<div style="font-size:0.78rem;color:#d4c9a8;font-weight:700;">'+a.bankDetails.bankName+'</div>'
-              +'<div style="font-size:0.75rem;color:#9a9080;">A/C: '+a.bankDetails.accNo+' &nbsp;|&nbsp; IFSC: '+a.bankDetails.ifsc+'</div>'
-              +(a.bankDetails.upi?'<div style="font-size:0.72rem;color:#9a9080;">UPI: '+a.bankDetails.upi+'</div>':'')
-              +'</div>'
-            : (!isPaid ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#ff9800;"><i class="fas fa-exclamation-triangle"></i> No bank details added by staff yet.</div>' : '')
-          )
+          +bankHtml
           +'</div>'
           +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
           +(isPaid
@@ -5428,7 +5462,7 @@ Shoot saved locally. Staff may not see it.");
               +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
               +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+'" placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
               +'</div>'
-              +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-paper-plane"></i> Release Payment</button>')
+              +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>')
           +'</div>'
           +'</div>'
           +'</div>';
@@ -5462,10 +5496,7 @@ Shoot saved locally. Staff may not see it.");
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(x){return x.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
         var db      = fbStore.getFirestore(app);
-        // Mark shoot as paid
         await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
-          updatedAt:fbStore.serverTimestamp()
-        },{merge:true});
         // Notify staff
         await fbStore.addDoc(fbStore.collection(db,'staff_notifications'),{
           staffId:String(a.staffId), type:'payment',
