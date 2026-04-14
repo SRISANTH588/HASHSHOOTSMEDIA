@@ -1075,7 +1075,7 @@
         try { if(name === 'payout') renderPayout(); } catch(e){}
         try { if(name === 'support') renderSupportTickets(); } catch(e){}
         try { if(name === 'testimonials') renderStvGrid(); } catch(e){}
-        try { if(name === 'profile') loadBankDetails(); } catch(e){}
+        try { if(name === 'bank') loadBankDetails(); } catch(e){}
         try { if(name === 'address') loadStaffAddress(); } catch(e){}
         try { if(name === 'aieditor') saie_init(); } catch(e){}
         try { if(name === 'invitations') loadInvitations(); } catch(e){}
@@ -2085,6 +2085,7 @@
     setInterval(function fetchMyShootsLoop(){
       var myId = String(localStorage.getItem('hs_staff_id')||'');
       if(!myId || myId==='null') return;
+      if(_shootUploadInProgress) return;
       (async function(){
         try{
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -2101,7 +2102,13 @@
           });
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
           var others = local.filter(function(x){ return String(x.staffId)!==myId; });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+          // Merge: keep local status if newer (e.g. just marked done)
+          var merged = fresh.map(function(fb){
+            var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
+            if(loc && (loc.status==='done' || loc.status==='paid') && fb.status==='assigned') return loc;
+            return fb;
+          });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(merged)));
           renderAssignedShoots();
         }catch(e){}
       })();
@@ -2997,8 +3004,18 @@
       }
       
       localStorage.setItem('hs_bank_' + staffId, JSON.stringify(data));
-      // Sync bank details to Firebase under staff_bank collection
-      if(window.fbUpdate) fbUpdate('staff_bank', String(staffId), Object.assign({staffId: staffId}, data));
+      // Sync to Firebase directly
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-bank';})||fbMod.initializeApp(fbCfg,'staff-bank');
+          var db      = fbStore.getFirestore(app);
+          await fbStore.setDoc(fbStore.doc(db,'staff_bank',String(staffId)), Object.assign({staffId:String(staffId), staffName:localStorage.getItem('hs_staff_name')||'', updatedAt:fbStore.serverTimestamp()}, data), {merge:true});
+          console.log('Bank details saved to Firebase');
+        }catch(e){ console.error('Bank save Firebase error:', e); }
+      })();
       var toast = document.getElementById('bankToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display = 'none'; }, 3000);
@@ -3009,6 +3026,9 @@
       var staffId = localStorage.getItem('hs_staff_id');
       var data = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       if(!data) return;
+      // Only load if form is currently empty (don't overwrite user input)
+      var accNoEl = document.getElementById('bankAccNo');
+      if(accNoEl && accNoEl.value.trim()) return;
       document.getElementById('bankName').value = data.name || '';
       
       // Handle bank selection
@@ -3095,7 +3115,6 @@
           console.log('[Staff] Address saved to Firestore');
         } catch(e){ console.error('Address save error:', e); }
       })();
-      if(window.fbUpdate) fbUpdate('staff_address', String(sId), Object.assign({ staffId: sId, staffName: localStorage.getItem('hs_staff_name')||'' }, data));
       var toast = document.getElementById('addrToast');
       if(toast){ toast.style.display='block'; setTimeout(function(){ toast.style.display='none'; }, 3000); }
       showSavedAddress(data);
@@ -3105,6 +3124,9 @@
       var sId = localStorage.getItem('hs_staff_id');
       var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
       if(!data) return;
+      // Only load if form is currently empty (don't overwrite user input)
+      var line1El = document.getElementById('addr_line1');
+      if(line1El && line1El.value.trim()) return;
       var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
       set('addr_name', data.name); set('addr_phone', data.phone);
       set('addr_line1', data.line1); set('addr_line2', data.line2);
