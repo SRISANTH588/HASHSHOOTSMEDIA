@@ -2040,13 +2040,16 @@
         // Try string staffId first (admin stores as string), then number fallback
         var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', myId)));
         if(snap.empty) snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('staffId','==', Number(myId))));
+        // Also fetch all and filter manually as final fallback
+        var allSnap = snap.empty ? await fbStore.getDocs(fbStore.collection(db,'assigned_shoots')) : snap;
         var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
         var others = local.filter(function(x){ return String(x.staffId) !== myId; });
         var fresh = [];
-        snap.forEach(function(d){
+        allSnap.forEach(function(d){
           var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
-          // Normalize staffId to string
           data.staffId = String(data.staffId);
+          // Only include shoots for this staff member
+          if(String(data.staffId) !== myId) return;
           delete data.createdAt; delete data.updatedAt;
           fresh.push(data);
         });

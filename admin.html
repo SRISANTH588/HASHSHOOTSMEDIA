@@ -5385,8 +5385,9 @@ Priority Support</textarea></div>
           for(var i=0;i<newAssigns.length;i++){
             var a = newAssigns[i];
             var docData = Object.assign({}, a);
-            delete docData.createdAt; // remove timestamp number to avoid conflicts
-            docData.staffId = String(a.staffId); // always string for consistent Firestore queries
+            delete docData.createdAt;
+            docData.staffId = String(a.staffId);
+            docData.staffIdNum = Number(a.staffId); // store both types for query compatibility
             await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)), docData, {merge:true});
           }
           console.log('Assigned shoots saved to Firebase');
