@@ -3820,51 +3820,23 @@ Priority Support</textarea></div>
     }
     
     function approveShootVideo(assignId) {
-      if (!confirm('Approve this shoot and release payment to the staff member?')) return;
+      if (!confirm("Approve this shoot and release payment to the staff member?")) return;
       var assigns = getAssignedShoots();
       var assign = assigns.find(function(a) { return String(a.id) === String(assignId); });
       if (!assign) return;
-      
-      // Update assignment status
-      assign.status = 'completed';
+      assign.status = "paid";
       assign.completedAt = new Date().toLocaleString();
-      assign.approvedBy = localStorage.getItem('hs_admin_name') || 'Admin';
-      
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
-      
-      // Release payment to staff wallet
-      var staffId = assign.staffId;
-      var walletKey = 'hs_wallet_' + staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"pending":0,"transactions":[]}');
-      
-      var paymentAmount = assign.credit || 0;
-      wallet.balance = (wallet.balance || 0) + paymentAmount;
-      wallet.totalEarned = (wallet.totalEarned || 0) + paymentAmount;
-      wallet.pending = Math.max(0, (wallet.pending || 0) - paymentAmount);
-      
-      wallet.transactions = wallet.transactions || [];
-      wallet.transactions.push({
-        type: 'credit',
-        amount: paymentAmount,
-        label: 'Shoot Payment - ' + assign.service,
-        note: 'Client: ' + assign.clientName,
-        date: new Date().toLocaleString()
-      });
-      
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-      
-      // Update assignment status to paid
-      assign.status = 'paid';
       assign.paidAt = new Date().toLocaleString();
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
-      
-      // Sync to Firebase
-      if (window.fbUpdate) {
-        fbUpdate('assigned_shoots', String(assignId), { status: 'paid', completedAt: assign.completedAt, paidAt: assign.paidAt });
-        fbUpdate('wallets', String(staffId), wallet);
-      }
-      
-      alert('✅ Shoot approved and payment of ₹' + paymentAmount.toLocaleString('en-IN') + ' released to ' + assign.staffName);
+      assign.approvedBy = localStorage.getItem("hs_admin_name") || "Admin";
+      saveAssignedShoots(assigns);
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          await f.s.setDoc(f.s.doc(f.db,"assigned_shoots",String(assignId)),{status:"paid",paidAt:assign.paidAt,completedAt:assign.completedAt},{merge:true});
+          await f.s.addDoc(f.s.collection(f.db,"staff_notifications"),{staffId:String(assign.staffId),type:"payment",title:"Payment Released",message:"Your payment for "+(assign.service||"shoot")+" has been released.",read:false,createdAt:f.s.serverTimestamp()});
+        }catch(e){ console.error("approveShootVideo Firebase error:",e); }
+      })();
+      alert("Shoot approved! Payment of ₹" + (assign.credit||0).toLocaleString("en-IN") + " marked as released to " + assign.staffName);
       renderShootReelsAdmin();
       updateCreatorPendingPayments();
     }
@@ -4062,7 +4034,7 @@ Priority Support</textarea></div>
       (async function(){ var f=await _fbAdmin(); if(f) try{ await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{password:nw,updatedAt:f.s.serverTimestamp()},{merge:true}); }catch(e){} })();
       document.getElementById('set_curPass').value='';
       document.getElementById('set_newPass').value='';
-      toast.textContent='✅ Password updated successfully!';
+      toast.textContent="✅ Password updated successfully!";
       toast.style.display='block'; toast.style.color='#4caf50'; toast.style.background='rgba(76,175,80,0.12)'; toast.style.borderColor='rgba(76,175,80,0.3)';
       setTimeout(()=>toast.style.display='none',3000);
     }
@@ -5354,18 +5326,6 @@ Priority Support</textarea></div>
         };
         assigned.push(shootData);
 
-        // Update wallet pending
-        var walletKey = 'hs_wallet_' + staffId;
-        var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-        wallet.pending = (wallet.pending || 0) + splitCredit;
-        if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
-        wallet.transactions.push({
-          type: 'pending', amount: splitCredit,
-          label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
-          note: (booking ? booking.name + ' — ' + booking.city : ''),
-          date: new Date().toLocaleString()
-        });
-        localStorage.setItem(walletKey, JSON.stringify(wallet));
 
         // Save to Firebase
         (async function(sid, w, sData){
@@ -5373,7 +5333,6 @@ Priority Support</textarea></div>
             var f = await _fbAdmin();
             if(!f){ alert("Firebase not available. Shoot saved locally only."); return; }
             await f.s.setDoc(f.s.doc(f.db,"assigned_shoots",String(sData.id)), sData, {merge:true});
-            await f.s.setDoc(f.s.doc(f.db,"wallets",String(sid)),{balance:w.balance||0,totalEarned:w.totalEarned||0,pending:w.pending||0,withdrawn:w.withdrawn||0,transactions:w.transactions||[]},{merge:true});
             await f.s.addDoc(f.s.collection(f.db,"staff_notifications"),{
               staffId: String(sid),
               type: "shoot",
@@ -5495,15 +5454,6 @@ Shoot saved locally. Staff may not see it.");
       a.paidAt = new Date().toLocaleString();
       saveAssignedShoots(list);
 
-      // Update staff wallet in localStorage
-      var walletKey = 'hs_wallet_'+a.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey)||'{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.balance     = (wallet.balance||0) + amt;
-      wallet.totalEarned = (wallet.totalEarned||0) + amt;
-      wallet.pending     = Math.max(0,(wallet.pending||0) - amt);
-      if(!Array.isArray(wallet.transactions)) wallet.transactions=[];
-      wallet.transactions.push({ type:'credit', amount:amt, label:'Payment Released: '+(a.service||'Shoot'), note:(a.clientName||''), date:new Date().toLocaleString() });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
 
       // Sync to Firebase
       try{
@@ -5514,18 +5464,12 @@ Shoot saved locally. Staff may not see it.");
         var db      = fbStore.getFirestore(app);
         // Mark shoot as paid
         await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
-        // Update staff wallet in Firebase
-        await fbStore.setDoc(fbStore.doc(db,'wallets',String(a.staffId)),{
-          balance:wallet.balance, totalEarned:wallet.totalEarned,
-          pending:wallet.pending, withdrawn:wallet.withdrawn||0,
-          transactions:wallet.transactions,
           updatedAt:fbStore.serverTimestamp()
         },{merge:true});
         // Notify staff
         await fbStore.addDoc(fbStore.collection(db,'staff_notifications'),{
           staffId:String(a.staffId), type:'payment',
           title:'\uD83D\uDCB0 Payment Released',
-          message:'\u20b9'+amt.toLocaleString('en-IN')+' has been credited to your wallet for '+( a.service||'your shoot')+'.',
           read:false, createdAt:fbStore.serverTimestamp()
         });
       }catch(e){
@@ -5539,7 +5483,7 @@ Shoot saved locally. Staff may not see it.");
       var done = getAssignedShoots().filter(function(a){ return a.status==='done'; }).length;
       var badge = document.getElementById('paymentsAdminBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
-      showAssignToast('\u2705 \u20b9'+amt.toLocaleString('en-IN')+' released to '+a.staffName+'! Wallet updated.', true);
+      showAssignToast('\u2705 \u20b9'+amt.toLocaleString('en-IN')+' released to '+a.staffName+'! Payment marked as done.', true);
     }
 
     function renderAssignedList(){
@@ -5657,39 +5601,23 @@ Shoot saved locally. Staff may not see it.");
       var list = getAssignedShoots();
       var a = list.find(function(x){ return String(x.id)===String(id); });
       if(!a) return;
-      // Read edited credit amount if admin changed it
-      var inp = document.getElementById('creditEdit_' + id);
+      var inp = document.getElementById("creditEdit_" + id);
       if(inp && inp.value) a.credit = Number(inp.value) || a.credit;
       var amt = Number(a.credit) || 0;
-      if(amt <= 0){ showAssignToast('Please enter a valid payment amount.', false); return; }
-      if(!confirm('Approve shoot and release ₹' + amt.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
-      var walletKey = 'hs_wallet_' + a.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.balance     = (wallet.balance     || 0) + amt;
-      wallet.totalEarned = (wallet.totalEarned || 0) + amt;
-      wallet.pending     = Math.max(0, (wallet.pending || 0) - amt);
-      if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
-      wallet.transactions.push({ type:'credit', amount:amt, label:'Payment Released: '+(a.service||'Shoot'), note:(a.clientName||'')+' — '+(a.location||a.city||''), date:new Date().toLocaleString() });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-      a.credit = amt;
-      a.status = 'paid';
-      a.paidAt = new Date().toLocaleString();
-      a.payoutRequested = false;
+      if(amt <= 0){ showAssignToast("Please enter a valid payment amount.", false); return; }
+      if(!confirm("Approve shoot and release ₹" + amt.toLocaleString("en-IN") + " to " + a.staffName + "?")) return;
+      a.credit = amt; a.status = "paid"; a.paidAt = new Date().toLocaleString(); a.payoutRequested = false;
       saveAssignedShoots(list);
-      // Sync to Firebase
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f) return;
-          await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
-          await f.s.setDoc(f.s.doc(f.db,'wallets',String(a.staffId)),{balance:wallet.balance,totalEarned:wallet.totalEarned,pending:wallet.pending,withdrawn:wallet.withdrawn||0,transactions:wallet.transactions},{merge:true});
-          await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{staffId:String(a.staffId),type:'payment',title:'💰 Payment Released',message:'₹'+amt.toLocaleString('en-IN')+' credited to your wallet for '+(a.service||'your shoot')+'.',read:false,createdAt:f.s.serverTimestamp()});
-        }catch(e){ console.error('approveAndPay Firebase error:',e); }
+          await f.s.setDoc(f.s.doc(f.db,"assigned_shoots",String(a.id)),{status:"paid",paidAt:a.paidAt,credit:amt},{merge:true});
+          await f.s.addDoc(f.s.collection(f.db,"staff_notifications"),{staffId:String(a.staffId),type:"payment",title:"Payment Released",message:"Your payment for "+(a.service||"shoot")+" has been released.",read:false,createdAt:f.s.serverTimestamp()});
+        }catch(e){ console.error("approveAndPay Firebase error:",e); }
       })();
-      renderAssignedList();
-      updateCreatorPendingPayments();
-      showAssignToast('₹' + amt.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      renderAssignedList(); updateCreatorPendingPayments();
+      showAssignToast("₹" + amt.toLocaleString("en-IN") + " released to " + a.staffName + "!", true);
     }
-
     function markShootComplete(id){
       var list = getAssignedShoots();
       var a = list.find(function(x){ return String(x.id)===String(id); });
@@ -5705,72 +5633,19 @@ Shoot saved locally. Staff may not see it.");
     async function releasePayment(id){
       var list = getAssignedShoots();
       var a = list.find(function(x){ return String(x.id)===String(id); });
-      if(!a){ alert('Assignment not found.'); return; }
-      if(!a.credit || a.credit <= 0){ alert('No payment amount set for this assignment.'); return; }
-      if(!confirm('Release \u20b9' + Number(a.credit).toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
-
-      // Update wallet in localStorage
-      var walletKey = 'hs_wallet_' + a.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.pending  = Math.max(0, (wallet.pending  || 0) - a.credit);
-      wallet.balance  = (wallet.balance  || 0) + a.credit;
-      wallet.totalEarned = (wallet.totalEarned || 0) + a.credit;
-      if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
-      wallet.transactions.push({
-        type:'credit', amount:a.credit,
-        label:'Payment Released: ' + (a.service||'Shoot'),
-        note:(a.clientName||'') + (a.city?' \u2014 '+a.city:''),
-        date:new Date().toLocaleString()
-      });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
-
-      // Update assignment status
-      a.status = 'paid';
-      a.paidAt = new Date().toLocaleString();
+      if(!a){ alert("Assignment not found."); return; }
+      if(!a.credit || a.credit <= 0){ alert("No payment amount set."); return; }
+      if(!confirm("Release ₹" + Number(a.credit).toLocaleString("en-IN") + " to " + a.staffName + "?")) return;
+      a.status = "paid"; a.paidAt = new Date().toLocaleString();
       saveAssignedShoots(list);
-
-      // Sync to Firebase
-      try {
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(x){return x.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
-        var db      = fbStore.getFirestore(app);
-        // Mark assignment as paid
-        await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(id)),
-          {status:'paid', paidAt:a.paidAt}, {merge:true});
-        // Update staff wallet in Firebase
-        await fbStore.setDoc(fbStore.doc(db,'wallets',String(a.staffId)),
-          {balance:wallet.balance, totalEarned:wallet.totalEarned, pending:wallet.pending,
-           lastUpdated:new Date().toLocaleString()}, {merge:true});
-        // Add wallet transaction record
-        await fbStore.addDoc(fbStore.collection(db,'wallet_transactions'), {
-          staffId: String(a.staffId),
-          staffName: a.staffName,
-          type: 'credit',
-          amount: a.credit,
-          label: 'Payment Released: ' + (a.service||'Shoot'),
-          note: (a.clientName||'') + (a.city?' \u2014 '+a.city:''),
-          assignId: String(id),
-          createdAt: fbStore.serverTimestamp()
-        });
-        // Notify staff
-        await fbStore.addDoc(fbStore.collection(db,'staff_notifications'), {
-          staffId: String(a.staffId),
-          type: 'payment',
-          title: '\uD83D\uDCB0 Payment Released',
-          message: '\u20b9' + Number(a.credit).toLocaleString('en-IN') + ' has been credited to your wallet for ' + (a.service||'your shoot') + '.',
-          read: false,
-          createdAt: fbStore.serverTimestamp()
-        });
-      } catch(e){
-        console.error('releasePayment Firebase error:', e);
-        alert('Payment saved locally but Firebase sync failed: ' + e.message);
-      }
-
-      renderAssignedList();
-      updateCreatorPendingPayments();
-      showAssignToast('\u2705 \u20b9' + Number(a.credit).toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      try{
+        var f = await _fbAdmin(); if(!f) throw new Error("Firebase unavailable");
+        await f.s.setDoc(f.s.doc(f.db,"assigned_shoots",String(id)),{status:"paid",paidAt:a.paidAt},{merge:true});
+        await f.s.addDoc(f.s.collection(f.db,"staff_notifications"),{staffId:String(a.staffId),type:"payment",title:"Payment Released",message:"Your payment for "+(a.service||"shoot")+" has been released.",read:false,createdAt:f.s.serverTimestamp()});
+      }catch(e){ console.error("releasePayment Firebase error:",e); alert("Firebase sync failed: "+e.message); }
+      renderAssignedList(); updateCreatorPendingPayments();
+      showAssignToast("✅ ₹" + Number(a.credit).toLocaleString("en-IN") + " released to " + a.staffName + "!", true);
+    }
     }
 
     // STAFF WITHDRAW TAB
@@ -5851,12 +5726,8 @@ Shoot saved locally. Staff may not see it.");
       r.status = 'approved';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
-      var walletKey = 'hs_wallet_' + r.staffId;
-      var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"transactions":[]}');
       wallet.balance   = Math.max(0, (wallet.balance||0) - r.amount);
       wallet.withdrawn = (wallet.withdrawn||0) + r.amount;
-      wallet.transactions.push({ type:'debit', amount: r.amount, label:'Withdrawal Approved ✔', note:'Bank: ' + r.bankName + ' | A/C: ' + r.accNo, date: new Date().toLocaleString() });
-      localStorage.setItem(walletKey, JSON.stringify(wallet));
       (async()=>{
         var f=await _fbAdmin(); if(!f) return;
         try{
