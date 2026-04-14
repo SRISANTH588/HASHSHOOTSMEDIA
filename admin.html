@@ -4988,11 +4988,15 @@ Priority Support</textarea></div>
       if(!confirm('Delete this assignment?')) return;
       var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
       saveAssignedShoots(list);
-      (async function(){
-        var f = await _fbAdmin(); if(!f) return;
-        try{ await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id))); }catch(e){}
-      })();
       renderAssignedList();
+      // Delete from Firebase
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
+          console.log('Deleted from Firebase:', id);
+        }catch(e){ console.error('Firebase delete error:', e); }
+      })();
     }
 
     // Define Firebase sync for customer wallets
@@ -5189,18 +5193,11 @@ Priority Support</textarea></div>
             cb.addEventListener('change', updatePayoutPreview);
           });
         }
-        // Fetch assigned shoots from Firestore
+        // Fetch assigned shoots from Firestore — replace local with Firebase (source of truth)
         var aSnap = await fbStore.getDocs(fbStore.collection(fbDb,'assigned_shoots'));
         var fbAssigns = [];
         aSnap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; fbAssigns.push(data); });
-        if(fbAssigns.length){
-          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-          fbAssigns.forEach(function(fb){
-            var idx = local.findIndex(function(x){ return String(x.id)===String(fb.id); });
-            if(idx > -1){ Object.assign(local[idx], fb); } else { local.push(fb); }
-          });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(local));
-        }
+        localStorage.setItem('hs_assigned_shoots', JSON.stringify(fbAssigns));
         renderAssignedList();
       } catch(e){
         console.log('populateAssignSelects Firestore error:',e);
