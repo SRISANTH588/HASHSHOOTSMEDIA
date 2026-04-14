@@ -5449,7 +5449,7 @@ Priority Support</textarea></div>
             ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
             : '<div style="display:flex;align-items:center;gap:0.5rem;">'
               +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
-              +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+' " placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
+              +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+'" placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
               +'</div>'
               +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-paper-plane"></i> Release Payment</button>')
           +'</div>'
@@ -5624,7 +5624,13 @@ Priority Support</textarea></div>
       a.status = 'done';
       a.doneAt = new Date().toLocaleString();
       saveAssignedShoots(list);
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'done', doneAt:a.doneAt});
+      // Sync to Firebase
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)),{status:'done',doneAt:a.doneAt},{merge:true});
+        }catch(e){ console.error('adminMarkDone Firebase error:',e); }
+      })();
       renderAssignedList();
       showAssignToast('Shoot marked as done. You can now approve and release payment.', true);
     }
@@ -5636,26 +5642,34 @@ Priority Support</textarea></div>
       // Read edited credit amount if admin changed it
       var inp = document.getElementById('creditEdit_' + id);
       if(inp && inp.value) a.credit = Number(inp.value) || a.credit;
-      if(!confirm('Approve shoot and release \u20b9' + a.credit.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
+      var amt = Number(a.credit) || 0;
+      if(amt <= 0){ showAssignToast('Please enter a valid payment amount.', false); return; }
+      if(!confirm('Approve shoot and release ₹' + amt.toLocaleString('en-IN') + ' to ' + a.staffName + '?')) return;
       var walletKey = 'hs_wallet_' + a.staffId;
       var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
-      wallet.pending = Math.max(0, (wallet.pending || 0) - a.credit);
-      wallet.balance += a.credit;
-      wallet.totalEarned += a.credit;
-      wallet.transactions.push({ type:'credit', amount:a.credit, label:'Payment Released: '+a.service, note:a.clientName+' — '+(a.location||a.city), date:new Date().toLocaleString() });
+      wallet.balance     = (wallet.balance     || 0) + amt;
+      wallet.totalEarned = (wallet.totalEarned || 0) + amt;
+      wallet.pending     = Math.max(0, (wallet.pending || 0) - amt);
+      if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
+      wallet.transactions.push({ type:'credit', amount:amt, label:'Payment Released: '+(a.service||'Shoot'), note:(a.clientName||'')+' — '+(a.location||a.city||''), date:new Date().toLocaleString() });
       localStorage.setItem(walletKey, JSON.stringify(wallet));
+      a.credit = amt;
       a.status = 'paid';
       a.paidAt = new Date().toLocaleString();
       a.payoutRequested = false;
       saveAssignedShoots(list);
-      // Push payment release to Firebase so staff wallet updates on any device
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(a.id), {status:'paid', paidAt:a.paidAt, credit:a.credit});
-      if(window.fbUpdate) fbUpdate('wallets', String(a.staffId), {balance:wallet.balance, totalEarned:wallet.totalEarned, pending:wallet.pending, lastUpdated:new Date().toLocaleString()});
-      if(window.fbSave) fbSave('wallet_transactions', {staffId:String(a.staffId),staffName:a.staffName,type:'credit',amount:a.credit,label:'Payment Released: '+(a.service||'Shoot'),note:(a.clientName||'')+' — '+(a.location||a.city||''),assignId:String(a.id)});
-      if(window.fbSave) fbSave('staff_notifications', {staffId:String(a.staffId),type:'payment',title:'💰 Payment Released',message:'₹'+Number(a.credit).toLocaleString('en-IN')+' credited to your wallet for '+(a.service||'your shoot')+'.',read:false});
+      // Sync to Firebase
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
+          await f.s.setDoc(f.s.doc(f.db,'wallets',String(a.staffId)),{balance:wallet.balance,totalEarned:wallet.totalEarned,pending:wallet.pending,withdrawn:wallet.withdrawn||0,transactions:wallet.transactions},{merge:true});
+          await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{staffId:String(a.staffId),type:'payment',title:'💰 Payment Released',message:'₹'+amt.toLocaleString('en-IN')+' credited to your wallet for '+(a.service||'your shoot')+'.',read:false,createdAt:f.s.serverTimestamp()});
+        }catch(e){ console.error('approveAndPay Firebase error:',e); }
+      })();
       renderAssignedList();
       updateCreatorPendingPayments();
-      showAssignToast('\u20b9' + a.credit.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
+      showAssignToast('₹' + amt.toLocaleString('en-IN') + ' released to ' + a.staffName + '!', true);
     }
 
     function markShootComplete(id){
