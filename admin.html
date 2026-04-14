@@ -1122,7 +1122,7 @@
           <label>Instructions / Notes</label>
           <textarea id="as_notes" placeholder="Shoot instructions, location, client preferences..." style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;min-height:80px;"></textarea>
         </div>
-        <button class="btn-save-about" onclick="assignShoot()"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
+        <button class="btn-save-about" onclick="assignShoot()" id="assignShootBtn"><i class="fas fa-paper-plane"></i> Assign Shoot</button>
         <div id="asToast" style="display:none;padding:0.85rem 1.1rem;border-radius:10px;font-size:0.88rem;font-weight:700;margin-top:1rem;border:1px solid;"></div>
       </div>
 
@@ -5313,20 +5313,18 @@ Priority Support</textarea></div>
       var totalCredit = Number(document.getElementById('as_credit').value) || 0;
       var notes       = document.getElementById('as_notes').value.trim();
 
-      // Show what's missing so user knows exactly what to fill
-      var missing = [];
-      if(!bookingId) missing.push('Booking');
-      if(!selectedIds.length) missing.push('Creator');
-      if(!date) missing.push('Date');
-      if(!time){ confirmTime(); time = document.getElementById('as_time').value; if(!time) missing.push('Time'); }
+      // Auto-confirm time if not confirmed yet
+      if(!time){ confirmTime(); time = document.getElementById('as_time').value; }
 
-      if(missing.length){
-        showAssignToast('\u274c Missing: ' + missing.join(', ') + '. Please fill all fields.', false);
-        // Also scroll to the toast so user sees it
-        var t = document.getElementById('asToast');
-        if(t) t.scrollIntoView({behavior:'smooth', block:'center'});
-        return;
-      }
+      // Validate — use alert so it's always visible
+      if(!bookingId)   { alert('Please select a booking from the dropdown.'); return; }
+      if(!selectedIds.length){ alert('Please check at least one creator from the staff list.'); return; }
+      if(!date)        { alert('Please pick a shoot date using the calendar.'); return; }
+      if(!time)        { alert('Please pick a shoot time using the time picker.'); return; }
+
+      // Disable button to prevent double submit
+      var btn = document.getElementById('assignShootBtn');
+      if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Assigning...'; }
 
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var booking  = bookings.find(function(b){ return String(b.id)===String(bookingId); });
@@ -5339,61 +5337,62 @@ Priority Support</textarea></div>
         var staffMember = allStaff.find(function(s){ return String(s.id)===String(staffId); });
         names.push(staffMember ? staffMember.name : 'Unknown');
         var shootId = Date.now() + idx;
-        assigned.push({
+        var shootData = {
           id: shootId,
           bookingId: bookingId,
           staffId: String(staffId),
+          staffIdNum: Number(staffId),
           staffName: staffMember ? staffMember.name : 'Unknown',
           staffPhone: staffMember ? (staffMember.phone || '') : '',
           staffEmail: staffMember ? (staffMember.email || '') : '',
-          service: booking ? booking.service : '',
-          clientName: booking ? booking.name : '',
-          clientPhone: booking ? booking.phone : '',
-          city: booking ? booking.city : '',
-          location: booking ? (booking.location || booking.city) : '',
+          service: booking ? (booking.service||'') : '',
+          clientName: booking ? (booking.name||'') : '',
+          clientPhone: booking ? (booking.phone||'') : '',
+          city: booking ? (booking.city||'') : '',
+          location: booking ? (booking.location || booking.city || '') : '',
           date: date, time: time, credit: splitCredit, notes: notes,
           totalCreators: selectedIds.length,
           status: 'assigned',
-          assignedAt: new Date().toLocaleString(),
-          createdAt: Date.now()
-        });
+          assignedAt: new Date().toLocaleString()
+        };
+        assigned.push(shootData);
+
+        // Update wallet pending
         var walletKey = 'hs_wallet_' + staffId;
         var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
         wallet.pending = (wallet.pending || 0) + splitCredit;
+        if(!Array.isArray(wallet.transactions)) wallet.transactions = [];
         wallet.transactions.push({
           type: 'pending', amount: splitCredit,
           label: 'Shoot Assigned: ' + (booking ? booking.service : 'Shoot'),
-          note: (booking ? booking.name + ' — ' + booking.city : '') + (selectedIds.length > 1 ? ' (Split ₹'+totalCredit+' ÷ '+selectedIds.length+')' : ''),
+          note: (booking ? booking.name + ' — ' + booking.city : ''),
           date: new Date().toLocaleString()
         });
         localStorage.setItem(walletKey, JSON.stringify(wallet));
-        // Sync wallet to Firebase
-        (async function(sid, w){
-          try{ var f=await _fbAdmin(); if(f) await f.s.setDoc(f.s.doc(f.db,'wallets',String(sid)),{balance:w.balance||0,totalEarned:w.totalEarned||0,pending:w.pending||0,withdrawn:w.withdrawn||0,transactions:w.transactions||[]},{merge:true}); }catch(e){}
-        })(staffId, wallet);
-        var staffList = getStaff();
-        var sm = staffList.find(function(s){ return String(s.id)===String(staffId); });
-        if(sm){ sm.shootCredit = splitCredit; saveStaff(staffList); }
+
+        // Save to Firebase
+        (async function(sid, w, sData){
+          try{
+            var f = await _fbAdmin(); if(!f) return;
+            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(sData.id)), sData, {merge:true});
+            await f.s.setDoc(f.s.doc(f.db,'wallets',String(sid)),{balance:w.balance||0,totalEarned:w.totalEarned||0,pending:w.pending||0,withdrawn:w.withdrawn||0,transactions:w.transactions||[]},{merge:true});
+            // Send notification to staff
+            await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{
+              staffId: String(sid),
+              type: 'shoot',
+              title: '🎥 New Shoot Assigned!',
+              message: (sData.service||'Shoot') + ' for ' + (sData.clientName||'') + ' on ' + date + ' at ' + time,
+              read: false,
+              createdAt: f.s.serverTimestamp()
+            });
+            console.log('Shoot saved to Firebase for staff:', sid);
+          }catch(e){ console.error('Firebase save error:', e); }
+        })(staffId, wallet, shootData);
       });
 
       saveAssignedShoots(assigned);
-      // Push to Firebase so staff sees on any device
-      var newAssigns = assigned.slice(-selectedIds.length);
-      (async function(){
-        try{
-          var f = await _fbAdmin(); if(!f) return;
-          for(var i=0;i<newAssigns.length;i++){
-            var a = newAssigns[i];
-            var docData = Object.assign({}, a);
-            delete docData.createdAt;
-            docData.staffId = String(a.staffId);
-            docData.staffIdNum = Number(a.staffId); // store both types for query compatibility
-            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(a.id)), docData, {merge:true});
-          }
-          console.log('Assigned shoots saved to Firebase');
-        }catch(e){ console.error('assignShoot Firebase error:',e); }
-      })();
 
+      // Reset form
       document.getElementById('as_booking').value='';
       document.getElementById('as_date').value='';
       document.getElementById('as_time').value='';
@@ -5406,10 +5405,11 @@ Priority Support</textarea></div>
       _selDate=null;
       document.querySelectorAll('#as_staff_list input[type=checkbox]').forEach(function(cb){ cb.checked=false; });
       document.getElementById('as_payout_preview').style.display='none';
+      if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Assign Shoot'; }
 
       var msg = selectedIds.length > 1
-        ? 'Shoot assigned to ' + names.join(', ') + '. \u20b9' + totalCredit + ' split equally (\u20b9' + splitCredit + ' each)!'
-        : 'Shoot assigned to ' + names[0] + ' with \u20b9' + splitCredit + ' credit!';
+        ? 'Shoot assigned to ' + names.join(', ') + '. ₹' + totalCredit + ' split (₹' + splitCredit + ' each)!'
+        : 'Shoot assigned to ' + names[0] + ' with ₹' + splitCredit + ' credit!';
       showAssignToast(msg, true);
       renderAssignedList();
     }
