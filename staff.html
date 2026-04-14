@@ -2340,12 +2340,12 @@
       if(!rating){ alert('Please select a star rating.'); return; }
       var comment = (document.getElementById('shootFbComment_'+assignId)||{}).value||'';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-      var a = assigned.find(function(x){ return x.id === assignId; });
+      var a = assigned.find(function(x){ return String(x.id) === String(assignId); });
       var list = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]');
       var fb = {
         id: Date.now(),
-        assignId: assignId,
-        staffId: Number(localStorage.getItem('hs_staff_id')),
+        assignId: String(assignId),
+        staffId: String(localStorage.getItem('hs_staff_id')),
         staffName: localStorage.getItem('hs_staff_name')||'',
         service: a ? a.service : '',
         clientName: a ? a.clientName : '',
@@ -2357,9 +2357,20 @@
       };
       list.push(fb);
       localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
-      if(window.fbSave) fbSave('creator_feedbacks', fb);
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {creatorFeedbackSubmitted:true, creatorRating:rating});
+      // Save to Firebase directly
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+          var db      = fbStore.getFirestore(app);
+          await fbStore.addDoc(fbStore.collection(db,'creator_feedbacks'), fb);
+          await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{creatorFeedbackSubmitted:true,creatorRating:rating},{merge:true});
+        }catch(e){ console.error('submitShootFeedbackInline Firebase error:',e); }
+      })();
       renderAssignedShoots();
+      alert('Feedback submitted successfully!');
     }
 
     function submitCreatorFeedback(assignId){
@@ -2368,12 +2379,11 @@
       var el = document.getElementById('cfb_' + assignId);
       var comment = el ? el.value.trim() : '';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
-      var a = assigned.find(function(x){ return x.id === assignId; });
-      var list = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
-      list.push({
+      var a = assigned.find(function(x){ return String(x.id) === String(assignId); });
+      var fb = {
         id: Date.now(),
-        assignId: assignId,
-        staffId: Number(localStorage.getItem('hs_staff_id')),
+        assignId: String(assignId),
+        staffId: String(localStorage.getItem('hs_staff_id')),
         staffName: localStorage.getItem('hs_staff_name') || '',
         service: a ? a.service : '',
         clientName: a ? a.clientName : '',
@@ -2382,13 +2392,24 @@
         rating: rating,
         comment: comment,
         submittedAt: new Date().toLocaleString()
-      });
+      };
+      var list = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
+      list.push(fb);
       localStorage.setItem('hs_creator_feedbacks', JSON.stringify(list));
-      var fb = list[list.length-1];
-      if(window.fbSave) fbSave('creator_feedbacks', fb);
-      // Also update the assigned shoot doc so admin sees feedback submitted
-      if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {creatorFeedbackSubmitted: true, creatorRating: fb.rating});
+      // Save to Firebase directly
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+          var db      = fbStore.getFirestore(app);
+          await fbStore.addDoc(fbStore.collection(db,'creator_feedbacks'), fb);
+          await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{creatorFeedbackSubmitted:true,creatorRating:rating},{merge:true});
+        }catch(e){ console.error('submitCreatorFeedback Firebase error:',e); }
+      })();
       renderCreatorShootFeedback();
+      alert('Feedback submitted successfully!');
     }
 
     function renderCreatorFeedback(){
