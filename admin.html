@@ -222,6 +222,14 @@
           <div class="form-group"><label>Founder 2 Role</label><input type="text" id="op_f2role" placeholder="Managing Director"/></div>
         </div>
         <div class="form-group" style="margin-bottom:1.25rem;"><label>Founder 2 Photo URL</label><input type="text" id="op_f2photo" placeholder="sumanth.jpeg"/></div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+            <div style="position:relative;width:44px;height:24px;">
+              <span id="op_f2_toggle" onclick="toggleF2Visible()" style="position:absolute;inset:0;border-radius:50px;cursor:pointer;transition:background 0.3s;display:block;"><span style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.3s;display:block;" id="op_f2_knob"></span></span>
+            </div>
+            <span style="color:#fff;font-weight:600;font-size:0.9rem;">Show MD Card on Opening Screen</span>
+          </label>
+        </div>
         <div class="form-group" style="margin-bottom:1.5rem;"><label>Background Photo URL <span style="color:#888;font-weight:400;">(default: Tirumala idol)</span></label><input type="text" id="op_bgphoto" placeholder="venkateswara.jpg"/></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
           <div class="form-group"><label>Place / Venue <span style="color:#888;font-weight:400;">(shown in congrats)</span></label><input type="text" id="op_place" placeholder="e.g. Vijayawada, India"/></div>
@@ -4668,7 +4676,27 @@ Priority Support</textarea></div>
       var demo = { id:Date.now(), title:title.trim(), date:date, time:time, place:place.trim(), desc:desc.trim(), staffId:staffId, staffName:staffName, headName:headName.trim(), headPhone:headPhone.trim(), headEmail:headEmail.trim(), status:'open', registrations:[], createdAt:new Date().toLocaleString() };
       demos.push(demo);
       saveDemos(demos);
-      if(window.fbUpdate) fbUpdate('demos', String(demo.id), demo);
+      // Save to Firebase directly so staff can see it
+      (async function(){
+        try{
+          var f = await _fbAdmin();
+          if(!f){ alert('Demo saved locally but Firebase unavailable. Staff may not see it.'); return; }
+          await f.s.setDoc(f.s.doc(f.db,'demos',String(demo.id)), demo, {merge:true});
+          // Notify the assigned staff
+          await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{
+            staffId: String(demo.staffId),
+            type: 'demo',
+            title: 'New Demo Session Assigned!',
+            message: demo.title + ' on ' + demo.date + ' at ' + demo.time + (demo.place ? ' — ' + demo.place : ''),
+            read: false,
+            createdAt: f.s.serverTimestamp()
+          });
+          console.log('Demo saved to Firebase:', demo.id);
+        }catch(e){
+          console.error('createDemo Firebase error:', e);
+          alert('Demo saved locally but Firebase sync failed: ' + e.message + '\nStaff may not see it.');
+        }
+      })();
       if(toast){toast.textContent='Demo session created!';toast.style.color='#4caf50';toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
       // Clear form
       ['dm_title','dm_date','dm_time','dm_place','dm_desc','dm_head_name','dm_head_phone','dm_head_email'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });

@@ -1121,7 +1121,7 @@
     var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
     document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId); }).length;
     document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]').filter(function(v){ return String(v.assignId) && true; }).length;
-    document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return d.staffId == Number(staffId); }).length;
+    document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return String(d.staffId) === String(staffId); }).length;
     var dashShootCount = document.getElementById('dashShootCount');
     if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId) && a.status === 'assigned'; }).length;
     // update payments badge
@@ -1367,8 +1367,8 @@
     }
 
     function renderCreatorDemos(){
-      var staffId = Number(localStorage.getItem('hs_staff_id'));
-      var myDemos = getDemos().filter(function(d){ return d.staffId === staffId; }).slice().reverse();
+      var staffId = String(localStorage.getItem('hs_staff_id'));
+      var myDemos = getDemos().filter(function(d){ return String(d.staffId) === staffId; }).slice().reverse();
 
       // update demo pending badge
       var badge = document.getElementById('demoPendingBadge');
