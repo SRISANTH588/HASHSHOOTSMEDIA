@@ -179,13 +179,10 @@
   <!-- TAB NAV -->
   <div style="background:#0a0a0a;border-bottom:1px solid rgba(201,168,76,0.06);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
     <button class="ctab active" onclick="showTab('home',this)"><i class="fas fa-house"></i> Home</button>
-    <button class="ctab" onclick="showTab('book',this)"><i class="fas fa-camera"></i> Book</button>
-    <a class="ctab" href="customer-orders.html"><i class="fas fa-list"></i> My Orders</a>
-    <a class="ctab" href="customer-support.html"><i class="fas fa-headset"></i> Support</a>
-    <a class="ctab" href="customer-wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
-    <a class="ctab" id="testiTab" onclick="showTab('testimonials',this);return false;" href="#"><i class="fas fa-play-circle"></i> Testimonials</a>
-    <button class="ctab" onclick="showTab('feedback',this)"><i class="fas fa-comment-dots"></i> Feedback</button>
-    <a class="ctab" href="customer-profile.html"><i class="fas fa-user"></i> Profile</a>
+    <a class="ctab" href="vibe.html"><i class="fas fa-fire"></i> Discover the Vibe</a>
+    <a class="ctab" href="partner.html"><i class="fas fa-handshake"></i> Become a Partner</a>
+    <button class="ctab" onclick="showTab('premiumcard',this)"><i class="fas fa-crown"></i> Premium Card</button>
+    <a class="ctab" href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
   </div>
 
   <div class="container">
@@ -265,6 +262,56 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- PREMIUM CARD TAB -->
+    <div class="tab-section" id="tab-premiumcard" style="display:none;">
+      <div style="padding:2rem 0;">
+        <h1 class="page-title">Your <span>Luxe Card</span></h1>
+        <p class="subtitle">Your exclusive OG Shoots membership card.</p>
+        <!-- Full Premium Card -->
+        <div style="margin-top:1.5rem;background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.4);border-radius:24px;padding:2rem;position:relative;overflow:hidden;max-width:400px;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;"></div>
+          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,76,0.18),transparent 70%);pointer-events:none;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;position:relative;">
+            <div>
+              <div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;">MEMBERSHIP CARD</div>
+              <div style="font-size:1.5rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
+              <div style="font-size:0.65rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">Premium Member</div>
+            </div>
+            <div style="width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">⚡</div>
+          </div>
+          <div style="position:relative;margin-bottom:1.5rem;">
+            <div style="font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;" id="luxeCardName2">MEMBER NAME</div>
+            <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;" id="luxeCardId2">ID: #000000</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;">
+            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
+              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Wallet Balance</div>
+              <div style="font-size:1.1rem;color:#4caf50;font-weight:900;">&#8377;<span id="luxeWalletBal2">0</span></div>
+            </div>
+            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
+              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Total Shoots</div>
+              <div style="font-size:1.1rem;color:#fff;font-weight:900;" id="luxeTotalShoots2">0</div>
+            </div>
+            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
+              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Priority Booking</div>
+              <div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Skip the Queue ✓</div>
+            </div>
+            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
+              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Exclusive Offers</div>
+              <div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Members Only ✓</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;position:relative;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;">
+            <div style="font-size:0.62rem;color:#6a6050;font-weight:600;letter-spacing:1px;">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE</div>
+            <div style="display:flex;">
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.3);"></div>
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-10px;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -478,11 +525,15 @@
       var totalShoots = document.getElementById('luxeTotalShoots');
       if(cardName) cardName.textContent = name.toUpperCase();
       if(cardId) cardId.textContent = 'ID: ' + (email ? email.split('@')[0].toUpperCase() : '#000000');
-      if(walletBal) walletBal.textContent = (parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0')).toLocaleString('en-IN');
-      if(totalShoots){
-        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email||b.phone===localStorage.getItem('hs_customer_phone'); });
-        totalShoots.textContent = bookings.length;
-      }
+      var bal = parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0');
+      if(walletBal) walletBal.textContent = bal.toLocaleString('en-IN');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email||b.phone===localStorage.getItem('hs_customer_phone'); });
+      if(totalShoots) totalShoots.textContent = bookings.length;
+      // Also populate full card tab
+      var cn2=document.getElementById('luxeCardName2'); if(cn2) cn2.textContent=name.toUpperCase();
+      var ci2=document.getElementById('luxeCardId2'); if(ci2) ci2.textContent='ID: '+(email?email.split('@')[0].toUpperCase():'#000000');
+      var wb2=document.getElementById('luxeWalletBal2'); if(wb2) wb2.textContent=bal.toLocaleString('en-IN');
+      var ts2=document.getElementById('luxeTotalShoots2'); if(ts2) ts2.textContent=bookings.length;
     })();
 
     // Sync customer data from Firestore on every load (cross-device support)
