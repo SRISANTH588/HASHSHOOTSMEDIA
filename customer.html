@@ -268,50 +268,8 @@
     <!-- PREMIUM CARD TAB -->
     <div class="tab-section" id="tab-premiumcard" style="display:none;">
       <div style="padding:2rem 0;">
-        <h1 class="page-title">Your <span>Luxe Card</span></h1>
-        <p class="subtitle">Your exclusive OG Shoots membership card.</p>
-        <!-- Full Premium Card -->
-        <div style="margin-top:1.5rem;background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.4);border-radius:24px;padding:2rem;position:relative;overflow:hidden;max-width:400px;">
-          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;"></div>
-          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,76,0.18),transparent 70%);pointer-events:none;"></div>
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;position:relative;">
-            <div>
-              <div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;">MEMBERSHIP CARD</div>
-              <div style="font-size:1.5rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
-              <div style="font-size:0.65rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">Premium Member</div>
-            </div>
-            <div style="width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">⚡</div>
-          </div>
-          <div style="position:relative;margin-bottom:1.5rem;">
-            <div style="font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;" id="luxeCardName2">MEMBER NAME</div>
-            <div style="font-size:0.72rem;color:#9a9080;margin-top:0.3rem;" id="luxeCardId2">ID: #000000</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;">
-            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
-              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Wallet Balance</div>
-              <div style="font-size:1.1rem;color:#4caf50;font-weight:900;">&#8377;<span id="luxeWalletBal2">0</span></div>
-            </div>
-            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
-              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Total Shoots</div>
-              <div style="font-size:1.1rem;color:#fff;font-weight:900;" id="luxeTotalShoots2">0</div>
-            </div>
-            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
-              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Priority Booking</div>
-              <div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Skip the Queue ✓</div>
-            </div>
-            <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;">
-              <div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Exclusive Offers</div>
-              <div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Members Only ✓</div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;position:relative;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;">
-            <div style="font-size:0.62rem;color:#6a6050;font-weight:600;letter-spacing:1px;">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE</div>
-            <div style="display:flex;">
-              <div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.3);"></div>
-              <div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-10px;"></div>
-            </div>
-          </div>
-        </div>
+        <h1 class="page-title">OG Shoots <span>Luxe Card</span></h1>
+        <div id="premiumCardContent"></div>
       </div>
     </div>
 
@@ -536,6 +494,108 @@
       var ts2=document.getElementById('luxeTotalShoots2'); if(ts2) ts2.textContent=bookings.length;
     })();
 
+    // ── PREMIUM CARD ──────────────────────────────────────────────
+    async function renderPremiumCard(){
+      var el = document.getElementById('premiumCardContent');
+      if(!el) return;
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var name  = localStorage.getItem('hs_customer_name')||email;
+      var bal   = parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email; });
+      // Check if premium card exists
+      var card = JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
+      // Fetch from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='prem-card';})||fbMod.initializeApp(fbCfg,'prem-card');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'premium_cards',key));
+        if(snap.exists()){ card=snap.data(); localStorage.setItem('hs_premium_card_'+email,JSON.stringify(card)); }
+        // Also fetch premium price from settings
+        var sSnap = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
+        if(sSnap.exists()&&sSnap.data().premiumPrice) localStorage.setItem('hs_premium_price',String(sSnap.data().premiumPrice));
+      }catch(e){}
+      var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
+      if(card && card.active){
+        // Show active card
+        el.innerHTML = '<div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:12px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i><span style="font-size:0.85rem;font-weight:700;color:#4caf50;">Active Lifetime Member &nbsp;&middot;&nbsp; Non-Cancellable</span></div>'
+          + luxeCardHTML(name, card.cardNumber, bal, bookings.length, card.activatedAt);
+      } else {
+        // Show purchase option
+        el.innerHTML = '<div style="background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">'
+          +'<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-crown" style="color:#c9a84c;"></i> OG Shoots Luxe Membership</div>'
+          +'<div style="font-size:0.85rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.6;">One-time payment. Lifetime membership. Non-cancellable once activated.</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;">'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Priority Booking</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Skip the Queue ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Wallet Credit</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Fee added to wallet ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Exclusive Offers</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Members Only ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Lifetime Card</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Never Expires ✓</div></div>'
+          +'</div>'
+          +'<div style="font-size:2rem;font-weight:900;color:#c9a84c;margin-bottom:1rem;">&#8377;'+price.toLocaleString('en-IN')+'<span style="font-size:0.75rem;color:#9a9080;font-weight:400;"> one-time</span></div>'
+          +'<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);border-radius:8px;padding:0.6rem 0.85rem;font-size:0.75rem;color:#ff9800;margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i> Once activated, this membership cannot be cancelled or refunded.</div>'
+          +'<button onclick="activatePremiumCard()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;"><i class="fas fa-crown"></i> Activate Luxe Membership &nbsp;&middot;&nbsp; &#8377;'+price.toLocaleString('en-IN')+'</button>'
+          +'</div>';
+      }
+    }
+
+    function luxeCardHTML(name, cardNumber, bal, shoots, activatedAt){
+      return '<div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.4);border-radius:24px;padding:2rem;position:relative;overflow:hidden;max-width:400px;">'
+        +'<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;"></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;position:relative;">'
+        +'<div><div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;">LIFETIME MEMBERSHIP</div>'
+        +'<div style="font-size:1.5rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>'
+        +'<div style="font-size:0.62rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">Premium Member</div></div>'
+        +'<div style="width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">⚡</div>'
+        +'</div>'
+        +'<div style="margin-bottom:1.25rem;position:relative;">'
+        +'<div style="font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;">'+name.toUpperCase()+'</div>'
+        +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;letter-spacing:2px;">'+cardNumber+'</div>'
+        +'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;">'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Wallet Balance</div><div style="font-size:1.1rem;color:#4caf50;font-weight:900;">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Total Shoots</div><div style="font-size:1.1rem;color:#fff;font-weight:900;">'+shoots+'</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Priority Booking</div><div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Skip the Queue ✓</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Member Since</div><div style="font-size:0.72rem;color:#f0ece0;font-weight:700;">'+(activatedAt||'').split(',')[0]+'</div></div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;position:relative;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;">'
+        +'<div style="font-size:0.62rem;color:#6a6050;font-weight:600;letter-spacing:1px;">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>'
+        +'<div style="display:flex;"><div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.3);"></div><div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-10px;"></div></div>'
+        +'</div></div>';
+    }
+
+    async function activatePremiumCard(){
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var name  = localStorage.getItem('hs_customer_name')||email;
+      var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
+      if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\nThe membership fee will be added to your wallet.')) return;
+      // Generate unique card number
+      var cardNumber = 'LUXE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+      var card = { email:email, name:name, cardNumber:cardNumber, active:true, activatedAt:new Date().toLocaleString(), price:price };
+      // Save to Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='prem-card';})||fbMod.initializeApp(fbCfg,'prem-card');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        await fbStore.setDoc(fbStore.doc(db,'premium_cards',key), card);
+        // Add price to wallet
+        var newBal = parseInt(localStorage.getItem('hs_cw_'+email)||'0') + price;
+        localStorage.setItem('hs_cw_'+email, String(newBal));
+        localStorage.setItem('hs_customer_wallet', String(newBal));
+        await fbStore.setDoc(fbStore.doc(db,'customer_wallets',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+        await fbStore.setDoc(fbStore.doc(db,'wallet_updates',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+      }catch(e){ alert('Error activating card: '+e.message); return; }
+      localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
+      localStorage.setItem('hs_is_premium','1');
+      alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card number: '+cardNumber+'\n\u20b9'+price.toLocaleString('en-IN')+' has been added to your wallet.');
+      renderPremiumCard();
+    }
+
     // Sync customer data from Firestore on every load (cross-device support)
     (async function(){
       try{
@@ -571,6 +631,7 @@
       var sec = document.getElementById('tab-' + name);
       if(sec){ sec.classList.add('active'); sec.style.display='block'; }
       if(btn) btn.classList.add('active');
+      if(name === 'premiumcard') renderPremiumCard();
       if(name === 'testimonials') renderTestiVideosCustomer();
     }
 

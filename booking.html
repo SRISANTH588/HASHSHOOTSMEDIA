@@ -505,6 +505,22 @@
         <div id="couponMsg" style="display:none;margin-top:0.5rem;font-size:0.8rem;font-weight:600;border-radius:8px;padding:0.4rem 0.85rem;"></div>
       </div>
 
+      <!-- PREMIUM CARD UPSELL -->
+      <div id="premiumUpsell" style="margin-bottom:1rem;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(160,120,48,0.12));border:1px solid rgba(201,168,76,0.3);border-radius:14px;padding:1rem 1.25rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
+          <div>
+            <div style="font-size:0.88rem;font-weight:900;color:#fff;margin-bottom:0.2rem;"><i class="fas fa-crown" style="color:#c9a84c;"></i> Add OG Shoots Luxe Membership</div>
+            <div style="font-size:0.72rem;color:#9a9080;line-height:1.5;">Priority booking &nbsp;&middot;&nbsp; Wallet credit &nbsp;&middot;&nbsp; Lifetime card &nbsp;&middot;&nbsp; Non-cancellable</div>
+            <div style="font-size:0.78rem;color:#c9a84c;font-weight:800;margin-top:0.3rem;">&#8377;<span id="premiumPriceDisplay">999</span> one-time &nbsp;&middot;&nbsp; Fee added to your wallet</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+            <input type="checkbox" id="addPremiumCard" onchange="togglePremiumUpsell(this)" style="accent-color:#c9a84c;width:18px;height:18px;"/>
+            <span style="font-size:0.82rem;font-weight:700;color:#c9a84c;">Add</span>
+          </label>
+        </div>
+        <div id="premiumWarning" style="display:none;margin-top:0.75rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);border-radius:8px;padding:0.5rem 0.85rem;font-size:0.72rem;color:#ff9800;"><i class="fas fa-exclamation-triangle"></i> Once activated, this membership cannot be cancelled or refunded.</div>
+      </div>
+
       <!-- T&C -->
       <div class="tnc-box">
         <label class="tnc-check">
@@ -741,6 +757,38 @@
 
     var _appliedCoupon = null;
 
+    // Load premium price
+    (async function(){
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='bk-prem';})||fbMod.initializeApp(fbCfg,'bk-prem');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
+        if(snap.exists()&&snap.data().premiumPrice){
+          var p = snap.data().premiumPrice;
+          localStorage.setItem('hs_premium_price', String(p));
+          var el = document.getElementById('premiumPriceDisplay'); if(el) el.textContent = Number(p).toLocaleString('en-IN');
+        }
+        // Hide upsell if already premium
+        var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+        if(email){
+          var key = email.replace(/[.#$\[\]]/g,'_');
+          var cSnap = await fbStore.getDoc(fbStore.doc(db,'premium_cards',key));
+          if(cSnap.exists()&&cSnap.data().active){
+            var upsell = document.getElementById('premiumUpsell');
+            if(upsell) upsell.style.display='none';
+          }
+        }
+      }catch(e){}
+    })();
+
+    function togglePremiumUpsell(cb){
+      var warn = document.getElementById('premiumWarning');
+      if(warn) warn.style.display = cb.checked ? 'block' : 'none';
+    }
+
     async function applyCoupon(){
       var code = (document.getElementById('couponInput').value||'').trim().toUpperCase();
       var msgEl = document.getElementById('couponMsg');
@@ -809,6 +857,7 @@
       var planInfo = (selectedPlanKey && planData[selectedPlanKey]) ? planData[selectedPlanKey].name + ' ' + planData[selectedPlanKey].price : d.service;
       var couponCode = _appliedCoupon ? _appliedCoupon.code : '';
       var couponDiscount = _appliedCoupon ? _appliedCoupon.value+(_appliedCoupon.type==='percent'?'%':'') : '';
+      var addPremium = document.getElementById('addPremiumCard') && document.getElementById('addPremiumCard').checked;
 
       // Save locally
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
@@ -875,6 +924,32 @@
       if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
       // Only save name to hs_customer_name if actually logged in — prevents guest booking name showing as logged-in user
       if(d.name && localStorage.getItem('hs_role') === 'customer') localStorage.setItem('hs_customer_name', d.name);
+
+      // Activate premium card if selected
+      if(addPremium){
+        (async function(){
+          try{
+            var email = (d.email||'').toLowerCase();
+            var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
+            var cardNumber = 'LUXE-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
+            var card = {email:email,name:d.name||email,cardNumber:cardNumber,active:true,activatedAt:new Date().toLocaleString(),price:price};
+            var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            var app     = fbMod.getApps().find(function(a){return a.name==='bk-prem';})||fbMod.initializeApp(fbCfg,'bk-prem');
+            var db      = fbStore.getFirestore(app);
+            var key     = email.replace(/[.#$\[\]]/g,'_');
+            await fbStore.setDoc(fbStore.doc(db,'premium_cards',key),card);
+            var newBal = parseInt(localStorage.getItem('hs_cw_'+email)||'0')+price;
+            localStorage.setItem('hs_cw_'+email,String(newBal));
+            await fbStore.setDoc(fbStore.doc(db,'customer_wallets',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+            await fbStore.setDoc(fbStore.doc(db,'wallet_updates',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+            localStorage.setItem('hs_premium_card_'+email,JSON.stringify(card));
+            localStorage.setItem('hs_is_premium','1');
+          }catch(e){ console.error('Premium card activation error:',e); }
+        })();
+      }
+
       document.getElementById('bk_success').style.display = 'block';
       document.getElementById('bk_btn').style.display = 'none';
       document.querySelector('form').querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
