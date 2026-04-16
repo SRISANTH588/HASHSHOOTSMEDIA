@@ -13,70 +13,97 @@
       --text:#f0ece0;--muted:#9a9080;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    body{font-family:'Inter',sans-serif;background:#000;color:var(--text);min-height:100vh;}
 
     /* NAV */
-    nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+    nav{background:#000;border-bottom:1px solid rgba(201,168,76,0.2);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
     .logo{font-size:1.3rem;font-weight:900;}.logo span{color:var(--gold);}
     .nav-back{background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
     .nav-back:hover{border-color:var(--gold);color:var(--gold);}
 
     /* HERO */
-    .hero{text-align:center;padding:3rem 1.5rem 2rem;position:relative;overflow:hidden;}
-    .hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;}
-    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;font-weight:800;padding:0.35rem 1rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem;}
+    .hero{text-align:center;padding:2.5rem 1.5rem 1.5rem;position:relative;overflow:hidden;background:linear-gradient(180deg,#000 0%,#050300 100%);}
+    .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(201,168,76,0.1),transparent 65%);pointer-events:none;}
+    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.35);color:var(--gold);font-size:0.68rem;font-weight:800;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
     .hero h1{font-size:2.5rem;font-weight:900;color:#fff;margin-bottom:0.5rem;line-height:1.1;}
-    .hero h1 span{color:var(--gold);}
-    .hero p{font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.7;}
+    .hero h1 span{background:linear-gradient(90deg,#c9a84c,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero p{font-size:0.9rem;color:var(--muted);max-width:380px;margin:0 auto;line-height:1.7;}
 
     /* CONTAINER */
     .container{max-width:480px;margin:0 auto;padding:0 1.25rem 4rem;}
+    /* Section divider */
+    .section-title{font-size:0.72rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+    .section-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.15);}
 
-    /* CARD */
-    .luxe-card{background:linear-gradient(135deg,#0d0900 0%,#1f1500 40%,#0d0900 100%);border:1.5px solid rgba(201,168,76,0.55);border-radius:24px;padding:2rem;position:relative;overflow:hidden;margin-bottom:2rem;box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 80px rgba(201,168,76,0.12),inset 0 1px 0 rgba(201,168,76,0.15);}
-    .luxe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 40%,rgba(201,168,76,0.18),transparent 65%);pointer-events:none;}
-    .luxe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(201,168,76,0.8) 30%,#e8c96a 50%,rgba(201,168,76,0.8) 70%,transparent 100%);}
-    /* Shine effect */
-    .luxe-card-shine{position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.04) 50%,transparent 60%);transform:skewX(-15deg);pointer-events:none;}
-    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem;position:relative;}
-    .card-label{font-size:0.52rem;font-weight:800;color:rgba(201,168,76,0.55);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;}
-    .card-brand{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:1px;}
-    .card-brand span{background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .card-sub{font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:3px;text-transform:uppercase;margin-top:0.2rem;}
-    .card-icon{width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;box-shadow:0 4px 20px rgba(201,168,76,0.4);}
+    /* CARD - Real credit card ratio 85.6mm x 53.98mm = 1.586:1 */
+    .luxe-card{
+      width:100%;
+      max-width:420px;
+      aspect-ratio:1.586/1;
+      background:linear-gradient(135deg,#0a0700 0%,#1c1100 35%,#0f0a00 60%,#1a1000 100%);
+      border:1.5px solid rgba(201,168,76,0.6);
+      border-radius:18px;
+      padding:1.5rem 1.75rem;
+      position:relative;
+      overflow:hidden;
+      margin:0 auto 2rem;
+      box-shadow:0 25px 60px rgba(0,0,0,0.9),0 0 0 1px rgba(201,168,76,0.1),0 0 80px rgba(201,168,76,0.1),inset 0 1px 0 rgba(201,168,76,0.2);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .luxe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 15% 40%,rgba(201,168,76,0.2),transparent 60%),radial-gradient(ellipse at 85% 70%,rgba(201,168,76,0.08),transparent 50%);pointer-events:none;}
+    .luxe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4) 20%,#e8c96a 50%,rgba(201,168,76,0.4) 80%,transparent);}
+    .luxe-card-shine{position:absolute;top:-100%;left:-100%;width:60%;height:300%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.03) 50%,transparent 60%);transform:skewX(-15deg);pointer-events:none;animation:shine 6s infinite;}
+    @keyframes shine{0%,80%{left:-100%;}100%{left:200%;}}
+    /* Card rows */
+    .card-row1{display:flex;justify-content:space-between;align-items:flex-start;position:relative;}
+    .card-label{font-size:0.48rem;font-weight:800;color:rgba(201,168,76,0.5);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.25rem;}
+    .card-brand{font-size:1.25rem;font-weight:900;color:#fff;letter-spacing:1px;line-height:1;}
+    .card-brand span{background:linear-gradient(90deg,#c9a84c,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .card-sub{font-size:0.5rem;font-weight:700;color:rgba(201,168,76,0.45);letter-spacing:3px;text-transform:uppercase;margin-top:0.15rem;}
+    .card-icon{width:42px;height:42px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 4px 16px rgba(201,168,76,0.35);}
     /* Chip */
-    .card-chip{width:38px;height:28px;background:linear-gradient(135deg,#d4a843,#b8922e,#e8c96a,#a07830);border-radius:5px;margin-bottom:1.25rem;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
-    .card-chip::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,0.3);}
-    .card-chip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.3);}
-    .card-name{font-size:1.05rem;font-weight:900;color:#f0ece0;letter-spacing:3px;margin-bottom:0.3rem;position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
-    .card-number{font-size:0.78rem;color:rgba(201,168,76,0.7);letter-spacing:3px;margin-bottom:1.5rem;position:relative;font-weight:700;}
-    .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;}
-    .card-stat{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:0.85rem;backdrop-filter:blur(4px);}
+    .card-chip{width:34px;height:26px;background:linear-gradient(135deg,#d4a843 0%,#b8922e 30%,#e8c96a 50%,#a07830 70%,#c9a84c 100%);border-radius:4px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.5);flex-shrink:0;}
+    .card-chip::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,0.25);transform:translateY(-50%);}
+    .card-chip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.25);transform:translateX(-50%);}
+    .card-row2{display:flex;align-items:center;gap:0.75rem;position:relative;}
+    .card-nfc{font-size:1rem;color:rgba(201,168,76,0.4);}
+    /* Middle */
+    .card-row3{position:relative;}
+    .card-name{font-size:0.88rem;font-weight:900;color:#f0ece0;letter-spacing:3px;text-shadow:0 1px 4px rgba(0,0,0,0.6);}
+    .card-number{font-size:0.7rem;color:rgba(201,168,76,0.65);letter-spacing:2.5px;font-weight:700;margin-top:0.2rem;}
+    /* Bottom */
+    .card-row4{display:flex;justify-content:space-between;align-items:flex-end;position:relative;}
+    .card-footer-text{font-size:0.48rem;color:rgba(201,168,76,0.35);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+    .card-circles{display:flex;}
+    .card-circle{width:24px;height:24px;border-radius:50%;}
+    /* Stats below card */
+    .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;}
+    .card-stat{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;}
     .card-stat-label{font-size:0.56rem;color:rgba(201,168,76,0.7);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;}
     .card-stat-val{font-size:1.05rem;font-weight:900;color:#fff;}
     .card-stat-val.green{color:#4caf50;}
-    .card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,168,76,0.15);padding-top:1rem;position:relative;}
-    .card-footer-text{font-size:0.58rem;color:rgba(201,168,76,0.4);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-    .card-circles{display:flex;}
-    .card-circle{width:28px;height:28px;border-radius:50%;}
 
     /* STATUS BADGE */
-    .status-active{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
-    .status-inactive{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);color:#ff9800;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
+    .status-active{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);color:var(--gold);border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
+    .status-inactive{background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);color:var(--muted);border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
 
     /* USES SECTION */
     .uses{margin-bottom:1.5rem;}
-    .uses-title{font-size:0.78rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+    .uses-title{font-size:0.72rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+    .uses-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.15);}
     .uses-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
-    .use-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:1rem;text-align:center;transition:all 0.2s;}
-    .use-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-2px);}
+    .use-card{background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1rem;text-align:center;transition:all 0.2s;}
+    .use-card:hover{border-color:rgba(201,168,76,0.4);background:#111;}
     .use-icon{font-size:1.5rem;margin-bottom:0.5rem;}
     .use-title{font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
     .use-desc{font-size:0.68rem;color:var(--muted);line-height:1.5;}
 
     /* BENEFITS */
-    .benefits{background:var(--card);border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
-    .benefits-title{font-size:0.78rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+    .benefits{background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+    .benefits-title{font-size:0.72rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+    .benefits-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.15);}
     .benefit-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(201,168,76,0.06);}
     .benefit-item:last-child{border-bottom:none;}
     .benefit-icon{width:32px;height:32px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem;flex-shrink:0;}
@@ -84,13 +111,14 @@
     .benefit-sub{font-size:0.72rem;color:var(--muted);margin-top:0.1rem;}
 
     /* PRICE BOX */
-    .price-box{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;text-align:center;}
-    .price-amount{font-size:3rem;font-weight:900;color:var(--gold);line-height:1;}
-    .price-label{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;}
-    .price-note{font-size:0.72rem;color:#6a6050;margin-top:0.5rem;}
+    .price-box{background:#000;border:1px solid rgba(201,168,76,0.3);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;text-align:center;position:relative;overflow:hidden;}
+    .price-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.1),transparent 70%);pointer-events:none;}
+    .price-amount{font-size:3.5rem;font-weight:900;background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+    .price-label{font-size:0.75rem;color:var(--muted);margin-top:0.4rem;}
+    .price-note{font-size:0.72rem;color:rgba(201,168,76,0.5);margin-top:0.5rem;}
 
     /* WARNING */
-    .warning{background:rgba(255,152,0,0.06);border:1px solid rgba(255,152,0,0.2);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#ff9800;line-height:1.6;margin-bottom:1.25rem;}
+    .warning{background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:1.25rem;}
 
     /* BUTTON */
     .btn-activate{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:14px;padding:1.1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 8px 30px rgba(201,168,76,0.3);transition:all 0.2s;margin-bottom:0.75rem;}
@@ -244,25 +272,30 @@
   function cardHTML(name, cardNumber, bal, shoots, activatedAt){
     return '<div class="luxe-card">'
       +'<div class="luxe-card-shine"></div>'
-      +'<div class="card-top">'
+      +'<div class="card-row1">'
         +'<div><div class="card-label">LIFETIME MEMBERSHIP</div>'
         +'<div class="card-brand">OG SHOOTS <span>LUXE</span></div>'
         +'<div class="card-sub">Premium Member</div></div>'
         +'<div class="card-icon">&#9889;</div>'
       +'</div>'
-      +'<div class="card-chip"></div>'
-      +'<div class="card-name">'+name.toUpperCase()+'</div>'
-      +'<div class="card-number">'+cardNumber+'</div>'
-      +'<div class="card-stats">'
-        +'<div class="card-stat"><div class="card-stat-label">Wallet Balance</div><div class="card-stat-val green">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
-        +'<div class="card-stat"><div class="card-stat-label">Total Shoots</div><div class="card-stat-val">'+shoots+'</div></div>'
-        +'<div class="card-stat"><div class="card-stat-label">Priority Booking</div><div class="card-stat-val" style="font-size:0.78rem;">Skip the Queue &#10003;</div></div>'
-        +'<div class="card-stat"><div class="card-stat-label">Member Since</div><div class="card-stat-val" style="font-size:0.75rem;">'+(activatedAt||'').split(',')[0]+'</div></div>'
+      +'<div class="card-row2">'
+        +'<div class="card-chip"></div>'
+        +'<div class="card-nfc"><i class="fas fa-wifi"></i></div>'
       +'</div>'
-      +'<div class="card-footer">'
+      +'<div class="card-row3">'
+        +'<div class="card-name">'+name.toUpperCase()+'</div>'
+        +'<div class="card-number">'+cardNumber+'</div>'
+      +'</div>'
+      +'<div class="card-row4">'
         +'<div class="card-footer-text">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>'
-        +'<div class="card-circles"><div class="card-circle" style="background:rgba(201,168,76,0.35);"></div><div class="card-circle" style="background:rgba(201,168,76,0.7);margin-left:-12px;"></div></div>'
+        +'<div class="card-circles"><div class="card-circle" style="background:rgba(201,168,76,0.4);"></div><div class="card-circle" style="background:rgba(201,168,76,0.75);margin-left:-10px;"></div></div>'
       +'</div>'
+    +'</div>'
+    +'<div class="card-stats">'
+      +'<div class="card-stat"><div class="card-stat-label">Wallet Balance</div><div class="card-stat-val green">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
+      +'<div class="card-stat"><div class="card-stat-label">Total Shoots</div><div class="card-stat-val">'+shoots+'</div></div>'
+      +'<div class="card-stat"><div class="card-stat-label">Priority Booking</div><div class="card-stat-val" style="font-size:0.75rem;">Skip Queue &#10003;</div></div>'
+      +'<div class="card-stat"><div class="card-stat-label">Member Since</div><div class="card-stat-val" style="font-size:0.72rem;">'+(activatedAt||'').split(',')[0]+'</div></div>'
     +'</div>';
   }
 
