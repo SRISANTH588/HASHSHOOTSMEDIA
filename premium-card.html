@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OG Shoots Luxe — Premium Membership</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{
+      --gold:#c9a84c;--gold-dark:#a07830;--gold-light:#e8c96a;
+      --bg:#080808;--bg2:#0f0f0f;--card:#1a1a1a;
+      --text:#f0ece0;--muted:#9a9080;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* NAV */
+    nav{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(201,168,76,0.15);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-size:1.3rem;font-weight:900;}.logo span{color:var(--gold);}
+    .nav-back{background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
+    .nav-back:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* HERO */
+    .hero{text-align:center;padding:3rem 1.5rem 2rem;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;}
+    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;font-weight:800;padding:0.35rem 1rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem;}
+    .hero h1{font-size:2.5rem;font-weight:900;color:#fff;margin-bottom:0.5rem;line-height:1.1;}
+    .hero h1 span{color:var(--gold);}
+    .hero p{font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.7;}
+
+    /* CONTAINER */
+    .container{max-width:480px;margin:0 auto;padding:0 1.25rem 4rem;}
+
+    /* CARD */
+    .luxe-card{background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1.5px solid rgba(201,168,76,0.45);border-radius:24px;padding:2rem;position:relative;overflow:hidden;margin-bottom:2rem;box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.08);}
+    .luxe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.1),transparent 70%);pointer-events:none;}
+    .luxe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem;position:relative;}
+    .card-label{font-size:0.55rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;}
+    .card-brand{font-size:1.5rem;font-weight:900;color:#fff;}
+    .card-brand span{color:var(--gold);}
+    .card-sub{font-size:0.6rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:0.15rem;}
+    .card-icon{width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+    .card-name{font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;margin-bottom:0.2rem;position:relative;}
+    .card-number{font-size:0.72rem;color:var(--muted);letter-spacing:2px;margin-bottom:1.5rem;position:relative;}
+    .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;}
+    .card-stat{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;}
+    .card-stat-label{font-size:0.58rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;}
+    .card-stat-val{font-size:1.05rem;font-weight:900;color:#fff;}
+    .card-stat-val.green{color:#4caf50;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;position:relative;}
+    .card-footer-text{font-size:0.6rem;color:#6a6050;font-weight:600;letter-spacing:1px;}
+    .card-circles{display:flex;}
+    .card-circle{width:26px;height:26px;border-radius:50%;}
+
+    /* STATUS BADGE */
+    .status-active{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
+    .status-inactive{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);color:#ff9800;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
+
+    /* BENEFITS */
+    .benefits{background:var(--card);border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+    .benefits-title{font-size:0.78rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+    .benefit-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(201,168,76,0.06);}
+    .benefit-item:last-child{border-bottom:none;}
+    .benefit-icon{width:32px;height:32px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem;flex-shrink:0;}
+    .benefit-text{font-size:0.85rem;font-weight:700;color:#fff;}
+    .benefit-sub{font-size:0.72rem;color:var(--muted);margin-top:0.1rem;}
+
+    /* PRICE BOX */
+    .price-box{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;text-align:center;}
+    .price-amount{font-size:3rem;font-weight:900;color:var(--gold);line-height:1;}
+    .price-label{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;}
+    .price-note{font-size:0.72rem;color:#6a6050;margin-top:0.5rem;}
+
+    /* WARNING */
+    .warning{background:rgba(255,152,0,0.06);border:1px solid rgba(255,152,0,0.2);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#ff9800;line-height:1.6;margin-bottom:1.25rem;}
+
+    /* BUTTON */
+    .btn-activate{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:14px;padding:1.1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 8px 30px rgba(201,168,76,0.3);transition:all 0.2s;margin-bottom:0.75rem;}
+    .btn-activate:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.4);}
+    .btn-activate:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .btn-back{width:100%;background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--muted);border-radius:14px;padding:0.85rem;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .btn-back:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* LOADING */
+    .loading{text-align:center;padding:3rem;color:var(--muted);}
+    .loading i{font-size:2rem;color:var(--gold);margin-bottom:1rem;display:block;}
+
+    /* NOT LOGGED IN */
+    .not-logged{text-align:center;padding:3rem 1.5rem;}
+    .not-logged i{font-size:3rem;color:var(--gold);opacity:0.4;margin-bottom:1rem;display:block;}
+    .not-logged h3{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.5rem;}
+    .not-logged p{font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;}
+    .btn-login{display:inline-flex;align-items:center;gap:0.5rem;background:var(--gold);color:#000;border:none;border-radius:10px;padding:0.75rem 1.75rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;text-decoration:none;}
+
+    @media(max-width:480px){
+      .hero h1{font-size:2rem;}
+      .container{padding:0 1rem 3rem;}
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><span>OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+    <a href="customer.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge"><i class="fas fa-crown"></i> Exclusive Membership</div>
+    <h1>OG Shoots <span>Luxe</span></h1>
+    <p>One-time lifetime membership. Priority booking, exclusive offers & more.</p>
+  </div>
+
+  <div class="container">
+    <div id="pageContent">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i>Loading your membership...</div>
+    </div>
+  </div>
+
+  <script>
+  (async function(){
+    var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+    var name  = localStorage.getItem('hs_customer_name') || email;
+    var el    = document.getElementById('pageContent');
+
+    if(!email){
+      el.innerHTML = '<div class="not-logged"><i class="fas fa-lock"></i><h3>Login Required</h3><p>Please log in to view or activate your Luxe membership.</p><a href="customer.html" class="btn-login"><i class="fas fa-sign-in-alt"></i> Go to Login</a></div>';
+      return;
+    }
+
+    // Fetch from Firebase
+    var card = JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
+    var premSettings = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"enabled":true}');
+    var bal = parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0');
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email; });
+
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='prem-page';})||fbMod.initializeApp(fbCfg,'prem-page');
+      var db      = fbStore.getFirestore(app);
+      var key     = email.replace(/[.#$\[\]]/g,'_');
+      // Fetch card
+      var snap = await fbStore.getDoc(fbStore.doc(db,'premium_cards',key));
+      if(snap.exists()){ card=snap.data(); localStorage.setItem('hs_premium_card_'+email,JSON.stringify(card)); }
+      // Fetch settings
+      var sSnap = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
+      if(sSnap.exists()){
+        var cfg = sSnap.data();
+        premSettings = {price: cfg.premiumPrice||129, enabled: cfg.premiumEnabled!==false, name: cfg.premiumName||'OG Shoots Luxe'};
+        localStorage.setItem('hs_premium_settings', JSON.stringify(premSettings));
+        if(cfg.premiumPrice) localStorage.setItem('hs_premium_price', String(cfg.premiumPrice));
+      }
+      // Fetch wallet balance
+      var wSnap = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
+      if(wSnap.exists() && wSnap.data().balance !== undefined){
+        bal = wSnap.data().balance;
+        localStorage.setItem('hs_cw_'+email, String(bal));
+        localStorage.setItem('hs_customer_wallet', String(bal));
+      }
+    }catch(e){ console.warn('Firebase fetch error:', e); }
+
+    render(card, premSettings, bal, bookings, name, email);
+  })();
+
+  function render(card, premSettings, bal, bookings, name, email){
+    var el = document.getElementById('pageContent');
+    var price = premSettings.price || 129;
+
+    if(card && card.active){
+      // ACTIVE CARD VIEW
+      el.innerHTML =
+        '<div class="status-active"><i class="fas fa-check-circle"></i> Active Lifetime Member &nbsp;&middot;&nbsp; Non-Cancellable</div>'
+        + cardHTML(name, card.cardNumber, bal, bookings.length, card.activatedAt)
+        + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> Your Benefits</div>'
+        + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first')
+        + benefitItem('fas fa-wallet','Wallet Credits','Earn credits on every shoot')
+        + benefitItem('fas fa-tag','Exclusive Offers','Members-only discounts & deals')
+        + benefitItem('fas fa-infinity','Lifetime Access','Never expires — yours forever')
+        + benefitItem('fas fa-headset','Priority Support','Dedicated support line')
+        + '</div>'
+        + '<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem;text-align:center;font-size:0.82rem;color:var(--muted);">'
+        + '<i class="fas fa-shield-alt" style="color:var(--gold);margin-right:0.4rem;"></i>'
+        + 'Card activated on <strong style="color:#fff;">'+(card.activatedAt||'').split(',')[0]+'</strong>'
+        + '</div>';
+    } else if(!premSettings.enabled){
+      // DISABLED BY ADMIN
+      el.innerHTML =
+        '<div style="text-align:center;padding:2rem 0;">'
+        + '<div style="font-size:3rem;margin-bottom:1rem;">🔒</div>'
+        + '<div style="font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:0.5rem;">Coming Soon</div>'
+        + '<div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;">The Luxe membership is not available right now. Check back soon!</div>'
+        + '</div>'
+        + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> What You\'ll Get</div>'
+        + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first')
+        + benefitItem('fas fa-wallet','Wallet Credits','Earn credits on every shoot')
+        + benefitItem('fas fa-tag','Exclusive Offers','Members-only discounts & deals')
+        + benefitItem('fas fa-infinity','Lifetime Access','Never expires — yours forever')
+        + '</div>';
+    } else {
+      // PURCHASE VIEW
+      el.innerHTML =
+        '<div class="status-inactive"><i class="fas fa-crown"></i> You don\'t have a Luxe membership yet</div>'
+        + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> Membership Benefits</div>'
+        + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first — skip the queue')
+        + benefitItem('fas fa-wallet','Wallet Credits','Membership fee added to your wallet instantly')
+        + benefitItem('fas fa-tag','Exclusive Offers','Members-only discounts & deals on every shoot')
+        + benefitItem('fas fa-infinity','Lifetime Access','One-time payment — never expires')
+        + benefitItem('fas fa-headset','Priority Support','Dedicated support line for members')
+        + benefitItem('fas fa-receipt','Bill Inclusion','Membership fee included in your shoot bill')
+        + '</div>'
+        + '<div class="price-box">'
+        + '<div class="price-amount">&#8377;'+price.toLocaleString('en-IN')+'</div>'
+        + '<div class="price-label">One-time lifetime membership fee</div>'
+        + '<div class="price-note">&#8377;'+price.toLocaleString('en-IN')+' will be added to your wallet after activation</div>'
+        + '</div>'
+        + '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Once activated, this membership <strong>cannot be cancelled or refunded</strong>. It is a lifetime, non-cancellable membership.</div>'
+        + '<button class="btn-activate" onclick="activateCard()"><i class="fas fa-crown"></i> Activate Luxe Membership &nbsp;&middot;&nbsp; &#8377;'+price.toLocaleString('en-IN')+'</button>'
+        + '<button class="btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i> Go Back</button>';
+    }
+  }
+
+  function cardHTML(name, cardNumber, bal, shoots, activatedAt){
+    return '<div class="luxe-card">'
+      +'<div class="card-top">'
+        +'<div><div class="card-label">LIFETIME MEMBERSHIP</div>'
+        +'<div class="card-brand">OG SHOOTS <span>LUXE</span></div>'
+        +'<div class="card-sub">Premium Member</div></div>'
+        +'<div class="card-icon">&#9889;</div>'
+      +'</div>'
+      +'<div class="card-name">'+name.toUpperCase()+'</div>'
+      +'<div class="card-number">'+cardNumber+'</div>'
+      +'<div class="card-stats">'
+        +'<div class="card-stat"><div class="card-stat-label">Wallet Balance</div><div class="card-stat-val green">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
+        +'<div class="card-stat"><div class="card-stat-label">Total Shoots</div><div class="card-stat-val">'+shoots+'</div></div>'
+        +'<div class="card-stat"><div class="card-stat-label">Priority Booking</div><div class="card-stat-val" style="font-size:0.82rem;">Skip the Queue &#10003;</div></div>'
+        +'<div class="card-stat"><div class="card-stat-label">Member Since</div><div class="card-stat-val" style="font-size:0.78rem;">'+(activatedAt||'').split(',')[0]+'</div></div>'
+      +'</div>'
+      +'<div class="card-footer">'
+        +'<div class="card-footer-text">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>'
+        +'<div class="card-circles"><div class="card-circle" style="background:rgba(201,168,76,0.3);"></div><div class="card-circle" style="background:rgba(201,168,76,0.6);margin-left:-10px;"></div></div>'
+      +'</div>'
+    +'</div>';
+  }
+
+  function benefitItem(icon, title, sub){
+    return '<div class="benefit-item">'
+      +'<div class="benefit-icon"><i class="'+icon+'"></i></div>'
+      +'<div><div class="benefit-text">'+title+'</div><div class="benefit-sub">'+sub+'</div></div>'
+      +'</div>';
+  }
+
+  async function activateCard(){
+    var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+    var name  = localStorage.getItem('hs_customer_name')||email;
+    var price = parseInt(localStorage.getItem('hs_premium_price')||'129');
+    if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\n\u20b9'+price.toLocaleString('en-IN')+' will be added to your wallet.')) return;
+    var btn = document.querySelector('.btn-activate');
+    if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Activating...'; }
+    var cardNumber = 'LUXE-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
+    var card = {email:email, name:name, cardNumber:cardNumber, active:true, activatedAt:new Date().toLocaleString(), price:price};
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='prem-page';})||fbMod.initializeApp(fbCfg,'prem-page');
+      var db      = fbStore.getFirestore(app);
+      var key     = email.replace(/[.#$\[\]]/g,'_');
+      await fbStore.setDoc(fbStore.doc(db,'premium_cards',key), card);
+      var newBal = parseInt(localStorage.getItem('hs_cw_'+email)||'0') + price;
+      localStorage.setItem('hs_cw_'+email, String(newBal));
+      localStorage.setItem('hs_customer_wallet', String(newBal));
+      await fbStore.setDoc(fbStore.doc(db,'customer_wallets',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+      await fbStore.setDoc(fbStore.doc(db,'wallet_updates',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
+    }catch(e){ alert('Error activating card: '+e.message); if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-crown"></i> Activate Luxe Membership';} return; }
+    localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
+    localStorage.setItem('hs_is_premium','1');
+    alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card: '+cardNumber+'\n\u20b9'+price.toLocaleString('en-IN')+' added to your wallet.');
+    location.reload();
+  }
+  </script>
+</body>
+</html>
