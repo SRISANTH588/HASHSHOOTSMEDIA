@@ -744,14 +744,22 @@
                 +'<span style="font-size:0.68rem;font-weight:800;color:'+sc+';background:'+sc+'18;border:1px solid '+sc+'44;padding:0.22rem 0.7rem;border-radius:50px;white-space:nowrap;">'+sl+'</span>'
               +'</div>'
               +(e.message?'<div style="font-size:0.8rem;color:#9a9080;margin-bottom:0.75rem;line-height:1.5;">'+e.message+'</div>':'')
-              +(e.payAmount && !e.paid
-                ? '<div style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:9px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
-                  +'<div style="font-size:0.82rem;color:#fff;font-weight:700;">Payment Due: <span style="color:#c9a84c;">&#8377;'+Number(e.payAmount).toLocaleString('en-IN')+'</span></div>'
-                  +'<button onclick="payMktEnquiry(\'' + e.id + '\','+Number(e.payAmount)+',\'' + (e.plan||'Marketing Package').replace(/'/g,"") + '\',\'' + (e.brand||'').replace(/'/g,"") + '\')" style="background:#9c27b0;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-credit-card"></i> Pay Now</button>'
+              +(st==='done'
+                ? '<div style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(76,175,80,0.06));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:1.1rem;text-align:center;margin-top:0.5rem;">'
+                  +'<div style="font-size:1.8rem;margin-bottom:0.4rem;">&#127881;</div>'
+                  +'<div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.3rem;">Thank you for your payment!</div>'
+                  +'<div style="font-size:0.8rem;color:#9a9080;line-height:1.6;">Your <strong style="color:#c9a84c;">'+(e.plan||'marketing package')+'</strong> is now active. We will contact you shortly and we start working together. Welcome to OG Shoots! &#128640;</div>'
+                  +(e.doneAt?'<div style="font-size:0.68rem;color:#6a6050;margin-top:0.4rem;">Activated: '+e.doneAt+'</div>':'')
                 +'</div>'
-                : (e.paid
-                  ? '<div style="font-size:0.78rem;color:#4caf50;font-weight:700;"><i class="fas fa-check-circle"></i> Paid — &#8377;'+Number(e.payAmount||0).toLocaleString('en-IN')+(e.paidAt?' on '+e.paidAt:'')+'</div>'
-                  : '')
+                : (e.payAmount && !e.paid
+                  ? '<div style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:9px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+                    +'<div style="font-size:0.82rem;color:#fff;font-weight:700;">Payment Due: <span style="color:#c9a84c;">&#8377;'+Number(e.payAmount).toLocaleString('en-IN')+'</span></div>'
+                    +'<button onclick="payMktEnquiry(\''+e.id+'\','+Number(e.payAmount)+',\''+( e.plan||'Marketing Package').replace(/'/g,'')+'\'\,\''+( e.brand||'').replace(/'/g,'')+'\'\)" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-credit-card"></i> Pay Now</button>'
+                  +'</div>'
+                  : (e.paid
+                    ? '<div style="font-size:0.78rem;color:#4caf50;font-weight:700;"><i class="fas fa-check-circle"></i> Paid &#8212; &#8377;'+Number(e.payAmount||0).toLocaleString('en-IN')+(e.paidAt?' on '+e.paidAt:'')+'</div>'
+                    : '')
+                )
               )
             +'</div>';
           }).join('');

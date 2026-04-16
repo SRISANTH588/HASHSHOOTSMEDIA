@@ -7255,8 +7255,28 @@ Priority Support</textarea></div>
     async function markMktEnquiryDone(id){
       try{
         var f = await _fbAdmin(); if(!f) return;
+        // Get enquiry data first
+        var docSnap = await f.s.getDoc(f.s.doc(f.db,'marketing_enquiries',String(id)));
+        var data = docSnap.exists() ? docSnap.data() : {};
+        // Mark as done
         await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
-        showAssignToast('Enquiry marked as done!', true);
+        // Send notification to customer
+        var custEmail = (data.email||'').toLowerCase();
+        var custPhone = data.phone||'';
+        if(custEmail || custPhone){
+          await f.s.addDoc(f.s.collection(f.db,'customer_notifications'),{
+            email: custEmail,
+            phone: custPhone,
+            type: 'marketing_done',
+            title: '\uD83C\uDF89 We\'ve Started Working Together!',
+            message: 'Thank you for your payment! Your '+( data.plan||'marketing package')+' is now active. We will contact you shortly and start working together. Welcome to OG Shoots!',
+            plan: data.plan||'',
+            brand: data.brand||'',
+            read: false,
+            createdAt: f.s.serverTimestamp()
+          });
+        }
+        showAssignToast('Enquiry marked as done! Customer notified.', true);
         renderMktEnquiries();
       }catch(e){ alert('Error: '+e.message); }
     }
