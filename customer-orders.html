@@ -633,6 +633,57 @@
       rzp.open();
     }
 
+    async function payMktEnquiry(enquiryId, amount, plan, brand){
+      var cfg = _rpCfg;
+      if(!cfg || !cfg.keyId){ alert('Payment gateway not configured. Please contact admin.'); return; }
+      var custName  = localStorage.getItem('hs_customer_name') || 'Customer';
+      var custEmail = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var custPhone = localStorage.getItem('hs_customer_phone')||'';
+      var options = {
+        key: cfg.keyId,
+        amount: amount * 100,
+        currency: cfg.currency||'INR',
+        name: cfg.businessName||'OG SHOOTS',
+        description: plan + (brand ? ' — ' + brand : ''),
+        prefill: {name:custName, email:custEmail, contact:custPhone},
+        theme: {color:'#9c27b0'},
+        handler: async function(response){
+          try{
+            var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+            var db      = fbStore.getFirestore(app);
+            // Mark enquiry as paid
+            await fbStore.setDoc(fbStore.doc(db,'marketing_enquiries',String(enquiryId)),{
+              paid:true, paidAt:new Date().toLocaleString(),
+              paymentId:response.razorpay_payment_id, status:'paid'
+            },{merge:true});
+            // Create booking automatically
+            var bookingId = Date.now();
+            var booking = {
+              id:bookingId, name:custName, phone:custPhone, email:custEmail,
+              service:plan, plan:plan, brand:brand, city:'', date:'', time:'',
+              notes:'Marketing package. Brand: '+brand+'. Payment ID: '+response.razorpay_payment_id,
+              status:'confirmed', payAmount:amount, paymentStatus:'paid',
+              paymentId:response.razorpay_payment_id,
+              source:'marketing_enquiry', enquiryId:String(enquiryId),
+              createdAt:new Date().toLocaleString()
+            };
+            await fbStore.setDoc(fbStore.doc(db,'bookings',String(bookingId)), booking);
+            var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            bks.push(booking);
+            localStorage.setItem('hs_bookings', JSON.stringify(bks));
+            showToast('\u2705 Payment successful! Booking confirmed.');
+            setTimeout(function(){ location.reload(); }, 1500);
+          }catch(e){ showToast('Payment recorded but booking failed: '+e.message, true); }
+        },
+        modal:{ondismiss:function(){showToast('Payment cancelled.',true);}}
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+
     async function renderMktEnquiriesSection(custEmail, custPhone){
       var el = document.getElementById('mktEnquiriesSection');
       if(!el) return;
@@ -684,7 +735,7 @@
               +(e.payAmount && !e.paid
                 ? '<div style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:9px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
                   +'<div style="font-size:0.82rem;color:#fff;font-weight:700;">Payment Due: <span style="color:#c9a84c;">&#8377;'+Number(e.payAmount).toLocaleString('en-IN')+'</span></div>'
-                  +'<a href="customer.html" style="background:#2196f3;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;"><i class="fas fa-credit-card"></i> Pay Now</a>'
+                  +'<button onclick="payMktEnquiry(\'' + e.id + '\','+Number(e.payAmount)+',\'' + (e.plan||'Marketing Package').replace(/'/g,"") + '\',\'' + (e.brand||'').replace(/'/g,"") + '\')" style="background:#9c27b0;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-credit-card"></i> Pay Now</button>'
                 +'</div>'
                 : (e.paid
                   ? '<div style="font-size:0.78rem;color:#4caf50;font-weight:700;"><i class="fas fa-check-circle"></i> Paid — &#8377;'+Number(e.payAmount||0).toLocaleString('en-IN')+(e.paidAt?' on '+e.paidAt:'')+'</div>'
