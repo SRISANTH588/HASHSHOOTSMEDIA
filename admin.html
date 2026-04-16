@@ -1860,6 +1860,12 @@ Priority Support</textarea></div>
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fas fa-crown" style="color:#c9a84c;margin-right:0.5rem;"></i> OG Shoots Luxe Premium Card</h2>
         <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1rem;">Set the one-time membership fee. Once activated, the card is lifetime and non-cancellable. The fee is added to the customer's wallet.</p>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding:1rem 1.25rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.88rem;color:#d4c9a8;font-weight:600;">
+            <input type="checkbox" id="set_premiumEnabled" style="accent-color:#c9a84c;width:18px;height:18px;"/>
+            Enable Premium Controls (visible to staff)
+          </label>
+        </div>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
           <div style="flex:1;min-width:200px;">
             <label style="font-size:0.75rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.4rem;">Membership Fee (&#8377;) *</label>
@@ -4041,9 +4047,10 @@ Priority Support</textarea></div>
       var el = document.getElementById('set_waNumber');
       if(el) el.value = num;
       // Load premium settings
-      var ps = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":999,"name":"OG Shoots Luxe"}');
-      var pp = document.getElementById('set_premiumPrice'); if(pp) pp.value = ps.price||999;
+      var ps = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"name":"OG Shoots Luxe","enabled":true}');
+      var pp = document.getElementById('set_premiumPrice'); if(pp) pp.value = ps.price||129;
       var pn = document.getElementById('set_premiumName'); if(pn) pn.value = ps.name||'OG Shoots Luxe';
+      var pe = document.getElementById('set_premiumEnabled'); if(pe) pe.checked = ps.enabled !== false;
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f) return;
@@ -4053,19 +4060,21 @@ Priority Support</textarea></div>
             if(d.waNumber){ localStorage.setItem('hs_admin_wa_number',d.waNumber); var el2=document.getElementById('set_waNumber'); if(el2) el2.value=d.waNumber; }
             if(d.premiumPrice){ var pp2=document.getElementById('set_premiumPrice'); if(pp2) pp2.value=d.premiumPrice; }
             if(d.premiumName){ var pn2=document.getElementById('set_premiumName'); if(pn2) pn2.value=d.premiumName; }
+            var pe2=document.getElementById('set_premiumEnabled'); if(pe2) pe2.checked = d.premiumEnabled !== false;
           }
         }catch(e){}
       })();
     }
     async function savePremiumSettings(){
-      var price = parseInt(document.getElementById('set_premiumPrice').value)||999;
-      var name  = document.getElementById('set_premiumName').value.trim()||'OG Shoots Luxe';
-      var ps = {price:price, name:name};
+      var price   = parseInt(document.getElementById('set_premiumPrice').value)||129;
+      var name    = document.getElementById('set_premiumName').value.trim()||'OG Shoots Luxe';
+      var enabled = document.getElementById('set_premiumEnabled').checked;
+      var ps = {price:price, name:name, enabled:enabled};
       localStorage.setItem('hs_premium_settings', JSON.stringify(ps));
       try{
         var f = await _fbAdmin(); if(f)
-          await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{premiumPrice:price,premiumName:name},{merge:true});
-      }catch(e){}
+          await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{premiumPrice:price,premiumName:name,premiumEnabled:enabled},{merge:true});
+      }catch(e){ console.error('savePremiumSettings Firebase error:',e); }
       var t=document.getElementById('premiumSettingsToast'); t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000);
     }
     async function saveWaNumber(){

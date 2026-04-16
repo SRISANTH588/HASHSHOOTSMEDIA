@@ -734,6 +734,17 @@
         </div>
         <!-- PREMIUM CONTROLS PANEL -->
         <div id="saie_controls" style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+          <div id="saie_premium_locked" style="display:none;text-align:center;padding:1.5rem 1rem;">
+            <div style="font-size:2rem;margin-bottom:0.5rem;">&#128274;</div>
+            <div style="font-size:0.95rem;font-weight:900;color:#fff;margin-bottom:0.3rem;">Premium Controls</div>
+            <div style="font-size:0.78rem;color:#9a9080;margin-bottom:1rem;">Advanced filters, music sync, transitions &amp; more</div>
+            <div style="font-size:1.4rem;font-weight:900;color:#c9a84c;margin-bottom:0.25rem;" id="saie_premium_price_display">&#8377;129</div>
+            <div style="font-size:0.68rem;color:#6a6050;margin-bottom:1rem;">One-time unlock &mdash; contact admin to enable</div>
+            <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:9px;padding:0.65rem 1rem;font-size:0.75rem;color:#c9a84c;font-weight:700;">
+              <i class="fas fa-info-circle"></i> Ask your admin to enable Premium Controls for you
+            </div>
+          </div>
+          <div id="saie_premium_content">
           <div style="font-size:0.75rem;font-weight:800;color:#c9a84c;margin-bottom:0.85rem;letter-spacing:1px;">⚙️ PREMIUM CONTROLS</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
             <div><label style="font-size:0.65rem;color:#9a9080;font-weight:600;display:flex;justify-content:space-between;">Brightness <span id="saie_vBright">100%</span></label><input type="range" id="saie_bright" min="50" max="150" value="100" oninput="saie_livePreview()" style="width:100%;accent-color:#c9a84c;"></div>
@@ -803,9 +814,9 @@
               <button onclick="saie_setFilterOverride('drama',this)" class="saie-filt-btn" style="background:#111;border:1px solid #333;color:#9a9080;padding:0.3rem 0.65rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">🎭 Drama</button>
             </div>
           </div>
+          </div><!-- end saie_premium_content -->
         </div>
-
-        <div id="saie_clipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.85rem;"></div>
+ style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.85rem;"></div>
       </div>
 
     </div><!-- end sec-aieditor -->
@@ -1077,7 +1088,7 @@
         try { if(name === 'testimonials') renderStvGrid(); } catch(e){}
         try { if(name === 'bank') loadBankDetails(); } catch(e){}
         try { if(name === 'address') loadStaffAddress(); } catch(e){}
-        try { if(name === 'aieditor') saie_init(); } catch(e){}
+        try { if(name === 'aieditor') { saie_init(); applyPremiumVisibility(); } } catch(e){}
         try { if(name === 'invitations') loadInvitations(); } catch(e){}
         try { if(name === 'meetings') loadMeetings(); } catch(e){}
       } catch(e){ console.error('switchTab error:', e); }
@@ -3526,6 +3537,13 @@
             var db2    = fbSt2.getFirestore(app2);
             var snap2  = await fbSt2.getDoc(fbSt2.doc(db2,'settings','admin_config'));
             if(snap2.exists() && snap2.data().waNumber) localStorage.setItem('hs_admin_wa_number', snap2.data().waNumber);
+            // Load premium settings
+            var cfg2 = snap2.exists() ? snap2.data() : {};
+            var premiumEnabled = cfg2.premiumEnabled !== false; // default true
+            var premiumPrice   = cfg2.premiumPrice || 129;
+            var premiumName    = cfg2.premiumName  || 'OG Shoots Luxe';
+            localStorage.setItem('hs_premium_settings', JSON.stringify({enabled:premiumEnabled, price:premiumPrice, name:premiumName}));
+            applyPremiumVisibility();
           }catch(e){}
         })();
         try{ fbListenDoc('settings', 'blogs',         function(data){ if(data.items) localStorage.setItem('hs_blogs',  JSON.stringify(data.items)); }); }catch(e){}
@@ -3970,6 +3988,22 @@
   }
 
   function saie_init(){}
+
+  function applyPremiumVisibility(){
+    var ps = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"enabled":true,"price":129}');
+    var locked   = document.getElementById('saie_premium_locked');
+    var content  = document.getElementById('saie_premium_content');
+    var priceEl  = document.getElementById('saie_premium_price_display');
+    if(!locked || !content) return;
+    if(ps.enabled !== false){
+      locked.style.display  = 'none';
+      content.style.display = 'block';
+    } else {
+      locked.style.display  = 'block';
+      content.style.display = 'none';
+      if(priceEl) priceEl.textContent = '\u20b9' + (ps.price || 129);
+    }
+  }
 
   function saie_dragover(e){ e.preventDefault(); document.getElementById('saie_dropzone').style.borderColor='#c9a84c'; document.getElementById('saie_dropzone').style.background='rgba(201,168,76,0.07)'; }
   function saie_dragleave(e){ document.getElementById('saie_dropzone').style.borderColor='rgba(201,168,76,0.3)'; document.getElementById('saie_dropzone').style.background='rgba(201,168,76,0.02)'; }
