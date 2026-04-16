@@ -252,7 +252,7 @@
         + usesSection()
         + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> Membership Benefits</div>'
         + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first — skip the queue')
-        + benefitItem('fas fa-wallet','Wallet Credits','Membership fee added to your wallet instantly')
+        + benefitItem('fas fa-tag','Exclusive Deals','Members-only discounts on every shoot')
         + benefitItem('fas fa-tag','Exclusive Offers','Members-only discounts & deals on every shoot')
         + benefitItem('fas fa-infinity','Lifetime Access','One-time payment — never expires')
         + benefitItem('fas fa-headset','Priority Support','Dedicated support line for members')
@@ -261,7 +261,7 @@
         + '<div class="price-box">'
         + '<div class="price-amount">&#8377;'+price.toLocaleString('en-IN')+'</div>'
         + '<div class="price-label">One-time lifetime membership fee</div>'
-        + '<div class="price-note">&#8377;'+price.toLocaleString('en-IN')+' will be added to your wallet after activation</div>'
+        + '<div class="price-note">One-time non-refundable payment &mdash; lifetime access</div>'
         + '</div>'
         + '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Once activated, this membership <strong>cannot be cancelled or refunded</strong>. It is a lifetime, non-cancellable membership.</div>'
         + '<button class="btn-activate" onclick="activateCard()"><i class="fas fa-crown"></i> Activate Luxe Membership &nbsp;&middot;&nbsp; &#8377;'+price.toLocaleString('en-IN')+'</button>'
@@ -304,7 +304,7 @@
       +'<div class="uses-title"><i class="fas fa-gem"></i> How to Use Your Card</div>'
       +'<div class="uses-grid">'
       +'<div class="use-card"><div class="use-icon">&#128247;</div><div class="use-title">Book Shoots</div><div class="use-desc">Get priority slots when booking any shoot service</div></div>'
-      +'<div class="use-card"><div class="use-icon">&#128176;</div><div class="use-title">Wallet Credits</div><div class="use-desc">Membership fee credited to your wallet instantly</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#128176;</div><div class="use-title">Save on Shoots</div><div class="use-desc">Get exclusive member pricing on every booking</div></div>'
       +'<div class="use-card"><div class="use-icon">&#127991;</div><div class="use-title">Exclusive Deals</div><div class="use-desc">Access members-only discounts on every booking</div></div>'
       +'<div class="use-card"><div class="use-icon">&#128241;</div><div class="use-title">Show Card</div><div class="use-desc">Show your card number to get member benefits at shoots</div></div>'
       +'<div class="use-card"><div class="use-icon">&#127775;</div><div class="use-title">Skip Queue</div><div class="use-desc">Your bookings are confirmed before non-members</div></div>'
@@ -323,6 +323,7 @@
     var email = (localStorage.getItem('hs_user')||'').toLowerCase();
     var name  = localStorage.getItem('hs_customer_name')||email;
     var price = parseInt(localStorage.getItem('hs_premium_price')||'129');
+    if(!email){ alert('Please log in first.'); return; }
     if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\n\u20b9'+price.toLocaleString('en-IN')+' will be added to your wallet.')) return;
     var btn = document.querySelector('.btn-activate');
     if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Activating...'; }
@@ -334,17 +335,13 @@
       var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
       var app     = fbMod.getApps().find(function(a){return a.name==='prem-page';})||fbMod.initializeApp(fbCfg,'prem-page');
       var db      = fbStore.getFirestore(app);
-      var key     = email.replace(/[.#$\[\]]/g,'_');
+      var key     = email.replace(/[.#$[\]]/g,'_');
+      // Save premium card
       await fbStore.setDoc(fbStore.doc(db,'premium_cards',key), card);
-      var newBal = parseInt(localStorage.getItem('hs_cw_'+email)||'0') + price;
-      localStorage.setItem('hs_cw_'+email, String(newBal));
-      localStorage.setItem('hs_customer_wallet', String(newBal));
-      await fbStore.setDoc(fbStore.doc(db,'customer_wallets',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
-      await fbStore.setDoc(fbStore.doc(db,'wallet_updates',key),{email:email,balance:newBal,updatedAt:fbStore.serverTimestamp()},{merge:true});
     }catch(e){ alert('Error activating card: '+e.message); if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-crown"></i> Activate Luxe Membership';} return; }
     localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
     localStorage.setItem('hs_is_premium','1');
-    alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card: '+cardNumber+'\n\u20b9'+price.toLocaleString('en-IN')+' added to your wallet.');
+    alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card: '+cardNumber+'\n\nYou are now a lifetime Luxe member!');
     location.reload();
   }
   </script>
