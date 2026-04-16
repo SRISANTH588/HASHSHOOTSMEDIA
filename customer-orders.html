@@ -420,7 +420,8 @@
 
       // ── MARKETING ENQUIRIES SECTION ──
       renderMktEnquiriesSection(custEmail, custPhone);
- — inject player + download button
+
+      // Load videos from IndexedDB - inject player + download button
       allVideos.filter(function(v){ return !v.isFeedback; }).forEach(function(v){
         var el = document.getElementById('custVid_' + v.id);
         if(!el) return;
