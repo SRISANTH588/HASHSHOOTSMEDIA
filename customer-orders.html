@@ -601,7 +601,7 @@
         description: service,
         image: cfg.logo || '',
         prefill: { name: custName, contact: custPhone },
-        theme: { color: '#c9a84c' },
+        theme: { color: cfg.themeColor || '#c9a84c' },
         handler: function(response){
           // Save payment locally
           var payments = JSON.parse(localStorage.getItem('hs_payments')||'[]');
@@ -658,7 +658,7 @@
         name: cfg.businessName||'OG SHOOTS',
         description: plan + (brand ? ' — ' + brand : ''),
         prefill: {name:custName, email:custEmail, contact:custPhone},
-        theme: {color:'#9c27b0'},
+        theme: {color: cfg.themeColor || '#c9a84c'},
         handler: async function(response){
           try{
             var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');

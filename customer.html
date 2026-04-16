@@ -660,7 +660,7 @@
         name: rp.businessName || 'OG SHOOTS',
         description: (_mktEnquiryDoc.plan||'Marketing Package') + ' — ' + (_mktEnquiryDoc.brand||''),
         prefill: { name: custName, email: custEmail, contact: custPhone },
-        theme: { color: '#c9a84c' },
+        theme: { color: (rp && rp.themeColor) || '#c9a84c' },
         handler: async function(response){
           try{
             var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -764,7 +764,7 @@
         name: rp.businessName||'OG SHOOTS',
         description: (_mktEnquiryDoc.plan||'Marketing Package')+' \u2014 '+(_mktEnquiryDoc.brand||''),
         prefill: {name:custName, email:custEmail, contact:custPhone},
-        theme: {color:'#c9a84c'},
+        theme: {color: (rp && rp.themeColor) || '#c9a84c'},
         handler: async function(response){
           try{
             var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -1453,7 +1453,7 @@
         description: rp.description || (b.service + ' — ' + b.city),
         image: rp.logo || '',
         prefill: { name: b.name, contact: b.phone },
-        theme: { color: '#c9a84c' },
+        theme: { color: (rp && rp.themeColor) || '#c9a84c' },
         handler: function(response){
           // PAYMENT SUCCESS
           window._payAttempted = true;

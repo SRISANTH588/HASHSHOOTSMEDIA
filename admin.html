@@ -5986,7 +5986,8 @@ Priority Support</textarea></div>
         defaultAmount: parseInt(document.getElementById('rp_default_amount').value) || 0,
         currency:      document.getElementById('rp_currency').value || 'INR',
         description:   document.getElementById('rp_description').value.trim() || 'OG SHOOTS — Booking Payment',
-        enabled:       document.getElementById('rp_enabled').checked
+        enabled:       document.getElementById('rp_enabled').checked,
+        themeColor:    '#c9a84c'
       };
       localStorage.setItem('hs_razorpay', JSON.stringify(cfg));
       var toast = document.getElementById('rpToast');
