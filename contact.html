@@ -167,6 +167,12 @@
 
   window.submitContact = async function(e){
     e.preventDefault();
+    // Check login
+    if(!localStorage.getItem('hs_user') && localStorage.getItem('hs_role') !== 'customer'){
+      alert('Please log in to send an enquiry.');
+      window.location.href = 'login.html';
+      return;
+    }
     var form    = document.getElementById('ctForm');
     var name    = document.getElementById('ct_name').value.trim();
     var email   = document.getElementById('ct_email').value.trim();

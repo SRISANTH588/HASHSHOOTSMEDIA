@@ -410,6 +410,12 @@
 
     window.tbsSendEnquiry = async function(e){
       e.preventDefault();
+      // Check login
+      if(!localStorage.getItem('hs_user') && localStorage.getItem('hs_role') !== 'customer'){
+        alert('Please log in to send a marketing enquiry.');
+        window.location.href = 'login.html';
+        return;
+      }
       var btn = e.target.querySelector('button[type=submit]');
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';

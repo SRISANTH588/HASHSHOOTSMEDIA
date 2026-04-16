@@ -849,6 +849,12 @@
 
     var _pendingBookBtn = null;
     function openTerms(btn){
+      // Check login first
+      if(!localStorage.getItem('hs_user') && localStorage.getItem('hs_role') !== 'customer'){
+        alert('Please log in to book a shoot.');
+        window.location.href = 'login.html';
+        return;
+      }
       // Validate form first before showing plan preview
       var name = document.getElementById('name').value.trim();
       var phone = document.getElementById('phone').value.trim();
