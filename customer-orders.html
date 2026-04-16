@@ -634,7 +634,19 @@
     }
 
     async function payMktEnquiry(enquiryId, amount, plan, brand){
+      // Fetch Razorpay config fresh from Firebase if not loaded
       var cfg = _rpCfg;
+      if(!cfg || !cfg.keyId){
+        try{
+          var fbMod0   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore0 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg0   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app0     = fbMod0.getApps().find(function(a){return a.name==='cust-orders';})||fbMod0.initializeApp(fbCfg0,'cust-orders');
+          var db0      = fbStore0.getFirestore(app0);
+          var snap0    = await fbStore0.getDoc(fbStore0.doc(db0,'razorpay_config','main'));
+          if(snap0.exists()){ cfg = snap0.data(); _rpCfg = cfg; localStorage.setItem('hs_razorpay', JSON.stringify(cfg)); }
+        }catch(e0){ console.warn('Razorpay config fetch:',e0); }
+      }
       if(!cfg || !cfg.keyId){ alert('Payment gateway not configured. Please contact admin.'); return; }
       var custName  = localStorage.getItem('hs_customer_name') || 'Customer';
       var custEmail = (localStorage.getItem('hs_user')||'').toLowerCase();
