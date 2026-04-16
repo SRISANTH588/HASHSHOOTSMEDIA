@@ -422,6 +422,7 @@
       try{
         await addDoc(collection(db, 'marketing_enquiries'), {
           name, phone, brand, instagram: insta || '', message: msg || '', plan,
+          email: (localStorage.getItem('hs_user')||'').toLowerCase() || '',
           submittedAt: serverTimestamp()
         });
         btn.innerHTML = '<i class="fas fa-check"></i> Sent!';

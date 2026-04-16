@@ -7232,10 +7232,22 @@ Priority Support</textarea></div>
 
     // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
     async function acceptMktEnquiry(id){
+      var doc = _mktDocs ? _mktDocs.find(function(d){ return d.id===id; }) : null;
+      var planPrices = {'Basic':14000,'Standard':22000,'Premium':40000};
+      var defaultAmt = doc ? (planPrices[doc.plan]||0) : 0;
+      var amtInput = prompt('Enter payment amount (\u20b9) for this enquiry:\n(Plan: '+(doc?doc.plan:'')+')', defaultAmt);
+      if(amtInput === null) return;
+      var payAmount = parseInt(amtInput)||0;
+      if(payAmount <= 0){ alert('Please enter a valid amount.'); return; }
       try{
         var f = await _fbAdmin(); if(!f) return;
-        await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{accepted:true,status:'accepted'},{merge:true});
-        showAssignToast('Enquiry accepted!', true);
+        await f.s.setDoc(f.s.doc(f.db,'marketing_enquiries',String(id)),{
+          accepted: true,
+          status: 'accepted',
+          payAmount: payAmount,
+          acceptedAt: new Date().toLocaleString()
+        },{merge:true});
+        showAssignToast('Enquiry accepted! Customer will be notified to pay \u20b9'+payAmount.toLocaleString('en-IN'), true);
         renderMktEnquiries();
       }catch(e){ alert('Error: '+e.message); }
     }
