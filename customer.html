@@ -516,7 +516,11 @@
         if(snap.exists()){ card=snap.data(); localStorage.setItem('hs_premium_card_'+email,JSON.stringify(card)); }
         // Also fetch premium price from settings
         var sSnap = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
-        if(sSnap.exists()&&sSnap.data().premiumPrice) localStorage.setItem('hs_premium_price',String(sSnap.data().premiumPrice));
+        if(sSnap.exists()){
+          var cfg = sSnap.data();
+          if(cfg.premiumPrice) localStorage.setItem('hs_premium_price', String(cfg.premiumPrice));
+          localStorage.setItem('hs_premium_settings', JSON.stringify({price: cfg.premiumPrice||129, enabled: cfg.premiumEnabled !== false, name: cfg.premiumName||'OG Shoots Luxe'}));
+        }
       }catch(e){}
       var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
       if(card && card.active){
@@ -664,6 +668,29 @@
       document.getElementById('ppPrice').style.webkitTextFillColor = planPrice ? '' : '#888070';
       document.getElementById('ppPrice').style.fontSize = planPrice ? '' : '1.1rem';
       document.getElementById('ppDesc').textContent = planDesc || 'Our team will get in touch with you to confirm the details and pricing for this service.';
+      // Bill breakdown — add membership fee if customer doesn't have premium card yet
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var hasPremiumCard = !!JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
+      var premiumSettings = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"enabled":false}');
+      var membershipFee = (!hasPremiumCard && premiumSettings.enabled) ? (premiumSettings.price || 129) : 0;
+      var shootPriceNum = planPrice ? parseInt(planPrice.replace(/[^0-9]/g,'')) || 0 : 0;
+      var breakdown = document.getElementById('ppBillBreakdown');
+      if(shootPriceNum > 0){
+        document.getElementById('ppBillShoot').textContent = planPrice;
+        var memberRow = document.getElementById('ppBillMemberRow');
+        var memberEl  = document.getElementById('ppBillMember');
+        var totalEl   = document.getElementById('ppBillTotal');
+        if(membershipFee > 0){
+          memberRow.style.display = 'flex';
+          memberEl.textContent = '\u20b9' + membershipFee.toLocaleString('en-IN');
+        } else {
+          memberRow.style.display = 'none';
+        }
+        totalEl.textContent = '\u20b9' + (shootPriceNum + membershipFee).toLocaleString('en-IN');
+        breakdown.style.display = 'block';
+      } else {
+        breakdown.style.display = 'none';
+      }
       document.getElementById('planPreviewOverlay').classList.add('open');
     }
 
@@ -1007,7 +1034,15 @@
       const bkId = Date.now();
       var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
       var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
-      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
+      // Include membership fee in total if applicable
+      var email2 = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var hasPremCard = !!JSON.parse(localStorage.getItem('hs_premium_card_'+email2)||'null');
+      var premSet2 = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"enabled":false}');
+      var memFee2 = (!hasPremCard && premSet2.enabled) ? (premSet2.price || 129) : 0;
+      var shootNum2 = selectedPrice ? parseInt(selectedPrice.replace(/[^0-9]/g,'')) || 0 : 0;
+      var totalBill = shootNum2 > 0 ? '\u20b9' + (shootNum2 + memFee2).toLocaleString('en-IN') : selectedPrice;
+      var membershipFeeAdded = memFee2 > 0;
+      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, totalBill: totalBill, membershipFee: memFee2, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       // Send to Firebase
@@ -1021,7 +1056,7 @@
           var fbDb = fbStore.getFirestore(fbApp);
           var userEmail = localStorage.getItem('hs_user')||'';
           var docId = 'bk_' + String(bkId);
-          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'pending', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
+          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, totalBill: totalBill, membershipFee: memFee2, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'pending', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
           await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
           // Update local id to match Firestore doc id
           var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
@@ -1621,6 +1656,19 @@
         <div class="plan-preview-name" id="ppName"></div>
         <div class="plan-preview-price" id="ppPrice"></div>
         <div class="plan-preview-desc" id="ppDesc"></div>
+        <!-- BILL BREAKDOWN -->
+        <div id="ppBillBreakdown" style="display:none;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.85rem;">
+          <div style="font-size:0.68rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;"><i class="fas fa-receipt"></i> Bill Breakdown</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;color:#d4c9a8;margin-bottom:0.35rem;">
+            <span>Shoot Price</span><span id="ppBillShoot"></span>
+          </div>
+          <div id="ppBillMemberRow" style="display:none;justify-content:space-between;font-size:0.82rem;color:#c9a84c;margin-bottom:0.35rem;">
+            <span><i class="fas fa-crown"></i> Membership Fee</span><span id="ppBillMember"></span>
+          </div>
+          <div style="border-top:1px solid rgba(201,168,76,0.15);margin-top:0.5rem;padding-top:0.5rem;display:flex;justify-content:space-between;font-size:0.92rem;font-weight:900;color:#fff;">
+            <span>Total</span><span id="ppBillTotal"></span>
+          </div>
+        </div>
         <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#9a9080;line-height:1.6;">
           <i class="fas fa-info-circle" style="color:#c9a84c;margin-right:0.4rem;"></i>
           Clicking <strong style="color:#fff;">Continue</strong> will place your order with our team. We'll confirm your booking shortly.
