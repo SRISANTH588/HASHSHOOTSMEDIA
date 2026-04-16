@@ -103,7 +103,7 @@
     <h1 class="page-title">My <span>Orders</span></h1>
     <p class="subtitle">Track all your bookings, assigned creator & delivered reels</p>
     <div id="bookingsList"><div class="empty">Loading...</div></div>
-    <div id="mktEnquiriesSection" style="margin-top:1.5rem;"></div>
+    <div id="mktEnquiriesSection" style="margin-top:2rem;"></div>
   </div>
 
   <!-- RESCHEDULE MODAL -->
@@ -275,6 +275,13 @@
           loadBookings();
         });
       }catch(e){ console.log('Firebase sync error:',e); loadBookings(); }
+    })();
+
+    // Always load marketing enquiries independently
+    (function(){
+      var custEmail = (localStorage.getItem('hs_user')||localStorage.getItem('hs_customer_email')||'').toLowerCase().trim();
+      var custPhone = (localStorage.getItem('hs_customer_phone')||'').replace(/\D/g,'').slice(-10);
+      renderMktEnquiriesSection(custEmail, custPhone);
     })();
 
     function loadBookings(){
@@ -626,7 +633,9 @@
           var dEmail = (data.email||'').toLowerCase().trim();
           var dPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
           var cPhone = (custPhone||'').replace(/\D/g,'').slice(-10);
-          if((custEmail && dEmail === custEmail)||(cPhone && cPhone.length===10 && dPhone===cPhone)){
+          var emailMatch = custEmail && dEmail && dEmail === custEmail;
+          var phoneMatch = cPhone && cPhone.length>=10 && dPhone && dPhone.slice(-10) === cPhone.slice(-10);
+          if(emailMatch || phoneMatch){
             mine.push(Object.assign({id:d.id}, data));
           }
         });
