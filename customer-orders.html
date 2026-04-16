@@ -102,8 +102,13 @@
   <div class="container">
     <h1 class="page-title">My <span>Orders</span></h1>
     <p class="subtitle">Track all your bookings, assigned creator & delivered reels</p>
+    <!-- TABS -->
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <button id="ordersTabBtn" onclick="switchOrdersTab('bookings',this)" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-camera"></i> Bookings</button>
+      <button id="mktTabBtn" onclick="switchOrdersTab('marketing',this)" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktBadge" style="display:none;background:#9c27b0;color:#fff;font-size:0.6rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+    </div>
     <div id="bookingsList"><div class="empty">Loading...</div></div>
-    <div id="mktEnquiriesSection" style="margin-top:2rem;"></div>
+    <div id="mktEnquiriesSection" style="display:none;"></div>
   </div>
 
   <!-- RESCHEDULE MODAL -->
@@ -283,6 +288,17 @@
       var custPhone = (localStorage.getItem('hs_customer_phone')||'').replace(/\D/g,'').slice(-10);
       renderMktEnquiriesSection(custEmail, custPhone);
     })();
+
+    function switchOrdersTab(tab, btn){
+      document.getElementById('bookingsList').style.display = tab==='bookings' ? 'block' : 'none';
+      document.getElementById('mktEnquiriesSection').style.display = tab==='marketing' ? 'block' : 'none';
+      document.getElementById('ordersTabBtn').style.background = tab==='bookings' ? '#c9a84c' : 'transparent';
+      document.getElementById('ordersTabBtn').style.color = tab==='bookings' ? '#000' : '#c9a84c';
+      document.getElementById('ordersTabBtn').style.border = tab==='bookings' ? 'none' : '1px solid rgba(201,168,76,0.3)';
+      document.getElementById('mktTabBtn').style.background = tab==='marketing' ? '#9c27b0' : 'transparent';
+      document.getElementById('mktTabBtn').style.color = tab==='marketing' ? '#fff' : '#c9a84c';
+      document.getElementById('mktTabBtn').style.border = tab==='marketing' ? 'none' : '1px solid rgba(201,168,76,0.3)';
+    }
 
     function loadBookings(){
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
@@ -639,7 +655,13 @@
             mine.push(Object.assign({id:d.id}, data));
           }
         });
-        if(!mine.length){ el.innerHTML=''; return; }
+        if(!mine.length){ el.innerHTML='<div class="empty"><i class="fas fa-bullhorn" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>No marketing enquiries yet.</div>'; return; }
+        // Update badge
+        var badge = document.getElementById('mktBadge');
+        if(badge){ badge.textContent=mine.length; badge.style.display='inline'; }
+        // Auto switch to marketing tab if there's a pending payment
+        var hasPending = mine.some(function(e){ return e.status==='accepted' && !e.paid; });
+        if(hasPending) switchOrdersTab('marketing', document.getElementById('mktTabBtn'));
         mine.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
         var statusColor = {new:'#ff9800', accepted:'#2196f3', paid:'#4caf50', done:'#9c27b0'};
         var statusLabel = {new:'Pending Review', accepted:'Accepted — Payment Required', paid:'Paid — Active', done:'Completed'};
