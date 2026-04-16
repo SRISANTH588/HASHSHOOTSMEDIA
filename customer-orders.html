@@ -103,6 +103,7 @@
     <h1 class="page-title">My <span>Orders</span></h1>
     <p class="subtitle">Track all your bookings, assigned creator & delivered reels</p>
     <div id="bookingsList"><div class="empty">Loading...</div></div>
+    <div id="mktEnquiriesSection" style="margin-top:1.5rem;"></div>
   </div>
 
   <!-- RESCHEDULE MODAL -->
@@ -417,7 +418,9 @@
 
       list.innerHTML = bookingHTML || '<div class="empty">No orders yet.</div>';
 
-      // Load videos from IndexedDB — inject player + download button
+      // ── MARKETING ENQUIRIES SECTION ──
+      renderMktEnquiriesSection(custEmail, custPhone);
+ — inject player + download button
       allVideos.filter(function(v){ return !v.isFeedback; }).forEach(function(v){
         var el = document.getElementById('custVid_' + v.id);
         if(!el) return;
@@ -604,6 +607,60 @@
       var rzp = new Razorpay(options);
       rzp.on('payment.failed', function(){ showToast('Payment failed. Please try again.', true); });
       rzp.open();
+    }
+
+    async function renderMktEnquiriesSection(custEmail, custPhone){
+      var el = document.getElementById('mktEnquiriesSection');
+      if(!el) return;
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-orders';})||fbMod.initializeApp(fbCfg,'cust-orders');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.collection(db,'marketing_enquiries'));
+        var mine = [];
+        snap.forEach(function(d){
+          var data = d.data();
+          var dEmail = (data.email||'').toLowerCase().trim();
+          var dPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
+          var cPhone = (custPhone||'').replace(/\D/g,'').slice(-10);
+          if((custEmail && dEmail === custEmail)||(cPhone && cPhone.length===10 && dPhone===cPhone)){
+            mine.push(Object.assign({id:d.id}, data));
+          }
+        });
+        if(!mine.length){ el.innerHTML=''; return; }
+        mine.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
+        var statusColor = {new:'#ff9800', accepted:'#2196f3', paid:'#4caf50', done:'#9c27b0'};
+        var statusLabel = {new:'Pending Review', accepted:'Accepted — Payment Required', paid:'Paid — Active', done:'Completed'};
+        el.innerHTML = '<div style="font-size:0.78rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;"><i class="fas fa-bullhorn"></i> Marketing Enquiries</div>'
+          + mine.map(function(e){
+            var st = e.paid ? 'paid' : (e.status||'new');
+            var sc = statusColor[st]||'#9a9080';
+            var sl = statusLabel[st]||e.status||'Submitted';
+            var ts = e.submittedAt ? new Date(e.submittedAt.seconds*1000).toLocaleDateString() : '';
+            return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+sc+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+              +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+                +'<div>'
+                  +'<div style="font-size:0.95rem;font-weight:800;color:#fff;">'+(e.plan||'Marketing Package')+'</div>'
+                  +(e.brand?'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;"><i class="fas fa-building" style="color:#c9a84c;"></i> '+e.brand+'</div>':'')
+                  +(ts?'<div style="font-size:0.72rem;color:#6a6050;margin-top:0.1rem;">Submitted: '+ts+'</div>':'')
+                +'</div>'
+                +'<span style="font-size:0.68rem;font-weight:800;color:'+sc+';background:'+sc+'18;border:1px solid '+sc+'44;padding:0.22rem 0.7rem;border-radius:50px;white-space:nowrap;">'+sl+'</span>'
+              +'</div>'
+              +(e.message?'<div style="font-size:0.8rem;color:#9a9080;margin-bottom:0.75rem;line-height:1.5;">'+e.message+'</div>':'')
+              +(e.payAmount && !e.paid
+                ? '<div style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:9px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+                  +'<div style="font-size:0.82rem;color:#fff;font-weight:700;">Payment Due: <span style="color:#c9a84c;">&#8377;'+Number(e.payAmount).toLocaleString('en-IN')+'</span></div>'
+                  +'<a href="customer.html" style="background:#2196f3;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;"><i class="fas fa-credit-card"></i> Pay Now</a>'
+                +'</div>'
+                : (e.paid
+                  ? '<div style="font-size:0.78rem;color:#4caf50;font-weight:700;"><i class="fas fa-check-circle"></i> Paid — &#8377;'+Number(e.payAmount||0).toLocaleString('en-IN')+(e.paidAt?' on '+e.paidAt:'')+'</div>'
+                  : '')
+              )
+            +'</div>';
+          }).join('');
+      }catch(e){ console.warn('mkt enquiries load:',e); }
     }
   </script>
   <!-- FEEDBACK MODAL -->
