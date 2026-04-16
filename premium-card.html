@@ -33,30 +33,46 @@
     .container{max-width:480px;margin:0 auto;padding:0 1.25rem 4rem;}
 
     /* CARD */
-    .luxe-card{background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1.5px solid rgba(201,168,76,0.45);border-radius:24px;padding:2rem;position:relative;overflow:hidden;margin-bottom:2rem;box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.08);}
-    .luxe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.1),transparent 70%);pointer-events:none;}
-    .luxe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .luxe-card{background:linear-gradient(135deg,#0d0900 0%,#1f1500 40%,#0d0900 100%);border:1.5px solid rgba(201,168,76,0.55);border-radius:24px;padding:2rem;position:relative;overflow:hidden;margin-bottom:2rem;box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 80px rgba(201,168,76,0.12),inset 0 1px 0 rgba(201,168,76,0.15);}
+    .luxe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 40%,rgba(201,168,76,0.18),transparent 65%);pointer-events:none;}
+    .luxe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(201,168,76,0.8) 30%,#e8c96a 50%,rgba(201,168,76,0.8) 70%,transparent 100%);}
+    /* Shine effect */
+    .luxe-card-shine{position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.04) 50%,transparent 60%);transform:skewX(-15deg);pointer-events:none;}
     .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem;position:relative;}
-    .card-label{font-size:0.55rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;}
-    .card-brand{font-size:1.5rem;font-weight:900;color:#fff;}
-    .card-brand span{color:var(--gold);}
-    .card-sub{font-size:0.6rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:0.15rem;}
-    .card-icon{width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
-    .card-name{font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;margin-bottom:0.2rem;position:relative;}
-    .card-number{font-size:0.72rem;color:var(--muted);letter-spacing:2px;margin-bottom:1.5rem;position:relative;}
+    .card-label{font-size:0.52rem;font-weight:800;color:rgba(201,168,76,0.55);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;}
+    .card-brand{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:1px;}
+    .card-brand span{background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .card-sub{font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:3px;text-transform:uppercase;margin-top:0.2rem;}
+    .card-icon{width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;box-shadow:0 4px 20px rgba(201,168,76,0.4);}
+    /* Chip */
+    .card-chip{width:38px;height:28px;background:linear-gradient(135deg,#d4a843,#b8922e,#e8c96a,#a07830);border-radius:5px;margin-bottom:1.25rem;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+    .card-chip::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,0.3);}
+    .card-chip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.3);}
+    .card-name{font-size:1.05rem;font-weight:900;color:#f0ece0;letter-spacing:3px;margin-bottom:0.3rem;position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
+    .card-number{font-size:0.78rem;color:rgba(201,168,76,0.7);letter-spacing:3px;margin-bottom:1.5rem;position:relative;font-weight:700;}
     .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;}
-    .card-stat{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;}
-    .card-stat-label{font-size:0.58rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;}
+    .card-stat{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:0.85rem;backdrop-filter:blur(4px);}
+    .card-stat-label{font-size:0.56rem;color:rgba(201,168,76,0.7);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;}
     .card-stat-val{font-size:1.05rem;font-weight:900;color:#fff;}
     .card-stat-val.green{color:#4caf50;}
-    .card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;position:relative;}
-    .card-footer-text{font-size:0.6rem;color:#6a6050;font-weight:600;letter-spacing:1px;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,168,76,0.15);padding-top:1rem;position:relative;}
+    .card-footer-text{font-size:0.58rem;color:rgba(201,168,76,0.4);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
     .card-circles{display:flex;}
-    .card-circle{width:26px;height:26px;border-radius:50%;}
+    .card-circle{width:28px;height:28px;border-radius:50%;}
 
     /* STATUS BADGE */
     .status-active{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
     .status-inactive{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);color:#ff9800;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem;}
+
+    /* USES SECTION */
+    .uses{margin-bottom:1.5rem;}
+    .uses-title{font-size:0.78rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+    .uses-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+    .use-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:1rem;text-align:center;transition:all 0.2s;}
+    .use-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-2px);}
+    .use-icon{font-size:1.5rem;margin-bottom:0.5rem;}
+    .use-title{font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+    .use-desc{font-size:0.68rem;color:var(--muted);line-height:1.5;}
 
     /* BENEFITS */
     .benefits{background:var(--card);border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
@@ -175,6 +191,7 @@
       el.innerHTML =
         '<div class="status-active"><i class="fas fa-check-circle"></i> Active Lifetime Member &nbsp;&middot;&nbsp; Non-Cancellable</div>'
         + cardHTML(name, card.cardNumber, bal, bookings.length, card.activatedAt)
+        + usesSection()
         + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> Your Benefits</div>'
         + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first')
         + benefitItem('fas fa-wallet','Wallet Credits','Earn credits on every shoot')
@@ -204,6 +221,7 @@
       // PURCHASE VIEW
       el.innerHTML =
         '<div class="status-inactive"><i class="fas fa-crown"></i> You don\'t have a Luxe membership yet</div>'
+        + usesSection()
         + '<div class="benefits"><div class="benefits-title"><i class="fas fa-star"></i> Membership Benefits</div>'
         + benefitItem('fas fa-bolt','Priority Booking','Your bookings are processed first — skip the queue')
         + benefitItem('fas fa-wallet','Wallet Credits','Membership fee added to your wallet instantly')
@@ -225,25 +243,40 @@
 
   function cardHTML(name, cardNumber, bal, shoots, activatedAt){
     return '<div class="luxe-card">'
+      +'<div class="luxe-card-shine"></div>'
       +'<div class="card-top">'
         +'<div><div class="card-label">LIFETIME MEMBERSHIP</div>'
         +'<div class="card-brand">OG SHOOTS <span>LUXE</span></div>'
         +'<div class="card-sub">Premium Member</div></div>'
         +'<div class="card-icon">&#9889;</div>'
       +'</div>'
+      +'<div class="card-chip"></div>'
       +'<div class="card-name">'+name.toUpperCase()+'</div>'
       +'<div class="card-number">'+cardNumber+'</div>'
       +'<div class="card-stats">'
         +'<div class="card-stat"><div class="card-stat-label">Wallet Balance</div><div class="card-stat-val green">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
         +'<div class="card-stat"><div class="card-stat-label">Total Shoots</div><div class="card-stat-val">'+shoots+'</div></div>'
-        +'<div class="card-stat"><div class="card-stat-label">Priority Booking</div><div class="card-stat-val" style="font-size:0.82rem;">Skip the Queue &#10003;</div></div>'
-        +'<div class="card-stat"><div class="card-stat-label">Member Since</div><div class="card-stat-val" style="font-size:0.78rem;">'+(activatedAt||'').split(',')[0]+'</div></div>'
+        +'<div class="card-stat"><div class="card-stat-label">Priority Booking</div><div class="card-stat-val" style="font-size:0.78rem;">Skip the Queue &#10003;</div></div>'
+        +'<div class="card-stat"><div class="card-stat-label">Member Since</div><div class="card-stat-val" style="font-size:0.75rem;">'+(activatedAt||'').split(',')[0]+'</div></div>'
       +'</div>'
       +'<div class="card-footer">'
         +'<div class="card-footer-text">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>'
-        +'<div class="card-circles"><div class="card-circle" style="background:rgba(201,168,76,0.3);"></div><div class="card-circle" style="background:rgba(201,168,76,0.6);margin-left:-10px;"></div></div>'
+        +'<div class="card-circles"><div class="card-circle" style="background:rgba(201,168,76,0.35);"></div><div class="card-circle" style="background:rgba(201,168,76,0.7);margin-left:-12px;"></div></div>'
       +'</div>'
     +'</div>';
+  }
+
+  function usesSection(){
+    return '<div class="uses">'
+      +'<div class="uses-title"><i class="fas fa-gem"></i> How to Use Your Card</div>'
+      +'<div class="uses-grid">'
+      +'<div class="use-card"><div class="use-icon">&#128247;</div><div class="use-title">Book Shoots</div><div class="use-desc">Get priority slots when booking any shoot service</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#128176;</div><div class="use-title">Wallet Credits</div><div class="use-desc">Membership fee credited to your wallet instantly</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#127991;</div><div class="use-title">Exclusive Deals</div><div class="use-desc">Access members-only discounts on every booking</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#128241;</div><div class="use-title">Show Card</div><div class="use-desc">Show your card number to get member benefits at shoots</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#127775;</div><div class="use-title">Skip Queue</div><div class="use-desc">Your bookings are confirmed before non-members</div></div>'
+      +'<div class="use-card"><div class="use-icon">&#128222;</div><div class="use-title">Priority Support</div><div class="use-desc">Dedicated WhatsApp support for all your queries</div></div>'
+      +'</div></div>';
   }
 
   function benefitItem(icon, title, sub){
