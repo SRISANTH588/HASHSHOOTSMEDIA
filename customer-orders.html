@@ -199,9 +199,22 @@
         var custPhone = (localStorage.getItem('hs_customer_phone') || '').trim();
         var custName  = (localStorage.getItem('hs_customer_name') || '').trim();
 
+        // Clear any stale bookings from previous customer session
+        var _sessionKey = 'hs_orders_session_' + custEmail;
+        if(!sessionStorage.getItem(_sessionKey)){
+          localStorage.removeItem('hs_bookings');
+          sessionStorage.setItem(_sessionKey, '1');
+        }
+
         // Query bookings directly by email and phone — no need to fetch all
         function mergeAndStore(docs){
-          var existing = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          // Only keep bookings belonging to THIS customer
+          var existing = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){
+            var bEmail = (b.email||'').toLowerCase().trim();
+            var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
+            var cPhone = custPhone.replace(/\D/g,'').slice(-10);
+            return (custEmail && bEmail===custEmail)||(cPhone && cPhone.length===10 && bPhone===cPhone);
+          });
           docs.forEach(function(b){
             var idx = existing.findIndex(function(e){ return String(e.id)===String(b.id); });
             if(idx>-1) existing[idx] = Object.assign(existing[idx], b);
@@ -312,10 +325,9 @@
         if(!custEmail && !custPhone) return false;
         var bEmail = (b.email||'').toLowerCase().trim();
         var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
-        var bName  = (b.name||'').toLowerCase().trim();
+        // STRICT: only show bookings that match THIS customer's email OR phone
         return (custEmail && bEmail === custEmail) ||
-               (custPhone && custPhone.length===10 && bPhone === custPhone) ||
-               (custName && custName.length > 2 && bName === custName && bPhone === custPhone);
+               (custPhone && custPhone.length===10 && bPhone === custPhone);
       });
       var enquiries = JSON.parse(localStorage.getItem('hs_customer_enquiries_' + custEmail) || '[]');
       var allVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
@@ -587,7 +599,20 @@
       loadBookings();
     }
 
-    function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
+    function logout(){
+      // Clear all customer-specific data on logout to prevent data leaks
+      ['hs_role','hs_user','hs_customer_email','hs_customer_name','hs_customer_phone',
+       'hs_bookings','hs_payments','hs_customer_enquiries_','hs_premium_card_',
+       'hs_cw_','hs_customer_wallet','hs_is_premium'].forEach(function(k){
+        localStorage.removeItem(k);
+      });
+      // Clear all keys that start with customer-specific prefixes
+      Object.keys(localStorage).forEach(function(k){
+        if(k.startsWith('hs_customer_enquiries_')||k.startsWith('hs_premium_card_')||k.startsWith('hs_cw_')) localStorage.removeItem(k);
+      });
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    }
 
     // ── RAZORPAY PAYMENT ──
     function payNow(bookingId, service, custName, custPhone, amount){
@@ -712,12 +737,15 @@
           var dEmail = (data.email||'').toLowerCase().trim();
           var dPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
           var cPhone = (custPhone||'').replace(/\D/g,'').slice(-10);
+          // STRICT match - must match email OR phone exactly
           var emailMatch = custEmail && dEmail && dEmail === custEmail;
           var phoneMatch = cPhone && cPhone.length>=10 && dPhone && dPhone.slice(-10) === cPhone.slice(-10);
           if(emailMatch || phoneMatch){
             mine.push(Object.assign({id:d.id}, data));
           }
         });
+        // Safety: if no email and no phone, show nothing
+        if(!custEmail && !custPhone){ el.innerHTML=''; return; }
         if(!mine.length){ el.innerHTML='<div class="empty"><i class="fas fa-bullhorn" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>No marketing enquiries yet.</div>'; return; }
         // Update badge
         var badge = document.getElementById('mktBadge');
