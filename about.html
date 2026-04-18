@@ -185,6 +185,14 @@
     </div>
   </section>
 
+  <!-- OUR TEAM -->
+  <section style="padding:5rem 1.5rem;background:#000;">
+    <p class="section-label"><i class="fas fa-star"></i> &nbsp;Our Team</p>
+    <h2 class="section-title">The People Who <span>Make It Happen</span></h2>
+    <p class="section-sub">The talented individuals powering OG Shoots every day</p>
+    <div id="ourTeamGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;max-width:1000px;margin:2.5rem auto 0;"></div>
+  </section>
+
   <!-- STORY + MISSION -->
   <section class="story-section">
     <div class="story-inner">
@@ -339,6 +347,40 @@
     });
     const btt = document.getElementById('backToTop');
     btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Load Our Team from Firebase
+    (async function(){
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='about-page';})||fbMod.initializeApp(fbCfg,'about-page');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','about'));
+        var grid    = document.getElementById('ourTeamGrid');
+        if(!grid) return;
+        var members = snap.exists() && snap.data().team ? snap.data().team : [];
+        if(!members.length){
+          grid.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;grid-column:1/-1;">Team members coming soon.</p>';
+          return;
+        }
+        grid.innerHTML = members.map(function(m){
+          var initials = m.name ? m.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2) : '??';
+          return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:18px;overflow:hidden;text-align:center;padding-bottom:1.25rem;">'
+            +(m.photo
+              ? '<img src="'+m.photo+'" alt="'+m.name+'" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
+                +'<div style="display:none;width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#1a1200,#0a0a0a);align-items:center;justify-content:center;font-size:2.5rem;font-weight:900;color:rgba(201,168,76,0.4);">'+initials+'</div>'
+              : '<div style="width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#1a1200,#0a0a0a);display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:900;color:rgba(201,168,76,0.4);">'+initials+'</div>'
+            )
+            +'<div style="padding:1rem 1rem 0;">'
+              +'<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+m.name+'</div>'
+              +'<span style="display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.2rem 0.75rem;border-radius:50px;">'+m.role+'</span>'
+              +(m.insta?'<div style="margin-top:0.5rem;"><a href="https://instagram.com/'+m.insta.replace('@','')+' " target="_blank" style="color:rgba(201,168,76,0.6);font-size:0.72rem;font-weight:600;text-decoration:none;"><i class="fab fa-instagram"></i> '+m.insta+'</a></div>':'')
+            +'</div>'
+          +'</div>';
+        }).join('');
+      }catch(e){ console.warn('Our Team load error:',e); }
+    })();
   </script>
 <script src="hs-feedback-widget.js"></script>
 <!--Start of Tawk.to Script-->
