@@ -293,14 +293,6 @@
         </div>
       </div>
       <a href="contact.html" style="display:inline-flex;align-items:center;gap:0.5rem;color:#c9a84c;font-size:0.85rem;font-weight:700;text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:0.5rem 1.25rem;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background=''">Know More &nbsp;&rarr;</a>
-
-      <!-- BOOK BUTTON CONTAINER -->
-      <div id="bookBtnContainer" style="display:none;margin-top:2rem;text-align:center;">
-        <button onclick="bookSelectedPlan()" id="bookThisPackageBtn" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:14px;padding:1rem 3.5rem;font-size:1.05rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);transition:all 0.2s;display:inline-flex;align-items:center;gap:0.6rem;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 35px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)'">
-          <i class="fas fa-arrow-right"></i> Book This Package
-        </button>
-        <div id="selectedPlanLabel" style="margin-top:0.6rem;font-size:0.78rem;color:#9a9080;"></div>
-      </div>
     </div>
 
     <!-- REELS & CONTENT -->
@@ -326,7 +318,7 @@
     </div>
 
     <div style="margin-top:1.25rem;text-align:center;">
-      <button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right"></i> &nbsp;Book Selected Plan</button>
+      <button id="bottomBookBtn" onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>
       <div id="planErr" style="display:none;color:#f44336;font-size:0.8rem;margin-top:0.6rem;">Please select a plan first.</div>
     </div>
   </div>
@@ -612,15 +604,9 @@
         var raw = priceEl.textContent.replace('starting price','').trim();
         if(raw) planData[key].price = raw;
       }
-      // Show Book This Package button
-      var container = document.getElementById('bookBtnContainer');
-      var label = document.getElementById('selectedPlanLabel');
-      if(container){
-        container.style.display = 'block';
-        if(label && planData[key]) label.textContent = 'Selected: ' + planData[key].name + ' — ' + planData[key].price;
-        container.scrollIntoView({behavior:'smooth', block:'nearest'});
-      }
-      // Remove old inline buttons
+      // Update bottom button label
+      var bottomBtn = document.getElementById('bottomBookBtn');
+      if(bottomBtn && planData[key]) bottomBtn.innerHTML = '<i class="fas fa-arrow-right"></i> &nbsp;Book This Package — ' + planData[key].name;
       document.querySelectorAll('.plan-book-btn').forEach(function(b){ b.remove(); });
     }
 
