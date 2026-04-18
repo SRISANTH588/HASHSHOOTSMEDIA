@@ -2215,7 +2215,7 @@ Priority Support</textarea></div>
         <div style="background:linear-gradient(135deg,rgba(160,120,48,0.12),rgba(0,0,0,0.4));border:1px solid rgba(160,120,48,0.3);border-radius:16px;padding:1.25rem;">
           <div style="font-size:0.65rem;font-weight:800;color:#a07830;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-leaf" style="margin-right:4px;"></i>Basic Plan</div>
           <div style="font-size:1.4rem;font-weight:900;color:#fff;">&#8377;14,000</div>
-          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">6 months</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">3 months</div>
           <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.3rem;">
             <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#a07830;margin-right:5px;"></i>Social Media Management</div>
             <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#a07830;margin-right:5px;"></i>Content Creation (8 posts/mo)</div>
@@ -2225,7 +2225,7 @@ Priority Support</textarea></div>
         <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(0,0,0,0.4));border:1px solid rgba(201,168,76,0.35);border-radius:16px;padding:1.25rem;">
           <div style="font-size:0.65rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="margin-right:4px;"></i>Standard Plan</div>
           <div style="font-size:1.4rem;font-weight:900;color:#fff;">&#8377;22,000</div>
-          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">6 months</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">3 months</div>
           <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.3rem;">
             <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Everything in Basic</div>
             <div style="font-size:0.72rem;color:#d4c9a8;"><i class="fas fa-check" style="color:#c9a84c;margin-right:5px;"></i>Reels &amp; Video Content (4/mo)</div>
@@ -6955,7 +6955,7 @@ Priority Support</textarea></div>
       var pc=function(p){return p==='Premium'?'#e8c96a':p==='Standard'?'#c9a84c':'#a07830';};
       var pb=function(p){return p==='Premium'?'rgba(232,201,106,0.12)':p==='Standard'?'rgba(201,168,76,0.12)':'rgba(160,120,48,0.1)';};
       var pbo=function(p){return p==='Premium'?'rgba(232,201,106,0.4)':p==='Standard'?'rgba(201,168,76,0.4)':'rgba(160,120,48,0.3)';};
-      var pi=function(p){return p==='Premium'?'&#8377;40,000 &middot; 3 months':p==='Standard'?'&#8377;22,000 &middot; 6 months':p==='Basic'?'&#8377;14,000 &middot; 6 months':'';};
+      var pi=function(p){return p==='Premium'?'&#8377;40,000 &middot; 3 months':p==='Standard'?'&#8377;22,000 &middot; 3 months':p==='Basic'?'&#8377;14,000 &middot; 3 months':'';};
       el.innerHTML = docs.map(function(d){
         var isDone=d.status==='done'; var isAcc=d.accepted||d.status==='accepted';
         var statusBadge = isDone
@@ -7311,7 +7311,7 @@ Priority Support</textarea></div>
     // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
     async function acceptMktEnquiry(id){
       var doc = _mktDocs ? _mktDocs.find(function(d){ return d.id===id; }) : null;
-      var planPrices = {'Basic':14000,'Standard':22000,'Premium':40000};
+      var planPrices = {'Basic':9999,'Standard':16999,'Premium':25999};
       var defaultAmt = doc ? (planPrices[doc.plan]||0) : 0;
       var amtInput = prompt('Enter payment amount (\u20b9) for this enquiry:\n(Plan: '+(doc?doc.plan:'')+')', defaultAmt);
       if(amtInput === null) return;
