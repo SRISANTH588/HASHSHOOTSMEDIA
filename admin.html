@@ -1265,7 +1265,7 @@
             <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs1_name" placeholder="Hourly Plan"/></div>
             <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs1_tagline" placeholder="Perfect for a single, fast, high-quality reel."/></div>
             <div class="form-row">
-              <div class="form-group"><label>Price</label><input type="text" id="hp_bs1_price" placeholder="&#8377;1,699"/></div>
+              <div class="form-group"><label>Price</label><input type="text" id="hp_bs1_price" placeholder="&#8377;1,499"/></div>
               <div class="form-group"><label>Per</label><input type="text" id="hp_bs1_per" placeholder="/ shoot"/></div>
             </div>
             <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs1_gstnote" placeholder="+ GST · No hidden charges"/></div>
@@ -1277,7 +1277,7 @@
             <div class="form-group"><label>Plan Name</label><input type="text" id="hp_bs2_name" placeholder="Half-Day Plan"/></div>
             <div class="form-group"><label>Tagline</label><input type="text" id="hp_bs2_tagline" placeholder="Ideal for events &amp; creators."/></div>
             <div class="form-row">
-              <div class="form-group"><label>Price</label><input type="text" id="hp_bs2_price" placeholder="&#8377;3,999"/></div>
+              <div class="form-group"><label>Price</label><input type="text" id="hp_bs2_price" placeholder="&#8377;3,199"/></div>
               <div class="form-group"><label>Per</label><input type="text" id="hp_bs2_per" placeholder="/ session"/></div>
             </div>
             <div class="form-group"><label>GST Note</label><input type="text" id="hp_bs2_gstnote" placeholder="+ GST · Save vs hourly"/></div>
@@ -1729,7 +1729,7 @@ Priority Support</textarea></div>
         <div class="form-row">
           <div class="form-group">
             <label>Default Payment Amount (₹) — used if no custom amount set</label>
-            <input type="number" id="rp_default_amount" placeholder="e.g. 1699" min="1"/>
+            <input type="number" id="rp_default_amount" placeholder="e.g. 1499" min="1"/>
           </div>
           <div class="form-group">
             <label>Currency</label>
@@ -2631,6 +2631,83 @@ Priority Support</textarea></div>
     let allBookings = [];
     let currentFilter = 'all';
     let currentSearch = '';
+
+    // ── MASTER FIREBASE SYNC ── runs on every page load to sync all data across devices
+    async function syncAllFromFirebase(){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        var db = f.db; var s = f.s;
+
+        // 1. Bookings
+        var bSnap = await s.getDocs(s.query(s.collection(db,'bookings'), s.orderBy('createdAt','desc')));
+        var bList = []; bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+        if(bList.length) localStorage.setItem('hs_bookings', JSON.stringify(bList));
+
+        // 2. Staff
+        var stSnap = await s.getDocs(s.collection(db,'staff'));
+        var stList = []; stSnap.forEach(function(d){ stList.push(d.data()); });
+        if(stList.length) localStorage.setItem('hs_staff', JSON.stringify(stList));
+
+        // 3. Assigned shoots
+        var aSnap = await s.getDocs(s.collection(db,'assigned_shoots'));
+        var aList = []; aSnap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; aList.push(data); });
+        if(aList.length) localStorage.setItem('hs_assigned_shoots', JSON.stringify(aList));
+
+        // 4. Settings - opening, homepage, about, customer_page, wedding, admin_config
+        var settingsKeys = ['opening','homepage','about','customer_page','wedding_plans','admin_config','store_razorpay','tawk'];
+        for(var i=0;i<settingsKeys.length;i++){
+          try{
+            var sSnap = await s.getDoc(s.doc(db,'settings',settingsKeys[i]));
+            if(sSnap.exists()){
+              var key = settingsKeys[i];
+              var lsKey = key==='opening'?'hs_opening':key==='homepage'?'hs_homepage':key==='about'?'hs_about':key==='customer_page'?'hs_customer_page':key==='wedding_plans'?'hs_wedding_plans':key==='admin_config'?'hs_admin_config':key==='store_razorpay'?'hs_store_razorpay':key==='tawk'?'hs_tawk':null;
+              if(lsKey) localStorage.setItem(lsKey, JSON.stringify(sSnap.data()));
+              // Also sync admin_config sub-keys
+              if(key==='admin_config'){
+                var cfg = sSnap.data();
+                if(cfg.waNumber) localStorage.setItem('hs_admin_wa_number', cfg.waNumber);
+                if(cfg.premiumPrice) localStorage.setItem('hs_premium_price', String(cfg.premiumPrice));
+                localStorage.setItem('hs_premium_settings', JSON.stringify({price:cfg.premiumPrice||129,enabled:cfg.premiumEnabled!==false,name:cfg.premiumName||'OG Shoots Luxe'}));
+              }
+            }
+          }catch(e2){}
+        }
+
+        // 5. Razorpay config
+        try{
+          var rpSnap = await s.getDoc(s.doc(db,'razorpay_config','main'));
+          if(rpSnap.exists()) localStorage.setItem('hs_razorpay', JSON.stringify(rpSnap.data()));
+        }catch(e2){}
+
+        // 6. Demos
+        var dSnap = await s.getDocs(s.collection(db,'demos'));
+        var dList = []; dSnap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; dList.push(data); });
+        if(dList.length) localStorage.setItem('hs_demos', JSON.stringify(dList));
+
+        // 7. Feedbacks
+        var fbSnap = await s.getDocs(s.collection(db,'feedbacks'));
+        var fbList = []; fbSnap.forEach(function(d){ fbList.push(Object.assign({id:d.id},d.data())); });
+        if(fbList.length) localStorage.setItem('hs_feedbacks', JSON.stringify(fbList));
+
+        // 8. Products/Store
+        try{
+          var prSnap = await s.getDocs(s.collection(db,'products'));
+          var prList = []; prSnap.forEach(function(d){ prList.push(Object.assign({id:d.id},d.data())); });
+          if(prList.length){ localStorage.setItem('hs_products', JSON.stringify(prList)); localStorage.setItem('hs_tshirts', JSON.stringify(prList)); }
+        }catch(e2){}
+
+        // 9. Coupons
+        try{
+          var cpSnap = await s.getDocs(s.collection(db,'coupons'));
+          var cpList = []; cpSnap.forEach(function(d){ cpList.push(Object.assign({id:d.id},d.data())); });
+          if(cpList.length) localStorage.setItem('hs_coupons', JSON.stringify(cpList));
+        }catch(e2){}
+
+        console.log('\u2705 All data synced from Firebase');
+        // Re-render current tab
+        loadAll();
+      }catch(e){ console.warn('syncAllFromFirebase error:',e); loadAll(); }
+    }
 
     function loadAll() {
       var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
