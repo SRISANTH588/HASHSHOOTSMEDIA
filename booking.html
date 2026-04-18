@@ -604,6 +604,17 @@
         var raw = priceEl.textContent.replace('starting price','').trim();
         if(raw) planData[key].price = raw;
       }
+      // Show Book This Package button below selected card
+      document.querySelectorAll('.plan-book-btn').forEach(function(b){ b.remove(); });
+      if(card){
+        var p = planData[key];
+        var btn = document.createElement('div');
+        btn.className = 'plan-book-btn';
+        btn.style.cssText = 'margin-top:0.75rem;text-align:center;';
+        btn.innerHTML = '<button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:0.75rem 2.5rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 15px rgba(201,168,76,0.3);transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>';
+        card.parentNode.insertBefore(btn, card.nextSibling);
+        btn.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }
     }
 
     // Auto-select plan/service from URL params
