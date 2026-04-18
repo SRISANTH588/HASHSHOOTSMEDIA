@@ -752,7 +752,11 @@
         if(badge){ badge.textContent=mine.length; badge.style.display='inline'; }
         // Auto switch to marketing tab if there's a pending payment
         var hasPending = mine.some(function(e){ return e.status==='accepted' && !e.paid; });
-        if(hasPending) switchOrdersTab('marketing', document.getElementById('mktTabBtn'));
+        // Only auto-switch on first load, not on every refresh
+        if(hasPending && !sessionStorage.getItem('hs_mkt_tab_switched')){
+          sessionStorage.setItem('hs_mkt_tab_switched','1');
+          switchOrdersTab('marketing', document.getElementById('mktTabBtn'));
+        }
         mine.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
         var statusColor = {new:'#ff9800', accepted:'#2196f3', paid:'#4caf50', done:'#9c27b0'};
         var statusLabel = {new:'Pending Review', accepted:'Accepted — Payment Required', paid:'Paid — Active', done:'Completed'};
