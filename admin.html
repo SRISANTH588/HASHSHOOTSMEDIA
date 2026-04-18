@@ -1880,6 +1880,24 @@ Priority Support</textarea></div>
         <div id="premiumSettingsToast" style="display:none;margin-top:0.75rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Premium card settings saved!</div>
       </div>
 
+      <!-- PROMO BANNER TOGGLE -->
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-bullhorn" style="color:#c9a84c;margin-right:0.5rem;"></i> Promo Banner</h2>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.25rem;">Control the promo banner shown at the top of the website.</p>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding:1rem 1.25rem;background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.88rem;color:#d4c9a8;font-weight:600;">
+            <input type="checkbox" id="promo_enabled" style="accent-color:#c9a84c;width:18px;height:18px;"/>
+            Show Promo Banner on Website
+          </label>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Banner Text</label>
+          <input type="text" id="promo_text" placeholder="e.g. Get a chance to win a FREE Shoot or Coupon Code on every booking!"/>
+        </div>
+        <button onclick="savePromoBanner()" style="background:#c9a84c;color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Banner Settings</button>
+        <div id="promoToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Promo banner settings saved!</div>
+      </div>
+
       <!-- WHATSAPP NUMBER -->
       <div class="about-form" style="margin-bottom:1rem;">
         <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1.5rem;"><i class="fab fa-whatsapp" style="color:#25d366;margin-right:0.5rem;"></i> Admin WhatsApp Number</h2>
@@ -4119,7 +4137,24 @@ Priority Support</textarea></div>
       try{ var f=await _fbAdmin(); if(!f) return; await f.s.deleteDoc(f.s.doc(f.db,'coupons',code)); loadCoupons(); }catch(e){ alert('Error: '+e.message); }
     }
 
+    async function savePromoBanner(){
+      var enabled = document.getElementById("promo_enabled").checked;
+      var text    = document.getElementById("promo_text").value.trim();
+      var cfg = {enabled: enabled, text: text};
+      localStorage.setItem("hs_promo_banner", JSON.stringify(cfg));
+      try{
+        var f = await _fbAdmin(); if(f)
+          await f.s.setDoc(f.s.doc(f.db,"settings","promo_banner"), cfg, {merge:true});
+      }catch(e){ console.error("savePromoBanner:",e); }
+      var t = document.getElementById("promoToast");
+      t.style.display="block"; setTimeout(function(){ t.style.display="none"; },3000);
+    }
+
     function loadSettingsTab(){
+      // Load promo banner settings
+      var promo = JSON.parse(localStorage.getItem('hs_promo_banner')||'{"enabled":true,"text":""}');
+      var pe = document.getElementById("promo_enabled"); if(pe) pe.checked = promo.enabled !== false;
+      var pt = document.getElementById("promo_text"); if(pt) pt.value = promo.text||"Get a chance to win a FREE Shoot or an exclusive Coupon Code on every booking!";
       var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
       var el = document.getElementById('set_waNumber');
       if(el) el.value = num;
