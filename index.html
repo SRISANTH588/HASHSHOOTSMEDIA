@@ -46,16 +46,30 @@
 <body>
 
   <!-- PROMO BANNER -->
-  <div id="promoBanner" style="background:linear-gradient(90deg,#0a0700,#1a1000,#0a0700);border-bottom:1px solid rgba(201,168,76,0.3);padding:0.6rem 1rem;text-align:center;position:relative;overflow:hidden;">
-    <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.06),transparent);animation:promoPulse 3s infinite;"></div>
-    <style>@keyframes promoPulse{0%,100%{opacity:0.5;}50%{opacity:1;}}</style>
-    <p style="font-size:0.82rem;font-weight:700;color:#f0ece0;margin:0;position:relative;">
-      <span style="color:#c9a84c;">&#127881; Special Offer:</span>
-      Get a chance to win a <strong style="color:#e8c96a;">FREE Shoot</strong> or an exclusive <strong style="color:#e8c96a;">Coupon Code</strong> on every booking!
-      &nbsp;<a href="booking.html" style="color:#c9a84c;font-weight:800;text-decoration:underline;white-space:nowrap;">Book Now &rarr;</a>
-      &nbsp;<span style="color:#6a6050;font-size:0.7rem;">T&amp;C Apply</span>
-    </p>
-    <button onclick="document.getElementById('promoBanner').style.display='none'" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#6a6050;font-size:1rem;cursor:pointer;line-height:1;">&times;</button>
+  <div id="promoBanner" style="background:linear-gradient(90deg,#000 0%,#0f0900 30%,#1a1100 50%,#0f0900 70%,#000 100%);border-bottom:1px solid rgba(201,168,76,0.4);padding:0.75rem 3rem;text-align:center;position:relative;overflow:hidden;">
+    <!-- shimmer -->
+    <div style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(201,168,76,0.07) 50%,transparent 65%);animation:promoShimmer 3s infinite;"></div>
+    <!-- left glow -->
+    <div style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div>
+    <!-- right glow -->
+    <div style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(270deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div>
+    <style>
+      @keyframes promoShimmer{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+      @keyframes promoBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4);}50%{box-shadow:0 0 0 6px rgba(201,168,76,0);}}
+      #promoBanner a.promo-cta:hover{background:linear-gradient(135deg,#e8c96a,#a07830)!important;transform:translateY(-1px);box-shadow:0 4px 15px rgba(201,168,76,0.4)!important;}
+    </style>
+    <div style="display:flex;align-items:center;justify-content:center;gap:0.85rem;flex-wrap:wrap;position:relative;">
+      <!-- badge -->
+      <span style="display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;animation:promoBadgePulse 2s infinite;flex-shrink:0;">&#9733; EXCLUSIVE</span>
+      <!-- text -->
+      <span style="font-size:0.85rem;font-weight:700;color:#f0ece0;">Get a chance to win a <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">FREE Shoot</strong> or an exclusive <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Coupon Code</strong> on every booking!</span>
+      <!-- CTA -->
+      <a href="booking.html" class="promo-cta" style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.75rem;font-weight:900;padding:0.35rem 1rem;border-radius:50px;text-decoration:none;white-space:nowrap;transition:all 0.2s;box-shadow:0 2px 10px rgba(201,168,76,0.3);flex-shrink:0;">Book Now <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i></a>
+      <!-- T&C -->
+      <span style="font-size:0.65rem;color:rgba(201,168,76,0.4);font-weight:600;letter-spacing:0.5px;">T&amp;C Apply</span>
+    </div>
+    <!-- close -->
+    <button onclick="document.getElementById('promoBanner').style.display='none'" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.5);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='rgba(201,168,76,0.08)'">&times;</button>
   </div>
 
   <!-- NAVBAR -->
