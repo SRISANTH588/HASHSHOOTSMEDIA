@@ -478,13 +478,17 @@
                 var done = localStorage.getItem(fbKey);
                 return done
                   ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:8px;padding:0.4rem 0.9rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Feedback Submitted — Thank you!</div>'
-                  : '<button class="btn-fb-rate" '
+                  : '<div style="margin-top:0.85rem;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(37,211,102,0.06));border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1rem 1.1rem;">'
+                    + '<div style="font-size:0.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;"><i class="fas fa-gift"></i> Exciting Reward Waiting!</div>'
+                    + '<div style="font-size:0.82rem;color:#d4c9a8;margin-bottom:0.75rem;line-height:1.6;">Rate your shoot experience and get an <strong style="color:#c9a84c;">exclusive coupon or cashback</strong> as a thank-you gift! 🎁</div>'
+                    + '<button class="btn-fb-rate" '
                     + 'data-bid="' + b.id + '" '
                     + 'data-svc="' + (b.service||'').replace(/"/g,'&quot;') + '" '
                     + 'data-date="' + (b.date||'') + '" '
                     + 'data-staff="' + ((assign && assign.staffName)||'').replace(/"/g,'&quot;') + '" '
-                    + 'onclick="openFeedbackFromBtn(this)">'
-                    + '<i class="fas fa-star"></i> Rate Your Experience</button>';
+                    + 'onclick="openFeedbackFromBtn(this)" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;">'
+                    + '<i class="fas fa-star"></i> Rate & Claim Reward</button>'
+                    + '</div>';
               })()
             : '')
           + '</div>';

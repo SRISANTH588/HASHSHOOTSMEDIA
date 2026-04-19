@@ -1911,6 +1911,26 @@
       var done = shoots.filter(function(a){ return String(a.staffId)===String(staffId) && a.status==='done'; }).length;
       var badge = document.getElementById('paymentsDoneBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
+
+      // WhatsApp: Shoot Done — ask for feedback with coupon/cashback offer
+      (function(){
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var booking = bookings.find(function(b){ return String(b.id) === String(s.bookingId); });
+        var custPhone = booking ? booking.phone : (s.clientPhone||'');
+        var orderId = s.orderId || ('OGS-'+new Date().getFullYear()+'-'+String(s.id).slice(-6));
+        var staffName = localStorage.getItem('hs_staff_name') || 'Your Creator';
+        var msg = '✅ *Your Shoot is Done!*\n\n'
+          + '📋 *Order ID:* ' + orderId + '\n'
+          + '🎬 *Service:* ' + (s.service||'') + '\n'
+          + '👤 *Creator:* ' + staffName + '\n'
+          + '📅 *Completed:* ' + s.doneAt + '\n\n'
+          + '🌟 *Your edited reel will be delivered shortly!*\n\n'
+          + '🎁 *Rate your experience & get an exciting COUPON or CASHBACK!*\n'
+          + 'Open My Orders → tap “Rate Your Experience” to submit your feedback.\n\n'
+          + 'Thank you for choosing OG Shoots LUXE! 🚀';
+        if(custPhone) sendWA(custPhone, msg);
+      })();
+
       showPaymentInfoModal(s);
     }
 
@@ -1980,6 +2000,13 @@
       document.getElementById('staffTncOverlay').classList.remove('open');
     }
 
+    // ── WhatsApp helper ──────────────────────────────────────────
+    function sendWA(phone, msg){
+      var num = (phone||'').replace(/\D/g,'');
+      if(!num) return;
+      window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(msg), '_blank');
+    }
+
     function confirmArrived(){
       closeStaffTnc();
       var assignId = window._pendingArrivedId;
@@ -1992,6 +2019,23 @@
       localStorage.setItem('hs_arrived_time_' + assignId, Date.now().toString());
       // Sync arrived status to Firebase assigned_shoots doc
       if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), {arrivedAt: arrivedAt});
+
+      // WhatsApp: Arrived — 15-min warning to customer
+      if(s){
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var booking = bookings.find(function(b){ return String(b.id) === String(s.bookingId); });
+        var custPhone = booking ? booking.phone : (s.clientPhone||'');
+        var orderId = s.orderId || ('OGS-'+new Date().getFullYear()+'-'+String(s.id).slice(-6));
+        var staffName = localStorage.getItem('hs_staff_name') || 'Your Creator';
+        var msg = '📍 *Your Creator Has Arrived!*\n\n'
+          + '📋 *Order ID:* ' + orderId + '\n'
+          + '👤 *Creator:* ' + staffName + '\n'
+          + '⏰ *Arrived at:* ' + arrivedAt + '\n\n'
+          + '⚠️ *Important:* Please be present at the shoot location within *15 minutes*. If you are not available, the shoot will be automatically cancelled.\n\n'
+          + 'Reply to this message if you need help. 🙏';
+        sendWA(custPhone, msg);
+      }
+
       renderAssignedShoots();
     }
 

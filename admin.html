@@ -5571,6 +5571,30 @@ Priority Support</textarea></div>
         ? 'Shoot assigned to ' + names.join(', ') + '. ₹' + totalCredit + ' split (₹' + splitCredit + ' each)!'
         : 'Shoot assigned to ' + names[0] + ' with ₹' + splitCredit + ' credit!';
       showAssignToast(msg, true);
+
+      // WhatsApp: Send assignment details to customer
+      (function(){
+        var waNum = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+        var booking2 = JSON.parse(localStorage.getItem('hs_bookings')||'[]').find(function(b){ return String(b.id)===String(bookingId); });
+        var custPhone = booking2 ? booking2.phone : '';
+        if(!custPhone) return;
+        var allStaff2 = getStaff();
+        var staffLines = selectedIds.map(function(sid){
+          var sm = allStaff2.find(function(s){ return String(s.id)===String(sid); });
+          return sm ? ('\ud83d\udc64 *' + sm.name + '*' + (sm.phone ? '  \ud83d\udcde ' + sm.phone : '') + (sm.email ? '  \u2709\ufe0f ' + sm.email : '')) : '';
+        }).filter(Boolean).join('\n');
+        var firstShoot = assigned[assigned.length - selectedIds.length];
+        var orderId2 = firstShoot ? firstShoot.orderId : '';
+        var waMsg = '\ud83c\udf89 *Creator Assigned to Your Shoot!*\n\n'
+          + '\ud83d\udccb *Order ID:* ' + orderId2 + '\n'
+          + '\ud83d\udcf8 *Service:* ' + (booking2 ? booking2.service : '') + '\n'
+          + '\ud83d\udcc5 *Date:* ' + date + ' at ' + time + '\n'
+          + '\ud83d\udccd *Location:* ' + (booking2 ? (booking2.location || booking2.city) : '') + '\n\n'
+          + '\ud83d\udc65 *Your Assigned Creator(s):*\n' + staffLines + '\n\n'
+          + 'Your creator will arrive at the location on time. Track your order in the OG Shoots app. \ud83d\ude80';
+        window.open('https://wa.me/' + custPhone.replace(/\D/g,'') + '?text=' + encodeURIComponent(waMsg), '_blank');
+      })();
+
       renderAssignedList();
     }
 
