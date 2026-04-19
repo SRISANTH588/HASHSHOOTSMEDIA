@@ -1928,7 +1928,7 @@
           + '🎁 *Rate your experience & get an exciting COUPON or CASHBACK!*\n'
           + 'Open My Orders → tap “Rate Your Experience” to submit your feedback.\n\n'
           + 'Thank you for choosing OG Shoots LUXE! 🚀';
-        if(custPhone) sendWA(custPhone, msg);
+        if(custPhone) sendWA(custPhone, msg, 4);
       })();
 
       showPaymentInfoModal(s);
@@ -2000,11 +2000,28 @@
       document.getElementById('staffTncOverlay').classList.remove('open');
     }
 
-    // ── WhatsApp helper ──────────────────────────────────────────
-    function sendWA(phone, msg){
+    // ── WhatsApp popup toast ─────────────────────────────────────
+    function sendWA(phone, msg, triggerNum){
+      // Check if this trigger is enabled
+      var settings = JSON.parse(localStorage.getItem('hs_wa_settings')||'{}');
+      if(settings['wa_trigger_'+triggerNum] === false) return;
       var num = (phone||'').replace(/\D/g,'');
       if(!num) return;
-      window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(msg), '_blank');
+      var url = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+      // Show a floating WhatsApp send button — user taps once to send
+      var existing = document.getElementById('waSendPopup');
+      if(existing) existing.remove();
+      var popup = document.createElement('div');
+      popup.id = 'waSendPopup';
+      popup.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:#1a1a1a;border:1px solid rgba(37,211,102,0.4);border-radius:16px;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.85rem;box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px;max-width:90vw;animation:waSlideUp 0.3s ease;';
+      popup.innerHTML = '<style>@keyframes waSlideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}</style>'
+        + '<div style="width:40px;height:40px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-whatsapp" style="color:#fff;font-size:1.2rem;"></i></div>'
+        + '<div style="flex:1;"><div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">Send WhatsApp Message</div><div style="font-size:0.7rem;color:#9a9080;">Tap Send to notify the customer</div></div>'
+        + '<a href="' + url + '" target="_blank" onclick="document.getElementById(\'waSendPopup\').remove()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:800;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fab fa-whatsapp"></i> Send</a>'
+        + '<button onclick="document.getElementById(\'waSendPopup\').remove()" style="background:none;border:none;color:#555;font-size:1rem;cursor:pointer;padding:0.25rem;">&#10005;</button>';
+      document.body.appendChild(popup);
+      // Auto-dismiss after 30 seconds
+      setTimeout(function(){ var el=document.getElementById('waSendPopup'); if(el) el.remove(); }, 30000);
     }
 
     function confirmArrived(){
@@ -2033,7 +2050,7 @@
           + '⏰ *Arrived at:* ' + arrivedAt + '\n\n'
           + '⚠️ *Important:* Please be present at the shoot location within *15 minutes*. If you are not available, the shoot will be automatically cancelled.\n\n'
           + 'Reply to this message if you need help. 🙏';
-        sendWA(custPhone, msg);
+        if(custPhone) sendWA(custPhone, msg, 3);
       }
 
       renderAssignedShoots();

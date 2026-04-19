@@ -969,6 +969,8 @@
 
       // WhatsApp: Order Confirmed
       (function(){
+        var settings = JSON.parse(localStorage.getItem('hs_wa_settings')||'{}');
+        if(settings['wa_trigger_1'] === false) return;
         var waNum = localStorage.getItem('hs_admin_wa_number') || '916304279351';
         var msg = '🎉 *Order Confirmed!*\n\n'
           + '📋 *Order ID:* ' + orderId + '\n'
@@ -978,7 +980,18 @@
           + '📍 *City:* ' + d.city + '\n'
           + '📞 *Phone:* ' + d.phone + '\n\n'
           + 'Your booking is confirmed with OG Shoots LUXE! Our team will assign a creator shortly. Track your order at customer-orders.html 🚀';
-        window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg), '_blank');
+        var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
+        // Show floating send button
+        var popup = document.createElement('div');
+        popup.id = 'waSendPopup';
+        popup.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:#1a1a1a;border:1px solid rgba(37,211,102,0.4);border-radius:16px;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.85rem;box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px;max-width:90vw;animation:waSlideUp 0.3s ease;';
+        popup.innerHTML = '<style>@keyframes waSlideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}</style>'
+          + '<div style="width:40px;height:40px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-whatsapp" style="color:#fff;font-size:1.2rem;"></i></div>'
+          + '<div style="flex:1;"><div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">Send Order Confirmation</div><div style="font-size:0.7rem;color:#9a9080;">Tap Send to notify via WhatsApp</div></div>'
+          + '<a href="' + url + '" target="_blank" onclick="this.closest(\'#waSendPopup\').remove()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:800;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fab fa-whatsapp"></i> Send</a>'
+          + '<button onclick="this.closest(\'#waSendPopup\').remove()" style="background:none;border:none;color:#555;font-size:1rem;cursor:pointer;padding:0.25rem;">&#10005;</button>';
+        document.body.appendChild(popup);
+        setTimeout(function(){ var el=document.getElementById('waSendPopup'); if(el) el.remove(); }, 30000);
       })();
 
       pendingData = null;
