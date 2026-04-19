@@ -319,31 +319,71 @@
       +'</div>';
   }
 
+  </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
   async function activateCard(){
-    var email = (localStorage.getItem('hs_user')||'').toLowerCase();
-    var name  = localStorage.getItem('hs_customer_name')||email;
-    var price = parseInt(localStorage.getItem('hs_premium_price')||'129');
-    if(!email){ alert('Please log in first.'); return; }
-    if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\n\u20b9'+price.toLocaleString('en-IN')+' will be added to your wallet.')) return;
-    var btn = document.querySelector('.btn-activate');
-    if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Activating...'; }
-    var cardNumber = 'LUXE-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
-    var card = {email:email, name:name, cardNumber:cardNumber, active:true, activatedAt:new Date().toLocaleString(), price:price};
+    var email=(localStorage.getItem("hs_user")||"").toLowerCase();
+    var name=localStorage.getItem("hs_customer_name")||email;
+    var phone=localStorage.getItem("hs_customer_phone")||"";
+    var price=parseInt(localStorage.getItem("hs_premium_price")||"129");
+    if(!email){alert("Please log in first.");return;}
+    var rp=JSON.parse(localStorage.getItem("hs_razorpay")||"{}");
     try{
-      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-      var app     = fbMod.getApps().find(function(a){return a.name==='prem-page';})||fbMod.initializeApp(fbCfg,'prem-page');
-      var db      = fbStore.getFirestore(app);
-      var key     = email.replace(/[.#$[\]]/g,'_');
-      // Save premium card
-      await fbStore.setDoc(fbStore.doc(db,'premium_cards',key), card);
-    }catch(e){ alert('Error activating card: '+e.message); if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-crown"></i> Activate Luxe Membership';} return; }
-    localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
-    localStorage.setItem('hs_is_premium','1');
-    alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card: '+cardNumber+'\n\nYou are now a lifetime Luxe member!');
-    location.reload();
+      var fm=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      var fs2=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      var fc={apiKey:"AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE",authDomain:"hash-shoots.firebaseapp.com",projectId:"hash-shoots",storageBucket:"hash-shoots.firebasestorage.app",messagingSenderId:"1093054616221",appId:"1:1093054616221:web:55bdebafc895acfd04fa74"};
+      var ap=fm.getApps().find(function(a){return a.name==="prem-page";})||fm.initializeApp(fc,"prem-page");
+      var db=fs2.getFirestore(ap);
+      var rs=await fs2.getDoc(fs2.doc(db,"razorpay_config","main"));
+      if(rs.exists())rp=rs.data();
+    }catch(e){console.warn(e);}
+    if(!rp||!rp.keyId){alert("Payment gateway not configured. Contact admin.");return;}
+    new Razorpay({
+      key:rp.keyId,amount:price*100,currency:rp.currency||"INR",
+      name:rp.businessName||"OG SHOOTS",
+      description:"OG Shoots Luxe Membership - Lifetime Non-Refundable",
+      prefill:{name:name,email:email,contact:phone},
+      theme:{color:"#c9a84c"},
+      handler:async function(res){
+        try{
+          var fm2=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+          var fs3=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+          var ap2=fm2.getApps().find(function(a){return a.name==="prem-page";})||fm2.initializeApp({apiKey:"AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE",authDomain:"hash-shoots.firebaseapp.com",projectId:"hash-shoots",storageBucket:"hash-shoots.firebasestorage.app",messagingSenderId:"1093054616221",appId:"1:1093054616221:web:55bdebafc895acfd04fa74"},"prem-page");
+          var db2=fs3.getFirestore(ap2);
+          var key=email.replace(/[.#$[\]]/g,"_");
+          var cn="LUXE-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).substr(2,4).toUpperCase();
+          var card={email:email,name:name,cardNumber:cn,active:true,activatedAt:new Date().toLocaleString(),price:price,paymentId:res.razorpay_payment_id,nonRefundable:true};
+          await fs3.setDoc(fs3.doc(db2,"premium_cards",key),card);
+          await fs3.addDoc(fs3.collection(db2,"payments"),{email:email,name:name,type:"premium_membership",amount:price,paymentId:res.razorpay_payment_id,description:"OG Shoots Luxe - Non-Refundable",paidAt:new Date().toLocaleString()});
+          localStorage.setItem("hs_premium_card_"+email,JSON.stringify(card));
+          localStorage.setItem("hs_is_premium","1");
+          alert("\u2705 Welcome to OG Shoots Luxe!\n\nCard: "+cn+"\nPayment ID: "+res.razorpay_payment_id+"\n\nLifetime member! \u26a0\ufe0f Non-refundable.");
+          location.reload();
+        }catch(e){alert("Payment done but activation failed: "+e.message+"\nContact support. Payment ID: "+res.razorpay_payment_id);}
+      },
+      modal:{ondismiss:function(){alert("Payment cancelled. Membership not activated.");}}
+    }).open();
   }
   </script>
+          var fs3=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+          var ap2=fm2.getApps().find(function(a){return a.name==="prem-page";})||fm2.initializeApp({apiKey:"AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE",authDomain:"hash-shoots.firebaseapp.com",projectId:"hash-shoots",storageBucket:"hash-shoots.firebasestorage.app",messagingSenderId:"1093054616221",appId:"1:1093054616221:web:55bdebafc895acfd04fa74"},"prem-page");
+          var db2=fs3.getFirestore(ap2);
+          var key=email.replace(/[.#$[\]]/g,"_");
+          var cn="LUXE-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).substr(2,4).toUpperCase();
+          var card={email:email,name:name,cardNumber:cn,active:true,activatedAt:new Date().toLocaleString(),price:price,paymentId:res.razorpay_payment_id,nonRefundable:true};
+          await fs3.setDoc(fs3.doc(db2,"premium_cards",key),card);
+          await fs3.addDoc(fs3.collection(db2,"payments"),{email:email,name:name,type:"premium_membership",amount:price,paymentId:res.razorpay_payment_id,description:"OG Shoots Luxe - Non-Refundable",paidAt:new Date().toLocaleString()});
+          localStorage.setItem("hs_premium_card_"+email,JSON.stringify(card));
+          localStorage.setItem("hs_is_premium","1");
+          alert("\u2705 Welcome to OG Shoots Luxe!\n\nCard: "+cn+"\nPayment ID: "+res.razorpay_payment_id+"\n\nLifetime member! \u26a0\ufe0f Non-refundable.");
+          location.reload();
+        }catch(e){alert("Payment done but activation failed: "+e.message+"\nContact support. Payment ID: "+res.razorpay_payment_id);}
+      },
+      modal:{ondismiss:function(){alert("Payment cancelled. Membership not activated.");}}
+    }).open();
+  }
+  </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 </html>
