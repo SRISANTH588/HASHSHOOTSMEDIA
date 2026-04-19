@@ -5828,12 +5828,16 @@ Priority Support</textarea></div>
         return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
+          + '<div style="font-size:0.62rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.2rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
           + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
           + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + '</div>'
           + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> Customer: ' + a.clientName + (a.clientPhone ? ' &nbsp;·&nbsp; <i class="fas fa-phone" style="color:#c9a84c;"></i> ' + a.clientPhone : '') + '</div>'
           + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (a.location || a.city) + '</div>'
-          + (a.arrivedAt ? '<div style="font-size:0.72rem;color:#4caf50;margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Arrived: ' + a.arrivedAt + '</div>' : '')
-          + (a.doneAt ? '<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.2rem;"><i class="fas fa-flag-checkered"></i> Marked Done: ' + a.doneAt + '</div>' : '')
+          + (a.arrivedAt
+            ? '<div style="font-size:0.72rem;color:#4caf50;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-map-marker-alt"></i> Staff Arrived: ' + a.arrivedAt + '</div>'
+            : (a.status==='assigned' ? '<div style="font-size:0.72rem;color:#ff9800;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-clock"></i> Awaiting Arrival</div>' : ''))
+          + (a.noShow ? '<div style="font-size:0.72rem;color:#f44336;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.25);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-user-slash"></i> Customer No Show: ' + (a.noShowAt||'') + '</div>' : '')
+          + (a.doneAt ? '<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(156,39,176,0.08);border:1px solid rgba(156,39,176,0.25);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-flag-checkered"></i> Marked Done: ' + a.doneAt + '</div>' : '')
           + (a.notes ? '<div style="font-size:0.72rem;color:#777;margin-top:0.2rem;">' + a.notes + '</div>' : '')
           + creditEdit
           + '</div>'
@@ -5844,8 +5848,13 @@ Priority Support</textarea></div>
           + actionBtns
           + '<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
+          // Message customer button
+          + '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
+          + (a.clientPhone ? '<button onclick="msgCustomer(\''+String(a.id)+'\')" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:#25d366;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-whatsapp"></i> Message Customer</button>' : '')
+          + (a.noShow ? '<button onclick="sendNoShowMsg(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user-slash"></i> No Show Message</button>' : '')
+          + '</div>'
           + adminVideoSection(a)
-          + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + (a.payoutRequestedAt ? ' &nbsp;·&nbsp; Payout Req: ' + a.payoutRequestedAt : '') + '</div>'
+          + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
           + '</div>';
       }).join('');
     }
@@ -5873,6 +5882,27 @@ Priority Support</textarea></div>
       });
       html += '</div>';
       return html;
+    }
+
+    function sendNoShowMsg(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return String(x.id)===String(id); });
+      if(!a) return;
+      var phone = (a.clientPhone||'').replace(/\D/g,'').slice(-10);
+      if(!phone){ alert('No customer phone number found.'); return; }
+      var msg = 'Hi '+a.clientName+', our creator '+a.staffName+' arrived at the location for your '+a.service+' shoot on '+a.date+' but could not find you. Please contact us to reschedule. - OG Shoots';
+      window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank');
+    }
+
+    function msgCustomer(id){
+      var list = getAssignedShoots();
+      var a = list.find(function(x){ return String(x.id)===String(id); });
+      if(!a) return;
+      var phone = (a.clientPhone||'').replace(/\D/g,'').slice(-10);
+      if(!phone){ alert('No customer phone number found.'); return; }
+      var msg = prompt('Message to send to '+a.clientName+':', 'Hi '+a.clientName+', your '+a.service+' shoot is confirmed for '+a.date+' at '+a.time+'. Our creator '+a.staffName+' will be there. - OG Shoots');
+      if(!msg) return;
+      window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank');
     }
 
     function adminMarkDone(id){
