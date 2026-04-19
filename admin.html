@@ -5505,8 +5505,10 @@ Priority Support</textarea></div>
         var staffMember = allStaff.find(function(s){ return String(s.id)===String(staffId); });
         names.push(staffMember ? staffMember.name : 'Unknown');
         var shootId = Date.now() + idx;
+        var orderId = 'OGS-' + new Date().getFullYear() + '-' + String(shootId).slice(-6);
         var shootData = {
           id: shootId,
+          orderId: orderId,
           bookingId: bookingId,
           staffId: String(staffId),
           staffIdNum: Number(staffId),

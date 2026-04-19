@@ -402,9 +402,47 @@
             + '</div>';
         }
 
+        // ── ORDER STATUS TIMELINE ─────────────────────────────────
+        var shootStatus = assign ? assign.status : null;
+        var arrivedAt   = assign ? assign.arrivedAt : null;
+        var doneAt      = assign ? assign.doneAt : null;
+        var isPaid      = assign && (assign.status === 'paid' || assign.status === 'completed');
+
+        var timelineHTML = '';
+        if(assign){
+          function tlStep(icon, label, done, active){
+            var bg = done ? 'rgba(76,175,80,0.15)' : active ? 'rgba(255,152,0,0.15)' : 'rgba(255,255,255,0.04)';
+            var border = done ? 'rgba(76,175,80,0.4)' : active ? 'rgba(255,152,0,0.4)' : 'rgba(255,255,255,0.08)';
+            var color  = done ? '#4caf50' : active ? '#ff9800' : '#555';
+            return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:0.3rem;">'
+              + '<div style="width:32px;height:32px;border-radius:50%;background:'+bg+';border:2px solid '+border+';display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:'+color+';">'
+              + (done ? '<i class="fas fa-check"></i>' : '<i class="fas '+icon+'"></i>')
+              + '</div>'
+              + '<div style="font-size:0.6rem;font-weight:700;color:'+color+';text-align:center;white-space:nowrap;">'+label+'</div>'
+              + '</div>';
+          }
+          function tlLine(done){
+            return '<div style="flex:1;height:2px;background:'+(done?'rgba(76,175,80,0.4)':'rgba(255,255,255,0.06)')+';margin-bottom:1.1rem;align-self:center;"></div>';
+          }
+          var step1done = !!assign.assignedAt || !!assign.staffName;
+          var step2done = !!arrivedAt;
+          var step3done = !!(doneAt || shootStatus === 'done' || shootStatus === 'completed' || shootStatus === 'paid');
+          var step4done = isPaid;
+          timelineHTML = '<div style="display:flex;align-items:center;margin:0.85rem 0 0.5rem;padding:0.75rem 0.5rem;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);border-radius:12px;">'
+            + tlStep('fa-camera','Assigned', step1done, !step1done)
+            + tlLine(step1done)
+            + tlStep('fa-map-marker-alt','Arrived', step2done, step1done && !step2done)
+            + tlLine(step2done)
+            + tlStep('fa-check-double','Shoot Done', step3done, step2done && !step3done)
+            + tlLine(step3done)
+            + tlStep('fa-star','Review', step4done, step3done && !step4done)
+            + '</div>';
+        }
+
         return '<div class="booking-item">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;flex-wrap:wrap;gap:0.5rem;">'
           + '<div class="booking-info">'
+          + (b.orderId ? '<div style="font-size:0.65rem;font-weight:800;color:rgba(201,168,76,0.7);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.2rem;">Order ID: <span style="color:#c9a84c;">' + b.orderId + '</span></div>' : '')
           + '<h4>' + b.service + ' &mdash; ' + b.city + '</h4>'
           + '<p>' + (b.date ? b.date + (b.time ? ' at ' + b.time : '') : '') + '</p>'
           + '<p>' + b.name + ' &nbsp;|&nbsp; ' + b.phone + '</p>'
@@ -412,6 +450,7 @@
           + '</div>'
           + '<span class="status ' + b.status + '">' + b.status.charAt(0).toUpperCase() + b.status.slice(1) + '</span>'
           + '</div>'
+          + timelineHTML
           + creatorCard
           + videoSection
           + cancelNotice
