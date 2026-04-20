@@ -137,6 +137,27 @@
       .team-grid { grid-template-columns: 1fr; max-width: 360px; }
       .values-grid { grid-template-columns: 1fr; }
     }
+  
+  @media(max-width:600px){
+    .container{padding:0 0.75rem 2rem!important;}
+    h1{font-size:1.4rem!important;}
+    .stat-card .num{font-size:1.4rem!important;}
+    table{font-size:0.75rem!important;}
+    th,td{padding:0.5rem 0.6rem!important;}
+    .about-form{padding:1rem!important;}
+    .form-row{grid-template-columns:1fr!important;}
+    .stats-row{grid-template-columns:1fr 1fr!important;}
+    .filters{gap:0.35rem!important;}
+    .filter-btn{font-size:0.7rem!important;padding:0.35rem 0.65rem!important;}
+    .tab-btn{font-size:0.72rem!important;padding:0.4rem 0.75rem!important;}
+    .page-header{flex-direction:column!important;}
+    .nav-right{gap:0.5rem!important;}
+    .search-bar{max-width:100%!important;width:100%!important;}
+  }
+  @media(max-width:900px){
+    .stats-row{grid-template-columns:repeat(2,1fr)!important;}
+    .container{padding:0 1rem 2rem!important;}
+  }
   </style>
 
   <script src="nav.js"></script>
