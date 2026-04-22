@@ -1892,18 +1892,37 @@
           var updateData = {status:'done', doneAt:s.doneAt};
           if(bankData) updateData.bankDetails = bankData;
           await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)), updateData, {merge:true});
-          // Notify admin
+          // Notify admin with full order + staff + bank details
           await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
             type: 'shoot_done',
-            title: 'Shoot Marked as Done',
+            title: '\uD83C\uDFC1 Shoot Marked as Done — Payment Required',
             message: (localStorage.getItem('hs_staff_name')||'Staff') + ' completed: ' + (s.service||'') + ' for ' + (s.clientName||'') + '. Awaiting payment.',
             assignId: String(assignId),
+            orderId: s.orderId || ('OGS-'+new Date().getFullYear()+'-'+String(s.id).slice(-6)),
             staffId: String(staffId),
             staffName: localStorage.getItem('hs_staff_name')||'',
+            staffPhone: localStorage.getItem('hs_staff_phone')||'',
+            staffEmail: localStorage.getItem('hs_staff_email')||'',
+            service: s.service||'',
+            clientName: s.clientName||'',
+            clientPhone: s.clientPhone||'',
+            date: s.date||'',
+            time: s.time||'',
+            location: s.location||s.city||'',
+            credit: s.credit||0,
+            doneAt: s.doneAt,
             bankDetails: bankData || null,
             read: false,
             createdAt: fbStore.serverTimestamp()
           });
+          // Also update assigned_shoot with full details for Staff Payouts tab
+          await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)), {
+            status:'done',
+            doneAt: s.doneAt,
+            bankDetails: bankData || null,
+            staffPhone: localStorage.getItem('hs_staff_phone')||'',
+            staffEmail: localStorage.getItem('hs_staff_email')||''
+          }, {merge:true});
         }catch(e){ console.error('markShootDone Firebase error:', e); }
       })();
       renderAssignedShoots();
