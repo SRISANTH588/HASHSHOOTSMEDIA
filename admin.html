@@ -5778,11 +5778,21 @@ Priority Support</textarea></div>
         var app     = fbMod.getApps().find(function(x){return x.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
         var db      = fbStore.getFirestore(app);
         await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(id)),{status:'paid',paidAt:a.paidAt,credit:amt},{merge:true});
-        // Notify staff
+        // Send detailed payment notification to staff
+        var orderId = a.orderId || ('OGS-'+String(a.id).slice(-6));
         await fbStore.addDoc(fbStore.collection(db,'staff_notifications'),{
-          staffId:String(a.staffId), type:'payment',
-          title:'\uD83D\uDCB0 Payment Released',
-          read:false, createdAt:fbStore.serverTimestamp()
+          staffId: String(a.staffId),
+          type: 'payment',
+          title: '\uD83D\uDCB0 Payment Released — \u20B9'+amt.toLocaleString('en-IN'),
+          message: 'Your payment of \u20B9'+amt.toLocaleString('en-IN')+' for '+a.service+' (Order: '+orderId+') has been released. Please check your bank account.',
+          orderId: orderId,
+          service: a.service||'',
+          clientName: a.clientName||'',
+          date: a.date||'',
+          amount: amt,
+          paidAt: a.paidAt,
+          read: false,
+          createdAt: fbStore.serverTimestamp()
         });
       }catch(e){
         console.error('adminReleasePayment Firebase error:',e);
