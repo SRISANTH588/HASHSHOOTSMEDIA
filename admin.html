@@ -6017,13 +6017,89 @@ Priority Support</textarea></div>
 
     // Step-specific messages for Shoot Tracker
     var _stepMessages = {
-      confirmed: function(a){ return 'Hi '+a.clientName+', your '+a.service+' shoot is confirmed for '+a.date+' at '+a.time+'. Our creator '+a.staffName+' will be at your location. Please be ready! - OG Shoots'; },
-      arrived:   function(a){ return 'Hi '+a.clientName+', our creator '+a.staffName+' has arrived at your location for the '+a.service+' shoot. Please come out! - OG Shoots'; },
-      noshow:    function(a){ return 'Hi '+a.clientName+', our creator '+a.staffName+' arrived for your '+a.service+' shoot on '+a.date+' but could not find you. Please contact us to reschedule. - OG Shoots'; },
-      done:      function(a){ return 'Hi '+a.clientName+', your '+a.service+' shoot is complete! Our team is editing your content. You will receive it shortly. Thank you for choosing OG Shoots! - OG Shoots'; },
-      paid:      function(a){ return 'Hi '+a.clientName+', your '+a.service+' shoot content has been delivered. Thank you for choosing OG Shoots! We hope to see you again. - OG Shoots'; },
-      reminder:  function(a){ return 'Hi '+a.clientName+', this is a reminder for your '+a.service+' shoot tomorrow ('+a.date+') at '+a.time+'. Our creator '+a.staffName+' will be there. Please be ready! - OG Shoots'; },
-      custom:    function(a){ return 'Hi '+a.clientName+', '; }
+      confirmed: function(a){
+        return '🎬 *OG SHOOTS LUXE* — Booking Confirmed!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'👤 *YOUR CREATOR*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🎥 Name: *'+a.staffName+'*\n'
+          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*\n':'')
+          +'🏆 Certified OG Shoots Creator\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*, your shoot is confirmed! Please be ready at the location on time. Our creator will arrive and deliver your content on the spot.\n\n'
+          +'For any queries: wa.me/916304279351\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      arrived: function(a){
+        return '📍 *OG SHOOTS LUXE* — Creator Arrived!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 👋\n\n'
+          +'Your creator has arrived at the location!\n\n'
+          +'🎥 *'+a.staffName+'* is ready for your *'+a.service+'* shoot.\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n\n'
+          +'Please come out — your creator is waiting! 🙏\n\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      noshow: function(a){
+        return '⚠️ *OG SHOOTS LUXE* — Missed Shoot\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*,\n\n'
+          +'Our creator *'+a.staffName+'* arrived at *'+(a.location||a.city||'your location')+'* for your *'+a.service+'* shoot on *'+a.date+'* but could not find you.\n\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n\n'
+          +'Please contact us to reschedule your shoot at no extra charge.\n\n'
+          +'📞 WhatsApp: wa.me/916304279351\n\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      done: function(a){
+        return '✅ *OG SHOOTS LUXE* — Shoot Complete!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 🎉\n\n'
+          +'Your *'+a.service+'* shoot is complete!\n\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'🎥 Creator: *'+a.staffName+'*\n'
+          +'📅 Shoot Date: *'+a.date+'*\n\n'
+          +'Our team is now editing your content. You will receive your reels shortly. ⚡\n\n'
+          +'⭐ Please rate your experience — it helps us improve!\n\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      paid: function(a){
+        return '🎁 *OG SHOOTS LUXE* — Content Delivered!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 🎊\n\n'
+          +'Your *'+a.service+'* content has been delivered!\n\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'🎥 Creator: *'+a.staffName+'*\n\n'
+          +'Thank you for choosing OG Shoots! We hope you love your content. 💛\n\n'
+          +'⭐ Rate & get an exclusive coupon on your next shoot!\n'
+          +'📞 Support: wa.me/916304279351\n\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      reminder: function(a){
+        return '🔔 *OG SHOOTS LUXE* — Shoot Reminder\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 👋\n\n'
+          +'This is a reminder for your upcoming shoot!\n\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'👤 *YOUR CREATOR*\n'
+          +'🎥 *'+a.staffName+'*'+(a.staffPhone?' — '+a.staffPhone:'')+' will be there!\n\n'
+          +'Please be ready on time. See you soon! 🚀\n\n'
+          +'— *OG Shoots Media* 🚀';
+      },
+      custom: function(a){ return 'Hi *'+a.clientName+'*, \n\n— *OG Shoots Media* 🚀'; }
     };
 
     function sendStepMsg(id, step){
@@ -6032,12 +6108,11 @@ Priority Support</textarea></div>
       if(!a) return;
       var phone = (a.clientPhone||'').replace(/\D/g,'').slice(-10);
       if(!phone){ alert('No customer phone number found.'); return; }
-      var defaultMsg = _stepMessages[step] ? _stepMessages[step](a) : 'Hi '+a.clientName+', - OG Shoots';
+      var defaultMsg = _stepMessages[step] ? _stepMessages[step](a) : 'Hi '+a.clientName+', \n\n— OG Shoots Media';
       var msg = prompt('Edit message before sending to '+a.clientName+':', defaultMsg);
       if(!msg) return;
       window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank');
     }
-
     function adminMarkDone(id){
       var list = getAssignedShoots();
       var a = list.find(function(x){ return String(x.id)===String(id); });
