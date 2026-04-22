@@ -5599,25 +5599,24 @@ Priority Support</textarea></div>
 
 
         // Save to Firebase
-        (async function(sid, w, sData){
+        (async function(sid, sData){
           try{
             var f = await _fbAdmin();
-            if(!f){ alert("Firebase not available. Shoot saved locally only."); return; }
-            await f.s.setDoc(f.s.doc(f.db,"assigned_shoots",String(sData.id)), sData, {merge:true});
-            await f.s.addDoc(f.s.collection(f.db,"staff_notifications"),{
+            if(!f){ console.warn('Firebase not available. Shoot saved locally only.'); return; }
+            await f.s.setDoc(f.s.doc(f.db,'assigned_shoots',String(sData.id)), sData, {merge:true});
+            await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{
               staffId: String(sid),
-              type: "shoot",
-              title: "New Shoot Assigned!",
-              message: (sData.service||"Shoot") + " for " + (sData.clientName||"") + " on " + sData.date + " at " + sData.time,
+              type: 'shoot',
+              title: 'New Shoot Assigned!',
+              message: (sData.service||'Shoot') + ' for ' + (sData.clientName||'') + ' on ' + sData.date + ' at ' + sData.time,
               read: false,
               createdAt: f.s.serverTimestamp()
             });
-            console.log("Shoot saved to Firebase for staff:", sid);
+            console.log('Shoot saved to Firebase for staff:', sid);
           }catch(e){
-            console.error("Firebase save error:", e);
-            alert("Firebase sync failed: " + e.message + "\nShoot saved locally. Staff may not see it.");
+            console.error('Firebase save error:', e);
           }
-        })(staffId, wallet, shootData);
+        })(staffId, shootData);
       });
 
       saveAssignedShoots(assigned);
