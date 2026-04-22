@@ -164,7 +164,6 @@
       <button class="tab-btn" onclick="switchTab('videos',this)" id="videosTabBtn"><i class="fas fa-photo-video"></i> Staff Videos</button>
     <button class="tab-btn" onclick="switchTab('shoot-reels',this)" id="shootReelsTabBtn"><i class="fas fa-film"></i> Shoot Reels & Feedback <span class="notif" id="shootReelsNotifBadge" style="display:none;">0</span></button>
       <button class="tab-btn" onclick="switchTab('assign',this)" id="assignTabBtn"><i class="fas fa-tasks"></i> Assign Shoots</button>
-      <button class="tab-btn" onclick="switchTab('shoot-tracker',this)" id="shootTrackerTabBtn"><i class="fas fa-map-marker-alt"></i> Shoot Tracker <span id="trackerBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('payments',this)" id="paymentsAdminTabBtn"><i class="fas fa-rupee-sign"></i> Staff Payouts <span id="paymentsAdminBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('homepage',this)" id="homepageTabBtn"><i class="fas fa-home"></i> Home Page</button>
       <button class="tab-btn" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn"><i class="fas fa-heart"></i> Wedding Plans</button>
@@ -1151,24 +1150,6 @@
     </div><!-- end tab-assign -->
 
     <!-- SHOOT TRACKER TAB -->
-    <div class="tab-panel" id="tab-shoot-tracker">
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div class="stat-card"><div class="num" id="tr_total" style="color:#c9a84c;">0</div><div class="lbl">Total Shoots</div></div>
-        <div class="stat-card"><div class="num" id="tr_arrived" style="color:#4caf50;">0</div><div class="lbl">Staff Arrived</div></div>
-        <div class="stat-card"><div class="num" id="tr_noshow" style="color:#f44336;">0</div><div class="lbl">No Shows</div></div>
-        <div class="stat-card"><div class="num" id="tr_done" style="color:#9c27b0;">0</div><div class="lbl">Marked Done</div></div>
-      </div>
-      <!-- Filter -->
-      <div class="filters" style="margin-bottom:1.25rem;">
-        <button class="filter-btn active" onclick="filterTracker('all',this)">All</button>
-        <button class="filter-btn" onclick="filterTracker('assigned',this)">Pending</button>
-        <button class="filter-btn" onclick="filterTracker('arrived',this)">Arrived</button>
-        <button class="filter-btn" onclick="filterTracker('noshow',this)">No Show</button>
-        <button class="filter-btn" onclick="filterTracker('done',this)">Done</button>
-        <button class="filter-btn" onclick="filterTracker('paid',this)">Paid</button>
-      </div>
-      <div id="shootTrackerList"></div>
-    </div><!-- end tab-shoot-tracker -->
 
     <!-- PAYMENTS TAB -->
     <div class="tab-panel" id="tab-payments">
@@ -3134,7 +3115,6 @@ Priority Support</textarea></div>
       if (tab === 'videos') renderStaffVideosAdmin();
       if (tab === 'shoot-reels') renderShootReelsAdmin();
       if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
-      if (tab === 'shoot-tracker') { renderShootTracker(); }
     }
 
     // Activate first visible tab
@@ -5872,11 +5852,18 @@ Priority Support</textarea></div>
           + actionBtns
           + '<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
-          // Message customer button
-          + '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">'
-          + (a.clientPhone ? '<button onclick="msgCustomer(\''+String(a.id)+'\')" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:#25d366;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-whatsapp"></i> Message Customer</button>' : '')
-          + (a.noShow ? '<button onclick="sendNoShowMsg(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user-slash"></i> No Show Message</button>' : '')
-          + '</div>'
+          // Message customer buttons - all steps
+          + '<div style="margin-top:0.85rem;background:rgba(0,0,0,0.3);border:1px solid rgba(201,168,76,0.1);border-radius:10px;padding:0.85rem 1rem;">'
+          + '<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.6rem;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> &nbsp;Send WhatsApp Message</div>'
+          + '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">'
+          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'confirmed\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Confirmed</button>' : '')
+          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'reminder\')" style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bell"></i> Reminder</button>' : '')
+          + (a.clientPhone && a.arrivedAt ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'arrived\')" style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-map-marker-alt"></i> Arrived</button>' : '')
+          + (a.clientPhone && a.noShow ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'noshow\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user-slash"></i> No Show</button>' : '')
+          + (a.clientPhone && (a.status==='done'||a.status==='completed'||a.status==='paid') ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'done\')" style="background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.25);color:#9c27b0;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-flag-checkered"></i> Shoot Done</button>' : '')
+          + (a.clientPhone && a.status==='paid' ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'paid\')" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Paid</button>' : '')
+          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'custom\')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Custom</button>' : '')
+          + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
           + '</div>';
@@ -5909,91 +5896,6 @@ Priority Support</textarea></div>
     }
 
     var _trackerFilter = 'all';
-    function filterTracker(f, btn){
-      _trackerFilter = f;
-      document.querySelectorAll('#tab-shoot-tracker .filter-btn').forEach(function(b){ b.classList.remove('active'); });
-      if(btn) btn.classList.add('active');
-      renderShootTracker();
-    }
-
-    function renderShootTracker(){
-      var all = getAssignedShoots().slice().reverse();
-      document.getElementById('tr_total').textContent = all.length;
-      document.getElementById('tr_arrived').textContent = all.filter(function(a){ return !!a.arrivedAt; }).length;
-      document.getElementById('tr_noshow').textContent = all.filter(function(a){ return !!a.noShow; }).length;
-      document.getElementById('tr_done').textContent = all.filter(function(a){ return a.status==='done'||a.status==='completed'||a.status==='paid'; }).length;
-      var active = all.filter(function(a){ return a.status==='assigned'; }).length;
-      var badge = document.getElementById('trackerBadge');
-      if(badge){ badge.textContent=active; badge.style.display=active>0?'inline':'none'; }
-      var list = all.filter(function(a){
-        if(_trackerFilter==='all') return true;
-        if(_trackerFilter==='arrived') return !!a.arrivedAt && !a.noShow;
-        if(_trackerFilter==='noshow') return !!a.noShow;
-        if(_trackerFilter==='done') return a.status==='done';
-        if(_trackerFilter==='paid') return a.status==='paid';
-        if(_trackerFilter==='assigned') return a.status==='assigned';
-        return true;
-      });
-      var el = document.getElementById('shootTrackerList');
-      if(!list.length){ el.innerHTML='<p style="color:#6a5a40;text-align:center;padding:2rem;">No shoots found.</p>'; return; }
-      var sc = {assigned:'#ff9800',done:'#9c27b0',completed:'#4caf50',paid:'#2196f3',cancelled:'#f44336'};
-      el.innerHTML = list.map(function(a){
-        var c = sc[a.status]||'#ff9800';
-        var oid = a.orderId||('OGS-'+String(a.id).slice(-6));
-        var ph = (a.clientPhone||'').replace(/\D/g,'').slice(-10);
-
-        // Determine which single message button to show based on current status
-        var msgBtn = '';
-        if(ph){
-          if(a.status==='paid'){
-            msgBtn = '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'paid\')" style="background:linear-gradient(135deg,rgba(33,150,243,0.15),rgba(33,150,243,0.05));border:1px solid rgba(33,150,243,0.4);color:#2196f3;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fab fa-whatsapp"></i> Send Delivery Message</button>';
-          } else if(a.status==='done'||a.status==='completed'){
-            msgBtn = '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'done\')" style="background:linear-gradient(135deg,rgba(156,39,176,0.15),rgba(156,39,176,0.05));border:1px solid rgba(156,39,176,0.4);color:#ce93d8;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fab fa-whatsapp"></i> Send Completion Message</button>';
-          } else if(a.noShow){
-            msgBtn = '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'noshow\')" style="background:linear-gradient(135deg,rgba(244,67,54,0.15),rgba(244,67,54,0.05));border:1px solid rgba(244,67,54,0.4);color:#f44336;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fab fa-whatsapp"></i> Send No Show Message</button>';
-          } else if(a.arrivedAt){
-            msgBtn = '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'arrived\')" style="background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));border:1px solid rgba(76,175,80,0.4);color:#4caf50;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fab fa-whatsapp"></i> Send Arrived Message</button>';
-          } else {
-            msgBtn = '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'confirmed\')" style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.4);color:#c9a84c;padding:0.5rem 1.1rem;border-radius:9px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.5rem;"><i class="fab fa-whatsapp"></i> Send Confirmation</button>';
-          }
-          // Always show reminder + custom
-          msgBtn += ' <button onclick="sendStepMsg(\''+String(a.id)+'\',\'reminder\')" style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);color:#ff9800;padding:0.5rem 0.85rem;border-radius:9px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bell"></i> Reminder</button>';
-          msgBtn += ' <button onclick="sendStepMsg(\''+String(a.id)+'\',\'custom\')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.5rem 0.85rem;border-radius:9px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Custom</button>';
-        }
-
-        return '<div style="background:linear-gradient(145deg,#111,#0d0d0d);border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+c+';border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.3);">'
-          // Header
-          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">'
-          +'<div>'
-          +'<div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.25rem;">Order ID: <span style="color:#c9a84c;">'+oid+'</span></div>'
-          +'<div style="font-size:0.95rem;font-weight:900;color:#fff;">'+a.service+' — '+(a.clientName||'')+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> <strong style="color:#d4c9a8;">'+a.staffName+'</strong> &nbsp;·&nbsp; '+a.date+' '+a.time+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> '+(a.clientPhone||'—')+' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'—')+'</div>'
-          +'</div>'
-          +'<div style="display:flex;align-items:center;gap:0.5rem;">'
-          +'<span style="background:'+c+'18;border:1px solid '+c+'44;color:'+c+';font-size:0.68rem;font-weight:800;padding:0.25rem 0.75rem;border-radius:50px;white-space:nowrap;">'+a.status.charAt(0).toUpperCase()+a.status.slice(1)+'</span>'
-          +'<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:0.72rem;display:flex;align-items:center;justify-content:center;" title="Delete"><i class="fas fa-trash"></i></button>'
-          +'</div>'
-          +'</div>'
-          // Timeline
-          +'<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;">'
-          +'<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;"><i class="fas fa-check"></i> Assigned</span>'
-          +(a.arrivedAt ? '<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;"><i class="fas fa-map-marker-alt"></i> Arrived: '+a.arrivedAt+'</span>' : '<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(255,152,0,0.06);border:1px solid rgba(255,152,0,0.2);color:#ff9800;"><i class="fas fa-clock"></i> Not Arrived</span>')
-          +(a.noShow ? '<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;"><i class="fas fa-user-slash"></i> No Show</span>' : '')
-          +(a.doneAt ? '<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.3);color:#9c27b0;"><i class="fas fa-flag-checkered"></i> Done: '+a.doneAt+'</span>' : '')
-          +(a.paidAt ? '<span style="font-size:0.65rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;"><i class="fas fa-check-double"></i> Paid: '+a.paidAt+'</span>' : '')
-          +'</div>'
-          // Message section
-          +(ph ? '<div style="background:rgba(0,0,0,0.3);border:1px solid rgba(201,168,76,0.1);border-radius:10px;padding:0.85rem 1rem;">'
-            +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.6rem;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> &nbsp;Send WhatsApp Message</div>'
-            +'<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">'+msgBtn+'</div>'
-            +'</div>' : '')
-          // Approve & Pay
-          +(a.status==='done' ? '<div style="margin-top:0.75rem;"><button onclick="approveAndPay(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.5rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button></div>' : '')
-          +'</div>';
-      }).join('');
-    }
-
     function sendNoShowMsg(id){
       var list = getAssignedShoots();
       var a = list.find(function(x){ return String(x.id)===String(id); });
