@@ -1140,7 +1140,10 @@
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> Assigned Shoots</h2>
-          <span style="font-size:0.8rem;color:#9a9080;" id="assignedCount"></span>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span style="font-size:0.8rem;color:#9a9080;" id="assignedCount"></span>
+            <button onclick="populateAssignSelects();renderAssignedList();" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
         </div>
         <div id="assignedList"></div>
       </div>
@@ -5854,7 +5857,7 @@ Priority Support</textarea></div>
           + '<div style="font-size:0.95rem;font-weight:800;color:#fff;">' + a.service + ' — ' + a.clientName + '</div>'
           + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-user" style="color:#c9a84c;"></i> Staff: ' + a.staffName + ' &nbsp;·&nbsp; <i class="fas fa-calendar"></i> ' + a.date + ' ' + a.time + '</div>'
           + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-user-circle" style="color:#c9a84c;"></i> Customer: ' + a.clientName + (a.clientPhone ? ' &nbsp;·&nbsp; <i class="fas fa-phone" style="color:#c9a84c;"></i> ' + a.clientPhone : '') + '</div>'
-          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (a.location || a.city) + '</div>'
+          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> ' + (a.location || a.city || '—') + '</div>'
           + (a.arrivedAt
             ? '<div style="font-size:0.72rem;color:#4caf50;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-map-marker-alt"></i> Staff Arrived: ' + a.arrivedAt + '</div>'
             : (a.status==='assigned' ? '<div style="font-size:0.72rem;color:#ff9800;margin-top:0.3rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);padding:0.2rem 0.65rem;border-radius:50px;"><i class="fas fa-clock"></i> Awaiting Arrival</div>' : ''))
@@ -5864,7 +5867,7 @@ Priority Support</textarea></div>
           + creditEdit
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
-          + '<span style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;"><i class="fas fa-eye-slash"></i> Payout: ₹' + a.credit.toLocaleString('en-IN') + '</span>'
+          + '<span style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;"><i class="fas fa-eye-slash"></i> Payout: \u20b9' + (Number(a.credit)||0).toLocaleString('en-IN') + '</span>'
           + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
