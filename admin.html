@@ -5966,11 +5966,26 @@ Priority Support</textarea></div>
           +'━━━━━━━━━━━━━━━━━━━━━━\n'
           +'Hi *'+a.clientName+'*! 🎉\n\n'
           +'Your *'+a.service+'* shoot is complete!\n\n'
-          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
-          +'🎥 Creator: *'+a.staffName+'*\n'
-          +'📅 Shoot Date: *'+a.date+'*\n\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'👤 *CREATOR DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🎥 Name: *'+a.staffName+'*\n'
+          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*\n':'')
+          +(a.staffEmail?'📧 Email: *'+a.staffEmail+'*\n':'')
+          +'🏆 Certified OG Shoots Creator\n\n'
+          +'💰 *PAYMENT DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'💵 Amount to Pay: *₹'+(Number(a.credit)||0).toLocaleString('en-IN')+'*\n'
+          +'🏦 Pay directly to creator at location\n'
+          +'📝 Please keep exact change ready\n\n'
           +'Our team is now editing your content. You will receive your reels shortly. ⚡\n\n'
-          +'⭐ Please rate your experience — it helps us improve!\n\n'
+          +'⭐ Rate your experience & get an exclusive coupon!\n\n'
           +'— *OG Shoots Media* 🚀';
       },
       paid: function(a){
