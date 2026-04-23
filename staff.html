@@ -2033,9 +2033,25 @@
       var reader = new FileReader();
       reader.onload = function(e){
         var ss = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]');
-        ss.push({ assignId: assignId, url: e.target.result, uploadedAt: new Date().toLocaleString() });
+        // Remove old SS for this shoot and add new one
+        ss = ss.filter(function(x){ return String(x.assignId) !== String(assignId); });
+        ss.push({ assignId: String(assignId), url: e.target.result, uploadedAt: new Date().toLocaleString() });
         localStorage.setItem('hs_shoot_ss', JSON.stringify(ss));
-        if(window.fbUpdate) fbUpdate('assigned_shoots', String(assignId), { ssUploaded: true, ssUploadedAt: new Date().toLocaleString() });
+        // Sync to Firebase directly
+        (async function(){
+          try{
+            var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+            var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+            var db      = fbStore.getFirestore(app);
+            await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{
+              ssUploaded: true,
+              ssUploadedAt: new Date().toLocaleString()
+            },{merge:true});
+            console.log('Screenshot uploaded and synced to Firebase');
+          }catch(e){ console.error('SS upload Firebase error:',e); }
+        })();
         renderAssignedShoots();
       };
       reader.readAsDataURL(file);

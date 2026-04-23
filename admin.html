@@ -5756,6 +5756,7 @@ Priority Support</textarea></div>
           +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'—')+'</div>'
           +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Client: '+(a.clientPhone||'—')+'</div>'
           +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
+          +(a.ssUploaded?'<div style="font-size:0.72rem;color:#4caf50;margin-top:0.3rem;"><i class="fas fa-image"></i> Screenshot Uploaded'+(a.ssUploadedAt?' — '+a.ssUploadedAt:'')+'</div>':'')
           +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
           // Staff details
           +'<div style="margin-top:0.85rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;">'
