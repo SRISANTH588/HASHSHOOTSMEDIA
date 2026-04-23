@@ -5690,6 +5690,8 @@ Priority Support</textarea></div>
         var isPaid = a.status==='paid';
         var borderColor = isPaid ? '#2196f3' : '#ff9800';
         var creditVal = a.credit || 0;
+        // Find all staff assigned to same booking
+        var sameBooking = allPayable.filter(function(x){ return String(x.bookingId)===String(a.bookingId) && String(x.id)!==String(a.id); });
         // Get bank details — from shoot record OR from localStorage
         var bank = a.bankDetails || JSON.parse(localStorage.getItem('hs_bank_'+a.staffId)||'null');
         var bankHtml = '';
@@ -5735,18 +5737,59 @@ Priority Support</textarea></div>
           +(a.staffEmail?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Email</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffEmail+'</div></div>':'')
           +'</div></div>'
           +bankHtml
-          +'</div>'
-          +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
-          +(isPaid
-            ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
-            : '<div style="display:flex;align-items:center;gap:0.5rem;">'
-              +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
-              +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+'" placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
-              +'</div>'
-              +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>')
-          +'</div>'
-          +'</div>'
-          +'</div>';
+          // Other staff for same booking
+          // Other staff for same booking
+          var otherStaffHtml = '';
+          if(sameBooking.length){
+            otherStaffHtml = '<div style="margin-top:0.75rem;background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.2);border-radius:10px;padding:0.75rem 1rem;">';
+            otherStaffHtml += '<div style="font-size:0.65rem;font-weight:800;color:#ce93d8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-users"></i> Other Staff on Same Shoot</div>';
+            sameBooking.forEach(function(x){
+              var xBank = x.bankDetails || JSON.parse(localStorage.getItem('hs_bank_'+x.staffId)||'null');
+              otherStaffHtml += '<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.4rem;">';
+              otherStaffHtml += '<div style="font-size:0.8rem;font-weight:700;color:#fff;">'+x.staffName+' <span style="font-size:0.68rem;color:#9a9080;">#'+x.staffId+'</span></div>';
+              if(x.staffPhone) otherStaffHtml += '<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;"></i> '+x.staffPhone+'</div>';
+              otherStaffHtml += '<div style="font-size:0.72rem;color:#ff9800;font-weight:700;">Payout: ₹'+(Number(x.credit)||0).toLocaleString('en-IN')+'</div>';
+              if(xBank&&xBank.accNo) otherStaffHtml += '<div style="font-size:0.7rem;color:#4caf50;"><i class="fas fa-university"></i> '+xBank.bankName+' — '+xBank.accNo+(xBank.upi?' | UPI: '+xBank.upi:'')+'</div>';
+              otherStaffHtml += '<div style="font-size:0.68rem;color:'+(x.status==='paid'?'#2196f3':'#ff9800')+';font-weight:700;margin-top:0.2rem;">'+(x.status==='paid'?'✅ Paid':'⏳ Pending')+'</div>';
+              otherStaffHtml += '</div>';
+            });
+            otherStaffHtml += '</div>';
+          }
+          var amountHtml = !isPaid ? '<div style="background:linear-gradient(135deg,rgba(255,152,0,0.15),rgba(255,152,0,0.05));border:1px solid rgba(255,152,0,0.4);border-radius:12px;padding:0.75rem 1rem;text-align:center;margin-bottom:0.5rem;"><div style="font-size:0.6rem;color:rgba(255,152,0,0.7);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Amount to Pay</div><div style="font-size:1.5rem;font-weight:900;color:#ff9800;">₹'+(Number(creditVal)||0).toLocaleString('en-IN')+'</div></div>' : '';
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+            +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
+            +'<div style="flex:1;">'
+            +'<div style="font-size:0.68rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;"><i class="fas fa-clipboard-list"></i> Order Details</div>'
+            +'<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+(a.service||'Shoot')+' &mdash; '+(a.clientName||'')+'</div>'
+            +'<div style="font-size:0.75rem;color:#9a9080;"><i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' at '+a.time+'</div>'
+            +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'—')+'</div>'
+            +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Client: '+(a.clientPhone||'—')+'</div>'
+            +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
+            +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
+            +'<div style="margin-top:0.85rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;">'
+            +'<div style="font-size:0.65rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-user-circle"></i> Staff Details</div>'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">'
+            +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Name</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffName+'</div></div>'
+            +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Staff ID</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">#'+a.staffId+'</div></div>'
+            +(a.staffPhone?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Phone</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffPhone+'</div></div>':'')
+            +(a.staffEmail?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Email</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffEmail+'</div></div>':'')
+            +'</div></div>'
+            +bankHtml
+            +otherStaffHtml
+            +'</div>'
+            +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
+            +amountHtml
+            +(isPaid
+              ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
+              : '<div style="display:flex;align-items:center;gap:0.5rem;">'
+                +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
+                +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+'" placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
+                +'</div>'
+                +'<button onclick="adminReleasePayment(\''+String(a.id)+'\')" style="background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payment</button>')
+            +'</div>'
+            +'</div>'
+            +'</div>';
       }).join('');
     }
 
