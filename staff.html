@@ -1137,10 +1137,6 @@
           allSnap.forEach(function(d){allData.push(d.data());});
           var ids = allData.map(function(x){return x.staffId;}).join(', ');
           console.log('All staffIds in Firebase:', ids);
-          // Show alert so admin/staff can see the mismatch
-          alert('Sync complete!\n\nYour Staff ID: '+myId+'\nShoots found for you: '+fresh.length+'\nTotal shoots in Firebase: '+allSnap.size+'\n\nStaff IDs in Firebase: '+ids+'\n\nPlease tell admin to check the Staff ID.');
-        } else if(fresh.length > 0){
-          alert('\u2705 Found '+fresh.length+' shoot(s) for you! Refreshing...');
         }
       }catch(e){ console.warn('sync error:', e); }
       renderAssignedShoots();
@@ -1683,6 +1679,7 @@
       el.innerHTML = '';
 
       shoots.forEach(function(a){
+        try{
         var color = statusColors[a.status] || '#ff9800';
         var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
         var booking = bookings.find(function(b){ return b.id === a.bookingId; });
@@ -1800,6 +1797,13 @@
 
         card.innerHTML = headerHTML + detailsHTML + arrivedHTML + uploadHTML;
         el.appendChild(card);
+        }catch(cardErr){
+          console.error('Error rendering shoot card:', cardErr, a);
+          var errDiv = document.createElement('div');
+          errDiv.style.cssText='background:#1a1a1a;border:1px solid rgba(244,67,54,0.3);border-radius:12px;padding:1rem;margin-bottom:0.75rem;color:#f44336;font-size:0.82rem;';
+          errDiv.innerHTML='<i class="fas fa-exclamation-triangle"></i> Error loading shoot: '+(a.service||'Unknown')+' - '+(a.clientName||'')+'<br><small style="color:#777;">'+cardErr.message+'</small>';
+          el.appendChild(errDiv);
+        }
       });
     }
 
