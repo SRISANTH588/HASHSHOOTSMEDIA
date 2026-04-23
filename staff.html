@@ -2456,9 +2456,26 @@
       creatorSelectedStars[id] = val;
       document.querySelectorAll('.cstar[data-id="' + id + '"]').forEach(function(s){
         s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#555';
-        s.classList.toggle('active', Number(s.dataset.val) <= val);
       });
     }
+
+    // Event delegation — single listener handles all star clicks and submit buttons
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if(t.classList && t.classList.contains('cstar') && t.dataset.id){
+        setCreatorStars(t.dataset.id, Number(t.dataset.val));
+        return;
+      }
+      if(t.dataset && t.dataset.submitId){
+        submitCreatorFeedback(t.dataset.submitId);
+        return;
+      }
+      // handle click on <i> inside submit button
+      if(t.parentElement && t.parentElement.dataset && t.parentElement.dataset.submitId){
+        submitCreatorFeedback(t.parentElement.dataset.submitId);
+        return;
+      }
+    });
 
     function renderCreatorShootFeedback(){
       var staffId = String(localStorage.getItem('hs_staff_id'));
@@ -2531,28 +2548,15 @@
           + '<button data-submit-id="' + String(a.id) + '" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
           + '</div>';
       }).join('');
-      // Restore star selections after re-render
+      // Re-apply selected star colors after re-render
       Object.keys(creatorSelectedStars).forEach(function(id){
         var val = creatorSelectedStars[id];
-        if(val) setCreatorStars(String(id), val);
+        if(val) document.querySelectorAll('.cstar[data-id="'+id+'"]').forEach(function(s){
+          s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#555';
+        });
       });
     }
 
-    // Event delegation for star clicks and submit — avoids inline onclick quote issues
-    document.addEventListener('click', function(e){
-      // Star click
-      var star = e.target.closest ? e.target.closest('.cstar') : (e.target.classList.contains('cstar') ? e.target : null);
-      if(star && star.dataset.id){
-        setCreatorStars(String(star.dataset.id), Number(star.dataset.val));
-        return;
-      }
-      // Submit button
-      var btn = e.target.closest ? e.target.closest('[data-submit-id]') : (e.target.dataset && e.target.dataset.submitId ? e.target : null);
-      if(btn && btn.dataset.submitId){
-        submitCreatorFeedback(String(btn.dataset.submitId));
-        return;
-      }
-    });
 
     var _shootFbStars = {};
 
