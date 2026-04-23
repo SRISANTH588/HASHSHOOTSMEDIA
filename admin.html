@@ -5899,12 +5899,19 @@ Priority Support</textarea></div>
         return;
       }
       var statusColors = { assigned:'#ff9800', done:'#9c27b0', completed:'#4caf50', paid:'#2196f3', cancelled:'#f44336' };
-      el.innerHTML = list.map(function(a){
-        var color = statusColors[a.status] || '#ff9800';
+      var _html = '';
+      list.forEach(function(a){
+        try {
+        var status = a.status || 'assigned';
+        var color = statusColors[status] || '#ff9800';
+        a.service = a.service || '—';
+        a.clientName = a.clientName || '—';
+        a.staffName = a.staffName || '—';
+        a.date = a.date || ''; a.time = a.time || '';
 
         // Action buttons based on status
         var actionBtns = '';
-        if(a.status === 'assigned'){
+        if(status === 'assigned'){
           actionBtns = '<button onclick="adminMarkDone(\''+String(a.id)+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Mark Done</button>';
         } else if(a.status === 'done'){
           actionBtns = '<button onclick="approveAndPay(\''+String(a.id)+'\')" style="background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.3rem 0.75rem;border-radius:7px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Approve &amp; Pay</button>';
@@ -5928,7 +5935,7 @@ Priority Support</textarea></div>
             + '</div>'
           : '';
 
-        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
+        _html += '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+color+';border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.75rem;">'
           + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
           + '<div>'
           + '<div style="font-size:0.62rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.2rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
@@ -5946,7 +5953,7 @@ Priority Support</textarea></div>
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">'
           + '<span style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;"><i class="fas fa-eye-slash"></i> Payout: \u20b9' + (Number(a.credit)||0).toLocaleString('en-IN') + '</span>'
-          + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + a.status.charAt(0).toUpperCase()+a.status.slice(1) + '</span>'
+          + '<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;">' + status.charAt(0).toUpperCase()+status.slice(1) + '</span>'
           + payoutBadge
           + actionBtns
           + '<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
@@ -5959,14 +5966,16 @@ Priority Support</textarea></div>
           + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'reminder\')" style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bell"></i> Reminder</button>' : '')
           + (a.clientPhone && a.arrivedAt ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'arrived\')" style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-map-marker-alt"></i> Arrived</button>' : '')
           + (a.clientPhone && a.noShow ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'noshow\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user-slash"></i> No Show</button>' : '')
-          + (a.clientPhone && (a.status==='done'||a.status==='completed'||a.status==='paid') ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'done\')" style="background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.25);color:#9c27b0;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-flag-checkered"></i> Shoot Done</button>' : '')
-          + (a.clientPhone && a.status==='paid' ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'paid\')" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Paid</button>' : '')
+          + (a.clientPhone && (status==='done'||status==='completed'||status==='paid') ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'done\')" style="background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.25);color:#9c27b0;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-flag-checkered"></i> Shoot Done</button>' : '')
+          + (a.clientPhone && status==='paid' ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'paid\')" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Paid</button>' : '')
           + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'custom\')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Custom</button>' : '')
           + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
           + '</div>';
-      }).join('');
+        } catch(err){ console.error('card err', a && a.id, err); }
+      });
+      el.innerHTML = _html;
     }
 
     function adminVideoSection(a){
