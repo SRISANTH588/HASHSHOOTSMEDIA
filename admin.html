@@ -5881,6 +5881,14 @@ Priority Support</textarea></div>
       var list = getAssignedShoots();
       var updated = list.filter(function(a){ return String(a.id) !== String(id); });
       saveAssignedShoots(updated);
+      // Also delete from Firebase so listener doesn't push it back
+      (async function(){
+        try{
+          var f = await _fbAdmin();
+          if(!f) return;
+          await f.s.deleteDoc(f.s.doc(f.db, 'assigned_shoots', String(id)));
+        }catch(e){ console.error('deletePayoutCard Firebase error:', e); }
+      })();
       renderAdminPayments();
       renderAssignedList();
     }
