@@ -1479,93 +1479,42 @@
         card.className = 'demo-card ' + statusClass;
         card.id = 'demoCard_' + d.id;
 
-        // timeline steps
-        var steps = [
-          {label:'Assigned', key:'assigned'},
-          {label:'Demo Done', key:'demo'},
-          {label:'Reel Uploaded', key:'uploaded'},
-          {label:'Admin Review', key:'review'},
-          {label:'Result', key:'result'}
-        ];
-        var stepIdx = {pending:0, open:0, submitted:2, approved:4, rejected:4}[d.status] || 0;
-        if(d.status === 'pending' || d.status === 'open') stepIdx = 1;
-        if(d.status === 'submitted') stepIdx = 3;
-
-        var timelineHTML = '<div class="demo-timeline">';
-        steps.forEach(function(s, i){
-          var dotClass = i < stepIdx ? 'done' : i === stepIdx ? 'active' : '';
-          if(d.status === 'approved' && i === 4) dotClass = 'approved';
-          if(d.status === 'rejected' && i === 4) dotClass = 'rejected';
-          var icon = i < stepIdx ? '<i class="fas fa-check"></i>' : (i === stepIdx ? '<i class="fas fa-circle"></i>' : i+1);
-          if(d.status === 'approved' && i === 4) icon = '<i class="fas fa-check-double"></i>';
-          if(d.status === 'rejected' && i === 4) icon = '<i class="fas fa-times"></i>';
-          timelineHTML += '<div class="demo-step">'
-            +'<div class="demo-step-dot '+dotClass+'">'+icon+'</div>'
-            +'<div class="demo-step-label '+(i<=stepIdx?'done':'')+'">'+s.label+'</div>'
-            +'</div>';
-        });
-        timelineHTML += '</div>';
+        // timeline — only 2 steps: Assigned & Demo Done
+        var isDone = d.status === 'done' || d.status === 'submitted' || d.status === 'approved';
+        var timelineHTML = '<div class="demo-timeline">'
+          +'<div class="demo-step">'
+          +'<div class="demo-step-dot done"><i class="fas fa-check"></i></div>'
+          +'<div class="demo-step-label done">Assigned</div>'
+          +'</div>'
+          +'<div style="flex:1;height:2px;background:'+(isDone?'rgba(76,175,80,0.5)':'rgba(255,255,255,0.08)')+';align-self:center;margin-bottom:1.1rem;"></div>'
+          +'<div class="demo-step">'
+          +'<div class="demo-step-dot '+(isDone?'approved':'active')+'">'
+          +(isDone?'<i class="fas fa-check-double"></i>':'<i class="fas fa-circle"></i>')
+          +'</div>'
+          +'<div class="demo-step-label '+(isDone?'done':'')+'">Demo Done</div>'
+          +'</div>'
+          +'</div>';
 
         // action area
         var actionHTML = '';
         if(d.status === 'pending' || d.status === 'open'){
-          actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
-            +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
-            +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
-            +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
-            +'</div>'
-            +'<div class="demo-upload-zone" id="dropZone_'+d.id+'" ondragover="event.preventDefault();this.style.borderColor=\'#c9a84c\'" ondragleave="this.style.borderColor=\'\'" ondrop="onDemoDrop(event,'+d.id+')" >'
-            +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
-            +'<i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:#c9a84c;opacity:0.6;"></i>'
-            +'<p>Drag & drop your shoot reel or click to browse</p>'
-            +'</div>'
-            +'<div id="demoFileInfo_'+d.id+'" style="display:none;margin-top:0.5rem;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#c9a84c;font-weight:600;"></div>'
-            +'<div class="demo-progress" id="demoProgress_'+d.id+'">'
-            +'<div class="demo-progress-label" id="demoProgressLabel_'+d.id+'">Uploading...</div>'
-            +'<div class="demo-progress-bar"><div class="demo-progress-fill" id="demoProgressFill_'+d.id+'"></div></div>'
-            +'</div>'
-            +'<button class="btn-submit-reel" id="demoSubmitBtn_'+d.id+'" onclick="submitDemoReel('+d.id+')" disabled>'
-            +'<i class="fas fa-upload"></i> Submit Reel for Approval'
-            +'</button>';
-        } else if(d.status === 'submitted'){
-          actionHTML = '<div style="padding:0.75rem;background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.15);border-radius:8px;font-size:0.82rem;color:#4caf50;">'
-            +'<div style="display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-clock"></i> Reel submitted — waiting for admin approval</div>'
-            +(d.shootDate||d.shootTime ? '<div style="margin-top:0.5rem;font-size:0.72rem;color:#a0c8a0;"><i class="fas fa-calendar"></i> '+(d.shootDate||'')+'&nbsp;&nbsp;<i class="fas fa-clock"></i> '+(d.shootTime||'')+(d.shootPlace ? '&nbsp;&nbsp;<i class="fas fa-map-marker-alt"></i> '+d.shootPlace : '')+'</div>' : '')
+          actionHTML = '<button onclick="markDemoDone('+d.id+')" style="width:100%;margin-top:0.75rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:10px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;"><i class="fas fa-flag-checkered"></i> Mark as Done & Notify Admin</button>';
+        } else if(d.status === 'done' || d.status === 'submitted'){
+          actionHTML = '<div style="margin-top:0.75rem;padding:0.85rem 1rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:10px;display:flex;align-items:center;gap:0.65rem;font-size:0.85rem;color:#4caf50;font-weight:700;">'
+            +'<i class="fas fa-check-double"></i> Demo marked as done — Admin has been notified'
+            +(d.doneAt ? '<span style="margin-left:auto;font-size:0.7rem;color:#6a9a6a;font-weight:400;">'+d.doneAt+'</span>' : '')
             +'</div>';
         } else if(d.status === 'approved'){
-          actionHTML = '<div class="demo-admin-note approved">'
-            +'<div style="font-weight:700;margin-bottom:0.3rem;"><i class="fas fa-check-circle"></i> Approved by Admin</div>'
-            +(d.adminNote ? '<div>&ldquo;'+d.adminNote+'&rdquo;</div>' : '')
+          actionHTML = '<div style="margin-top:0.75rem;padding:0.85rem 1rem;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.25);border-radius:10px;display:flex;align-items:center;gap:0.65rem;font-size:0.85rem;color:#2196f3;font-weight:700;">'
+            +'<i class="fas fa-trophy"></i> Approved by Admin'
+            +(d.adminNote ? ' — &ldquo;'+d.adminNote+'&rdquo;' : '')
             +'</div>';
         } else if(d.status === 'rejected'){
-          actionHTML = '<div class="demo-admin-note rejected">'
-            +'<div style="font-weight:700;margin-bottom:0.3rem;"><i class="fas fa-times-circle"></i> Rejected — Please re-submit</div>'
-            +(d.adminNote ? '<div>&ldquo;'+d.adminNote+'&rdquo;</div>' : '')
+          actionHTML = '<div style="margin-top:0.75rem;padding:0.85rem 1rem;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.25);border-radius:10px;font-size:0.85rem;color:#f44336;font-weight:700;margin-bottom:0.75rem;">'
+            +'<i class="fas fa-times-circle"></i> Rejected'
+            +(d.adminNote ? ' — &ldquo;'+d.adminNote+'&rdquo;' : '')
             +'</div>'
-            +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
-            +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-clock"></i> Shoot Time *</label>'
-            +'<input type="time" id="demoTime_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
-            +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-map-marker-alt"></i> Shoot Place *</label>'
-            +'<input type="text" id="demoPlace_'+d.id+'" class="upload-input" style="width:100%;" placeholder="e.g. Vijayawada" /></div>'
-            +'</div>'
-            +'<div class="demo-upload-zone" style="margin-top:0.75rem;" ondragover="event.preventDefault()" ondrop="onDemoDrop(event,'+d.id+')" >'
-            +'<input type="file" accept="video/*" onchange="onDemoFileSelected(this,'+d.id+')" />'
-            +'<i class="fas fa-redo" style="font-size:1.4rem;color:#f44336;opacity:0.7;"></i>'
-            +'<p>Upload revised reel</p>'
-            +'</div>'
-            +'<div id="demoFileInfo_'+d.id+'" style="display:none;margin-top:0.5rem;background:#0a0a0a;border:1px solid rgba(244,67,54,0.2);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#f44336;font-weight:600;"></div>'
-            +'<div class="demo-progress" id="demoProgress_'+d.id+'">'
-            +'<div class="demo-progress-label" id="demoProgressLabel_'+d.id+'">Uploading...</div>'
-            +'<div class="demo-progress-bar"><div class="demo-progress-fill" id="demoProgressFill_'+d.id+'"></div></div>'
-            +'</div>'
-            +'<button class="btn-submit-reel" id="demoSubmitBtn_'+d.id+'" onclick="submitDemoReel('+d.id+')" disabled style="background:#f44336;">'
-            +'<i class="fas fa-upload"></i> Re-submit Reel'
-            +'</button>';
+            +'<button onclick="markDemoDone('+d.id+')" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#fff;border:none;border-radius:10px;padding:0.85rem;font-size:0.92rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;"><i class="fas fa-flag-checkered"></i> Mark as Done Again & Notify Admin</button>';
         }
 
         card.innerHTML = '<div class="demo-card-header">'
@@ -1597,77 +1546,35 @@
       });
     }
 
-    function onDemoFileSelected(input, demoId){
-      var file = input.files[0];
-      if(!file) return;
-      demoFileMap[demoId] = file;
-      var info = document.getElementById('demoFileInfo_' + demoId);
-      if(info){
-        info.style.display = 'block';
-        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
-      }
-      var btn = document.getElementById('demoSubmitBtn_' + demoId);
-      if(btn) btn.disabled = false;
-    }
-
-    function onDemoDrop(event, demoId){
-      event.preventDefault();
-      var file = event.dataTransfer.files[0];
-      if(!file || !file.type.startsWith('video/')) return;
-      demoFileMap[demoId] = file;
-      var info = document.getElementById('demoFileInfo_' + demoId);
-      if(info){
-        info.style.display = 'block';
-        info.innerHTML = '<i class="fas fa-film"></i> &nbsp;' + file.name + ' &nbsp;<span style="color:#9a9080;font-weight:400;">(' + (file.size/1024/1024).toFixed(1) + ' MB)</span>';
-      }
-      var btn = document.getElementById('demoSubmitBtn_' + demoId);
-      if(btn) btn.disabled = false;
-    }
-
-    function submitDemoReel(demoId){
-      var file = demoFileMap[demoId];
-      if(!file){ alert('Please select a video file first.'); return; }
-      var shootDate = document.getElementById('demoDate_' + demoId);
-      var shootTime = document.getElementById('demoTime_' + demoId);
-      if(!shootDate || !shootDate.value){ alert('Please select the shoot date.'); return; }
-      if(!shootTime || !shootTime.value){ alert('Please select the shoot time.'); return; }
-      var shootPlace = document.getElementById('demoPlace_' + demoId);
-      if(!shootPlace || !shootPlace.value.trim()){ alert('Please enter the shoot place.'); return; }
-      var btn = document.getElementById('demoSubmitBtn_' + demoId);
-      var progressWrap = document.getElementById('demoProgress_' + demoId);
-      var progressFill = document.getElementById('demoProgressFill_' + demoId);
-      var progressLabel = document.getElementById('demoProgressLabel_' + demoId);
-      if(btn) btn.disabled = true;
-      if(progressWrap) progressWrap.style.display = 'block';
-      if(progressLabel) progressLabel.textContent = 'Saving to storage...';
-      if(progressFill) progressFill.style.width = '20%';
-
-      var videoKey = 'demo_reel_' + demoId;
-      saveVideoDB(videoKey, file, function(){
-        if(progressFill) progressFill.style.width = '90%';
-        if(progressLabel) progressLabel.textContent = 'Finalising...';
-        var demos = getDemos();
-        var d = demos.find(function(x){ return x.id === demoId; });
-        var sDate = document.getElementById('demoDate_' + demoId);
-        var sTime = document.getElementById('demoTime_' + demoId);
-        if(d){
-          d.reelVideoId = videoKey;
-          d.status = 'submitted';
-          d.submittedAt = new Date().toLocaleString();
-          d.shootDate = sDate ? sDate.value : '';
-          d.shootTime = sTime ? sTime.value : '';
-          var sPlace = document.getElementById('demoPlace_' + demoId);
-          d.shootPlace = sPlace ? sPlace.value.trim() : '';
-          d.adminNote = '';
-        }
-        saveDemos(demos);
-        if(progressFill) progressFill.style.width = '100%';
-        if(progressLabel) progressLabel.textContent = 'Done!';
-        setTimeout(function(){
-          if(progressWrap) progressWrap.style.display = 'none';
-          renderCreatorDemos();
-        }, 800);
-      });
+    async function markDemoDone(demoId){
+      var demos = getDemos();
+      var d = demos.find(function(x){ return x.id === demoId; });
+      if(!d) return;
+      d.status = 'done';
+      d.doneAt = new Date().toLocaleString();
+      saveDemos(demos);
+      _renderCreatorDemosFromLocal();
+      // Notify admin via Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='staff-demo-done';})||fbMod.initializeApp(fbCfg,'staff-demo-done');
+        var db      = fbStore.getFirestore(app);
+        // Update demo status in Firestore
+        await fbStore.setDoc(fbStore.doc(db,'demos',String(demoId)), { status:'done', doneAt: d.doneAt }, {merge:true});
+        // Send notification to admin
+        await fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
+          type: 'demo_done',
+          title: '\uD83C\uDFC1 Demo Marked as Done',
+          message: (d.staffName||'Staff') + ' has completed the demo: ' + d.title,
+          staffId: String(d.staffId),
+          staffName: d.staffName || '',
+          demoId: String(demoId),
+          read: false,
+          createdAt: fbStore.serverTimestamp()
+        });
+      }catch(e){ console.warn('markDemoDone Firebase error:', e); }
     }
 
     // ── ASSIGNED SHOOTS ─────────────────────────────────────────
