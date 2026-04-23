@@ -4927,7 +4927,7 @@ Priority Support</textarea></div>
         try{
           var f = await _fbAdmin();
           if(!f){ alert('Demo saved locally but Firebase unavailable. Staff may not see it.'); return; }
-          await f.s.setDoc(f.s.doc(f.db,'demos',String(demo.id)), demo, {merge:true});
+          await f.s.setDoc(f.s.doc(f.db,'demos',String(demo.id)), Object.assign({}, demo, { createdAt: f.s.serverTimestamp() }), {merge:true});
           // Notify the assigned staff
           await f.s.addDoc(f.s.collection(f.db,'staff_notifications'),{
             staffId: String(demo.staffId),
