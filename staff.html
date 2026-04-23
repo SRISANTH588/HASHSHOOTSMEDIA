@@ -1435,11 +1435,14 @@
           var db      = fbStore.getFirestore(app);
           var snap    = await fbStore.getDocs(fbStore.collection(db,'demos'));
           var myDemos = [];
+          var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
           snap.forEach(function(d){
             var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
             if(String(data.staffId)===staffId || String(data.staffId)===String(myIdNum)){
-              data.staffId = staffId;
-              myDemos.push(data);
+              if(hidden.indexOf(String(data.id)) === -1){
+                data.staffId = staffId;
+                myDemos.push(data);
+              }
             }
           });
           if(myDemos.length){
@@ -1457,7 +1460,11 @@
 
     function _renderCreatorDemosFromLocal(){
       var staffId = String(localStorage.getItem('hs_staff_id'));
-      var myDemos = getDemos().filter(function(d){ return String(d.staffId) === staffId; }).slice().reverse();
+      var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
+      var myDemos = getDemos()
+        .filter(function(d){ return String(d.staffId) === staffId; })
+        .filter(function(d){ return hidden.indexOf(String(d.id)) === -1; })
+        .slice().reverse();
 
       // update demo pending badge
       var badge = document.getElementById('demoPendingBadge');
@@ -1551,6 +1558,10 @@
 
     function removeDemoSession(demoId){
       if(!confirm('Remove this demo session from your list?')) return;
+      // Track hidden demos so Firebase listener doesn't restore them
+      var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
+      if(hidden.indexOf(String(demoId)) === -1) hidden.push(String(demoId));
+      localStorage.setItem('hs_demos_hidden', JSON.stringify(hidden));
       var demos = getDemos().filter(function(d){ return d.id !== demoId; });
       saveDemos(demos);
       _renderCreatorDemosFromLocal();
@@ -3724,7 +3735,8 @@
         try{ fbListen('demos', function(docs){
           var staffId = String(localStorage.getItem('hs_staff_id'));
           var myIdNum = Number(staffId);
-          var myDemos = docs.filter(function(d){ return String(d.staffId)===staffId || String(d.staffId)===String(myIdNum); });
+          var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
+          var myDemos = docs.filter(function(d){ return (String(d.staffId)===staffId || String(d.staffId)===String(myIdNum)) && hidden.indexOf(String(d.id||d._fbId)) === -1; });
           if(!myDemos.length) return;
           var local = JSON.parse(localStorage.getItem('hs_demos') || '[]');
           myDemos.forEach(function(d){
