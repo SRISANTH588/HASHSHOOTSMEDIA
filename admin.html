@@ -5780,8 +5780,9 @@ Priority Support</textarea></div>
               +(a.totalCreators>1?'<div style="font-size:0.68rem;color:rgba(255,152,0,0.6);margin-top:0.2rem;">Split from total ('+a.totalCreators+' creators)</div>':'')
             +'</div>'
             : '';
-          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
-            +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;position:relative;">'
+            +'<button onclick="deletePayoutCard(\''+String(a.id)+'\')" style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(244,67,54,0.12);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.3rem 0.65rem;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.35rem;"><i class="fas fa-trash"></i> Delete</button>'
+            +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:5rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
             +'<div style="flex:1;">'
             +'<div style="font-size:0.68rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;"><i class="fas fa-clipboard-list"></i> Order Details</div>'
@@ -5805,7 +5806,17 @@ Priority Support</textarea></div>
             +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">'
             +amountHtml
             +(isPaid
-              ? '<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
+              ? '<div style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;">'
+                +'<span style="background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.72rem;font-weight:800;padding:0.3rem 0.85rem;border-radius:50px;"><i class="fas fa-check-double"></i> Payment Released</span>'
+                +'<div style="background:rgba(33,150,243,0.07);border:1px solid rgba(33,150,243,0.2);border-radius:10px;padding:0.65rem 0.85rem;text-align:right;">'
+                  +'<div style="font-size:0.6rem;color:rgba(33,150,243,0.7);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Released To</div>'
+                  +'<div style="font-size:1.2rem;font-weight:900;color:#2196f3;">₹'+Number(a.credit).toLocaleString('en-IN')+'</div>'
+                  +(bank&&bank.bankName?'<div style="font-size:0.72rem;color:#fff;font-weight:700;margin-top:0.2rem;"><i class="fas fa-university" style="color:#2196f3;"></i> '+bank.bankName+'</div>':'')
+                  +(bank&&bank.accNo?'<div style="font-size:0.7rem;color:#9a9080;">A/C: '+bank.accNo+'</div>':'')
+                  +(bank&&bank.upi?'<div style="font-size:0.7rem;color:#c9a84c;">UPI: '+bank.upi+'</div>':'')
+                  +'<div style="font-size:0.65rem;color:#6a6050;margin-top:0.2rem;">on '+a.paidAt+'</div>'
+                +'</div>'
+              +'</div>'
               : '<div style="display:flex;align-items:center;gap:0.5rem;">'
                 +'<label style="font-size:0.72rem;color:#9a9080;">Amount &#8377;</label>'
                 +'<input type="number" id="pmCredit_'+a.id+'" value="'+(creditVal||'')+'" placeholder="Enter amount" min="1" style="width:110px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;"/>'
@@ -5873,6 +5884,15 @@ Priority Support</textarea></div>
       var badge = document.getElementById('paymentsAdminBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
       showAssignToast('\u2705 \u20b9'+amt.toLocaleString('en-IN')+' released to '+a.staffName+'! Payment marked as done.', true);
+    }
+
+    function deletePayoutCard(id){
+      if(!confirm('Delete this payout record? This cannot be undone.')) return;
+      var list = getAssignedShoots();
+      var updated = list.filter(function(a){ return String(a.id) !== String(id); });
+      saveAssignedShoots(updated);
+      renderAdminPayments();
+      renderAssignedList();
     }
 
     function renderAssignedList(){
