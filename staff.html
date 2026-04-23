@@ -1682,10 +1682,12 @@
       var el = document.getElementById('assignedShootsList');
       if(!shoots.length){
         var totalInStorage = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').length;
+        var allIds = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').map(function(a){ return a.staffId; }).join(', ');
         el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;">'
           +'<i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>'
           +'<p style="color:#6a5a40;font-size:0.85rem;margin-bottom:0.5rem;">No shoots assigned yet.</p>'
-          +'<p style="color:#9a9080;font-size:0.72rem;margin-bottom:0.75rem;">Staff ID: <strong style="color:#c9a84c;">'+staffId+'</strong> &nbsp;|&nbsp; In storage: <strong style="color:#c9a84c;">'+totalInStorage+'</strong></p>'
+          +'<p style="color:#9a9080;font-size:0.72rem;margin-bottom:0.75rem;">Your Staff ID: <strong style="color:#c9a84c;">'+staffId+'</strong> &nbsp;|&nbsp; Total in storage: <strong style="color:#c9a84c;">'+totalInStorage+'</strong></p>'
+          +(totalInStorage > 0 ? '<p style="color:#777;font-size:0.65rem;margin-bottom:0.75rem;">StaffIDs in storage: '+allIds+'</p>' : '')
           +'<button onclick="syncAndRenderShoots()" style="background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Sync Shoots from Server</button>'
           +'</div>';
         return;
@@ -1761,35 +1763,17 @@
         // SS Upload + WhatsApp + Mark Done
         var uploadHTML = '';
         if(a.status === 'assigned'){
-          var ssUploaded = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]')
-            .filter(function(v){ return String(v.assignId) === String(a.id); });
-          var hasSS = ssUploaded.length > 0;
-
           uploadHTML = '<div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.1rem 1.25rem;margin-top:0.75rem;">'
             // Step 1: Send via WhatsApp
             + '<div style="margin-bottom:1rem;">'
             + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">1</span> Send Edited Video via WhatsApp</div>'
-            + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Send the edited video to OG Shoots on WhatsApp before uploading screenshot.</div>'
+            + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Send the edited video to OG Shoots on WhatsApp.</div>'
             + '<a href="https://wa.me/' + (localStorage.getItem('hs_admin_wa_number')||'916304279351') + '?text=Edited+video+for+Shoot+ID:+' + a.id + '+%E2%80%94+' + encodeURIComponent(a.service||'Shoot') + '+%E2%80%94+' + encodeURIComponent(a.clientName||'') + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.6rem 1.25rem;font-size:0.82rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i> Send on WhatsApp</a>'
             + '</div>'
-            // Step 2: Upload SS
-            + '<div style="margin-bottom:1rem;">'
-            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">2</span> Upload Screenshot of Edited Video</div>'
-            + '<div style="font-size:0.72rem;color:#6a6050;margin-bottom:0.6rem;">Upload a screenshot of the edited video as proof of completion.</div>'
-            + (hasSS
-              ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.5rem 0.85rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Screenshot uploaded</div>'
-              : '<div style="position:relative;border:2px dashed rgba(201,168,76,0.25);border-radius:10px;padding:1rem;text-align:center;background:rgba(201,168,76,0.02);cursor:pointer;" onmouseover="this.style.borderColor=\'rgba(201,168,76,0.5)\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,0.25)\'">'
-                + '<input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="uploadShootSS(this,' + a.id + ')" />'
-                + '<i class="fas fa-image" style="font-size:1.5rem;color:#c9a84c;opacity:0.5;display:block;margin-bottom:0.3rem;"></i>'
-                + '<div style="font-size:0.75rem;color:#9a9080;">Tap to upload screenshot</div>'
-                + '</div>')
-            + '</div>'
-            // Step 3: Mark Done
+            // Step 2: Mark Done
             + '<div>'
-            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">3</span> Mark Shoot as Complete</div>'
-            + (hasSS
-              ? '<button onclick="markShootDone(' + a.id + ')" style="width:100%;background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-check-double"></i> Complete Shoot — Notify Admin</button>'
-              : '<div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,152,0,0.06);border:1px solid rgba(255,152,0,0.2);border-radius:10px;padding:0.65rem 1rem;font-size:0.78rem;font-weight:700;color:#ff9800;"><i class="fas fa-lock"></i> Upload screenshot first to unlock</div>')
+            + '<div style="font-size:0.78rem;font-weight:800;color:#fff;margin-bottom:0.3rem;"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;margin-right:0.5rem;">2</span> Mark Shoot as Complete</div>'
+            + '<button onclick="markShootDone(' + a.id + ')" style="width:100%;background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;border:none;border-radius:10px;padding:0.75rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 15px rgba(76,175,80,0.3);"><i class="fas fa-check-double"></i> Complete Shoot — Notify Admin</button>'
             + '</div>'
             + '</div>';
         } else if(a.status === 'done'){
@@ -2308,10 +2292,14 @@
         }catch(e){}
       })();
     }, 10000);
-    // Auto-refresh payments when Firebase syncs
+    // Auto-refresh when Firebase syncs
     window.addEventListener('hs_sync', function(e){
       var key = e.detail && e.detail.key;
-      if(key === 'hs_assigned_shoots' || key === 'hs_notifications') renderPayout();
+      if(key === 'hs_assigned_shoots'){
+        if(!_shootUploadInProgress) renderAssignedShoots();
+        renderPayout();
+      }
+      if(key === 'hs_notifications') renderPayout();
     });
 
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
