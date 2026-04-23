@@ -5755,7 +5755,13 @@ Priority Support</textarea></div>
             });
             otherStaffHtml += '</div>';
           }
-          var amountHtml = !isPaid ? '<div style="background:linear-gradient(135deg,rgba(255,152,0,0.15),rgba(255,152,0,0.05));border:1px solid rgba(255,152,0,0.4);border-radius:12px;padding:0.75rem 1rem;text-align:center;margin-bottom:0.5rem;"><div style="font-size:0.6rem;color:rgba(255,152,0,0.7);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Amount to Pay</div><div style="font-size:1.5rem;font-weight:900;color:#ff9800;">₹'+(Number(creditVal)||0).toLocaleString('en-IN')+'</div></div>' : '';
+          var amountHtml = !isPaid
+            ? '<div style="background:linear-gradient(135deg,rgba(255,152,0,0.2),rgba(255,152,0,0.05));border:2px solid rgba(255,152,0,0.5);border-radius:14px;padding:1rem 1.25rem;text-align:center;margin-bottom:0.75rem;">'
+              +'<div style="font-size:0.62rem;color:rgba(255,152,0,0.8);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.3rem;">\uD83D\uDCB0 Amount to Pay This Staff</div>'
+              +'<div style="font-size:2rem;font-weight:900;color:#ff9800;">\u20B9'+(Number(creditVal)||0).toLocaleString('en-IN')+'</div>'
+              +(a.totalCreators>1?'<div style="font-size:0.68rem;color:rgba(255,152,0,0.6);margin-top:0.2rem;">Split from total ('+a.totalCreators+' creators)</div>':'')
+            +'</div>'
+            : '';
           return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
             +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
