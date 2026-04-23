@@ -5958,18 +5958,6 @@ Priority Support</textarea></div>
           + actionBtns
           + '<button onclick="deleteAssignment(\''+String(a.id)+'\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:0.72rem;"><i class="fas fa-trash"></i></button>'
           + '</div></div>'
-          // Message customer buttons - all steps
-          + '<div style="margin-top:0.85rem;background:rgba(0,0,0,0.3);border:1px solid rgba(201,168,76,0.1);border-radius:10px;padding:0.85rem 1rem;">'
-          + '<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.6rem;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> &nbsp;Send WhatsApp Message</div>'
-          + '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">'
-          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'confirmed\')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Confirmed</button>' : '')
-          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'reminder\')" style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-bell"></i> Reminder</button>' : '')
-          + (a.clientPhone && a.arrivedAt ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'arrived\')" style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-map-marker-alt"></i> Arrived</button>' : '')
-          + (a.clientPhone && a.noShow ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'noshow\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-user-slash"></i> No Show</button>' : '')
-          + (a.clientPhone && (status==='done'||status==='completed'||status==='paid') ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'done\')" style="background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.25);color:#9c27b0;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-flag-checkered"></i> Shoot Done</button>' : '')
-          + (a.clientPhone && status==='paid' ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'paid\')" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check-double"></i> Paid</button>' : '')
-          + (a.clientPhone ? '<button onclick="sendStepMsg(\''+String(a.id)+'\',\'custom\')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.35rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Custom</button>' : '')
-          + '</div></div>'
           + adminVideoSection(a)
           + '<div style="font-size:0.65rem;color:#777;margin-top:0.5rem;">Assigned: ' + a.assignedAt + (a.doneAt ? ' &nbsp;·&nbsp; Done: ' + a.doneAt : '') + (a.paidAt ? ' &nbsp;·&nbsp; Paid: ' + a.paidAt : '') + '</div>'
           + '</div>';
