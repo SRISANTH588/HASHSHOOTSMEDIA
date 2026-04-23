@@ -371,9 +371,14 @@
             ? '<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.68rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;"><i class="fas fa-map-marker-alt"></i> Arrived at Location</span>'
             : '<span style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);color:#ff9800;font-size:0.68rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:50px;"><i class="fas fa-clock"></i> On the Way</span>';
 
-          var idDisplay  = staffMember ? '#' + String(staffMember.id).slice(-6) : '—';
+          var idDisplay  = staffMember ? '#' + String(staffMember.id).slice(-6) : (assign.staffId ? '#'+String(assign.staffId).slice(-6) : '—');
           var phoneDisplay = assign.staffPhone || (staffMember && staffMember.phone) || '—';
           var emailDisplay = assign.staffEmail || (staffMember && staffMember.email) || '—';
+          // Also try bank details for phone
+          if(phoneDisplay === '—'){
+            var bankData = JSON.parse(localStorage.getItem('hs_bank_'+assign.staffId)||'null');
+            if(bankData && bankData.phone) phoneDisplay = bankData.phone;
+          }
 
           var callBtn = (phoneDisplay !== '—')
             ? '<a href="tel:' + phoneDisplay + '" style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:8px;padding:0.38rem 0.85rem;font-size:0.78rem;font-weight:700;text-decoration:none;"><i class="fas fa-phone"></i> Call</a>' : '';

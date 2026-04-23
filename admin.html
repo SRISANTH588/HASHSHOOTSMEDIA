@@ -798,6 +798,14 @@
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="sf_phone" placeholder="e.g. 9876543210"/>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="sf_email" placeholder="e.g. kiran@ogshoots.com"/>
+          </div>
+        </div>
             <label>Role *</label>
             <select id="sf_role" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
               <option value="" disabled selected>Select Role</option>
@@ -4334,7 +4342,7 @@ Priority Support</textarea></div>
       if(staff.find(function(s){ return s.username.toLowerCase()===username.toLowerCase(); })){
         toast.textContent='Username already exists.'; toast.style.display='block'; toast.style.color='#f44336'; setTimeout(function(){ toast.style.display='none'; },3000); return;
       }
-      var member = { id: staffId, name:name, username:username, password:password, role:role, access:access, createdAt: new Date().toLocaleString() };
+      var member = { id: staffId, name:name, username:username, password:password, role:role, access:access, phone:(document.getElementById('sf_phone')||{}).value||'', email:(document.getElementById('sf_email')||{}).value||'', createdAt: new Date().toLocaleString() };
       // Write ONLY to Firestore — onSnapshot will update localStorage + re-render
       (async function(){
         try {
