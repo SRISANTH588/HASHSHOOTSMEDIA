@@ -1522,7 +1522,10 @@
           +'<div class="demo-card-title">'+d.title+'</div>'
           +'<div class="demo-card-meta"><i class="fas fa-calendar"></i> '+d.date+' &nbsp;·&nbsp; <i class="fas fa-clock"></i> '+d.time+(d.place ? ' &nbsp;·&nbsp; <i class="fas fa-map-marker-alt"></i> '+d.place : '')+'</div>'
           +'</div>'
+          +'<div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">'
           +'<span class="demo-status-badge '+d.status+'">'+d.status.charAt(0).toUpperCase()+d.status.slice(1)+'</span>'
+          +'<button onclick="removeDemoSession('+d.id+')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="Remove"><i class="fas fa-trash"></i></button>'
+          +'</div>'
           +'</div>'
           +(d.desc ? '<div class="demo-desc">'+d.desc+'</div>' : '')
           +(d.headName ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:1rem;">'
@@ -1544,6 +1547,13 @@
 
         listEl.appendChild(card);
       });
+    }
+
+    function removeDemoSession(demoId){
+      if(!confirm('Remove this demo session from your list?')) return;
+      var demos = getDemos().filter(function(d){ return d.id !== demoId; });
+      saveDemos(demos);
+      _renderCreatorDemosFromLocal();
     }
 
     async function markDemoDone(demoId){
