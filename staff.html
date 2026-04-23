@@ -3654,31 +3654,30 @@
           localStorage.setItem('hs_bookings', JSON.stringify(local));
         }, 'createdAt'); }catch(e){ console.error('listener err',e); }
 
-        // Listen to assigned shoots — admin assigns/updates (filtered by staffId)
+        // Listen to assigned shoots — real-time auto-sync (full collection, filter client-side)
         try{ 
           var myId = String(localStorage.getItem('hs_staff_id'));
+          var myIdNum = Number(myId);
           var fbModL = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
           var fbStL  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           var fbCfgL = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var fbAppL = fbModL.getApps().find(function(a){return a.name==='hs-main';})||fbModL.initializeApp(fbCfgL,'hs-main');
           var fbDbL  = fbStL.getFirestore(fbAppL);
-          fbStL.onSnapshot(fbStL.query(fbStL.collection(fbDbL,'assigned_shoots'),fbStL.where('staffId','==',myId)), function(snap){
+          fbStL.onSnapshot(fbStL.collection(fbDbL,'assigned_shoots'), function(snap){
             var myDocs = [];
-            snap.forEach(function(d){ var data=d.data(); myDocs.push(Object.assign({id:d.id},data)); });
-            // Also query by numeric staffId
-            fbStL.getDocs(fbStL.query(fbStL.collection(fbDbL,'assigned_shoots'),fbStL.where('staffId','==',Number(myId)))).then(function(snap2){
-              snap2.forEach(function(d){
-                var data=d.data();
-                if(!myDocs.find(function(x){ return String(x.id)===String(d.id); })) myDocs.push(Object.assign({id:d.id},data));
-              });
-              localStorage.setItem('hs_assigned_shoots', JSON.stringify(myDocs));
-              renderAssignedShoots();
-              renderPayout();
-            }).catch(function(){ 
-              localStorage.setItem('hs_assigned_shoots', JSON.stringify(myDocs));
-              renderAssignedShoots();
-              renderPayout();
+            snap.forEach(function(d){
+              var data = Object.assign({}, d.data(), {id: d.data().id || d.id});
+              if(String(data.staffId)===myId || Number(data.staffId)===myIdNum){
+                data.staffId = myId;
+                myDocs.push(data);
+              }
             });
+            // Preserve other staff shoots already in localStorage
+            var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+            var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
+            localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(myDocs)));
+            renderAssignedShoots();
+            renderPayout();
           });
         }catch(e){ console.error('assigned_shoots listener err',e); }
 
