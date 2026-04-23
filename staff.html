@@ -1093,6 +1093,7 @@
         try { if(name === 'bank') loadBankDetails(); } catch(e){}
         try { if(name === 'address') loadStaffAddress(); } catch(e){}
         try { if(name === 'aieditor') { saie_init(); applyPremiumVisibility(); } } catch(e){}
+        try { if(name === 'demos') renderCreatorDemos(); } catch(e){}
         try { if(name === 'invitations') loadInvitations(); } catch(e){}
         try { if(name === 'meetings') loadMeetings(); } catch(e){}
       } catch(e){ console.error('switchTab error:', e); }
@@ -1421,6 +1422,40 @@
     }
 
     function renderCreatorDemos(){
+      var staffId = String(localStorage.getItem('hs_staff_id'));
+
+      // Always fetch fresh from Firebase then re-render
+      (async function(){
+        try{
+          var myIdNum = Number(staffId);
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-demos-render';})||fbMod.initializeApp(fbCfg,'staff-demos-render');
+          var db      = fbStore.getFirestore(app);
+          var snap    = await fbStore.getDocs(fbStore.collection(db,'demos'));
+          var myDemos = [];
+          snap.forEach(function(d){
+            var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
+            if(String(data.staffId)===staffId || String(data.staffId)===String(myIdNum)){
+              data.staffId = staffId;
+              myDemos.push(data);
+            }
+          });
+          if(myDemos.length){
+            var local = JSON.parse(localStorage.getItem('hs_demos')||'[]');
+            myDemos.forEach(function(d){
+              var idx = local.findIndex(function(x){ return String(x.id)===String(d.id); });
+              if(idx>-1){ Object.assign(local[idx],d); } else { local.push(d); }
+            });
+            localStorage.setItem('hs_demos', JSON.stringify(local));
+          }
+        }catch(e){ console.warn('[demos] renderCreatorDemos fetch:', e); }
+        _renderCreatorDemosFromLocal();
+      })();
+    }
+
+    function _renderCreatorDemosFromLocal(){
       var staffId = String(localStorage.getItem('hs_staff_id'));
       var myDemos = getDemos().filter(function(d){ return String(d.staffId) === staffId; }).slice().reverse();
 
@@ -2303,13 +2338,13 @@
         renderPayout();
       }
       if(key === 'hs_notifications') renderPayout();
-      if(key === 'hs_demos') renderCreatorDemos();
+      if(key === 'hs_demos') _renderCreatorDemosFromLocal();
     });
 
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
     initCreatorDemo();
-    setInterval(renderCreatorDemos, 5000);
+    setInterval(_renderCreatorDemosFromLocal, 5000);
 
     // FEEDBACK SUB-TABS
     function switchFbTab(name, btn){
