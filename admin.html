@@ -2694,9 +2694,29 @@ Priority Support</textarea></div>
 
     // Hide tabs staff can't access (admin sees all)
     document.querySelectorAll('.tab-btn').forEach(function(btn){
-      var m = btn.getAttribute('onclick').match(/'([^']+)'/);
+      var onclick = btn.getAttribute('onclick');
+      if(!onclick) return;
+      var m = onclick.match(/'([^']+)'/);
       if(m && !hasAccess(m[1])) btn.style.display = 'none';
     });
+
+    // If staff (not admin), also redirect if they try to access restricted tabs
+    if(!isAdmin){
+      var allowedTabs = staffAccess.indexOf('all') > -1
+        ? null // all tabs allowed
+        : staffAccess.concat(['bookings']); // always allow bookings
+      if(allowedTabs){
+        // Override switchTab to block restricted tabs
+        var _origSwitchTab = switchTab;
+        window.switchTab = function(tab, btn){
+          if(allowedTabs.indexOf(tab) === -1 && allowedTabs.indexOf('all') === -1){
+            alert('You do not have access to this section.');
+            return;
+          }
+          _origSwitchTab(tab, btn);
+        };
+      }
+    }
 
     function logout() {
       ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
