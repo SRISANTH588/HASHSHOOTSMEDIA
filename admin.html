@@ -3144,7 +3144,20 @@ Priority Support</textarea></div>
       if (tab === 'feedback') renderEventFeedbackAdmin();
       if (tab === 'videos') renderStaffVideosAdmin();
       if (tab === 'shoot-reels') renderShootReelsAdmin();
-      if (tab === 'assign') { populateAssignSelects(); renderAssignedList(); }
+      if (tab === 'assign') {
+        populateAssignSelects();
+        renderAssignedList();
+        // Sync fresh data from Firebase
+        (async function(){
+          try{
+            var f = await _fbAdmin(); if(!f) return;
+            var snap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+            var list = [];
+            snap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; list.push(data); });
+            if(list.length){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); renderAssignedList(); }
+          }catch(e){ console.warn('assign tab sync:', e); }
+        })();
+      }
     }
 
     // Activate first visible tab
@@ -5744,33 +5757,7 @@ Priority Support</textarea></div>
             bankHtml = '<div style="margin-top:0.6rem;background:rgba(33,150,243,0.05);border:1px solid rgba(33,150,243,0.15);border-radius:9px;padding:0.6rem 0.85rem;font-size:0.75rem;color:#9a9080;"><i class="fas fa-university" style="color:#2196f3;"></i> Paid to: '+(bank.bankName||'')+(bank.accNo?' — A/C: '+bank.accNo:'')+'</div>';
           }
         }
-        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:4px solid '+borderColor+';border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
-          // Order ID
-          +'<div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;">Order ID: <span style="color:#c9a84c;">'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'</span></div>'
-          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;">'
-          +'<div style="flex:1;">'
-          // Order details
-          +'<div style="font-size:0.68rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;"><i class="fas fa-clipboard-list"></i> Order Details</div>'
-          +'<div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:0.3rem;">'+(a.service||'Shoot')+' &mdash; '+(a.clientName||'')+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;"><i class="fas fa-calendar" style="color:#c9a84c;"></i> '+a.date+' at '+a.time+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-map-marker-alt" style="color:#c9a84c;"></i> '+(a.location||a.city||'—')+'</div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;margin-top:0.15rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Client: '+(a.clientPhone||'—')+'</div>'
-          +(a.doneAt?'<div style="font-size:0.72rem;color:#9c27b0;margin-top:0.3rem;"><i class="fas fa-flag-checkered"></i> Marked Done: '+a.doneAt+'</div>':'')
-          +(a.ssUploaded?'<div style="font-size:0.72rem;color:#4caf50;margin-top:0.3rem;"><i class="fas fa-image"></i> Screenshot Uploaded'+(a.ssUploadedAt?' — '+a.ssUploadedAt:'')+'</div>':'')
-          +(isPaid?'<div style="font-size:0.72rem;color:#2196f3;margin-top:0.2rem;"><i class="fas fa-check-double"></i> Paid: &#8377;'+Number(a.credit).toLocaleString('en-IN')+' on '+a.paidAt+'</div>':'')
-          // Staff details
-          +'<div style="margin-top:0.85rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;">'
-          +'<div style="font-size:0.65rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-user-circle"></i> Staff Details</div>'
-          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">'
-          +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Name</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffName+'</div></div>'
-          +'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Staff ID</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">#'+a.staffId+'</div></div>'
-          +(a.staffPhone?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Phone</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffPhone+'</div></div>':'')
-          +(a.staffEmail?'<div><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Email</div><div style="font-size:0.82rem;color:#fff;font-weight:700;">'+a.staffEmail+'</div></div>':'')
-          +'</div></div>'
-          +bankHtml
-          // Other staff for same booking
-          // Other staff for same booking
-          var otherStaffHtml = '';
+        var otherStaffHtml = '';
           if(sameBooking.length){
             otherStaffHtml = '<div style="margin-top:0.75rem;background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.2);border-radius:10px;padding:0.75rem 1rem;">';
             otherStaffHtml += '<div style="font-size:0.65rem;font-weight:800;color:#ce93d8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;"><i class="fas fa-users"></i> Other Staff on Same Shoot</div>';
