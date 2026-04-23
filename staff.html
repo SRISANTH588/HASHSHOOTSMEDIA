@@ -1636,6 +1636,22 @@
     var shootFileMap = {};
     var _shootUploadInProgress = false; // BUG 8 FIX: prevent interval re-render during upload
 
+    function timelineStep(num, label, done, color){
+      var bg = done ? color : 'rgba(255,255,255,0.05)';
+      var border = done ? color : 'rgba(255,255,255,0.1)';
+      var textColor = done ? '#fff' : '#555';
+      return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:0.3rem;">'
+        +'<div style="width:30px;height:30px;border-radius:50%;background:'+bg+';border:2px solid '+border+';display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:'+(done?'#fff':'#555')+';font-weight:800;">'
+        +(done?'<i class="fas fa-check"></i>':num)
+        +'</div>'
+        +'<div style="font-size:0.58rem;font-weight:700;color:'+(done?color:'#555')+';text-align:center;white-space:nowrap;">'+label+'</div>'
+        +'</div>';
+    }
+
+    function timelineLine(done){
+      return '<div style="flex:1;height:2px;background:'+(done?'rgba(76,175,80,0.4)':'rgba(255,255,255,0.06)')+';margin-bottom:1.1rem;align-self:center;"></div>';
+    }
+
     function renderAssignedShoots(){
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
