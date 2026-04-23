@@ -5190,8 +5190,7 @@ Priority Support</textarea></div>
       var remaining = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]').filter(function(t){ return String(t.id)!==String(id); });
       localStorage.setItem('hs_products', JSON.stringify(remaining));
       localStorage.setItem('hs_tshirts', JSON.stringify(remaining));
-      var fsItems = remaining.map(function(t){ return Object.assign({}, t, { image: t.image && t.image.startsWith('http') ? t.image : '' }); });
-      if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: fsItems});
+      if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: remaining});
       loadStoreAdmin();
     }
 
@@ -5204,23 +5203,25 @@ Priority Support</textarea></div>
       if(!name||!price){ if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);} return; }
       var imgEl = document.getElementById('ts_image');
       var file = imgEl && imgEl.files && imgEl.files[0];
-      function doSave(imgData){
+      function doSave(imgUrl){
         var items = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
         var cat = (document.getElementById('ts_category')||{}).value || 'T-Shirt';
-        var newItem = { id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), description:(document.getElementById('ts_desc')||{}).value||'', category:cat, image:imgData||'', active:true };
+        var newItem = { id:Date.now(), name:name.trim(), price:price, sizes:sizes.trim(), description:(document.getElementById('ts_desc')||{}).value||'', category:cat, image:imgUrl||'', active:true };
         items.push(newItem);
         localStorage.setItem('hs_products', JSON.stringify(items));
         localStorage.setItem('hs_tshirts', JSON.stringify(items));
-        // Strip base64 image before saving to Firestore (too large)
-        var firestoreItems = items.map(function(t){ return { id:t.id, name:t.name, price:t.price, sizes:t.sizes||'', description:t.description||'', category:t.category||'T-Shirt', active:t.active }; });
-        if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: firestoreItems});
+        if(window.fbUpdate) fbUpdate('settings', 'tshirts', {items: items});
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
         loadStoreAdmin();
       }
       if(file){
-        var reader = new FileReader();
-        reader.onload = function(e){ doSave(e.target.result); };
-        reader.readAsDataURL(file);
+        if(window.cloudinaryUpload){
+          cloudinaryUpload(file, 'store_products', null).then(function(res){ doSave(res.secure_url); }).catch(function(){ var r=new FileReader(); r.onload=function(e){doSave(e.target.result);}; r.readAsDataURL(file); });
+        } else {
+          var reader = new FileReader();
+          reader.onload = function(e){ doSave(e.target.result); };
+          reader.readAsDataURL(file);
+        }
       } else { doSave(''); }
     }
 
@@ -5230,20 +5231,22 @@ Priority Support</textarea></div>
       var toast = document.getElementById('idcToast');
       var imgEl = document.getElementById('idc_image');
       var file  = imgEl && imgEl.files && imgEl.files[0];
-      function doSave(imgData){
-        var imgToStore = imgData || localStorage.getItem('hs_idcard_img') || '';
+      function doSave(imgUrl){
+        var imgToStore = imgUrl || localStorage.getItem('hs_idcard_img') || '';
         var cfg = { price:price, desc:desc.trim(), image:imgToStore };
         localStorage.setItem('hs_idcard', JSON.stringify(cfg));
-        if(imgData) localStorage.setItem('hs_idcard_img', imgData);
-        // Strip base64 before Firestore
-        var fsCfg = { price:price, desc:desc.trim(), image: imgToStore.startsWith('http') ? imgToStore : '' };
-        if(window.fbUpdate) fbUpdate('settings', 'idcard', fsCfg);
+        if(imgUrl) localStorage.setItem('hs_idcard_img', imgUrl);
+        if(window.fbUpdate) fbUpdate('settings', 'idcard', cfg);
         if(toast){toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
       }
       if(file){
-        var reader = new FileReader();
-        reader.onload = function(e){ doSave(e.target.result); };
-        reader.readAsDataURL(file);
+        if(window.cloudinaryUpload){
+          cloudinaryUpload(file, 'store_idcard', null).then(function(res){ doSave(res.secure_url); }).catch(function(){ var r=new FileReader(); r.onload=function(e){doSave(e.target.result);}; r.readAsDataURL(file); });
+        } else {
+          var reader = new FileReader();
+          reader.onload = function(e){ doSave(e.target.result); };
+          reader.readAsDataURL(file);
+        }
       } else { doSave(''); }
     }
 
