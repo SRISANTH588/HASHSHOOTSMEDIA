@@ -456,6 +456,7 @@ console.log('[OG Shoots] hs-firebase.js ready — project: hash-shoots');
 const _HS_COLS = [
   { ls:'hs_bookings',        col:'bookings'           },
   { ls:'hs_staff',           col:'staff'              },
+  { ls:'hs_demos',           col:'demos'              },
   { ls:'hs_assigned_shoots', col:'assigned_shoots'    },
   { ls:'hs_career_apps',     col:'career_apps'        },
   { ls:'hs_affiliate_apps',  col:'affiliate_apps'     },
@@ -518,7 +519,26 @@ window.hsStartListeners = async function() {
             delete data._synced;
             docs.push({ ...data, id: data.id || d.id, _fbId: d.id });
           });
-          window.localStorage.setItem(m.ls, JSON.stringify(docs));
+          // For assigned_shoots: protect local status changes (done/paid) from being overwritten
+          if (m.ls === 'hs_assigned_shoots') {
+            const local = JSON.parse(window.localStorage.getItem('hs_assigned_shoots') || '[]');
+            const merged = docs.map(fbDoc => {
+              const loc = local.find(l => String(l.id) === String(fbDoc.id));
+              // If local has a more advanced status, keep it
+              const advancedStatuses = ['done', 'completed', 'paid'];
+              if (loc && advancedStatuses.includes(loc.status) && !advancedStatuses.includes(fbDoc.status)) {
+                return { ...fbDoc, ...loc };
+              }
+              return { ...loc, ...fbDoc };
+            });
+            // Keep any local-only docs not yet in Firebase
+            local.forEach(loc => {
+              if (!merged.find(m => String(m.id) === String(loc.id))) merged.push(loc);
+            });
+            window.localStorage.setItem(m.ls, JSON.stringify(merged));
+          } else {
+            window.localStorage.setItem(m.ls, JSON.stringify(docs));
+          }
           window.dispatchEvent(new CustomEvent('hs_sync', { detail: { key: m.ls } }));
         });
       } catch(e) {}
