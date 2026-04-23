@@ -115,6 +115,8 @@
     .demo-card.submitted::before{background:#4caf50;}
     .demo-card.approved::before{background:#2196f3;}
     .demo-card.rejected::before{background:#f44336;}
+    .demo-card.open::before{background:#ff9800;}
+    .demo-status-badge.open{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
     .demo-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;gap:0.75rem;}
     .demo-card-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;}
     .demo-card-meta{font-size:0.75rem;color:var(--muted);}
@@ -1424,7 +1426,7 @@
 
       // update demo pending badge
       var badge = document.getElementById('demoPendingBadge');
-      var pending = myDemos.filter(function(d){ return d.status === 'pending'; }).length;
+      var pending = myDemos.filter(function(d){ return d.status === 'pending' || d.status === 'open'; }).length;
       if(pending > 0){ badge.textContent = pending; badge.style.display = 'inline'; }
       else { badge.style.display = 'none'; }
 
@@ -1450,8 +1452,8 @@
           {label:'Admin Review', key:'review'},
           {label:'Result', key:'result'}
         ];
-        var stepIdx = {pending:0, submitted:2, approved:4, rejected:4}[d.status] || 0;
-        if(d.status === 'pending') stepIdx = 1;
+        var stepIdx = {pending:0, open:0, submitted:2, approved:4, rejected:4}[d.status] || 0;
+        if(d.status === 'pending' || d.status === 'open') stepIdx = 1;
         if(d.status === 'submitted') stepIdx = 3;
 
         var timelineHTML = '<div class="demo-timeline">';
@@ -1471,7 +1473,7 @@
 
         // action area
         var actionHTML = '';
-        if(d.status === 'pending'){
+        if(d.status === 'pending' || d.status === 'open'){
           actionHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-top:0.75rem;">'
             +'<div><label style="font-size:0.7rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;"><i class="fas fa-calendar"></i> Shoot Date *</label>'
             +'<input type="date" id="demoDate_'+d.id+'" class="upload-input" style="width:100%;" /></div>'
