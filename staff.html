@@ -3698,8 +3698,8 @@
             var myDemos = [];
             snap.forEach(function(d){
               var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
-              var sid = data.staffId;
-              if(String(sid)===myId || Number(sid)===myIdNum){
+              var sid = String(data.staffId);
+              if(sid===myId || sid===String(myIdNum)){
                 data.staffId = myId;
                 myDemos.push(data);
               }
@@ -3720,7 +3720,7 @@
         try{ fbListen('demos', function(docs){
           var staffId = String(localStorage.getItem('hs_staff_id'));
           var myIdNum = Number(staffId);
-          var myDemos = docs.filter(function(d){ return String(d.staffId)===staffId || Number(d.staffId)===myIdNum; });
+          var myDemos = docs.filter(function(d){ return String(d.staffId)===staffId || String(d.staffId)===String(myIdNum); });
           if(!myDemos.length) return;
           var local = JSON.parse(localStorage.getItem('hs_demos') || '[]');
           myDemos.forEach(function(d){
