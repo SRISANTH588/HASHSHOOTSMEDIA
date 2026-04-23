@@ -282,9 +282,11 @@
   <div class="tab-nav">
     <button class="tab-btn" onclick="switchTab('dashboard',this)"><i class="fas fa-home"></i> Dashboard</button>
     <button class="tab-btn active" onclick="switchTab('shoots',this)" id="shootsTabBtn"><i class="fas fa-camera"></i> Assigned Shoots <span class="notif" id="shootsPendingBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchTab('demos',this)" id="demoTabBtn"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="notif" id="demoPendingBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('classes',this)"><i class="fas fa-robot"></i> Classes</button>
     <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Shoot Feedback <span class="notif" id="feedbackNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('support',this)" id="supportTabBtn"><i class="fas fa-headset"></i> Support</button>
+    <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
     <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
     <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-rupee-sign"></i> Payments <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('invitations',this)" id="invitationsTabBtn"><i class="fas fa-envelope-open-text"></i> Invitations <span class="notif" id="invitationsNotifBadge" style="display:none;">0</span></button>
@@ -310,6 +312,7 @@
       <div class="stats-row">
         <div class="stat-box"><div class="num" id="statShoots">0</div><div class="lbl">Assigned Shoots</div></div>
         <div class="stat-box"><div class="num" id="statVideos">0</div><div class="lbl">Shoots Done</div></div>
+        <div class="stat-box"><div class="num" id="statDemos">0</div><div class="lbl">Demo Sessions</div></div>
       </div>
       <!-- Quick links -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;">
@@ -317,6 +320,10 @@
           <i class="fas fa-camera" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Assigned Shoots</div>
           <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;"><span id="dashShootCount">0</span> pending</div>
+        </div>
+        <div onclick="switchTab('demos',document.querySelector('[onclick*=demos]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
+          <i class="fas fa-chalkboard-teacher" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
+          <div style="font-size:0.82rem;font-weight:700;">Demo Sessions</div>
         </div>
         <div onclick="switchTab('upload',document.querySelector('[onclick*=upload]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-upload" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
@@ -358,6 +365,12 @@
         </div>
       </div>
       <div id="assignedShootsList"></div>
+    </div>
+
+    <!-- DEMO SESSIONS -->
+    <div class="section" id="sec-demos">
+      <div class="sec-title"><i class="fas fa-chalkboard-teacher"></i> My Demo Sessions</div>
+      <div id="creatorDemoList"></div>
     </div>
 
     <!-- UPLOAD -->
@@ -521,6 +534,69 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- STORE -->
+    <div class="section" id="sec-store">
+      <div class="sec-title"><i class="fas fa-store" style="color:#c9a84c;"></i> OG Shoots Store</div>
+
+      <!-- BANNER -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(100,0,0,0.25));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Official OG Shoots Merchandise</div>
+          <div style="font-size:0.82rem;color:#9a9080;">T-shirts, ID cards &amp; more — represent the brand at every shoot.</div>
+        </div>
+        <div style="font-size:2rem;">🛍️</div>
+      </div>
+
+      <!-- T-SHIRTS -->
+      <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-tshirt" style="color:#2196f3;"></i> T-Shirts</div>
+      <div id="storeTshirtGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;margin-bottom:2rem;"></div>
+
+      <!-- ID CARD -->
+      <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-id-badge" style="color:#f5a623;"></i> Official ID Card</div>
+      <div id="storeIdCard"></div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="section" id="sec-wallet">
+      <div class="sec-title"><i class="fas fa-wallet"></i> My Wallet</div>
+
+      <!-- Balance card -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(100,0,0,0.3));border:1px solid rgba(201,168,76,0.3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:0.75rem;color:#9a9080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">AVAILABLE BALANCE</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;">₹<span id="walletBalance">0</span></div>
+          <div style="font-size:0.78rem;color:#9a9080;margin-top:0.4rem;">Ready for withdrawal</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.72rem;color:#ff9800;font-weight:700;margin-bottom:0.2rem;">PENDING PAYMENT</div>
+          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;">₹<span id="walletPendingTop">0</span></div>
+          <div style="font-size:0.68rem;color:#777;margin-top:0.15rem;">Awaiting admin release</div>
+          <div style="margin-top:0.5rem;font-size:0.72rem;color:#9a9080;">Credits per Shoot</div>
+          <div style="font-size:1.1rem;font-weight:900;color:#c9a84c;">₹<span id="walletPerShoot">0</span></div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="walletTotalEarned">₹0</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Earned</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#2196f3;" id="walletWithdrawn">₹0</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Withdrawn</div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
+          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="walletPending">₹0</div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Pending</div>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <div class="sec-title" style="font-size:0.95rem;"><i class="fas fa-list"></i> Transaction History</div>
+      <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
     </div>
 
     <!-- PAYOUT -->
@@ -3675,7 +3751,10 @@
         // Listen to all settings docs
         try{ fbListenDoc('settings', 'homepage',      function(data){ localStorage.setItem('hs_homepage',       JSON.stringify(data)); }); }catch(e){}
         try{ fbListenDoc('settings', 'customer_page', function(data){ localStorage.setItem('hs_customer_page',  JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'store_settings',function(data){ localStorage.setItem('hs_store_settings', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
+        try{ fbListenDoc('settings', 'tshirts',       function(data){ if(data.items){ localStorage.setItem('hs_tshirts', JSON.stringify(data.items)); localStorage.setItem('hs_products', JSON.stringify(data.items)); } if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
         try{ fbListenDoc('settings', 'store_razorpay', function(data){ localStorage.setItem('hs_store_razorpay', JSON.stringify(data)); }); }catch(e){}
+        try{ fbListenDoc('settings', 'idcard',        function(data){ localStorage.setItem('hs_idcard', JSON.stringify(data)); if(document.getElementById('sec-store') && document.getElementById('sec-store').classList.contains('active')) renderStore(); }); }catch(e){}
         try{ fbListenDoc('settings', 'tawk_config',   function(data){ localStorage.setItem('hs_tawk_config',    JSON.stringify(data)); }); }catch(e){}
         try{ fbListenDoc('settings', 'admin_config',   function(data){ if(data.waNumber) localStorage.setItem('hs_admin_wa_number', data.waNumber); }); }catch(e){}
         // Fetch admin WhatsApp number immediately on load
