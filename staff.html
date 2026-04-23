@@ -1760,6 +1760,13 @@
           el.appendChild(errDiv);
         }
       });
+      // Restore inline star selections after re-render
+      Object.keys(_shootFbStars).forEach(function(id){
+        var val = _shootFbStars[id];
+        if(val) document.querySelectorAll('.sfbstar[data-id="'+id+'"]').forEach(function(s){
+          s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
+        });
+      });
     }
 
     function detailBox(icon, label, value){
@@ -2209,7 +2216,10 @@
     // Re-sync every 10 seconds
     setInterval(function(){
       if(!_shootUploadInProgress){
-        renderAssignedShoots();
+        // Don't re-render if user is actively rating/typing in a feedback form
+        var active = document.activeElement;
+        var inFeedback = active && (active.tagName === 'TEXTAREA' || active.classList.contains('sfbstar'));
+        if(!inFeedback) renderAssignedShoots();
         renderPayout();
       }
     }, 5000);
@@ -2419,7 +2429,13 @@
     function initCreatorFeedback(){
       renderCreatorShootFeedback();
       renderCreatorFeedback();
-      setInterval(function(){ _renderShootFeedbackFromLocal(); renderCreatorFeedback(); }, 5000);
+      setInterval(function(){
+      // Don't re-render feedback if user is actively typing/rating
+      var active = document.activeElement;
+      var inFeedback = active && (active.tagName === 'TEXTAREA' || active.classList.contains('cstar') || active.classList.contains('sfbstar'));
+      if(!inFeedback) _renderShootFeedbackFromLocal();
+      renderCreatorFeedback();
+    }, 5000);
     }
 
     var creatorSelectedStars = {};
@@ -2503,6 +2519,11 @@
           + '<button onclick="submitCreatorFeedback(' + a.id + ')" style="margin-top:0.6rem;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.5rem 1.2rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Submit</button>'
           + '</div>';
       }).join('');
+      // Restore star selections after re-render
+      Object.keys(creatorSelectedStars).forEach(function(id){
+        var val = creatorSelectedStars[id];
+        if(val) setCreatorStars(Number(id), val);
+      });
     }
 
     var _shootFbStars = {};
