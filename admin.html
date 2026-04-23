@@ -7864,10 +7864,19 @@ Priority Support</textarea></div>
           custHTML = '<div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:12px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No customer payments yet.</div>';
         } else {
           custHTML = custPayments.map(function(p){
+            // Fallback: look up booking data if payment fields are missing
+            var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            var booking = bookings.find(function(b){ return String(b.id)===String(p.bookingId); });
+            var custName = p.customerName || (booking&&booking.name) || 'Customer';
+            var service  = p.service     || (booking&&booking.service) || '';
+            var phone    = p.phone       || (booking&&booking.phone) || '';
+            var city     = p.city        || (booking&&booking.city) || '';
+            var payId    = p.paymentId   || (booking&&booking.paymentId) || '—';
             var color = '#4caf50'; var icon = 'fa-check-circle'; var label = 'Paid';
             return '<div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.1);border-left:3px solid '+color+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">'
-              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(p.customerName||'Customer')+' &mdash; '+(p.service||'')+'</div>'
-              +'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#c9a84c;"></i> '+(p.paymentId||'\u2014')+'</div>'
+              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+custName+' &mdash; '+service+'</div>'
+              +(phone?'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-phone" style="color:#c9a84c;"></i> '+phone+(city?' &nbsp;&middot;&nbsp; '+city:'')+'</div>':'')
+              +'<div style="font-size:0.72rem;color:#9a9080;"><i class="fas fa-hashtag" style="color:#c9a84c;"></i> '+payId+'</div>'
               +'<div style="font-size:0.7rem;color:#777;margin-top:0.15rem;">'+(p.paidAt||'')+'</div></div>'
               +'<div style="text-align:right;"><div style="font-size:1.1rem;font-weight:900;color:'+color+';">&#8377;'+Number(p.amount||0).toLocaleString('en-IN')+'</div>'
               +'<span style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+';font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;"><i class="fas '+icon+'"></i> '+label+'</span></div>'
