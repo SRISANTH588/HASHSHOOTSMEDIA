@@ -1079,7 +1079,7 @@
         var sec = document.getElementById('sec-' + name);
         if(sec) sec.classList.add('active');
         if(btn) btn.classList.add('active');
-        try { if(name === 'shoots') renderAssignedShoots(); } catch(e){}
+        try { if(name === 'shoots') { renderAssignedShoots(); syncAndRenderShoots(); } } catch(e){}
         try { if(name === 'videos') renderMyVideos(); } catch(e){}
         try { if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); } } catch(e){}
         try { if(name === 'store') renderStore(); } catch(e){}
@@ -1633,8 +1633,12 @@
       var dateFilter  = dfEl ? dfEl.value : '';
       var monthFilter = mfEl ? mfEl.value : '';
 
-      var shoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
-        .filter(function(a){ return String(a.staffId) === String(staffId); })
+      var allShoots = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+      var shoots = allShoots
+        .filter(function(a){
+          // Match by staffId (string or number)
+          return String(a.staffId) === String(staffId) || Number(a.staffId) === Number(staffId);
+        })
         .filter(function(a){
           if(dateFilter)  return a.date === dateFilter;
           if(monthFilter) return a.date && a.date.slice(0,7) === monthFilter;
@@ -1649,7 +1653,13 @@
 
       var el = document.getElementById('assignedShootsList');
       if(!shoots.length){
-        el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;"><i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i><p style="color:#6a5a40;font-size:0.85rem;">No shoots assigned yet. Admin will assign shoots to you.</p></div>';
+        var totalInStorage = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').length;
+        el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;">'
+          +'<i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>'
+          +'<p style="color:#6a5a40;font-size:0.85rem;margin-bottom:0.75rem;">No shoots assigned yet. Admin will assign shoots to you.</p>'
+          +(totalInStorage>0?'<p style="color:#9a9080;font-size:0.75rem;margin-bottom:0.75rem;">'+totalInStorage+' shoot(s) in storage but none match your ID ('+staffId+')</p>':'')
+          +'<button onclick="syncAndRenderShoots()" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.5rem 1.25rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Sync from Server</button>'
+          +'</div>';
         return;
       }
 
