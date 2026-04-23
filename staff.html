@@ -358,6 +358,7 @@
           <input type="month" id="shootsMonthFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by month"/>
           <input type="date" id="shootsDateFilter" class="upload-input" style="width:auto;padding:0.4rem 0.75rem;font-size:0.78rem;" onchange="renderAssignedShoots()" title="Filter by exact date"/>
           <button type="button" onclick="clearShootsFilter()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Clear</button>
+          <button type="button" onclick="syncAndRenderShoots()" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);color:#2196f3;border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
         </div>
       </div>
       <div id="assignedShootsList"></div>
@@ -1103,6 +1104,33 @@
       renderAssignedShoots();
     }
 
+    async function syncAndRenderShoots(){
+      var btn = document.querySelector('[onclick="syncAndRenderShoots()"]');
+      if(btn){ btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Syncing...'; btn.disabled=true; }
+      try{
+        var myId = String(localStorage.getItem('hs_staff_id')||'');
+        if(!myId || myId==='null'){ renderAssignedShoots(); return; }
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
+        var db      = fbStore.getFirestore(app);
+        var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
+        var fresh = [];
+        allSnap.forEach(function(d){
+          var data = Object.assign({}, d.data(), {id: d.data().id||d.id});
+          data.staffId = String(data.staffId);
+          if(data.staffId === myId) fresh.push(data);
+        });
+        var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
+        localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+        console.log('Manual sync: found', fresh.length, 'shoots');
+      }catch(e){ console.warn('sync error:', e); }
+      renderAssignedShoots();
+      if(btn){ btn.innerHTML='<i class="fas fa-sync-alt"></i> Refresh'; btn.disabled=false; }
+    }
+
     function clearFeedbackFilter(){
       var mf = document.getElementById('feedbackMonthFilter');
       var df = document.getElementById('feedbackDateFilter');
@@ -1130,11 +1158,11 @@
 
     // Stats
     var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId); }).length;
+    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId); }).length;
     document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]').filter(function(v){ return String(v.assignId) && true; }).length;
     document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return String(d.staffId) === String(staffId); }).length;
     var dashShootCount = document.getElementById('dashShootCount');
-    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.staffId == Number(staffId) && a.status === 'assigned'; }).length;
+    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId) && a.status === 'assigned'; }).length;
     // update payments badge
     (function(){
       var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(staffId) && a.status==='done'; }).length;
