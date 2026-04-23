@@ -1117,15 +1117,27 @@
         var db      = fbStore.getFirestore(app);
         var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
         var fresh = [];
+        var myIdNum = Number(myId);
         allSnap.forEach(function(d){
           var data = Object.assign({}, d.data(), {id: d.data().id||d.id});
-          data.staffId = String(data.staffId);
-          if(data.staffId === myId) fresh.push(data);
+          // Match by string OR number staffId
+          var sid = data.staffId;
+          if(String(sid)===myId || Number(sid)===myIdNum){
+            data.staffId = myId; // normalize to string
+            fresh.push(data);
+          }
         });
+        // Save ALL shoots (replace mine with fresh)
         var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
+        var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
         localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
-        console.log('Manual sync: found', fresh.length, 'shoots');
+        console.log('Sync: myId='+myId+' found='+fresh.length+' total in Firebase='+allSnap.size);
+        if(fresh.length===0 && allSnap.size>0){
+          // Show all shoots for debugging
+          var allData=[];
+          allSnap.forEach(function(d){allData.push(d.data());});
+          console.log('All staffIds in Firebase:', allData.map(function(x){return x.staffId;}));
+        }
       }catch(e){ console.warn('sync error:', e); }
       renderAssignedShoots();
       if(btn){ btn.innerHTML='<i class="fas fa-sync-alt"></i> Refresh'; btn.disabled=false; }
@@ -2226,6 +2238,7 @@
       var myId = String(localStorage.getItem('hs_staff_id')||'');
       if(!myId || myId==='null') return;
       if(_shootUploadInProgress) return;
+      var myIdNum = Number(myId);
       (async function(){
         try{
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -2237,12 +2250,14 @@
           var fresh = [];
           allSnap.forEach(function(d){
             var data = Object.assign({},d.data(),{id:d.data().id||d.id});
-            data.staffId = String(data.staffId);
-            if(data.staffId===myId) fresh.push(data);
+            var sid = data.staffId;
+            if(String(sid)===myId || Number(sid)===myIdNum){
+              data.staffId = myId;
+              fresh.push(data);
+            }
           });
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-          var others = local.filter(function(x){ return String(x.staffId)!==myId; });
-          // Merge: keep local status if newer (e.g. just marked done)
+          var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
           var merged = fresh.map(function(fb){
             var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
             if(loc && (loc.status==='done' || loc.status==='paid') && fb.status==='assigned') return loc;
