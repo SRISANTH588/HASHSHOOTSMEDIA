@@ -1172,7 +1172,7 @@
     // update dashboard wallet balance
     var w = JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0}');
     var dashBal = document.getElementById('dashWalletBal');
-    if(dashBal) dashBal.textContent = w.balance.toLocaleString('en-IN');
+    if(dashBal) dashBal.textContent = (w.balance||0).toLocaleString("en-IN");
 
     // ── IndexedDB for staff videos ──────────────────────────────
     var staffDB = null;
@@ -1757,7 +1757,7 @@
           uploadHTML = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
         } else if(a.status === 'completed' || a.status === 'paid'){
           var paidLabel = a.status === 'paid'
-            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+a.credit.toLocaleString('en-IN')+'</div>'
+            ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+(Number(a.credit)||0).toLocaleString("en-IN")+'</div>'
             : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed &#8212; Awaiting Payment</div>';
           // Check if feedback already given
           var existingFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]').find(function(f){ return String(f.assignId) === String(a.id); });
