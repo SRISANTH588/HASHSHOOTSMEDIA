@@ -499,7 +499,7 @@
           + (b.status === 'completed' || isPaid
             ? (function(){
                 var fbKey = 'hs_fb_done_' + b.id;
-                var done = localStorage.getItem(fbKey);
+                var done = localStorage.getItem(fbKey) || (b.feedbackSubmitted ? '1' : null);
                 return done
                   ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;border-radius:8px;padding:0.4rem 0.9rem;font-size:0.78rem;font-weight:700;"><i class="fas fa-check-circle"></i> Feedback Submitted — Thank you!</div>'
                   : '<div style="margin-top:0.85rem;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(37,211,102,0.06));border:1px solid rgba(201,168,76,0.35);border-radius:14px;padding:1.1rem 1.25rem;">'
@@ -1027,6 +1027,10 @@
           fbStore.collection(db,'shoot_feedback'),
           Object.assign({}, payload, {createdAt: fbStore.serverTimestamp()})
         );
+        // Mark booking as feedback submitted so other devices know
+        try{
+          await fbStore.setDoc(fbStore.doc(db,'bookings',String(_fbBookingId)),{feedbackSubmitted:true},{merge:true});
+        }catch(e2){}
 
         // fire-and-forget admin notification
         fbStore.addDoc(fbStore.collection(db,'admin_notifications'),{
