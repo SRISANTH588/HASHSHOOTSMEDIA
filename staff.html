@@ -1133,10 +1133,14 @@
         localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
         console.log('Sync: myId='+myId+' found='+fresh.length+' total in Firebase='+allSnap.size);
         if(fresh.length===0 && allSnap.size>0){
-          // Show all shoots for debugging
           var allData=[];
           allSnap.forEach(function(d){allData.push(d.data());});
-          console.log('All staffIds in Firebase:', allData.map(function(x){return x.staffId;}));
+          var ids = allData.map(function(x){return x.staffId;}).join(', ');
+          console.log('All staffIds in Firebase:', ids);
+          // Show alert so admin/staff can see the mismatch
+          alert('Sync complete!\n\nYour Staff ID: '+myId+'\nShoots found for you: '+fresh.length+'\nTotal shoots in Firebase: '+allSnap.size+'\n\nStaff IDs in Firebase: '+ids+'\n\nPlease tell admin to check the Staff ID.');
+        } else if(fresh.length > 0){
+          alert('\u2705 Found '+fresh.length+' shoot(s) for you! Refreshing...');
         }
       }catch(e){ console.warn('sync error:', e); }
       renderAssignedShoots();
@@ -1668,9 +1672,9 @@
         var totalInStorage = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').length;
         el.innerHTML = '<div style="text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:16px;">'
           +'<i class="fas fa-camera" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>'
-          +'<p style="color:#6a5a40;font-size:0.85rem;margin-bottom:0.75rem;">No shoots assigned yet. Admin will assign shoots to you.</p>'
-          +(totalInStorage>0?'<p style="color:#9a9080;font-size:0.75rem;margin-bottom:0.75rem;">'+totalInStorage+' shoot(s) in storage but none match your ID ('+staffId+')</p>':'')
-          +'<button onclick="syncAndRenderShoots()" style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.5rem 1.25rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Sync from Server</button>'
+          +'<p style="color:#6a5a40;font-size:0.85rem;margin-bottom:0.5rem;">No shoots assigned yet.</p>'
+          +'<p style="color:#9a9080;font-size:0.72rem;margin-bottom:0.75rem;">Staff ID: <strong style="color:#c9a84c;">'+staffId+'</strong> &nbsp;|&nbsp; In storage: <strong style="color:#c9a84c;">'+totalInStorage+'</strong></p>'
+          +'<button onclick="syncAndRenderShoots()" style="background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff;border:none;padding:0.65rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Sync Shoots from Server</button>'
           +'</div>';
         return;
       }
