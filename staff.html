@@ -1723,7 +1723,7 @@
             + '</div>';
         } else if(a.status === 'done'){
           uploadHTML = '<div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:0.65rem 1rem;font-size:0.82rem;font-weight:700;color:#4caf50;"><i class="fas fa-check-double"></i> Marked as Done — Awaiting Admin Approval &amp; Payment</div>';
-        } else if(a.status === 'completed' || a.status === 'paid'){
+        } else if(a.status === 'completed' || a.status === 'paid' || a.status === 'done'){
           var paidLabel = a.status === 'paid'
             ? '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.3);color:#2196f3;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-double"></i> Payment Released &#8212; &#8377;'+(Number(a.credit)||0).toLocaleString("en-IN")+'</div>'
             : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed &#8212; Awaiting Payment</div>';
@@ -2409,7 +2409,7 @@
     function initCreatorFeedback(){
       renderCreatorShootFeedback();
       renderCreatorFeedback();
-      setInterval(function(){ renderCreatorShootFeedback(); renderCreatorFeedback(); }, 5000);
+      setInterval(function(){ _renderShootFeedbackFromLocal(); renderCreatorFeedback(); }, 5000);
     }
 
     var creatorSelectedStars = {};
@@ -2425,8 +2425,40 @@
     function renderCreatorShootFeedback(){
       var staffId = String(localStorage.getItem('hs_staff_id'));
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
+
+      // Always fetch fresh assigned shoots from Firebase first
+      (async function(){
+        try{
+          var myIdNum = Number(staffId);
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='staff-fb-sync';})||fbMod.initializeApp(fbCfg,'staff-fb-sync');
+          var db      = fbStore.getFirestore(app);
+          var snap    = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
+          var fresh = [];
+          snap.forEach(function(d){
+            var data = Object.assign({}, d.data(), {id: d.data().id || d.id});
+            if(String(data.staffId)===staffId || Number(data.staffId)===myIdNum){
+              data.staffId = staffId;
+              fresh.push(data);
+            }
+          });
+          if(fresh.length){
+            var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+            var others = local.filter(function(x){ return String(x.staffId)!==staffId && Number(x.staffId)!==myIdNum; });
+            localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+          }
+        }catch(e){ console.warn('renderCreatorShootFeedback sync:', e); }
+        _renderShootFeedbackFromLocal();
+      })();
+    }
+
+    function _renderShootFeedbackFromLocal(){
+      var staffId = String(localStorage.getItem('hs_staff_id'));
+      var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]')
-        .filter(function(a){ return String(a.staffId) === staffId && (a.status === 'completed' || a.status === 'paid'); })
+        .filter(function(a){ return String(a.staffId) === staffId && (a.status === 'completed' || a.status === 'paid' || a.status === 'done'); })
         .filter(function(a){ return _fbDateMatch(a.date || ''); });
       var el = document.getElementById('creatorShootFeedbackList');
       if(!assigned.length){
@@ -2435,7 +2467,7 @@
       }
       var existing = JSON.parse(localStorage.getItem('hs_creator_feedbacks') || '[]');
       el.innerHTML = assigned.map(function(a){
-        var done = existing.find(function(f){ return f.assignId === a.id; });
+        var done = existing.find(function(f){ return String(f.assignId) === String(a.id); });
         if(done){
           var stars = '\u2605'.repeat(done.rating) + '\u2606'.repeat(5 - done.rating);
           return '<div style="background:#1a1a1a;border:1px solid rgba(76,175,80,0.2);border-radius:14px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
