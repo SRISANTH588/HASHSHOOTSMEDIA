@@ -1750,8 +1750,10 @@
             : '<div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:9px;padding:0.55rem 1rem;font-size:0.82rem;font-weight:700;margin-top:0.5rem;"><i class="fas fa-check-circle"></i> Shoot Completed &#8212; Awaiting Payment</div>';
           // Check if feedback already given
           var existingFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]').find(function(f){ return String(f.assignId) === String(a.id); });
-          var feedbackSection = existingFb
-            ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;color:#4caf50;"><i class="fas fa-star"></i> Feedback Submitted &#8212; ' + '\u2605'.repeat(existingFb.rating) + '</div>'
+          // Also check Firebase flag on the shoot itself
+          var feedbackDone = !!existingFb || !!a.creatorFeedbackSubmitted;
+          var feedbackSection = feedbackDone
+            ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;color:#4caf50;"><i class="fas fa-star"></i> Feedback Submitted &#8212; ' + (existingFb ? '\u2605'.repeat(existingFb.rating) : 'Thank you!') + '</div>'
             : '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">'
               + '<div style="font-size:0.82rem;font-weight:800;color:#c9a84c;margin-bottom:0.65rem;"><i class="fas fa-star"></i> Rate this Shoot <span style="color:#f44336;font-size:0.72rem;">*Required</span></div>'
               + '<div style="display:flex;gap:0.35rem;margin-bottom:0.65rem;" id="shootFbStars_'+a.id+'">' + [1,2,3,4,5].map(function(v){ return '<span onclick="setShootFbStar('+a.id+','+v+')" style="font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;" class="sfbstar" data-id="'+a.id+'" data-val="'+v+'">&#9733;</span>'; }).join('') + '</div>'
@@ -2628,6 +2630,10 @@
           var db      = fbStore.getFirestore(app);
           await fbStore.addDoc(fbStore.collection(db,'creator_feedbacks'), fb);
           await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{creatorFeedbackSubmitted:true,creatorRating:rating},{merge:true});
+          // Update local assigned shoot with flag
+          var shoots2 = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+          var idx2 = shoots2.findIndex(function(x){ return String(x.id)===String(assignId); });
+          if(idx2>-1){ shoots2[idx2].creatorFeedbackSubmitted=true; localStorage.setItem('hs_assigned_shoots',JSON.stringify(shoots2)); }
         }catch(e){ console.error('submitShootFeedbackInline Firebase error:',e); }
       })();
       renderAssignedShoots();
@@ -2671,6 +2677,10 @@
           var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
           var db      = fbStore.getFirestore(app);
           await fbStore.addDoc(fbStore.collection(db,'creator_feedbacks'), fb);
+          await fbStore.setDoc(fbStore.doc(db,'assigned_shoots',String(assignId)),{creatorFeedbackSubmitted:true,creatorRating:fb.rating},{merge:true});
+          var shoots3 = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+          var idx3 = shoots3.findIndex(function(x){ return String(x.id)===String(assignId); });
+          if(idx3>-1){ shoots3[idx3].creatorFeedbackSubmitted=true; localStorage.setItem('hs_assigned_shoots',JSON.stringify(shoots3)); }
         }catch(e){ console.error('submitCreatorFeedback Firebase error:',e); }
       })();
       // Show success toast instead of alert
