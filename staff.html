@@ -2198,6 +2198,35 @@
     }
 
     renderAssignedShoots();
+
+    // Real-time onSnapshot listener — starts immediately on page load, no dependency on fbListen
+    (async function startShootsListener(){
+      try{
+        var myId = String(localStorage.getItem('hs_staff_id')||'');
+        if(!myId || myId==='null') return;
+        var myIdNum = Number(myId);
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='hs-shoots-live';})||fbMod.initializeApp(fbCfg,'hs-shoots-live');
+        var db      = fbStore.getFirestore(app);
+        fbStore.onSnapshot(fbStore.collection(db,'assigned_shoots'), function(snap){
+          var myDocs = [];
+          snap.forEach(function(d){
+            var data = Object.assign({}, d.data(), {id: d.data().id || d.id});
+            if(String(data.staffId)===myId || Number(data.staffId)===myIdNum){
+              data.staffId = myId;
+              myDocs.push(data);
+            }
+          });
+          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+          var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
+          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(myDocs)));
+          if(!_shootUploadInProgress) renderAssignedShoots();
+        });
+      }catch(e){ console.error('startShootsListener error:',e); }
+    })();
+
     // Fetch assigned shoots directly from Firestore — no dependency on fbListen
     (async function fetchMyShootsFromFirebase(){
       try {
