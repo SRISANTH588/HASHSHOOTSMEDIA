@@ -8194,7 +8194,7 @@ Priority Support</textarea></div>
             +'</div>'
             +'<div style="display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0;">'
             +'<button onclick="editFeedbackWriter(window._fwItems['+idx2+'])" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>'
-            +'<button onclick="deleteFeedbackWriter(\'"+t.id+"\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'<button data-delid="'+t.id+'" onclick="deleteFeedbackWriter(this.getAttribute(\"data-delid\"))" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
             +'</div>'
             +'</div>'
             +'</div>';
