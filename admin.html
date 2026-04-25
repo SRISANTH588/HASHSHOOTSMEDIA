@@ -501,58 +501,75 @@
     <!-- BOOKINGS TAB / DASHBOARD -->
     <div class="tab-panel active" id="tab-bookings">
 
-    <!-- DASHBOARD STATS ROW — Flashoot style -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
-        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">APPROVED</div>
-        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="confirmedCount">0</div>
+    <!-- ROW 1: STAT CARDS — exactly like Flashoot -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1rem;margin-bottom:2rem;align-items:stretch;">
+
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1.5rem 1.75rem;">
+        <div style="font-size:0.6rem;font-weight:700;color:#3a3a3a;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;">APPROVED</div>
+        <div style="font-size:3rem;font-weight:900;color:#fff;line-height:1;" id="confirmedCount">0</div>
       </div>
-      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
-        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">PENDING</div>
-        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="pendingCount">0</div>
+
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1.5rem 1.75rem;">
+        <div style="font-size:0.6rem;font-weight:700;color:#3a3a3a;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;">PENDING</div>
+        <div style="font-size:3rem;font-weight:900;color:#fff;line-height:1;" id="pendingCount">0</div>
       </div>
-      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
-        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">COMPLETED</div>
-        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="completedCount">0</div>
+
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1.5rem 1.75rem;">
+        <div style="font-size:0.6rem;font-weight:700;color:#3a3a3a;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;">COMPLETED</div>
+        <div style="font-size:3rem;font-weight:900;color:#fff;line-height:1;" id="completedCount">0</div>
       </div>
+
       <!-- RED TOTAL CARD — exactly like Flashoot -->
-      <div style="background:linear-gradient(135deg,#8b0000,#c0392b);border:none;border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;cursor:pointer;" onclick="switchTab('assign',document.getElementById('assignTabBtn'))">
-        <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fas fa-file-alt" style="color:#fff;font-size:1.2rem;"></i>
+      <div style="background:#c0392b;border-radius:10px;padding:1.5rem 1.75rem;display:flex;align-items:center;gap:1.25rem;cursor:pointer;min-width:220px;" onclick="switchTab('assign',document.getElementById('assignTabBtn'))">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-file-alt" style="color:#fff;font-size:1.3rem;"></i>
         </div>
         <div>
-          <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.3rem;">TOTAL BOOKINGS</div>
-          <div style="font-size:2.2rem;font-weight:900;color:#fff;line-height:1;" id="totalCount">0</div>
-          <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">Creator Pay: <span id="creatorPendingAmt">₹0</span></div>
+          <div style="font-size:0.58rem;font-weight:800;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.4rem;">TOTAL BOOKINGS</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;" id="totalCount">0</div>
+          <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);margin-top:0.3rem;">Creator Pay: <span id="creatorPendingAmt">₹0</span></div>
         </div>
       </div>
     </div>
 
-    <!-- CREATOR PENDING PAYMENTS ALERT -->
-    <div id="creatorPendingAlert" style="display:none;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.5rem;">
+    <!-- ROW 2: CHART — like Flashoot "Partner Applications" -->
+    <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:2rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+        <div style="font-size:1rem;font-weight:700;color:#fff;">Bookings <span style="color:#555;font-size:0.85rem;font-weight:400;">&#8599;</span></div>
+        <div style="display:flex;gap:1.25rem;">
+          <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#555;"><span style="width:8px;height:8px;border-radius:2px;background:#c9a84c;display:inline-block;"></span>Confirmed</span>
+          <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#555;"><span style="width:8px;height:8px;border-radius:2px;background:#f44336;display:inline-block;"></span>Pending</span>
+          <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#555;"><span style="width:8px;height:8px;border-radius:2px;background:#2196f3;display:inline-block;"></span>Completed</span>
+        </div>
+      </div>
+      <canvas id="bookingsChart" height="90"></canvas>
+    </div>
+
+    <!-- CREATOR PENDING ALERT -->
+    <div id="creatorPendingAlert" style="display:none;background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.2);border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
-          <div style="width:36px;height:36px;background:rgba(244,67,54,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#f44336;"></i></div>
+          <div style="width:34px;height:34px;background:rgba(244,67,54,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#f44336;font-size:0.85rem;"></i></div>
           <div>
-            <div style="font-size:0.88rem;font-weight:700;color:#fff;">Creator Payments Pending</div>
-            <div style="font-size:0.72rem;color:#666;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
+            <div style="font-size:0.85rem;font-weight:700;color:#fff;">Creator Payments Pending</div>
+            <div style="font-size:0.7rem;color:#555;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
           </div>
         </div>
-        <button onclick="switchTab('assign',document.getElementById('assignTabBtn'))" style="background:#f44336;color:#fff;border:none;border-radius:7px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
+        <button onclick="switchTab('assign',document.getElementById('assignTabBtn'))" style="background:#f44336;color:#fff;border:none;border-radius:7px;padding:0.4rem 0.9rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Release Payments</button>
       </div>
-      <div id="creatorPendingBreakdown" style="margin-top:0.85rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.6rem;"></div>
+      <div id="creatorPendingBreakdown" style="margin-top:0.75rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem;"></div>
     </div>
 
-    <!-- BOOKINGS SECTION HEADING — like Flashoot's "Partner Applications" -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-      <div style="font-size:1.1rem;font-weight:700;color:#fff;">Bookings <span style="color:#444;font-size:0.8rem;font-weight:400;">↗</span></div>
-      <div style="display:flex;gap:0.5rem;">
+    <!-- ROW 3: BOOKINGS TABLE -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
+      <div style="font-size:0.95rem;font-weight:700;color:#fff;">All Bookings</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
         <button class="filter-btn active" onclick="filterBookings('all',this)">All</button>
         <button class="filter-btn" onclick="filterBookings('pending',this)">Pending</button>
         <button class="filter-btn" onclick="filterBookings('confirmed',this)">Confirmed</button>
         <button class="filter-btn" onclick="filterBookings('completed',this)">Completed</button>
         <button class="filter-btn" onclick="filterBookings('cancelled',this)">Cancelled</button>
-        <input class="search-bar" type="text" placeholder="🔍 Search..." oninput="searchBookings(this.value)" style="max-width:200px;"/>
+        <input class="search-bar" type="text" placeholder="Search..." oninput="searchBookings(this.value)" style="max-width:180px;"/>
       </div>
     </div>
 
@@ -576,85 +593,61 @@
       </div>
     </div>
 
-    <!-- BOOKINGS CHART - like Flashoot Partner Applications chart -->
-    <div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
-        <div>
-          <div style="font-size:1rem;font-weight:700;color:#fff;">Bookings Overview</div>
-          <div style="font-size:0.72rem;color:#444;margin-top:0.2rem;">Last 7 days activity</div>
-        </div>
-        <div style="display:flex;gap:1.25rem;">
-          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
-            <div style="width:8px;height:8px;border-radius:2px;background:#c9a84c;"></div>Confirmed
-          </div>
-          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
-            <div style="width:8px;height:8px;border-radius:2px;background:#f44336;"></div>Pending
-          </div>
-          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
-            <div style="width:8px;height:8px;border-radius:2px;background:#2196f3;"></div>Completed
-          </div>
-        </div>
-      </div>
-      <canvas id="bookingsChart" height="100"></canvas>
-    </div>
-
-    <!-- DRESS CODE PHOTOS SECTION -->
+    <!-- DRESS CODE PHOTOS -->
     <div class="about-form" style="margin-top:1.5rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-        <h2 style="font-size:0.95rem;font-weight:700;color:#fff;"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.5rem;"></i> Staff Dress Code Photos <span id="dressPhotoBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.4rem;">0</span></h2>
-        <button onclick="renderDressPhotos()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#888;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
+        <h2 style="font-size:0.9rem;font-weight:700;color:#fff;"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.5rem;"></i>Staff Dress Code Photos <span id="dressPhotoBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.4rem;">0</span></h2>
+        <button onclick="renderDressPhotos()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#666;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
       </div>
-      <div id="dressPhotosList"><p style="color:#444;font-size:0.85rem;">No dress code photos yet.</p></div>
+      <div id="dressPhotosList"><p style="color:#333;font-size:0.82rem;">No dress code photos yet.</p></div>
     </div>
 
     </div><!-- end tab-bookings -->
 
     <script>
-    // Load Chart.js and render bookings chart
+    // Chart.js for bookings
     (function(){
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-      s.onload = function(){ initBookingsChart(); };
+      var s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+      s.onload=function(){initBookingsChart();};
       document.head.appendChild(s);
     })();
-
     function initBookingsChart(){
-      var canvas = document.getElementById('bookingsChart');
-      if(!canvas || !window.Chart) return;
-      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-      var labels = [], confirmed = [], pending = [], completed = [];
+      var canvas=document.getElementById('bookingsChart');
+      if(!canvas||!window.Chart)return;
+      var bookings=JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var labels=[],conf=[],pend=[],comp=[];
       for(var i=6;i>=0;i--){
-        var d = new Date(); d.setDate(d.getDate()-i);
+        var d=new Date();d.setDate(d.getDate()-i);
         labels.push(d.toLocaleDateString('en-IN',{weekday:'short'}));
-        var ds = d.toISOString().split('T')[0];
-        var day = bookings.filter(function(b){ return (b.date||'').startsWith(ds); });
-        confirmed.push(day.filter(function(b){ return b.status==='confirmed'; }).length);
-        pending.push(day.filter(function(b){ return b.status==='pending'; }).length);
-        completed.push(day.filter(function(b){ return b.status==='completed'; }).length);
+        var ds=d.toISOString().split('T')[0];
+        var day=bookings.filter(function(b){return(b.date||'').startsWith(ds);});
+        conf.push(day.filter(function(b){return b.status==='confirmed';}).length);
+        pend.push(day.filter(function(b){return b.status==='pending';}).length);
+        comp.push(day.filter(function(b){return b.status==='completed';}).length);
       }
-      // If no date-based data, show totals on last bar
-      var anyData = confirmed.concat(pending,completed).some(function(v){return v>0;});
-      if(!anyData){
-        confirmed[6] = bookings.filter(function(b){return b.status==='confirmed';}).length;
-        pending[6]   = bookings.filter(function(b){return b.status==='pending';}).length;
-        completed[6] = bookings.filter(function(b){return b.status==='completed';}).length;
+      var any=conf.concat(pend,comp).some(function(v){return v>0;});
+      if(!any){
+        conf[6]=bookings.filter(function(b){return b.status==='confirmed';}).length;
+        pend[6]=bookings.filter(function(b){return b.status==='pending';}).length;
+        comp[6]=bookings.filter(function(b){return b.status==='completed';}).length;
       }
       new Chart(canvas,{
         type:'bar',
         data:{
           labels:labels,
           datasets:[
-            {label:'Confirmed',data:confirmed,backgroundColor:'rgba(201,168,76,0.75)',borderRadius:4,borderSkipped:false},
-            {label:'Pending',data:pending,backgroundColor:'rgba(244,67,54,0.65)',borderRadius:4,borderSkipped:false},
-            {label:'Completed',data:completed,backgroundColor:'rgba(33,150,243,0.65)',borderRadius:4,borderSkipped:false}
+            {label:'Confirmed',data:conf,backgroundColor:'rgba(201,168,76,0.8)',borderRadius:3,borderSkipped:false},
+            {label:'Pending',data:pend,backgroundColor:'rgba(244,67,54,0.7)',borderRadius:3,borderSkipped:false},
+            {label:'Completed',data:comp,backgroundColor:'rgba(33,150,243,0.7)',borderRadius:3,borderSkipped:false}
           ]
         },
         options:{
           responsive:true,
-          plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.parsed.y;}}}},
+          plugins:{legend:{display:false}},
           scales:{
-            x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#444',font:{size:11}}},
-            y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#444',font:{size:11},stepSize:1},beginAtZero:true}
+            x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#3a3a3a',font:{size:11}}},
+            y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#3a3a3a',font:{size:11},stepSize:1},beginAtZero:true}
           }
         }
       });
