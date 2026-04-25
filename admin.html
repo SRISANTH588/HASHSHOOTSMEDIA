@@ -27,8 +27,8 @@
 
   #adminSidebar{
     width:var(--sidebar-w);min-width:var(--sidebar-w);
-    background:#000;
-    border-right:1px solid rgba(255,255,255,0.06);
+    background:#0d0d0d;
+    border-right:1px solid rgba(255,255,255,0.08);
     display:flex;flex-direction:column;
     position:fixed;top:0;left:0;height:100vh;
     z-index:100;overflow-y:auto;overflow-x:hidden;
@@ -60,15 +60,15 @@
   .sidebar-nav{flex:1;padding:0.5rem 0;}
 
   .sidebar-section-label{
-    font-size:0.52rem;font-weight:700;color:#333;
+    font-size:0.52rem;font-weight:700;color:#666;
     letter-spacing:2px;text-transform:uppercase;
     padding:0.75rem 1.25rem 0.25rem;
   }
 
   .sidebar-item{
     display:flex;align-items:center;gap:0.7rem;
-    padding:0.55rem 1.25rem;
-    color:#555;font-size:0.8rem;font-weight:500;
+    padding:0.6rem 1.25rem;
+    color:#bbb;font-size:0.82rem;font-weight:500;
     cursor:pointer;border:none;background:none;
     font-family:inherit;width:100%;text-align:left;
     border-left:2px solid transparent;
@@ -76,22 +76,22 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .sidebar-item:hover{
-    color:#ccc;
-    background:rgba(255,255,255,0.03);
+    color:#fff;
+    background:rgba(255,255,255,0.06);
   }
   .sidebar-item.active{
     color:#fff;
-    background:rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.08);
     border-left-color:#c9a84c;
   }
   .sidebar-item.active i{color:#c9a84c;}
   .sidebar-item i{
     width:15px;text-align:center;
-    font-size:0.8rem;flex-shrink:0;
-    color:#444;
+    font-size:0.82rem;flex-shrink:0;
+    color:#777;
     transition:color 0.15s;
   }
-  .sidebar-item:hover i{color:#888;}
+  .sidebar-item:hover i{color:#bbb;}
   /* Active arrow like Flashoot */
   .sidebar-item.active::after{
     content:'›';
@@ -116,20 +116,21 @@
     flex-shrink:0;
   }
   .sidebar-footer-user{
-    font-size:0.72rem;color:#444;margin-bottom:0.75rem;
+    font-size:0.72rem;color:#888;margin-bottom:0.75rem;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .sidebar-footer-btns{display:flex;gap:0.5rem;}
   .sidebar-footer-btn{
     flex:1;padding:0.45rem 0.5rem;
-    border-radius:6px;border:1px solid rgba(255,255,255,0.08);
-    background:transparent;color:#555;
+    border-radius:6px;border:1px solid rgba(255,255,255,0.12);
+    background:transparent;color:#888;
     font-size:0.7rem;font-weight:600;cursor:pointer;
     font-family:inherit;transition:all 0.15s;
     display:flex;align-items:center;justify-content:center;gap:0.3rem;
   }
-  .sidebar-footer-btn:hover{border-color:rgba(255,255,255,0.2);color:#fff;}
-  .sidebar-footer-btn.danger:hover{border-color:#f44336;color:#f44336;}
+  .sidebar-footer-btn:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
+  .sidebar-footer-btn.danger{color:#f44336;border-color:rgba(244,67,54,0.4);}
+  .sidebar-footer-btn.danger:hover{border-color:#f44336;color:#fff;background:rgba(244,67,54,0.15);}
 
   /* ── MAIN CONTENT ── */
   #adminMain{
