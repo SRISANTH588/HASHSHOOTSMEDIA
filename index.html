@@ -1064,29 +1064,8 @@
           {id:'d5',name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
           {id:'d6',name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
         ];
-        if(items.length){
-          _td=items;
-          testiRender();
-        } else {
-          // Seed default testimonials into Firebase
-          var seedData=[
-            {name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
-            {name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true},
-            {name:'Ravi Teja',role:'OG Shoots Customer',text:'Absolutely loved the experience! The reel quality was top-notch and the creator was super professional. Will book again!',photo:'',rating:5,verified:true,featured:false},
-            {name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
-            {name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
-          ];
-          try{
-            for(var s=0;s<seedData.length;s++){
-              await fs2.addDoc(fs2.collection(db,'homepage_testimonials'),Object.assign({},seedData[s],{createdAt:fs2.serverTimestamp()}));
-            }
-            var snap2=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
-            var items2=[];snap2.forEach(function(d){items2.push(Object.assign({id:d.id},d.data()));});
-            _td=items2.length?items2:_defaults;
-          }catch(se){_td=_defaults;}
-          testiRender();
-        }
+        _td = items.length >= 6 ? items : _defaults;
+        testiRender();
       }catch(e){console.warn('testi:',e);}
     })();
     </script>
