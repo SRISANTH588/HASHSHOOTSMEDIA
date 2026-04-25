@@ -8163,8 +8163,9 @@ Priority Support</textarea></div>
         var f=await _fbAdmin();if(!f)throw new Error("Firebase not ready");
         var snap=await f.s.getDocs(f.s.query(f.s.collection(f.db,"homepage_testimonials"),f.s.orderBy("createdAt","desc")));
         var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
+        window._fwItems=items;
         if(!items.length){el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;">No testimonials yet.</p>';return;}
-        el.innerHTML=items.map(function(t){
+        el.innerHTML=items.map(function(t,idx2){
           var stars="";
           for(var i=1;i<=5;i++)stars+='<i class="fas fa-star" style="color:'+(i<=(t.rating||5)?"#f5a623":"#333")+';font-size:0.72rem;"></i>';
           var badges=(t.verified?'<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:4px;margin-right:0.35rem;"><i class="fas fa-check-circle"></i> Verified</span>':'')
@@ -8173,7 +8174,6 @@ Priority Support</textarea></div>
           if(t.service)meta.push('<i class="fas fa-camera" style="margin-right:3px;"></i>'+t.service);
           if(t.location)meta.push('<i class="fas fa-map-marker-alt" style="margin-right:3px;"></i>'+t.location);
           if(t.date)meta.push('<i class="fas fa-calendar" style="margin-right:3px;"></i>'+t.date);
-          var idx2=items.indexOf(t);
           return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;">'
             +'<div style="flex:1;">'
@@ -8187,13 +8187,12 @@ Priority Support</textarea></div>
             +'<div style="font-size:0.82rem;color:#9a9080;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
             +'</div>'
             +'<div style="display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0;">'
-            +'<button onclick="editFeedbackWriter(_fwItems['+idx2+'])" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>'
+            +'<button onclick="editFeedbackWriter(window._fwItems['+idx2+'])" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>'
             +'<button onclick="deleteFeedbackWriter(\'"+t.id+"\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
             +'</div>'
             +'</div>'
             +'</div>';
         }).join("");
-        window._fwItems=items;
       }catch(e){el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';}
     }
 
