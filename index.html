@@ -1064,7 +1064,7 @@
           {id:'d5',name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
           {id:'d6',name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
         ];
-        _td = items.length >= 6 ? items : _defaults;
+        _td = items.length ? items : _defaults;
         testiRender();
       }catch(e){console.warn('testi:',e);}
     })();
