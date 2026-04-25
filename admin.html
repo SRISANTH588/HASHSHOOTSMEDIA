@@ -4435,19 +4435,25 @@ Priority Support</textarea></div>
       t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000);
     }
 
-    function changeAdminPassword(){
+    async function changeAdminPassword(){
       var cur = document.getElementById('set_curPass').value;
       var nw = document.getElementById('set_newPass').value;
       var toast = document.getElementById('setPassToast');
-      var correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
-      if(cur !== correctPass){ toast.textContent='❌ Current password is incorrect.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(function(){toast.style.display='none';},3000); return; }
-      if(!nw || nw.length < 6){ toast.textContent='❌ New password must be at least 6 characters.'; toast.style.display='block'; toast.style.color='#f44336'; toast.style.background='rgba(244,67,54,0.12)'; toast.style.borderColor='rgba(244,67,54,0.3)'; setTimeout(()=>toast.style.display='none',3000); return; }
-      localStorage.setItem('hs_admin_password', nw);
-      // Sync to Firebase
-      (async function(){ var f=await _fbAdmin(); if(f) try{ await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{password:nw,updatedAt:f.s.serverTimestamp()},{merge:true}); }catch(e){} })();
+      async function _hashPass(p){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+      var storedHash=localStorage.getItem('hs_admin_password_hash');
+      var curHash=await _hashPass(cur);
+      var defaultHash=await _hashPass('SASI@2007');
+      var legacyPass=localStorage.getItem('hs_admin_password');
+      var passOk=(storedHash&&curHash===storedHash)||(legacyPass&&cur===legacyPass)||(!storedHash&&!legacyPass&&curHash===defaultHash);
+      if(!passOk){toast.textContent='❌ Current password is incorrect.';toast.style.display='block';toast.style.color='#f44336';toast.style.background='rgba(244,67,54,0.12)';toast.style.borderColor='rgba(244,67,54,0.3)';setTimeout(function(){toast.style.display='none';},3000);return;}
+      if(!nw||nw.length<6){toast.textContent='❌ New password must be at least 6 characters.';toast.style.display='block';toast.style.color='#f44336';toast.style.background='rgba(244,67,54,0.12)';toast.style.borderColor='rgba(244,67,54,0.3)';setTimeout(()=>toast.style.display='none',3000);return;}
+      var newHash=await _hashPass(nw);
+      localStorage.setItem('hs_admin_password_hash',newHash);
+      localStorage.removeItem('hs_admin_password');
+      (async function(){var f=await _fbAdmin();if(f)try{await f.s.setDoc(f.s.doc(f.db,'settings','admin_config'),{passwordHash:newHash,updatedAt:f.s.serverTimestamp()},{merge:true});}catch(e){}})();
       document.getElementById('set_curPass').value='';
       document.getElementById('set_newPass').value='';
-      toast.textContent="✅ Password updated successfully!";
+      toast.textContent='✅ Password updated successfully!';
       toast.style.display='block'; toast.style.color='#4caf50'; toast.style.background='rgba(76,175,80,0.12)'; toast.style.borderColor='rgba(76,175,80,0.3)';
       setTimeout(()=>toast.style.display='none',3000);
     }
