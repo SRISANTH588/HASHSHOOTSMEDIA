@@ -14,6 +14,140 @@
     --card:#1a1a1a;--card2:#1e1e1e;
     --border:rgba(201,168,76,0.12);
     --text:#f0ece0;--muted:#9a9080;
+    --sidebar-w:240px;
+  }
+
+  /* ── SIDEBAR LAYOUT ── */
+  body{display:flex;min-height:100vh;overflow-x:hidden;}
+
+  #adminSidebar{
+    width:var(--sidebar-w);min-width:var(--sidebar-w);
+    background:#0a0a0a;
+    border-right:1px solid rgba(201,168,76,0.1);
+    display:flex;flex-direction:column;
+    position:fixed;top:0;left:0;height:100vh;
+    z-index:100;overflow-y:auto;overflow-x:hidden;
+    transition:transform 0.3s ease;
+  }
+  #adminSidebar::-webkit-scrollbar{width:3px;}
+  #adminSidebar::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.2);border-radius:10px;}
+
+  .sidebar-logo{
+    padding:1.5rem 1.25rem 1rem;
+    border-bottom:1px solid rgba(201,168,76,0.08);
+    flex-shrink:0;
+  }
+  .sidebar-logo-text{
+    font-size:1.5rem;font-weight:900;color:#fff;line-height:1;
+    margin-bottom:0.2rem;
+  }
+  .sidebar-logo-text span{color:#c9a84c;}
+  .sidebar-logo-sub{
+    font-size:0.62rem;color:#6a6050;font-weight:600;
+    letter-spacing:2px;text-transform:uppercase;
+  }
+
+  .sidebar-nav{flex:1;padding:0.75rem 0;}
+
+  .sidebar-section-label{
+    font-size:0.58rem;font-weight:800;color:#4a4030;
+    letter-spacing:3px;text-transform:uppercase;
+    padding:0.75rem 1.25rem 0.35rem;
+  }
+
+  .sidebar-item{
+    display:flex;align-items:center;gap:0.75rem;
+    padding:0.6rem 1.25rem;
+    color:#6a6050;font-size:0.82rem;font-weight:600;
+    cursor:pointer;border:none;background:none;
+    font-family:inherit;width:100%;text-align:left;
+    border-left:3px solid transparent;
+    transition:all 0.2s;position:relative;
+    white-space:nowrap;
+  }
+  .sidebar-item:hover{color:#c9a84c;background:rgba(201,168,76,0.05);}
+  .sidebar-item.active{
+    color:#c9a84c;
+    background:rgba(201,168,76,0.08);
+    border-left-color:#c9a84c;
+  }
+  .sidebar-item i{width:16px;text-align:center;font-size:0.85rem;flex-shrink:0;}
+  .sidebar-badge{
+    margin-left:auto;background:#f44336;color:#fff;
+    font-size:0.55rem;font-weight:900;
+    padding:0.1rem 0.4rem;border-radius:50px;
+    min-width:16px;text-align:center;
+  }
+  .sidebar-badge.gold{background:#c9a84c;color:#000;}
+  .sidebar-badge.green{background:#4caf50;}
+
+  .sidebar-footer{
+    padding:1rem 1.25rem;
+    border-top:1px solid rgba(201,168,76,0.08);
+    flex-shrink:0;
+  }
+  .sidebar-footer-user{
+    font-size:0.75rem;color:#6a6050;margin-bottom:0.6rem;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .sidebar-footer-btns{display:flex;gap:0.5rem;}
+  .sidebar-footer-btn{
+    flex:1;padding:0.45rem 0.5rem;
+    border-radius:8px;border:1px solid rgba(201,168,76,0.2);
+    background:transparent;color:#9a9080;
+    font-size:0.72rem;font-weight:600;cursor:pointer;
+    font-family:inherit;transition:all 0.2s;
+    display:flex;align-items:center;justify-content:center;gap:0.35rem;
+  }
+  .sidebar-footer-btn:hover{border-color:#c9a84c;color:#c9a84c;}
+  .sidebar-footer-btn.danger:hover{border-color:#f44336;color:#f44336;}
+
+  /* ── MAIN CONTENT ── */
+  #adminMain{
+    margin-left:var(--sidebar-w);
+    flex:1;min-height:100vh;
+    background:var(--bg);
+    display:flex;flex-direction:column;
+  }
+
+  #adminTopbar{
+    background:rgba(10,10,10,0.97);
+    border-bottom:1px solid rgba(201,168,76,0.1);
+    padding:0.85rem 2rem;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:50;
+    flex-shrink:0;
+  }
+  #adminTopbar h1{
+    font-size:1.4rem;font-weight:900;color:#fff;
+    display:flex;align-items:center;gap:0.6rem;
+  }
+  #adminTopbar h1 span{color:#c9a84c;}
+  #adminTopbar h1 i{font-size:1rem;color:#c9a84c;}
+
+  .topbar-right{display:flex;align-items:center;gap:0.75rem;}
+
+  #adminContent{padding:2rem;flex:1;}
+
+  /* Mobile sidebar toggle */
+  #sidebarToggle{
+    display:none;background:none;border:none;
+    color:#c9a84c;font-size:1.2rem;cursor:pointer;
+    padding:0.25rem;
+  }
+  #sidebarOverlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,0.7);z-index:99;
+  }
+
+  @media(max-width:900px){
+    #adminSidebar{transform:translateX(-100%);}
+    #adminSidebar.open{transform:translateX(0);}
+    #adminMain{margin-left:0;}
+    #sidebarToggle{display:block;}
+    #sidebarOverlay.open{display:block;}
+    #adminContent{padding:1rem;}
+    #adminTopbar{padding:0.75rem 1rem;}
   }
 
     .notif-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid rgba(201,168,76,0.4);border-left:4px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;min-width:280px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;}
@@ -57,7 +191,7 @@
     .nav-right{display:flex;align-items:center;gap:1rem;}
     .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.15);color:var(--text);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:all 0.2s;}
     .btn-logout:hover{border-color:var(--gold);color:var(--gold);}
-    .container{max-width:1100px;margin:2.5rem auto;padding:0 1.5rem;}
+    .container{max-width:100%;}
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
     h1{font-size:1.8rem;font-weight:900;}h1 span{color:var(--gold);}
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
@@ -134,25 +268,104 @@
 <script src="hs-cloudinary.js"></script>
 </head>
 <body>
-  <nav>
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <div class="logo"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
-      <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
-    </div>
-    <div class="nav-right">
-      <span style="color:#9a9080;font-size:0.85rem;" id="adminNameDisplay"></span>
-      <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
-      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </div>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside id="adminSidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text"><span>OG</span> SHOOTS <sup style="font-size:0.4em;color:#c9a84c;letter-spacing:2px;">LUXE</sup></div>
+    <div class="sidebar-logo-sub">Admin Console</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <button class="sidebar-item active" onclick="switchTab('bookings',this)" id="bookingsTabBtn" data-title="Bookings"><i class="fas fa-th-large"></i> Dashboard</button>
+
+    <div class="sidebar-section-label">Bookings</div>
+    <button class="sidebar-item" onclick="switchTab('bookings',this)" data-title="Bookings"><i class="fas fa-calendar-alt"></i> Bookings</button>
+    <button class="sidebar-item" onclick="switchTab('assign',this)" id="assignTabBtn" data-title="Assign Shoots"><i class="fas fa-tasks"></i> Assign Shoots</button>
+    <button class="sidebar-item" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn" data-title="Order Edits"><i class="fas fa-edit"></i> Order Edits <span class="sidebar-badge" id="orderEditsBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('payments',this)" id="paymentsAdminTabBtn" data-title="Staff Payouts"><i class="fas fa-rupee-sign"></i> Staff Payouts <span class="sidebar-badge" id="paymentsAdminBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('withdraw',this)" id="withdrawTabBtn" data-title="Staff Withdraw"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span class="sidebar-badge green" id="withdrawNotifBadge" style="display:none;">0</span></button>
+
+    <div class="sidebar-section-label">Content</div>
+    <button class="sidebar-item" onclick="switchTab('vibe',this)" id="vibeTabBtn" data-title="Discover with Vibe"><i class="fas fa-fire"></i> Discover with Vibe</button>
+    <button class="sidebar-item" onclick="switchTab('videos',this)" id="videosTabBtn" data-title="Staff Videos"><i class="fas fa-photo-video"></i> Staff Videos</button>
+    <button class="sidebar-item" onclick="switchTab('shoot-reels',this)" id="shootReelsTabBtn" data-title="Shoot Reels"><i class="fas fa-film"></i> Shoot Reels <span class="sidebar-badge" id="shootReelsNotifBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('testimonial-videos',this)" id="testiVideosTabBtn" data-title="Client Testimonials"><i class="fas fa-video"></i> Client Testimonials</button>
+
+    <div class="sidebar-section-label">Customers</div>
+    <button class="sidebar-item" onclick="switchTab('customer',this)" id="customerTabBtn" data-title="Customer Page"><i class="fas fa-user"></i> Customer Page</button>
+    <button class="sidebar-item" onclick="switchTab('cwallets',this)" id="cwalletsTabBtn" data-title="Customer Wallets"><i class="fas fa-wallet"></i> Customer Wallets</button>
+    <button class="sidebar-item" onclick="switchTab('support-tickets',this)" id="supportTicketsTabBtn" data-title="Customer Issues"><i class="fas fa-headset"></i> Customer Issues <span class="sidebar-badge" id="supportTicketsBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('feedback',this)" id="feedbackTabBtn" data-title="Feedback"><i class="fas fa-star"></i> Feedback <span class="sidebar-badge gold" id="feedbackNotifBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn" data-title="App Feedback"><i class="fas fa-comment-dots"></i> App Feedback <span class="sidebar-badge gold" id="appFeedbackBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('notifications',this)" id="notifTabBtn" data-title="Notifications"><i class="fas fa-bell"></i> Notifications <span class="sidebar-badge gold" id="notifBadge" style="display:none;">0</span></button>
+
+    <div class="sidebar-section-label">Enquiries</div>
+    <button class="sidebar-item" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn" data-title="Service Enquiries"><i class="fas fa-concierge-bell"></i> Service Enquiries <span class="sidebar-badge" id="enquiriesNotifBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('order-enquiries',this)" id="orderEnquiriesTabBtn" data-title="Order Enquiries"><i class="fas fa-shopping-cart"></i> Order Enquiries <span class="sidebar-badge" id="orderEnquiriesBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('biz-enquiries',this)" id="bizEnquiriesTabBtn" data-title="Business Enquiries"><i class="fas fa-briefcase"></i> Business Enquiries <span class="sidebar-badge" id="bizEnquiriesBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn" data-title="Marketing Enquiries"><i class="fas fa-bullhorn"></i> Marketing <span class="sidebar-badge" id="mktEnquiriesBadge" style="display:none;">0</span></button>
+
+    <div class="sidebar-section-label">Staff</div>
+    <button class="sidebar-item" onclick="switchTab('staff',this)" id="staffTabBtn" data-title="Staff & Access"><i class="fas fa-users-cog"></i> Staff &amp; Access</button>
+    <button class="sidebar-item" onclick="switchTab('demo',this)" id="demoTabBtn" data-title="Demo Sessions"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="sidebar-badge" id="demoNotifBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('staffwallets',this)" id="staffWalletsTabBtn" data-title="Staff Wallets"><i class="fas fa-wallet"></i> Staff Wallets</button>
+    <button class="sidebar-item" onclick="switchTab('staffbank',this)" id="staffBankTabBtn" data-title="Staff Bank"><i class="fas fa-university"></i> Staff Bank</button>
+    <button class="sidebar-item" onclick="switchTab('staffaddress',this)" id="staffAddressTabBtn" data-title="Staff Addresses"><i class="fas fa-map-marker-alt"></i> Staff Addresses</button>
+    <button class="sidebar-item" onclick="switchTab('invitations-admin',this)" id="invitationsAdminTabBtn" data-title="Invitations"><i class="fas fa-envelope-open-text"></i> Invitations <span class="sidebar-badge" id="invAdminBadge" style="display:none;">0</span></button>
+    <button class="sidebar-item" onclick="switchTab('meetings-admin',this)" id="meetingsAdminTabBtn" data-title="Meetings"><i class="fas fa-users"></i> Meetings <span class="sidebar-badge" id="meetAdminBadge" style="display:none;">0</span></button>
+
+    <div class="sidebar-section-label">Website</div>
+    <button class="sidebar-item" onclick="switchTab('homepage',this)" id="homepageTabBtn" data-title="Home Page"><i class="fas fa-home"></i> Home Page</button>
+    <button class="sidebar-item" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn" data-title="Wedding Plans"><i class="fas fa-heart"></i> Wedding Plans</button>
+    <button class="sidebar-item" onclick="switchTab('about',this)" id="aboutTabBtn" data-title="About Us"><i class="fas fa-info-circle"></i> About Us</button>
+    <button class="sidebar-item" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn" data-title="Hero Stats"><i class="fas fa-chart-bar"></i> Hero Stats</button>
+    <button class="sidebar-item" onclick="switchTab('opening',this)" id="openingTabBtn" data-title="Opening Screen"><i class="fas fa-rocket"></i> Opening Screen</button>
+    <button class="sidebar-item" onclick="switchTab('blog',this)" id="blogTabBtn" data-title="Blog"><i class="fas fa-pen-nib"></i> Blog</button>
+    <button class="sidebar-item" onclick="switchTab('press',this)" id="pressTabBtn" data-title="Press"><i class="fas fa-newspaper"></i> Press</button>
+
+    <div class="sidebar-section-label">Finance</div>
+    <button class="sidebar-item" onclick="switchTab('txn-payments',this)" id="paymentsTabBtn" data-title="Transactions"><i class="fas fa-credit-card"></i> Transactions</button>
+    <button class="sidebar-item" onclick="switchTab('razorpay',this)" id="razorpayTabBtn" data-title="Razorpay"><i class="fas fa-credit-card"></i> Razorpay</button>
+    <button class="sidebar-item" onclick="switchTab('coupons',this)" id="couponsTabBtn" data-title="Coupons"><i class="fas fa-tag"></i> Coupons</button>
+    <button class="sidebar-item" onclick="switchTab('store',this)" id="storeTabBtn" data-title="Store"><i class="fas fa-store"></i> Store</button>
+    <button class="sidebar-item" onclick="switchTab('store-razorpay',this)" id="storeRazorpayTabBtn" data-title="Store Payment"><i class="fas fa-credit-card"></i> Store Payment</button>
+    <button class="sidebar-item" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn" data-title="Store Orders"><i class="fas fa-shopping-bag"></i> Store Orders</button>
+
+    <div class="sidebar-section-label">More</div>
+    <button class="sidebar-item" onclick="switchTab('careers',this)" id="careersTabBtn" data-title="Career Apps"><i class="fas fa-briefcase"></i> Career Apps</button>
+    <button class="sidebar-item" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn" data-title="Affiliate Apps"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
+    <button class="sidebar-item" onclick="switchTab('feedback-writer',this)" id="feedbackWriterTabBtn" data-title="Feedback Writer"><i class="fas fa-quote-right"></i> Feedback Writer</button>
+    <button class="sidebar-item" onclick="switchTab('wa-control',this)" id="waControlTabBtn" data-title="WhatsApp Messages"><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp</button>
+    <button class="sidebar-item" onclick="switchTab('tawk',this)" id="tawkTabBtn" data-title="Tawk.to"><i class="fas fa-comments"></i> Tawk.to</button>
+    <button class="sidebar-item" onclick="switchTab('settings',this)" id="settingsTabBtn" data-title="Settings"><i class="fas fa-sliders-h"></i> Settings</button>
   </nav>
 
-  <div class="container">
-    <div class="page-header">
-      <h1>Admin <span>Dashboard</span></h1>
-      <span style="color:#9a9080;font-size:0.85rem;" id="lastUpdated"></span>
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-user" id="adminNameDisplay">Admin</div>
+    <div class="sidebar-footer-btns">
+      <button class="sidebar-footer-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <button class="sidebar-footer-btn danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
+  </div>
+</aside>
 
-    <div class="tabs">
+<!-- MAIN -->
+<div id="adminMain">
+  <div id="adminTopbar">
+    <h1><button id="sidebarToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button> <i class="fas fa-th-large"></i> <span id="currentPageTitle">Dashboard</span></h1>
+    <div class="topbar-right">
+      <span style="color:#9a9080;font-size:0.78rem;" id="lastUpdated"></span>
+      <span style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:50px;font-size:0.72rem;font-weight:700;"><i class="fas fa-shield-alt"></i> Admin</span>
+    </div>
+  </div>
+
+  <div id="adminContent">
+    <div class="tabs" style="display:none;">
       <button class="tab-btn" onclick="switchTab('opening',this)" id="openingTabBtn"><i class="fas fa-rocket"></i> Opening</button>
       <button class="tab-btn active" onclick="switchTab('bookings',this)" id="bookingsTabBtn"><i class="fas fa-calendar-alt"></i> Bookings</button>
       <button class="tab-btn" onclick="switchTab('about',this)" id="aboutTabBtn"><i class="fas fa-info-circle"></i> About Us</button>
@@ -198,8 +411,8 @@
       <button class="tab-btn" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn"><i class="fas fa-chart-bar"></i> Hero Stats</button>
       <button class="tab-btn" onclick="switchTab('txn-payments',this)" id="paymentsTabBtn"><i class="fas fa-credit-card"></i> Transactions</button>
       <button class="tab-btn" onclick="switchTab('storeorders',this)" id="storeOrdersTabBtn"><i class="fas fa-shopping-bag"></i> Store Orders</button>
-
     </div>
+    <!-- END HIDDEN TABS DIV -->
 
     <!-- OPENING TAB -->
     <div class="tab-panel" id="tab-opening">
@@ -8882,5 +9095,50 @@ Priority Support</textarea></div>
       })();
     }
   </script>
+
+  <script>
+  // ── SIDEBAR NAVIGATION ──
+  function switchTab(name, btn){
+    // Hide all panels
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    // Remove active from all sidebar items
+    document.querySelectorAll('.sidebar-item').forEach(function(b){ b.classList.remove('active'); });
+    // Show target panel
+    var panel = document.getElementById('tab-'+name);
+    if(panel) panel.classList.add('active');
+    // Mark sidebar item active
+    if(btn) btn.classList.add('active');
+    // Update topbar title
+    var title = btn ? (btn.dataset.title || btn.textContent.trim()) : name;
+    var titleEl = document.getElementById('currentPageTitle');
+    if(titleEl) titleEl.textContent = title;
+    // Close sidebar on mobile
+    if(window.innerWidth <= 900) closeSidebar();
+  }
+
+  function toggleSidebar(){
+    var sb = document.getElementById('adminSidebar');
+    var ov = document.getElementById('sidebarOverlay');
+    sb.classList.toggle('open');
+    ov.classList.toggle('open');
+  }
+  function closeSidebar(){
+    document.getElementById('adminSidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+
+  // Init: activate bookings tab
+  document.addEventListener('DOMContentLoaded', function(){
+    var firstBtn = document.querySelector('.sidebar-item.active');
+    if(firstBtn){
+      var tabName = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/)[1];
+      switchTab(tabName, firstBtn);
+    }
+  });
+  </script>
+
+  </div><!-- end adminContent -->
+</div><!-- end adminMain -->
+
 </body>
 </html>
