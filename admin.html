@@ -2842,6 +2842,83 @@ Priority Support</textarea></div>
       }catch(e){ console.warn('syncAllFromFirebase error:',e); loadAll(); }
     }
 
+    // ── MASTER FIREBASE SYNC on page load ──────────────────────────
+    (async function masterSync(){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        // Sync all settings collections from Firebase to localStorage
+        var settingsKeys = [
+          {doc:'homepage',    ls:'hs_homepage'},
+          {doc:'about',       ls:'hs_about'},
+          {doc:'opening',     ls:'hs_opening'},
+          {doc:'customer_page',ls:'hs_customer_page'},
+          {doc:'wedding_plans',ls:'hs_wedding_plans'},
+          {doc:'admin_config', ls:'hs_admin_config'},
+          {doc:'promo_banner', ls:'hs_promo_banner'},
+          {doc:'tawk_config',  ls:'hs_tawk_config'},
+          {doc:'store_razorpay',ls:'hs_store_razorpay'}
+        ];
+        for(var i=0;i<settingsKeys.length;i++){
+          try{
+            var snap = await f.s.getDoc(f.s.doc(f.db,'settings',settingsKeys[i].doc));
+            if(snap.exists()) localStorage.setItem(settingsKeys[i].ls, JSON.stringify(snap.data()));
+          }catch(e2){}
+        }
+        // Sync bookings
+        var bSnap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'bookings'),f.s.orderBy('createdAt','desc')));
+        var bList=[]; bSnap.forEach(function(d){bList.push(Object.assign({id:d.id},d.data()));});
+        if(bList.length) localStorage.setItem('hs_bookings',JSON.stringify(bList));
+        // Sync staff
+        var stSnap = await f.s.getDocs(f.s.collection(f.db,'staff'));
+        var stList=[]; stSnap.forEach(function(d){stList.push(d.data());});
+        if(stList.length) localStorage.setItem('hs_staff',JSON.stringify(stList));
+        // Sync assigned shoots
+        var aSnap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+        var aList=[]; aSnap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;aList.push(data);});
+        if(aList.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(aList));
+        // Sync razorpay config
+        try{
+          var rpSnap = await f.s.getDoc(f.s.doc(f.db,'razorpay_config','main'));
+          if(rpSnap.exists()) localStorage.setItem('hs_razorpay',JSON.stringify(rpSnap.data()));
+        }catch(e2){}
+        console.log('\u2705 Master Firebase sync complete');
+        loadAll();
+      }catch(e){ console.warn('masterSync error:',e); loadAll(); }
+    })();
+
+    // MASTER FIREBASE SYNC on page load
+    (async function masterSync(){
+      try{
+        var f = await _fbAdmin(); if(!f){ loadAll(); return; }
+        var settingsKeys = [
+          {doc:'homepage',ls:'hs_homepage'},{doc:'about',ls:'hs_about'},
+          {doc:'opening',ls:'hs_opening'},{doc:'customer_page',ls:'hs_customer_page'},
+          {doc:'wedding_plans',ls:'hs_wedding_plans'},{doc:'admin_config',ls:'hs_admin_config'},
+          {doc:'promo_banner',ls:'hs_promo_banner'},{doc:'tawk_config',ls:'hs_tawk_config'},
+          {doc:'store_razorpay',ls:'hs_store_razorpay'}
+        ];
+        for(var i=0;i<settingsKeys.length;i++){
+          try{ var snap=await f.s.getDoc(f.s.doc(f.db,'settings',settingsKeys[i].doc));
+            if(snap.exists()) localStorage.setItem(settingsKeys[i].ls,JSON.stringify(snap.data()));
+          }catch(e2){}
+        }
+        var bSnap=await f.s.getDocs(f.s.query(f.s.collection(f.db,'bookings'),f.s.orderBy('createdAt','desc')));
+        var bList=[];bSnap.forEach(function(d){bList.push(Object.assign({id:d.id},d.data()));});
+        if(bList.length) localStorage.setItem('hs_bookings',JSON.stringify(bList));
+        var stSnap=await f.s.getDocs(f.s.collection(f.db,'staff'));
+        var stList=[];stSnap.forEach(function(d){stList.push(d.data());});
+        if(stList.length) localStorage.setItem('hs_staff',JSON.stringify(stList));
+        var aSnap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+        var aList=[];aSnap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;aList.push(data);});
+        if(aList.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(aList));
+        try{ var rpSnap=await f.s.getDoc(f.s.doc(f.db,'razorpay_config','main'));
+          if(rpSnap.exists()) localStorage.setItem('hs_razorpay',JSON.stringify(rpSnap.data()));
+        }catch(e2){}
+        console.log('Master Firebase sync complete');
+        loadAll();
+      }catch(e){ console.warn('masterSync:',e); loadAll(); }
+    })();
+
     function loadAll() {
       var stored = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       // Deduplicate by id
@@ -3359,7 +3436,7 @@ Priority Support</textarea></div>
         return { name: inputs[0].value.trim(), text: inputs[1].value.trim() };
       }).filter(function(t){ return t.name && t.text; });
       localStorage.setItem('hs_homepage', JSON.stringify(hp));
-      if(window.fbUpdate) fbUpdate('settings', 'homepage', hp);
+      (async function(){try{var f=await _fbAdmin();if(f)await f.s.setDoc(f.s.doc(f.db,"settings","homepage"),hp,{merge:true});}catch(e){}})();
       var toast = document.getElementById('hpToast');
       toast.style.display = 'block';
       setTimeout(function(){ toast.style.display='none'; }, 2500);
@@ -4910,7 +4987,7 @@ Priority Support</textarea></div>
       // Normalize services: strip \r, clean blank lines
       if(cfg.cp_services) cfg.services = cfg.cp_services.replace(/\r/g,'').split('\n').filter(function(s){ return s.trim(); }).join('\n');
       localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
-      if(window.fbUpdate) fbUpdate('settings', 'customer_page', cfg);
+      (async function(){try{var f=await _fbAdmin();if(f)await f.s.setDoc(f.s.doc(f.db,"settings","customer_page"),cfg,{merge:true});}catch(e){}})();
       var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
     }
 
@@ -5218,7 +5295,7 @@ Priority Support</textarea></div>
       var email=(document.getElementById('store_email')||{}).value||'';
       var disc=(document.getElementById('store_discount_email')||{}).value||'';
       localStorage.setItem('hs_store_settings', JSON.stringify({email:email.trim(),discountEmail:disc.trim()}));
-      if(window.fbUpdate) fbUpdate('settings', 'store_settings', {email:email.trim(),discountEmail:disc.trim()});
+      (async function(){try{var f=await _fbAdmin();if(f)await f.s.setDoc(f.s.doc(f.db,"settings","store_settings"),{email:email.trim(),discountEmail:disc.trim()},{merge:true});}catch(e){}})();
       var t=document.getElementById('storeSettingsToast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},3000);}
     }
 
@@ -6666,7 +6743,7 @@ Priority Support</textarea></div>
       };
       try {
         localStorage.setItem('hs_about', JSON.stringify(data));
-        if(window.fbUpdate) fbUpdate('settings', 'about', data);
+        (async function(){try{var f=await _fbAdmin();if(f)await f.s.setDoc(f.s.doc(f.db,"settings","about"),data,{merge:true});}catch(e){}})();
         const toast = document.getElementById('saveToast');
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 2500);
