@@ -967,6 +967,7 @@
       .testi-slider-inner{display:flex;gap:1.5rem;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
       .testi-card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;min-width:calc(33.333% - 1rem);flex-shrink:0;display:flex;flex-direction:column;gap:1.25rem;transition:all 0.3s;}
       .testi-card:hover{border-color:rgba(201,168,76,0.25);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+      .testi-featured{border-color:rgba(201,168,76,0.35)!important;box-shadow:0 0 20px rgba(201,168,76,0.08);}
       .testi-q-icon{width:42px;height:42px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
       .testi-body{font-size:0.95rem;color:#b0a898;line-height:1.8;flex:1;}
       .testi-footer{display:flex;align-items:center;gap:0.85rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1.25rem;}
@@ -1012,7 +1013,12 @@
         var r=f.rating||5; var stars='';
         for(var i=1;i<=5;i++) stars+='<i class="fas fa-star" style="color:'+(i<=r?'#c9a84c':'rgba(201,168,76,0.2)')+';font-size:0.75rem;margin-right:2px;"></i>';
         var av=f.photo?'<img src="'+f.photo+'" class="testi-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><div class="testi-initials" style="display:none;">'+ini+'</div>':'<div class="testi-initials">'+ini+'</div>';
-        return '<div class="testi-card">'          +'<div class="testi-q-icon"><i class="fas fa-quote-right" style="color:#c9a84c;font-size:1rem;"></i></div>'          +'<div style="margin-bottom:0.25rem;">'+stars+'</div>'          +'<p class="testi-body">'+f.text+'</p>'          +'<div class="testi-footer">'+av+'<div><div class="testi-name">'+f.name+'</div><div class="testi-role">'+(f.role||'OG Shoots Customer')+'</div></div></div>'        +'</div>';
+        var meta=[];
+        if(f.service) meta.push('<span style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:#c9a84c;font-size:0.65rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:4px;"><i class="fas fa-camera" style="margin-right:3px;"></i>'+f.service+'</span>');
+        if(f.location) meta.push('<span style="font-size:0.7rem;color:#6a6050;"><i class="fas fa-map-marker-alt" style="margin-right:3px;color:#c9a84c;"></i>'+f.location+'</span>');
+        if(f.date) meta.push('<span style="font-size:0.7rem;color:#6a6050;"><i class="fas fa-calendar" style="margin-right:3px;"></i>'+f.date+'</span>');
+        var verifiedBadge=f.verified?'<span style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#4caf50;font-size:0.62rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.4rem;"><i class="fas fa-check-circle"></i> Verified</span>':'';
+        return '<div class="testi-card'+(f.featured?' testi-featured':'')+'">'          +'<div class="testi-q-icon"><i class="fas fa-quote-right" style="color:#c9a84c;font-size:1rem;"></i></div>'          +'<div style="margin-bottom:0.25rem;">'+stars+'</div>'          +(meta.length?'<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;">'+meta.join('')+'</div>':'')          +'<p class="testi-body">'+f.text+'</p>'          +'<div class="testi-footer">'+av+'<div><div class="testi-name">'+f.name+verifiedBadge+'</div><div class="testi-role">'+(f.role||'OG Shoots Customer')+'</div></div></div>'        +'</div>';
       }).join('');
       var pages=Math.ceil(_td.length/_tpp());
       dt.innerHTML='';

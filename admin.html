@@ -2611,11 +2611,25 @@ Priority Support</textarea></div>
           <div class="form-group"><label>Customer Name *</label><input type="text" id="fw_name" placeholder="e.g. Srikari Galigari"/></div>
           <div class="form-group"><label>Role / Service</label><input type="text" id="fw_role" placeholder="e.g. Wedding Photography Customer"/></div>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group"><label>Location</label><input type="text" id="fw_location" placeholder="e.g. Hyderabad"/></div>
+          <div class="form-group"><label>Service Type</label>
+            <select id="fw_service" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="">-- Select Service --</option>
+              <option value="Wedding Reel">Wedding Reel</option>
+              <option value="Birthday Shoot">Birthday Shoot</option>
+              <option value="Corporate Event">Corporate Event</option>
+              <option value="Product Shoot">Product Shoot</option>
+              <option value="Portrait Session">Portrait Session</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
         <div class="form-group" style="margin-bottom:1rem;">
           <label>Testimonial Text *</label>
           <textarea id="fw_text" style="min-height:100px;" placeholder="What did the customer say about OG Shoots?"></textarea>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group"><label>Photo URL (optional)</label><input type="text" id="fw_photo" placeholder="https://... customer photo"/></div>
           <div class="form-group"><label>Star Rating</label>
             <select id="fw_rating" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
@@ -2624,9 +2638,22 @@ Priority Support</textarea></div>
               <option value="3">&#9733;&#9733;&#9733; 3 Stars</option>
             </select>
           </div>
+          <div class="form-group"><label>Date (optional)</label><input type="text" id="fw_date" placeholder="e.g. March 2025"/></div>
         </div>
-        <button class="btn-save-about" onclick="saveFeedbackWriter()"><i class="fas fa-plus"></i> Add Testimonial</button>
-        <div id="fwToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Testimonial added!</div>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;color:#9a9080;">
+            <input type="checkbox" id="fw_verified" style="accent-color:#c9a84c;width:16px;height:16px;"/> Show &ldquo;Verified Customer&rdquo; badge
+          </label>
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;color:#9a9080;">
+            <input type="checkbox" id="fw_featured" style="accent-color:#c9a84c;width:16px;height:16px;"/> Feature this testimonial
+          </label>
+        </div>
+        <input type="hidden" id="fw_edit_id" value=""/>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn-save-about" id="fw_submit_btn" onclick="saveFeedbackWriter()"><i class="fas fa-plus"></i> Add Testimonial</button>
+          <button id="fw_cancel_btn" onclick="cancelEditFeedback()" style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.65rem 1.25rem;border-radius:10px;font-size:0.88rem;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+        <div id="fwToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Testimonial saved!</div>
       </div>
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
@@ -8070,20 +8097,63 @@ Priority Support</textarea></div>
 
     // FEEDBACK WRITER
     async function saveFeedbackWriter(){
+      var editId=(document.getElementById("fw_edit_id")||{}).value||"";
       var name=(document.getElementById("fw_name")||{}).value||"";
       var text=(document.getElementById("fw_text")||{}).value||"";
       var role=(document.getElementById("fw_role")||{}).value||"";
       var photo=(document.getElementById("fw_photo")||{}).value||"";
+      var location=(document.getElementById("fw_location")||{}).value||"";
+      var service=(document.getElementById("fw_service")||{}).value||"";
+      var date=(document.getElementById("fw_date")||{}).value||"";
       var rating=parseInt((document.getElementById("fw_rating")||{}).value)||5;
+      var verified=!!(document.getElementById("fw_verified")||{}).checked;
+      var featured=!!(document.getElementById("fw_featured")||{}).checked;
       if(!name||!text){alert("Please fill Name and Testimonial Text.");return;}
       try{
         var f=await _fbAdmin();if(!f)throw new Error("Firebase not ready");
-        await f.s.addDoc(f.s.collection(f.db,"homepage_testimonials"),{name:name.trim(),text:text.trim(),role:role.trim(),photo:photo.trim(),rating:rating,createdAt:f.s.serverTimestamp()});
-        ["fw_name","fw_text","fw_role","fw_photo"].forEach(function(id){var el=document.getElementById(id);if(el)el.value="";});
+        var data={name:name.trim(),text:text.trim(),role:role.trim(),photo:photo.trim(),location:location.trim(),service:service,date:date.trim(),rating:rating,verified:verified,featured:featured};
+        if(editId){
+          await f.s.updateDoc(f.s.doc(f.db,"homepage_testimonials",editId),Object.assign(data,{updatedAt:f.s.serverTimestamp()}));
+        } else {
+          await f.s.addDoc(f.s.collection(f.db,"homepage_testimonials"),Object.assign(data,{createdAt:f.s.serverTimestamp()}));
+        }
+        ["fw_name","fw_text","fw_role","fw_photo","fw_location","fw_date","fw_edit_id"].forEach(function(id){var el=document.getElementById(id);if(el)el.value="";});
         document.getElementById("fw_rating").value="5";
+        document.getElementById("fw_service").value="";
+        document.getElementById("fw_verified").checked=false;
+        document.getElementById("fw_featured").checked=false;
+        document.getElementById("fw_submit_btn").innerHTML='<i class="fas fa-plus"></i> Add Testimonial';
+        document.getElementById("fw_cancel_btn").style.display="none";
         var t=document.getElementById("fwToast");t.style.display="block";setTimeout(function(){t.style.display="none";},3000);
         loadFeedbackWriter();
       }catch(e){alert("Error: "+e.message);}
+    }
+
+    function cancelEditFeedback(){
+      ["fw_name","fw_text","fw_role","fw_photo","fw_location","fw_date","fw_edit_id"].forEach(function(id){var el=document.getElementById(id);if(el)el.value="";});
+      document.getElementById("fw_rating").value="5";
+      document.getElementById("fw_service").value="";
+      document.getElementById("fw_verified").checked=false;
+      document.getElementById("fw_featured").checked=false;
+      document.getElementById("fw_submit_btn").innerHTML='<i class="fas fa-plus"></i> Add Testimonial';
+      document.getElementById("fw_cancel_btn").style.display="none";
+    }
+
+    function editFeedbackWriter(t){
+      document.getElementById("fw_edit_id").value=t.id;
+      document.getElementById("fw_name").value=t.name||"";
+      document.getElementById("fw_text").value=t.text||"";
+      document.getElementById("fw_role").value=t.role||"";
+      document.getElementById("fw_photo").value=t.photo||"";
+      document.getElementById("fw_location").value=t.location||"";
+      document.getElementById("fw_service").value=t.service||"";
+      document.getElementById("fw_date").value=t.date||"";
+      document.getElementById("fw_rating").value=String(t.rating||5);
+      document.getElementById("fw_verified").checked=!!t.verified;
+      document.getElementById("fw_featured").checked=!!t.featured;
+      document.getElementById("fw_submit_btn").innerHTML='<i class="fas fa-save"></i> Update Testimonial';
+      document.getElementById("fw_cancel_btn").style.display="inline-flex";
+      document.querySelector("#tab-feedback-writer").scrollIntoView({behavior:"smooth"});
     }
 
     async function loadFeedbackWriter(){
@@ -8097,16 +8167,33 @@ Priority Support</textarea></div>
         el.innerHTML=items.map(function(t){
           var stars="";
           for(var i=1;i<=5;i++)stars+='<i class="fas fa-star" style="color:'+(i<=(t.rating||5)?"#f5a623":"#333")+';font-size:0.72rem;"></i>';
-          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;">'
+          var badges=(t.verified?'<span style="background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:4px;margin-right:0.35rem;"><i class="fas fa-check-circle"></i> Verified</span>':'')
+            +(t.featured?'<span style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.65rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:4px;"><i class="fas fa-star"></i> Featured</span>':'');
+          var meta=[];
+          if(t.service)meta.push('<i class="fas fa-camera" style="margin-right:3px;"></i>'+t.service);
+          if(t.location)meta.push('<i class="fas fa-map-marker-alt" style="margin-right:3px;"></i>'+t.location);
+          if(t.date)meta.push('<i class="fas fa-calendar" style="margin-right:3px;"></i>'+t.date);
+          var idx2=items.indexOf(t);
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;">'
             +'<div style="flex:1;">'
-            +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+t.name+'</div>'
-            +'<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;">'+(t.role||"")+'</div>'
+            +'<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.25rem;">'
+            +'<span style="font-size:0.88rem;font-weight:800;color:#fff;">'+t.name+'</span>'
+            +badges
+            +'</div>'
+            +(t.role?'<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.25rem;">'+t.role+'</div>':'')
+            +(meta.length?'<div style="font-size:0.7rem;color:#6a6050;margin-bottom:0.3rem;display:flex;gap:0.75rem;flex-wrap:wrap;">'+meta.join('')+'</div>':'')
             +'<div style="margin-bottom:0.3rem;">'+stars+'</div>'
             +'<div style="font-size:0.82rem;color:#9a9080;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
             +'</div>'
+            +'<div style="display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0;">'
+            +'<button onclick="editFeedbackWriter(_fwItems['+idx2+'])" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>'
             +'<button onclick="deleteFeedbackWriter(\'"+t.id+"\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'</div>'
+            +'</div>'
             +'</div>';
         }).join("");
+        window._fwItems=items;
       }catch(e){el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';}
     }
 
