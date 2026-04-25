@@ -200,6 +200,7 @@
   </style>
   <script src="nav.js"></script>
 <script type="module" src="hs-firebase.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 <div id="promoBanner" style="background:linear-gradient(90deg,#000 0%,#0f0900 30%,#1a1100 50%,#0f0900 70%,#000 100%);border-bottom:1px solid rgba(201,168,76,0.4);padding:0.75rem 3rem;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(201,168,76,0.07) 50%,transparent 65%);animation:promoShimmer 3s infinite;"></div><div style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div><div style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(270deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div><style>@keyframes promoShimmer{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}@keyframes promoBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4);}50%{box-shadow:0 0 0 6px rgba(201,168,76,0);}}</style><div style="display:flex;align-items:center;justify-content:center;gap:0.85rem;flex-wrap:wrap;position:relative;"><span style="display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;animation:promoBadgePulse 2s infinite;flex-shrink:0;">&#9733; EXCLUSIVE</span><span style="font-size:0.85rem;font-weight:700;color:#f0ece0;">Get a chance to win a <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">FREE Shoot</strong> or an exclusive <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Coupon Code</strong> on every booking!</span><a href="booking.html" style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.75rem;font-weight:900;padding:0.35rem 1rem;border-radius:50px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(201,168,76,0.3);flex-shrink:0;">Book Now &#8594;</a><span style="font-size:0.65rem;color:rgba(201,168,76,0.4);font-weight:600;">T&amp;C Apply</span></div><button onclick="document.getElementById(&apos;promoBanner&apos;).style.display=&apos;none&apos;" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.5);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:0.75rem;">&times;</button></div>
@@ -881,6 +882,43 @@
 
     function confirmSubmit() {
       if (!pendingData || !document.getElementById('tncCheck').checked) return;
+
+      // Get plan price
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      var rawPrice = plan ? parseInt((plan.price||'').replace(/[^0-9]/g,'')) : 0;
+      var discount = _appliedCoupon ? (_appliedCoupon.type==='percent' ? Math.round(rawPrice*_appliedCoupon.value/100) : _appliedCoupon.value) : 0;
+      var finalPrice = Math.max(0, rawPrice - discount);
+
+      // Get Razorpay key
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
+      var rzpKey = rp.keyId || '';
+
+      if(rzpKey && finalPrice > 0){
+        // Launch Razorpay with auto amount
+        var d = pendingData;
+        var options = {
+          key: rzpKey,
+          amount: finalPrice * 100, // paise
+          currency: 'INR',
+          name: 'OG Shoots',
+          description: (plan ? plan.name : d.service) + ' Booking',
+          prefill: { name: d.name, email: d.email, contact: d.phone },
+          theme: { color: '#c9a84c' },
+          handler: function(response){
+            // Payment success — save booking with payment details
+            _saveBooking(finalPrice, response.razorpay_payment_id, 'paid');
+          },
+          modal: { ondismiss: function(){ console.log('Payment cancelled'); } }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+      } else {
+        // No Razorpay key or free plan — save directly
+        _saveBooking(finalPrice, '', finalPrice > 0 ? 'pending' : 'free');
+      }
+    }
+
+    function _saveBooking(finalPrice, paymentId, paymentStatus) {
       var now = new Date().toLocaleString();
       var id  = Date.now();
       var d   = pendingData;
@@ -894,7 +932,7 @@
 
       // Save locally
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id:id, orderId:orderId, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', plan:planInfo, coupon:couponCode, discount:couponDiscount, status:'pending', createdAt:now });
+      bookings.push({ id:id, orderId:orderId, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', plan:planInfo, coupon:couponCode, discount:couponDiscount, status:'pending', payAmount:finalPrice, paymentId:paymentId, paymentStatus:paymentStatus, createdAt:now });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
 
       // Send to Firebase (works from ANY device worldwide)
@@ -918,7 +956,7 @@
             service:d.service, plan:planInfo, city:d.city,
             location:d.location, date:d.date, time:d.time,
             orderId:orderId,
-            status:'pending', payAmount:0, paymentStatus:'', createdAt:fbStore.serverTimestamp()
+            status:'pending', payAmount:finalPrice, paymentId:paymentId, paymentStatus:paymentStatus, createdAt:fbStore.serverTimestamp()
           };
           var docId = 'bk_' + String(id);
           await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
