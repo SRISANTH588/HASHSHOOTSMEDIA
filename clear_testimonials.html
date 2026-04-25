@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Clear Testimonials</title></head>
+<body>
+<p id="status">Deleting all testimonials...</p>
+<script type="module">
+  import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  const fc={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+  const app=getApps().find(a=>a.name==='clr')||initializeApp(fc,'clr');
+  const db=getFirestore(app);
+  const snap=await getDocs(collection(db,'homepage_testimonials'));
+  let count=0;
+  for(const d of snap.docs){ await deleteDoc(doc(db,'homepage_testimonials',d.id)); count++; }
+  document.getElementById('status').textContent=`Done! Deleted ${count} testimonial(s). You can close this tab.`;
+</script>
+</body>
+</html>

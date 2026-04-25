@@ -1057,16 +1057,9 @@
         var db=fs2.getFirestore(app);
         var snap=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
         var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
-        var _defaults=[
-          {id:'d1',name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
-          {id:'d2',name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true},
-          {id:'d4',name:'Ravi Teja',role:'OG Shoots Customer',text:'Absolutely loved the experience! The reel quality was top-notch and the creator was super professional. Will book again!',photo:'',rating:5,verified:true,featured:false},
-          {id:'d5',name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
-          {id:'d6',name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
-        ];
-        _td = items.length ? items : _defaults;
-        testiRender();
+        _td = items.length ? items : [];
+        if(_td.length) testiRender();
+        else document.getElementById('testiSlider').innerHTML='<div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>Reviews coming soon!</div>';
       }catch(e){console.warn('testi:',e);}
     })();
     </script>
