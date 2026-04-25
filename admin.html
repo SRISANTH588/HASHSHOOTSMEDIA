@@ -495,42 +495,62 @@
       </div>
     </div>
 
-    <!-- BOOKINGS TAB -->
+    <!-- BOOKINGS TAB / DASHBOARD -->
     <div class="tab-panel active" id="tab-bookings">
 
-    <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
-      <div class="stat-card"><div class="num" id="totalCount">0</div><div class="lbl">Total Bookings</div></div>
-      <div class="stat-card"><div class="num" style="color:#ff9800" id="pendingCount">0</div><div class="lbl">Pending Bookings</div></div>
-      <div class="stat-card"><div class="num" style="color:#4caf50" id="confirmedCount">0</div><div class="lbl">Confirmed</div></div>
-      <div class="stat-card"><div class="num" style="color:#2196f3" id="completedCount">0</div><div class="lbl">Completed</div></div>
-      <div class="stat-card" style="cursor:pointer;" onclick="switchTab('assign',document.getElementById('assignTabBtn'))">
-        <div class="num" style="color:#f44336" id="creatorPendingAmt">₹0</div>
-        <div class="lbl">Creator Pending Pay</div>
+    <!-- DASHBOARD STATS ROW — Flashoot style -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">APPROVED</div>
+        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="confirmedCount">0</div>
+      </div>
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">PENDING</div>
+        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="pendingCount">0</div>
+      </div>
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem 1.5rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">COMPLETED</div>
+        <div style="font-size:2.5rem;font-weight:900;color:#fff;" id="completedCount">0</div>
+      </div>
+      <!-- RED TOTAL CARD — exactly like Flashoot -->
+      <div style="background:linear-gradient(135deg,#8b0000,#c0392b);border:none;border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;cursor:pointer;" onclick="switchTab('assign',document.getElementById('assignTabBtn'))">
+        <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-file-alt" style="color:#fff;font-size:1.2rem;"></i>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.3rem;">TOTAL BOOKINGS</div>
+          <div style="font-size:2.2rem;font-weight:900;color:#fff;line-height:1;" id="totalCount">0</div>
+          <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">Creator Pay: <span id="creatorPendingAmt">₹0</span></div>
+        </div>
       </div>
     </div>
 
     <!-- CREATOR PENDING PAYMENTS ALERT -->
-    <div id="creatorPendingAlert" style="display:none;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.25);border-radius:14px;padding:1.1rem 1.5rem;margin-bottom:1.5rem;">
+    <div id="creatorPendingAlert" style="display:none;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
-          <div style="width:38px;height:38px;background:rgba(244,67,54,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#f44336;"></i></div>
+          <div style="width:36px;height:36px;background:rgba(244,67,54,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#f44336;"></i></div>
           <div>
-            <div style="font-size:0.92rem;font-weight:800;color:#fff;">Creator Payments Pending</div>
-            <div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
+            <div style="font-size:0.88rem;font-weight:700;color:#fff;">Creator Payments Pending</div>
+            <div style="font-size:0.72rem;color:#666;margin-top:0.1rem;" id="creatorPendingSubtitle">Loading...</div>
           </div>
         </div>
-        <button onclick="switchTab('assign',document.getElementById('assignTabBtn'))" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
+        <button onclick="switchTab('assign',document.getElementById('assignTabBtn'))" style="background:#f44336;color:#fff;border:none;border-radius:7px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-paper-plane"></i> Release Payments</button>
       </div>
       <div id="creatorPendingBreakdown" style="margin-top:0.85rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.6rem;"></div>
     </div>
 
-    <div class="filters">
-      <button class="filter-btn active" onclick="filterBookings('all',this)">All</button>
-      <button class="filter-btn" onclick="filterBookings('pending',this)">Pending</button>
-      <button class="filter-btn" onclick="filterBookings('confirmed',this)">Confirmed</button>
-      <button class="filter-btn" onclick="filterBookings('completed',this)">Completed</button>
-      <button class="filter-btn" onclick="filterBookings('cancelled',this)">Cancelled</button>
-      <input class="search-bar" type="text" placeholder="🔍 Search by name, service, city..." oninput="searchBookings(this.value)"/>
+    <!-- BOOKINGS SECTION HEADING — like Flashoot's "Partner Applications" -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div style="font-size:1.1rem;font-weight:700;color:#fff;">Bookings <span style="color:#444;font-size:0.8rem;font-weight:400;">↗</span></div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="filter-btn active" onclick="filterBookings('all',this)">All</button>
+        <button class="filter-btn" onclick="filterBookings('pending',this)">Pending</button>
+        <button class="filter-btn" onclick="filterBookings('confirmed',this)">Confirmed</button>
+        <button class="filter-btn" onclick="filterBookings('completed',this)">Completed</button>
+        <button class="filter-btn" onclick="filterBookings('cancelled',this)">Cancelled</button>
+        <input class="search-bar" type="text" placeholder="🔍 Search..." oninput="searchBookings(this.value)" style="max-width:200px;"/>
+      </div>
     </div>
 
     <div class="table-wrap">
@@ -542,7 +562,7 @@
             <th>Customer</th>
             <th>Service</th>
             <th>City</th>
-            <th>Date & Time</th>
+            <th>Date &amp; Time</th>
             <th>Notes</th>
             <th>Status</th>
             <th>Actions</th>
@@ -556,10 +576,10 @@
     <!-- DRESS CODE PHOTOS SECTION -->
     <div class="about-form" style="margin-top:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.5rem;"></i> Staff Dress Code Photos <span id="dressPhotoBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.4rem;">0</span></h2>
-        <button onclick="renderDressPhotos()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <h2 style="font-size:0.95rem;font-weight:700;color:#fff;"><i class="fas fa-camera" style="color:#f5a623;margin-right:0.5rem;"></i> Staff Dress Code Photos <span id="dressPhotoBadge" style="display:none;background:#f5a623;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.4rem;">0</span></h2>
+        <button onclick="renderDressPhotos()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#888;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync-alt"></i> Refresh</button>
       </div>
-      <div id="dressPhotosList"><p style="color:#6a6050;font-size:0.85rem;">No dress code photos yet.</p></div>
+      <div id="dressPhotosList"><p style="color:#444;font-size:0.85rem;">No dress code photos yet.</p></div>
     </div>
 
     </div><!-- end tab-bookings -->
