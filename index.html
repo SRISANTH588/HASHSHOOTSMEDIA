@@ -955,119 +955,108 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section id="testimonials" style="background:#000;padding:5rem 0;position:relative;overflow:hidden;">
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;"></div>
+  <section id="testimonials" style="background:#080808;padding:5rem 0;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
     <style>
-      .testi-section{max-width:1200px;margin:0 auto;padding:0 2rem;}
-      .testi-header{text-align:center;margin-bottom:3.5rem;}
-      .testi-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .testi-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.15;}
-      .testi-title span{color:#c9a84c;}
+      .testi-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .testi-head{text-align:center;margin-bottom:3.5rem;}
+      .testi-h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.15;}
+      .testi-h1 span{color:#c9a84c;}
       .testi-sub{font-size:0.95rem;color:#6a6050;margin-top:0.75rem;}
-      .testi-slider-wrap{position:relative;overflow:hidden;}
-      .testi-track{display:flex;gap:1.5rem;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
-      .testi-card{background:linear-gradient(145deg,#0d0d0d,#111);border:1px solid rgba(201,168,76,0.12);border-radius:20px;padding:2rem;min-width:calc(33.333% - 1rem);flex-shrink:0;position:relative;transition:all 0.3s;}
-      .testi-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5);}
-      .testi-quote-icon{width:40px;height:40px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;}
-      .testi-text{font-size:0.92rem;color:#b8b0a0;line-height:1.8;margin-bottom:1.5rem;flex:1;}
-      .testi-author{display:flex;align-items:center;gap:0.85rem;border-top:1px solid rgba(201,168,76,0.08);padding-top:1.25rem;}
-      .testi-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.3);flex-shrink:0;background:linear-gradient(135deg,#c9a84c,#a07830);}
-      .testi-avatar-initials{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#000;flex-shrink:0;}
-      .testi-name{font-size:0.9rem;font-weight:800;color:#fff;}
+      .testi-slider-outer{position:relative;overflow:hidden;}
+      .testi-slider-inner{display:flex;gap:1.5rem;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
+      .testi-card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;min-width:calc(33.333% - 1rem);flex-shrink:0;display:flex;flex-direction:column;gap:1.25rem;transition:all 0.3s;}
+      .testi-card:hover{border-color:rgba(201,168,76,0.25);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+      .testi-q-icon{width:42px;height:42px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+      .testi-body{font-size:0.95rem;color:#b0a898;line-height:1.8;flex:1;}
+      .testi-footer{display:flex;align-items:center;gap:0.85rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1.25rem;}
+      .testi-img{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.3);flex-shrink:0;}
+      .testi-initials{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#000;flex-shrink:0;}
+      .testi-name{font-size:0.95rem;font-weight:800;color:#fff;}
       .testi-role{font-size:0.72rem;color:#9a9080;margin-top:0.1rem;}
-      .testi-stars{display:flex;gap:2px;margin-bottom:0.25rem;}
-      .testi-dots{display:flex;justify-content:center;gap:0.5rem;margin-top:2rem;}
-      .testi-dot{width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,0.2);cursor:pointer;transition:all 0.3s;}
-      .testi-dot.active{background:#c9a84c;width:28px;border-radius:5px;}
-      .testi-nav{display:flex;justify-content:center;gap:0.75rem;margin-top:1.5rem;}
-      .testi-btn{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;}
-      .testi-btn:hover{background:rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.4);}
+      .testi-dots-row{display:flex;justify-content:center;gap:0.5rem;margin-top:2.5rem;}
+      .testi-dot{width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,0.2);cursor:pointer;transition:all 0.3s;border:none;}
+      .testi-dot.on{background:#c9a84c;width:28px;border-radius:5px;}
+      .testi-arrows{display:flex;justify-content:center;gap:0.75rem;margin-top:1.25rem;}
+      .testi-arr{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;}
+      .testi-arr:hover{background:rgba(201,168,76,0.2);}
       @media(max-width:900px){.testi-card{min-width:calc(50% - 0.75rem);}}
-      @media(max-width:600px){.testi-card{min-width:calc(100%);}}
+      @media(max-width:600px){.testi-card{min-width:100%;}}
     </style>
-    <div class="testi-section">
-      <div class="testi-header">
-        <div class="testi-eyebrow"><i class="fas fa-star"></i> Customer Reviews</div>
-        <h2 class="testi-title">What Our <span>Loving Customers</span> Say</h2>
+    <div class="testi-wrap">
+      <div class="testi-head">
+        <h2 class="testi-h1">What Our <span>Loving Customers</span> Say</h2>
         <p class="testi-sub">Join thousands of satisfied customers who trust OG SHOOTS</p>
       </div>
-      <div class="testi-slider-wrap">
-        <div class="testi-track" id="testiTrack"></div>
+      <div class="testi-slider-outer">
+        <div class="testi-slider-inner" id="testiSlider">
+          <div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-spinner fa-spin" style="color:#c9a84c;font-size:1.5rem;display:block;margin-bottom:0.75rem;"></i>Loading reviews...</div>
+        </div>
       </div>
-      <div class="testi-nav">
-        <button class="testi-btn" onclick="testiPrev()"><i class="fas fa-chevron-left"></i></button>
-        <button class="testi-btn" onclick="testiNext()"><i class="fas fa-chevron-right"></i></button>
+      <div class="testi-arrows">
+        <button class="testi-arr" onclick="testiPrev()"><i class="fas fa-chevron-left"></i></button>
+        <button class="testi-arr" onclick="testiNext()"><i class="fas fa-chevron-right"></i></button>
       </div>
-      <div class="testi-dots" id="testiDots"></div>
+      <div class="testi-dots-row" id="testiDots"></div>
     </div>
     <script>
-    var _testiData = [];
-    var _testiIdx = 0;
-    var _testiPerPage = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : 3;
+    var _td=[], _ti=0;
+    function _tpp(){ return window.innerWidth<600?1:window.innerWidth<900?2:3; }
 
     function testiRender(){
-      var track = document.getElementById('testiTrack');
-      var dots  = document.getElementById('testiDots');
-      if(!track || !_testiData.length) return;
-      function stars(n){ var s=''; for(var i=1;i<=5;i++) s+='<div style="width:14px;height:14px;border-radius:3px;background:'+(i<=n?'#c9a84c':'rgba(201,168,76,0.15)+')+';"></div>'; return s; }
-      track.innerHTML = _testiData.map(function(f){
-        var initials = (f.name||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-        var rating = f.rating || 5;
-        var starsHtml = '<div class="testi-stars">';
-        for(var i=1;i<=5;i++) starsHtml += '<i class="fas fa-star" style="color:'+(i<=rating?'#c9a84c':'rgba(201,168,76,0.2)')+';font-size:0.78rem;"></i>';
-        starsHtml += '</div>';
-        var avatarHtml = f.photo
-          ? '<img src="'+f.photo+'" class="testi-avatar" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><div class="testi-avatar-initials" style="display:none;">'+initials+'</div>'
-          : '<div class="testi-avatar-initials">'+initials+'</div>';
-        return '<div class="testi-card">'          +'<div class="testi-quote-icon"><i class="fas fa-quote-right" style="color:#c9a84c;font-size:1rem;"></i></div>'          +starsHtml          +'<p class="testi-text">&ldquo;'+f.text+'&rdquo;</p>'          +'<div class="testi-author">'+avatarHtml+'<div><div class="testi-name">'+f.name+'</div><div class="testi-role">'+(f.role||'OG Shoots Customer')+'</div></div></div>'        +'</div>';
+      var sl=document.getElementById('testiSlider');
+      var dt=document.getElementById('testiDots');
+      if(!sl||!_td.length) return;
+      sl.innerHTML=_td.map(function(f){
+        var ini=(f.name||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+        var r=f.rating||5; var stars='';
+        for(var i=1;i<=5;i++) stars+='<i class="fas fa-star" style="color:'+(i<=r?'#c9a84c':'rgba(201,168,76,0.2)')+';font-size:0.75rem;margin-right:2px;"></i>';
+        var av=f.photo?'<img src="'+f.photo+'" class="testi-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><div class="testi-initials" style="display:none;">'+ini+'</div>':'<div class="testi-initials">'+ini+'</div>';
+        return '<div class="testi-card">'          +'<div class="testi-q-icon"><i class="fas fa-quote-right" style="color:#c9a84c;font-size:1rem;"></i></div>'          +'<div style="margin-bottom:0.25rem;">'+stars+'</div>'          +'<p class="testi-body">'+f.text+'</p>'          +'<div class="testi-footer">'+av+'<div><div class="testi-name">'+f.name+'</div><div class="testi-role">'+(f.role||'OG Shoots Customer')+'</div></div></div>'        +'</div>';
       }).join('');
-      // Dots
-      var pages = Math.ceil(_testiData.length / _testiPerPage);
-      dots.innerHTML = '';
+      var pages=Math.ceil(_td.length/_tpp());
+      dt.innerHTML='';
       for(var i=0;i<pages;i++){
-        var d = document.createElement('div');
-        d.className = 'testi-dot'+(i===0?' active':'');
+        var d=document.createElement('button');
+        d.className='testi-dot'+(i===0?' on':'');
         d.setAttribute('data-i',i);
-        d.onclick = function(){ testiGoTo(Number(this.getAttribute('data-i'))); };
-        dots.appendChild(d);
+        d.onclick=function(){testiGo(Number(this.getAttribute('data-i')));};
+        dt.appendChild(d);
       }
-      testiGoTo(0);
+      testiGo(0);
     }
 
-    function testiGoTo(idx){
-      var track = document.getElementById('testiTrack');
-      if(!track) return;
-      _testiPerPage = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : 3;
-      var pages = Math.ceil(_testiData.length / _testiPerPage);
-      _testiIdx = Math.max(0, Math.min(idx, pages-1));
-      var cardW = track.children[0] ? track.children[0].offsetWidth + 24 : 0;
-      track.style.transform = 'translateX(-'+(_testiIdx * _testiPerPage * cardW)+'px)';
-      document.querySelectorAll('.testi-dot').forEach(function(d,i){ d.classList.toggle('active', i===_testiIdx); });
+    function testiGo(idx){
+      var sl=document.getElementById('testiSlider');
+      if(!sl||!sl.children.length) return;
+      var pp=_tpp();
+      var pages=Math.ceil(_td.length/pp);
+      _ti=Math.max(0,Math.min(idx,pages-1));
+      var cw=(sl.children[0].offsetWidth+24);
+      sl.style.transform='translateX(-'+(_ti*pp*cw)+'px)';
+      document.querySelectorAll('.testi-dot').forEach(function(d,i){d.classList.toggle('on',i===_ti);});
     }
-    function testiNext(){ testiGoTo(_testiIdx+1); }
-    function testiPrev(){ testiGoTo(_testiIdx-1); }
+    function testiNext(){testiGo(_ti+1);}
+    function testiPrev(){testiGo(_ti-1);}
+    setInterval(function(){if(_td.length)testiNext();},5000);
+    window.addEventListener('resize',function(){testiGo(_ti);});
 
-    // Auto-slide every 5s
-    setInterval(function(){ if(_testiData.length) testiNext(); }, 5000);
-
-    // Load from Firebase
     (async function(){
       try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='testi-home';})||fbMod.initializeApp(fbCfg,'testi-home');
-        var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'homepage_testimonials'),fbStore.orderBy('createdAt','desc')));
-        var items = [];
-        snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
+        var fm=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fs2=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fc={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app=fm.getApps().find(function(a){return a.name==='testi-home';})||fm.initializeApp(fc,'testi-home');
+        var db=fs2.getFirestore(app);
+        var snap=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
+        var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
         if(items.length){
-          _testiData = items;
+          _td=items;
           testiRender();
         } else {
-          document.getElementById('testiTrack').innerHTML = '<div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>Reviews coming soon!</div>';
+          document.getElementById('testiSlider').innerHTML='<div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>Reviews coming soon!</div>';
         }
-      }catch(e){ console.warn('testimonials:',e); }
+      }catch(e){console.warn('testi:',e);}
     })();
     </script>
   </section>
