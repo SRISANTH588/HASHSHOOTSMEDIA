@@ -965,12 +965,12 @@
       .testi-sub{font-size:0.95rem;color:#6a6050;margin-top:0.75rem;}
       .testi-slider-outer{position:relative;overflow:hidden;}
       .testi-slider-inner{display:flex;gap:1.25rem;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);align-items:stretch;}
-      .testi-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:1.5rem;width:calc((100% - 2.5rem) / 3);min-width:calc((100% - 2.5rem) / 3);flex-shrink:0;display:flex;flex-direction:column;gap:1rem;transition:all 0.3s;box-sizing:border-box;}
+      .testi-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:1.1rem 1.25rem;width:calc((100% - 2.5rem) / 3);min-width:calc((100% - 2.5rem) / 3);flex-shrink:0;display:flex;flex-direction:column;gap:0.75rem;transition:all 0.3s;box-sizing:border-box;}
       .testi-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.5);}
       .testi-featured{border-color:rgba(201,168,76,0.35)!important;box-shadow:0 0 16px rgba(201,168,76,0.08);}
       .testi-q-icon{width:36px;height:36px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-      .testi-body{font-size:0.88rem;color:#b0a898;line-height:1.75;flex:1;}
-      .testi-footer{display:flex;align-items:center;gap:0.75rem;border-top:1px solid rgba(255,255,255,0.07);padding-top:1rem;margin-top:auto;}
+      .testi-body{font-size:0.85rem;color:#b0a898;line-height:1.7;flex:1;}
+      .testi-footer{display:flex;align-items:center;gap:0.75rem;border-top:1px solid rgba(255,255,255,0.07);padding-top:0.75rem;margin-top:auto;}
       .testi-img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.3);flex-shrink:0;}
       .testi-initials{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#000;flex-shrink:0;}
       .testi-name{font-size:0.88rem;font-weight:800;color:#fff;}
@@ -1059,7 +1059,10 @@
         var _defaults=[
           {id:'d1',name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
           {id:'d2',name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true},
+          {id:'d4',name:'Ravi Teja',role:'OG Shoots Customer',text:'Absolutely loved the experience! The reel quality was top-notch and the creator was super professional. Will book again!',photo:'',rating:5,verified:true,featured:false},
+          {id:'d5',name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
+          {id:'d6',name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
         ];
         if(items.length){
           _td=items;
@@ -1069,7 +1072,10 @@
           var seedData=[
             {name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
             {name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true},
+            {name:'Ravi Teja',role:'OG Shoots Customer',text:'Absolutely loved the experience! The reel quality was top-notch and the creator was super professional. Will book again!',photo:'',rating:5,verified:true,featured:false},
+            {name:'Priya Sharma',role:'OG Shoots Customer',text:'OG Shoots delivered beyond expectations. Fast turnaround, creative shots, and amazing editing. 10/10 recommend!',photo:'',rating:5,verified:true,featured:false},
+            {name:'Karthik Reddy',role:'OG Shoots Customer',text:'Best platform for booking reel creators. The whole process was smooth and the final output was stunning!',photo:'',rating:5,verified:false,featured:false}
           ];
           try{
             for(var s=0;s<seedData.length;s++){
