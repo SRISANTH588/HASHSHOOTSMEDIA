@@ -1056,11 +1056,30 @@
         var db=fs2.getFirestore(app);
         var snap=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
         var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
+        var _defaults=[
+          {id:'d1',name:'Srikari Galigari',role:'OG Shoots Customer',text:'Flashoot made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
+          {id:'d2',name:'Lanka Pravallika',role:'OG Shoots Customer',text:'Flashoot is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
+          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! Flashoot makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+        ];
         if(items.length){
           _td=items;
           testiRender();
         } else {
-          document.getElementById('testiSlider').innerHTML='<div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>Reviews coming soon!</div>';
+          // Seed default testimonials into Firebase
+          var seedData=[
+            {name:'Srikari Galigari',role:'OG Shoots Customer',text:'Flashoot made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
+            {name:'Lanka Pravallika',role:'OG Shoots Customer',text:'Flashoot is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
+            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! Flashoot makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+          ];
+          try{
+            for(var s=0;s<seedData.length;s++){
+              await fs2.addDoc(fs2.collection(db,'homepage_testimonials'),Object.assign({},seedData[s],{createdAt:fs2.serverTimestamp()}));
+            }
+            var snap2=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
+            var items2=[];snap2.forEach(function(d){items2.push(Object.assign({id:d.id},d.data()));});
+            _td=items2.length?items2:_defaults;
+          }catch(se){_td=_defaults;}
+          testiRender();
         }
       }catch(e){console.warn('testi:',e);}
     })();
