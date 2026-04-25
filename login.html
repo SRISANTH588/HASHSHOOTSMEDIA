@@ -355,43 +355,39 @@
           result = await fbAuth.signInWithPopup(auth, provider);
         } catch(popupErr) {
           if(popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/popup-closed-by-user') {
-            // Fallback to redirect
             await fbAuth.signInWithRedirect(auth, provider);
             return;
           }
           throw popupErr;
         }
-        const user    = result.user;
-        const email   = user.email.toLowerCase();
-        const name    = user.displayName || email;
-        const phone   = user.phoneNumber || '';
-        // Check if customer already exists in Firestore
-        var key = email.replace(/[.#$\[\]]/g,'_');
-        var snap = await fbStore.getDoc(fbStore.doc(db,'customers',key));
-        var custData;
+        const user  = result.user;
+        const email = user.email.toLowerCase();
+        const name  = user.displayName || email;
+        const photo = user.photoURL || '';
+        const uid   = user.uid;
+        // Check if customer already exists by Google UID
+        const snap  = await fbStore.getDoc(fbStore.doc(db,'customers_google', uid));
+        let custData;
         if(snap.exists()){
-          // Existing Google customer — load their data
+          // Returning user — load existing data
           custData = snap.data();
         } else {
-          // No account found — block login, ask to sign up manually
-          await fbAuth.signOut(auth);
-          alert('No account found for ' + email + '.\n\nPlease sign up first using the Sign Up tab.');
-          return;
+          // First time — auto-create account
+          const username = 'g_' + uid.slice(0,10);
+          custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
+          await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
+          // Also save in customers collection for admin visibility
+          await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
         }
-        // Set localStorage
+        // Set session
         localStorage.setItem('hs_role','customer');
         localStorage.setItem('hs_user', email);
         localStorage.setItem('hs_customer_email', email);
         localStorage.setItem('hs_customer_name', custData.name||name);
-        localStorage.setItem('hs_customer_phone', custData.phone||phone);
+        localStorage.setItem('hs_customer_phone', custData.phone||'');
         localStorage.setItem('hs_customer_username', custData.username||email);
-        // Fetch bookings for this customer from Firestore
-        var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email)));
-        if(!bSnap.empty){
-          var bList = [];
-          bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
-          localStorage.setItem('hs_bookings', JSON.stringify(bList));
-        }
+        localStorage.setItem('hs_customer_photo', custData.photo||photo);
+        localStorage.setItem('hs_customer_uid', uid);
         window.location.href = 'index.html';
       } catch(e){
         if(e.code !== 'auth/popup-closed-by-user'){
@@ -745,13 +741,17 @@
         var user  = result.user;
         var email = user.email.toLowerCase();
         var name  = user.displayName || email;
-        var key   = email.replace(/[.#$\[\]]/g,'_');
-        var snap  = await fbStore.getDoc(fbStore.doc(db,'customers',key));
-        var custData = snap.exists() ? snap.data() : null;
-        if(!custData){
-          await fbAuth.signOut(auth);
-          alert('No account found for ' + email + '.\n\nPlease sign up first using the Sign Up tab.');
-          return;
+        var photo = user.photoURL || '';
+        var uid   = user.uid;
+        var snap  = await fbStore.getDoc(fbStore.doc(db,'customers_google', uid));
+        var custData;
+        if(snap.exists()){
+          custData = snap.data();
+        } else {
+          var username = 'g_' + uid.slice(0,10);
+          custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
+          await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
+          await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
         }
         localStorage.setItem('hs_role','customer');
         localStorage.setItem('hs_user', email);
@@ -759,6 +759,8 @@
         localStorage.setItem('hs_customer_name', custData.name||name);
         localStorage.setItem('hs_customer_phone', custData.phone||'');
         localStorage.setItem('hs_customer_username', custData.username||email);
+        localStorage.setItem('hs_customer_photo', custData.photo||photo);
+        localStorage.setItem('hs_customer_uid', uid);
         window.location.href = 'index.html';
       }
     }catch(e){ console.log('Redirect result:', e); }
