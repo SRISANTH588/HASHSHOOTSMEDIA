@@ -573,6 +573,28 @@
       </div>
     </div>
 
+    <!-- BOOKINGS CHART - like Flashoot Partner Applications chart -->
+    <div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:#fff;">Bookings Overview</div>
+          <div style="font-size:0.72rem;color:#444;margin-top:0.2rem;">Last 7 days activity</div>
+        </div>
+        <div style="display:flex;gap:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
+            <div style="width:8px;height:8px;border-radius:2px;background:#c9a84c;"></div>Confirmed
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
+            <div style="width:8px;height:8px;border-radius:2px;background:#f44336;"></div>Pending
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#555;">
+            <div style="width:8px;height:8px;border-radius:2px;background:#2196f3;"></div>Completed
+          </div>
+        </div>
+      </div>
+      <canvas id="bookingsChart" height="100"></canvas>
+    </div>
+
     <!-- DRESS CODE PHOTOS SECTION -->
     <div class="about-form" style="margin-top:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
@@ -583,6 +605,58 @@
     </div>
 
     </div><!-- end tab-bookings -->
+
+    <script>
+    // Load Chart.js and render bookings chart
+    (function(){
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+      s.onload = function(){ initBookingsChart(); };
+      document.head.appendChild(s);
+    })();
+
+    function initBookingsChart(){
+      var canvas = document.getElementById('bookingsChart');
+      if(!canvas || !window.Chart) return;
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var labels = [], confirmed = [], pending = [], completed = [];
+      for(var i=6;i>=0;i--){
+        var d = new Date(); d.setDate(d.getDate()-i);
+        labels.push(d.toLocaleDateString('en-IN',{weekday:'short'}));
+        var ds = d.toISOString().split('T')[0];
+        var day = bookings.filter(function(b){ return (b.date||'').startsWith(ds); });
+        confirmed.push(day.filter(function(b){ return b.status==='confirmed'; }).length);
+        pending.push(day.filter(function(b){ return b.status==='pending'; }).length);
+        completed.push(day.filter(function(b){ return b.status==='completed'; }).length);
+      }
+      // If no date-based data, show totals on last bar
+      var anyData = confirmed.concat(pending,completed).some(function(v){return v>0;});
+      if(!anyData){
+        confirmed[6] = bookings.filter(function(b){return b.status==='confirmed';}).length;
+        pending[6]   = bookings.filter(function(b){return b.status==='pending';}).length;
+        completed[6] = bookings.filter(function(b){return b.status==='completed';}).length;
+      }
+      new Chart(canvas,{
+        type:'bar',
+        data:{
+          labels:labels,
+          datasets:[
+            {label:'Confirmed',data:confirmed,backgroundColor:'rgba(201,168,76,0.75)',borderRadius:4,borderSkipped:false},
+            {label:'Pending',data:pending,backgroundColor:'rgba(244,67,54,0.65)',borderRadius:4,borderSkipped:false},
+            {label:'Completed',data:completed,backgroundColor:'rgba(33,150,243,0.65)',borderRadius:4,borderSkipped:false}
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.parsed.y;}}}},
+          scales:{
+            x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#444',font:{size:11}}},
+            y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#444',font:{size:11},stepSize:1},beginAtZero:true}
+          }
+        }
+      });
+    }
+    </script>
 
     <!-- ABOUT US TAB -->
     <div class="tab-panel" id="tab-about">
