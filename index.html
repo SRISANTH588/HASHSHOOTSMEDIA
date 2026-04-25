@@ -183,7 +183,13 @@
 
       function renderTestimonials(){
         var panel = document.getElementById('vibeTestiPanel');
+        // Clear any legacy hardcoded testimonials from localStorage
         var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+        if(hp.testimonials && hp.testimonials.length){
+          var legacyNames=['Srikari Galigari','Lanka Pravallika','Abhiram Kukunuri','Rahul Verma','Ananya Reddy','Priya Sharma','Nikhil Kumar','Sneha Mehta','Vikram Rao'];
+          hp.testimonials = hp.testimonials.filter(function(t){ return !legacyNames.includes(t.name); });
+          localStorage.setItem('hs_homepage', JSON.stringify(hp));
+        }
         var textTestis = hp.testimonials || [];
         var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
 

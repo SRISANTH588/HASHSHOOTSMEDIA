@@ -3365,17 +3365,7 @@ Priority Support</textarea></div>
       // Testimonials
       var tList = document.getElementById('hp_testiList');
       tList.innerHTML = '';
-      var testis = hp.testimonials && hp.testimonials.length ? hp.testimonials : [
-        {name:'Srikari Galigari', text:'OG SHOOTS made booking a content maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!'},
-        {name:'Lanka Pravallika', text:'OG SHOOTS is a game-changer! Quick booking, talented content makers, and amazing event coverage. Loved the experience!'},
-        {name:'Abhiram Kukunuri', text:'Seamless booking, professional shooters and stunning reels! OG SHOOTS made capturing memories effortlessly beautiful.'},
-        {name:'Rahul Verma', text:'The reel shoot was so professional and fun! Got 50K views on my first reel. The shooter understood my vision perfectly.'},
-        {name:'Ananya Reddy', text:'Used OG SHOOTS for our startup launch event. The coverage was incredible and photos were delivered same day. Highly recommend!'},
-        {name:'Priya Sharma', text:'My product photos look absolutely stunning. Booked at 9 PM, shoot happened next morning! Incredible speed and quality.'},
-        {name:'Nikhil Kumar', text:'Amazing experience from start to finish. The content maker was on time, creative, and delivered edited content within minutes!'},
-        {name:'Sneha Mehta', text:'Best investment for my brand! The content quality is top-notch and the team is super responsive. Will book again!'},
-        {name:'Vikram Rao', text:'I was skeptical at first but OG SHOOTS blew me away. Professional, fast, and the reels went viral. 10/10 service!'}
-      ];
+      var testis = hp.testimonials && hp.testimonials.length ? hp.testimonials : [];
       testis.forEach(function(t){ addTestiRow(t.name, t.text); });
     }
 
