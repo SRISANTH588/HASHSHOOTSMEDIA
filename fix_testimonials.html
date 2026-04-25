@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Fix Testimonials</title></head>
+<body>
+<p id="status">Running fix...</p>
+<script type="module">
+  import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, updateDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const fc = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+  const app = getApps().find(a=>a.name==='fix-testi') || initializeApp(fc,'fix-testi');
+  const db = getFirestore(app);
+
+  const snap = await getDocs(query(collection(db,'homepage_testimonials'), orderBy('createdAt','desc')));
+  let fixed = 0;
+  for (const d of snap.docs) {
+    const data = d.data();
+    if (data.text && data.text.includes('Flashoot')) {
+      const newText = data.text.replace(/Flashoot/g, 'OG Shoots');
+      await updateDoc(doc(db,'homepage_testimonials', d.id), { text: newText });
+      fixed++;
+    }
+  }
+  document.getElementById('status').textContent = `Done! Fixed ${fixed} testimonial(s). You can close this tab.`;
+</script>
+</body>
+</html>
