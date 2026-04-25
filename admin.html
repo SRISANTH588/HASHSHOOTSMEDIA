@@ -185,6 +185,7 @@
       <button class="tab-btn" onclick="switchTab('notifications',this)" id="notifTabBtn"><i class="fas fa-bell"></i> Notifications <span id="notifBadge" style="display:none;background:#c9a84c;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn"><i class="fas fa-edit"></i> Order Edits <span id="orderEditsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('blog',this)" id="blogTabBtn"><i class="fas fa-pen-nib"></i> Blog</button>
+      <button class="tab-btn" onclick="switchTab('feedback-writer',this)" id="feedbackWriterTabBtn"><i class="fas fa-quote-right"></i> Feedback Writer</button>
       <button class="tab-btn" onclick="switchTab('press',this)" id="pressTabBtn"><i class="fas fa-newspaper"></i> Press</button>
       <button class="tab-btn" onclick="switchTab('careers',this)" id="careersTabBtn"><i class="fas fa-briefcase"></i> Career Apps</button>
       <button class="tab-btn" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
@@ -2601,6 +2602,41 @@ Priority Support</textarea></div>
       </div>
     </div>
 
+    <!-- FEEDBACK WRITER TAB -->
+    <div class="tab-panel" id="tab-feedback-writer">
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2><i class="fas fa-quote-right" style="color:#c9a84c;margin-right:0.5rem;"></i> Add Customer Testimonial</h2>
+        <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">Add testimonials that appear on the homepage slider.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group"><label>Customer Name *</label><input type="text" id="fw_name" placeholder="e.g. Srikari Galigari"/></div>
+          <div class="form-group"><label>Role / Service</label><input type="text" id="fw_role" placeholder="e.g. Wedding Photography Customer"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Testimonial Text *</label>
+          <textarea id="fw_text" style="min-height:100px;" placeholder="What did the customer say about OG Shoots?"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group"><label>Photo URL (optional)</label><input type="text" id="fw_photo" placeholder="https://... customer photo"/></div>
+          <div class="form-group"><label>Star Rating</label>
+            <select id="fw_rating" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;">
+              <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5 Stars</option>
+              <option value="4">&#9733;&#9733;&#9733;&#9733; 4 Stars</option>
+              <option value="3">&#9733;&#9733;&#9733; 3 Stars</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-save-about" onclick="saveFeedbackWriter()"><i class="fas fa-plus"></i> Add Testimonial</button>
+        <div id="fwToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Testimonial added!</div>
+      </div>
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> All Testimonials</h2>
+          <button onclick="loadFeedbackWriter()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="fwList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
+
     <!-- PRESS TAB -->
     <div class="tab-panel" id="tab-press">
       <div class="about-form" style="margin-bottom:1rem;">
@@ -3103,6 +3139,7 @@ Priority Support</textarea></div>
       if (tab === 'notifications') renderNotifications();
       if (tab === 'order-edits') loadOrderEdits();
       if (tab === 'blog') { renderBlogList(); }
+      if (tab === 'feedback-writer') loadFeedbackWriter();
       if (tab === 'press') { renderPressList(); loadPressStats(); }
       if (tab === 'careers') renderCareerApps();
       if (tab === 'affiliates') renderAffiliateApps();
@@ -7953,6 +7990,58 @@ Priority Support</textarea></div>
     // BLOG
     function getBlogs(){ return JSON.parse(localStorage.getItem('hs_blogs')||'[]'); }
     function saveBlogs(list){ localStorage.setItem('hs_blogs', JSON.stringify(list)); if(window.fbUpdate) fbUpdate('settings','blogs',{items:list}); }
+
+    // FEEDBACK WRITER
+    async function saveFeedbackWriter(){
+      var name=(document.getElementById("fw_name")||{}).value||"";
+      var text=(document.getElementById("fw_text")||{}).value||"";
+      var role=(document.getElementById("fw_role")||{}).value||"";
+      var photo=(document.getElementById("fw_photo")||{}).value||"";
+      var rating=parseInt((document.getElementById("fw_rating")||{}).value)||5;
+      if(!name||!text){alert("Please fill Name and Testimonial Text.");return;}
+      try{
+        var f=await _fbAdmin();if(!f)throw new Error("Firebase not ready");
+        await f.s.addDoc(f.s.collection(f.db,"homepage_testimonials"),{name:name.trim(),text:text.trim(),role:role.trim(),photo:photo.trim(),rating:rating,createdAt:f.s.serverTimestamp()});
+        ["fw_name","fw_text","fw_role","fw_photo"].forEach(function(id){var el=document.getElementById(id);if(el)el.value="";});
+        document.getElementById("fw_rating").value="5";
+        var t=document.getElementById("fwToast");t.style.display="block";setTimeout(function(){t.style.display="none";},3000);
+        loadFeedbackWriter();
+      }catch(e){alert("Error: "+e.message);}
+    }
+
+    async function loadFeedbackWriter(){
+      var el=document.getElementById("fwList");if(!el)return;
+      el.innerHTML='<p style="color:#9a9080;font-size:0.85rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+      try{
+        var f=await _fbAdmin();if(!f)throw new Error("Firebase not ready");
+        var snap=await f.s.getDocs(f.s.query(f.s.collection(f.db,"homepage_testimonials"),f.s.orderBy("createdAt","desc")));
+        var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
+        if(!items.length){el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;">No testimonials yet.</p>';return;}
+        el.innerHTML=items.map(function(t){
+          var stars="";
+          for(var i=1;i<=5;i++)stars+='<i class="fas fa-star" style="color:'+(i<=(t.rating||5)?"#f5a623":"#333")+';font-size:0.72rem;"></i>';
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;">'
+            +'<div style="flex:1;">'
+            +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+t.name+'</div>'
+            +'<div style="font-size:0.72rem;color:#9a9080;margin-bottom:0.3rem;">'+(t.role||"")+'</div>'
+            +'<div style="margin-bottom:0.3rem;">'+stars+'</div>'
+            +'<div style="font-size:0.82rem;color:#9a9080;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
+            +'</div>'
+            +'<button onclick="deleteFeedbackWriter(\'"+t.id+"\')" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'</div>';
+        }).join("");
+      }catch(e){el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';}
+    }
+
+    async function deleteFeedbackWriter(id){
+      if(!confirm("Delete this testimonial?"))return;
+      try{
+        var f=await _fbAdmin();if(!f)return;
+        await f.s.deleteDoc(f.s.doc(f.db,"homepage_testimonials",String(id)));
+        loadFeedbackWriter();
+      }catch(e){alert("Error: "+e.message);}
+    }
+
     function saveBlogPost(){
       var title = document.getElementById('bl_title').value.trim();
       var desc  = document.getElementById('bl_desc').value.trim();
