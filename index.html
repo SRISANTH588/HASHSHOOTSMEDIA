@@ -1057,9 +1057,9 @@
         var snap=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
         var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
         var _defaults=[
-          {id:'d1',name:'Srikari Galigari',role:'OG Shoots Customer',text:'Flashoot made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
-          {id:'d2',name:'Lanka Pravallika',role:'OG Shoots Customer',text:'Flashoot is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! Flashoot makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+          {id:'d1',name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
+          {id:'d2',name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
+          {id:'d3',name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
         ];
         if(items.length){
           _td=items;
@@ -1067,9 +1067,9 @@
         } else {
           // Seed default testimonials into Firebase
           var seedData=[
-            {name:'Srikari Galigari',role:'OG Shoots Customer',text:'Flashoot made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
-            {name:'Lanka Pravallika',role:'OG Shoots Customer',text:'Flashoot is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
-            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! Flashoot makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
+            {name:'Srikari Galigari',role:'OG Shoots Customer',text:'OG Shoots made booking a reel maker super easy! Great service, skilled creators, and stunning reels. Highly recommend!',photo:'',rating:5,verified:true,featured:true},
+            {name:'Lanka Pravallika',role:'OG Shoots Customer',text:'OG Shoots is a game-changer! Quick booking, talented reel makers, and amazing event coverage. Loved the experience!',photo:'',rating:5,verified:true,featured:true},
+            {name:'Abhiram Kukunuri',role:'OG Shoots Customer',text:'Seamless booking, professional creators, and stunning reels! OG Shoots makes capturing memories effortlessly.',photo:'',rating:5,verified:true,featured:true}
           ];
           try{
             for(var s=0;s<seedData.length;s++){
