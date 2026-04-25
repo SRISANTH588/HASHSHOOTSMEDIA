@@ -43,11 +43,12 @@
     flex-shrink:0;
   }
   .sidebar-logo-text{
-    font-size:1.6rem;font-weight:900;color:#fff;line-height:1;
-    letter-spacing:-0.5px;
-    margin-bottom:0.25rem;
+    font-size:1.55rem;font-weight:900;color:#fff;line-height:1;
+    letter-spacing:-1px;
+    margin-bottom:0.3rem;
+    display:flex;align-items:center;
   }
-  .sidebar-logo-text span{color:#c9a84c;}
+  .sidebar-logo-text span{color:#fff;}
   .sidebar-logo-sub{
     font-size:0.65rem;color:#444;font-weight:500;
     letter-spacing:0.5px;
@@ -304,8 +305,8 @@
 <!-- SIDEBAR -->
 <aside id="adminSidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-text"><span>OG</span> SHOOTS <sup style="font-size:0.4em;color:#c9a84c;letter-spacing:2px;">LUXE</sup></div>
-    <div class="sidebar-logo-sub">Admin Console</div>
+    <div class="sidebar-logo-text"><span>OG</span><i class="fas fa-bolt" style="color:#c9a84c;font-size:1.1rem;margin:0 0.1em;"></i>SHOOTS</div>
+    <div class="sidebar-logo-sub">OG Shoots Admin Console</div>
   </div>
 
   <nav class="sidebar-nav">
@@ -378,7 +379,7 @@
     <div class="sidebar-footer-user" id="adminNameDisplay">Admin</div>
     <div class="sidebar-footer-btns">
       <button class="sidebar-footer-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
-      <button class="sidebar-footer-btn danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <button class="sidebar-footer-btn danger" onclick="logout()" style="color:#f44336;border-color:rgba(244,67,54,0.3);"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
 </aside>
@@ -386,10 +387,9 @@
 <!-- MAIN -->
 <div id="adminMain">
   <div id="adminTopbar">
-    <h1><button id="sidebarToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button> <i class="fas fa-th-large"></i> <span id="currentPageTitle">Dashboard</span></h1>
+    <h1><button id="sidebarToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span id="currentPageTitle">Dashboard</span></h1>
     <div class="topbar-right">
-      <span style="color:#9a9080;font-size:0.78rem;" id="lastUpdated"></span>
-      <span style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.25rem 0.75rem;border-radius:50px;font-size:0.72rem;font-weight:700;"><i class="fas fa-shield-alt"></i> Admin</span>
+      <span style="color:#444;font-size:0.75rem;" id="lastUpdated"></span>
     </div>
   </div>
 
