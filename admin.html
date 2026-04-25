@@ -34,12 +34,14 @@
     z-index:100;overflow-y:auto;overflow-x:hidden;
     transition:transform 0.3s ease;
     transform:translateX(0);
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,0.08) transparent;
   }
   #adminSidebar::-webkit-scrollbar{width:2px;}
   #adminSidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px;}
 
   .sidebar-logo{
-    padding:1.75rem 1.5rem 1.25rem;
+    padding:1.25rem 1.25rem 1rem;
     border-bottom:1px solid rgba(255,255,255,0.06);
     flex-shrink:0;
   }
@@ -58,20 +60,20 @@
   .sidebar-nav{flex:1;padding:0.5rem 0;}
 
   .sidebar-section-label{
-    font-size:0.55rem;font-weight:700;color:#333;
+    font-size:0.52rem;font-weight:700;color:#333;
     letter-spacing:2px;text-transform:uppercase;
-    padding:1rem 1.5rem 0.3rem;
+    padding:0.75rem 1.25rem 0.25rem;
   }
 
   .sidebar-item{
     display:flex;align-items:center;gap:0.7rem;
-    padding:0.65rem 1.5rem;
-    color:#555;font-size:0.82rem;font-weight:500;
+    padding:0.55rem 1.25rem;
+    color:#555;font-size:0.8rem;font-weight:500;
     cursor:pointer;border:none;background:none;
     font-family:inherit;width:100%;text-align:left;
     border-left:2px solid transparent;
     transition:all 0.15s;position:relative;
-    white-space:nowrap;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .sidebar-item:hover{
     color:#ccc;
@@ -109,7 +111,7 @@
   .sidebar-badge.green{background:#4caf50;color:#fff;}
 
   .sidebar-footer{
-    padding:1.25rem 1.5rem;
+    padding:1rem 1.25rem;
     border-top:1px solid rgba(255,255,255,0.06);
     flex-shrink:0;
   }
@@ -3357,7 +3359,7 @@ Priority Support</textarea></div>
             <div style="font-weight:700">${b.name}</div>
             <div style="color:#9a9080;font-size:0.78rem">${b.phone}</div>
             ${b.preferredCreatorName ? `<div style="color:#c9a84c;font-size:0.72rem;margin-top:2px;"><i class="fas fa-user-circle"></i> Prefers: ${b.preferredCreatorName}</div>` : ''}
-            <div style="color:#777;font-size:0.7rem">${b.createdAt}</div>
+            <div style="color:#777;font-size:0.7rem">${typeof b.createdAt==='object'?(b.createdAt?.seconds?new Date(b.createdAt.seconds*1000).toLocaleDateString('en-IN'):''):(b.createdAt||'')}</div>
           </td>
           <td><span style="color:#c9a84c;font-weight:600">${b.service}</span>${b.plan ? `<div style="margin-top:3px;"><span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.62rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;letter-spacing:1px;">${b.plan}</span></div>` : ''}</td>
           <td>${b.city}</td>
