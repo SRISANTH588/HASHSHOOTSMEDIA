@@ -1057,6 +1057,8 @@
         var db=fs2.getFirestore(app);
         var snap=await fs2.getDocs(fs2.query(fs2.collection(db,'homepage_testimonials'),fs2.orderBy('createdAt','desc')));
         var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
+        // Filter out any legacy default entries
+        items=items.filter(function(t){return !['d1','d2','d3','d4','d5','d6'].includes(t.id);});
         _td = items.length ? items : [];
         if(_td.length) testiRender();
         else document.getElementById('testiSlider').innerHTML='<div style="text-align:center;padding:3rem;color:#6a6050;width:100%;"><i class="fas fa-star" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;"></i>Reviews coming soon!</div>';
