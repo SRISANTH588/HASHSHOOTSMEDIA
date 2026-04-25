@@ -259,72 +259,29 @@
 
   <!-- HERO -->
   <section class="hero" id="home">
+    <!-- Animated background particles -->
+    <canvas id="heroCanvas" style="position:absolute;inset:0;z-index:0;pointer-events:none;"></canvas>
+
     <div class="hero-content">
-      <p class="hero-tag">The Future of Instant Content Creation</p>
-      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
-      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
+      <!-- LEFT: Text -->
+      <div class="hero-left">
+        <div class="hero-eyebrow"><span class="hero-dot"></span> India's #1 On-Demand Content Studio</div>
+        <h1 class="hero-headline">
+          <span class="hero-line1">Book. Shoot.</span>
+          <span class="hero-line2">Go Viral.</span>
+        </h1>
+        <p class="hero-desc">Professional reels shot, edited &amp; delivered in <strong style="color:#c9a84c;">10 minutes</strong>. Certified creators at your doorstep — starting at <strong style="color:#c9a84c;">₹1,499</strong>.</p>
 
-      <div class="phone-mockup">
-        <div class="phone-glow"></div>
-        <div class="phone-frame" id="phoneFrame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span>9:41</span>
-              <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-            </div>
-            <div class="phone-body">
-              <div class="phone-header anim-slide-down">
-                <div>
-                  <p class="phone-city">Mumbai ▾</p>
-                  <p class="phone-greeting">Hey, there</p>
-                  <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
-                </div>
-                <div class="phone-bell"><i class="fas fa-bell"></i></div>
-              </div>
-              <div class="phone-actions anim-slide-up" style="animation-delay:0.2s">
-                <div class="phone-action"><div class="phone-action-icon red pulse-red"><i class="fas fa-plus"></i></div><span>Book Now</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-box"></i></div><span>Packages</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-wallet"></i></div><span>My Wallet</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-cog spin-slow"></i></div><span>Settings</span></div>
-              </div>
-              <div class="phone-banner anim-fade-in" style="animation-delay:0.4s">
-                <div class="phone-banner-text">REELS CREATED<br/>AND DELIVERED<br/><strong>ON THE SPOT</strong></div>
-                <div class="phone-banner-img"><i class="fas fa-user-circle"></i></div>
-                <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
-              </div>
-              <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
-              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
-              </div>
-              <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
-                <i class="fas fa-home active"></i>
-                <i class="fas fa-th"></i>
-                <i class="fas fa-wallet"></i>
-                <i class="fas fa-user"></i>
-              </div>
-            </div>
-          </div>
+        <div class="hero-typerow">
+          <span style="color:#9a9080;font-size:0.88rem;">Perfect for →</span>
+          <span class="hero-type" id="heroType"></span>
         </div>
-        <!-- Floating badges -->
-        <div class="float-badge badge-top"><i class="fas fa-bolt"></i> 10 Min Delivery</div>
-        <div class="float-badge badge-bottom"><i class="fas fa-star"></i> 4.9 Rating</div>
-        <div class="float-badge badge-left"><i class="fas fa-camera"></i> Live Now</div>
-      </div>
 
-      <!-- Below Phone -->
-      <div class="below-phone">
-        <div class="hero-pills">
-          <div class="hero-pill"><i class="fab fa-apple"></i> Shot on iPhone</div>
-          <div class="hero-pill"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
-          <div class="hero-pill">🎞️ Content Maker</div>
+        <div class="hero-ctas">
+          <a href="booking.html" class="hero-btn-primary"><i class="fas fa-bolt"></i> Book Now</a>
+          <a href="partner.html" class="hero-btn-secondary"><i class="fas fa-handshake"></i> Become a Partner</a>
         </div>
-        <div class="hero-btns">
-          <a href="booking.html" class="btn btn-book">Book Now</a>
-          <a href="partner.html" class="btn btn-partner">Become a Partner</a>
-        </div>
+
         <div class="hero-stats">
           <div class="hero-stat"><span class="stat-num" id="statReels">50,002+</span><span class="stat-label">Reels Delivered</span></div>
           <div class="stat-sep"></div>
@@ -332,9 +289,146 @@
           <div class="stat-sep"></div>
           <div class="hero-stat"><span class="stat-num" id="statMakers">200+</span><span class="stat-label">Content Makers</span></div>
         </div>
+
+        <div class="hero-pills">
+          <div class="hero-pill"><i class="fab fa-apple"></i> Shot on iPhone</div>
+          <div class="hero-pill"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
+          <div class="hero-pill">🎞️ Content Maker</div>
+        </div>
       </div>
 
+      <!-- RIGHT: Phone mockup -->
+      <div class="hero-right">
+        <div class="phone-mockup">
+          <div class="phone-glow"></div>
+          <div class="phone-frame" id="phoneFrame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-status">
+                <span>9:41</span>
+                <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+              </div>
+              <div class="phone-body">
+                <div class="phone-header anim-slide-down">
+                  <div>
+                    <p class="phone-city">Mumbai ▾</p>
+                    <p class="phone-greeting">Hey, there</p>
+                    <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
+                  </div>
+                  <div class="phone-bell"><i class="fas fa-bell"></i></div>
+                </div>
+                <div class="phone-actions anim-slide-up" style="animation-delay:0.2s">
+                  <div class="phone-action"><div class="phone-action-icon red pulse-red"><i class="fas fa-plus"></i></div><span>Book Now</span></div>
+                  <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-box"></i></div><span>Packages</span></div>
+                  <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-wallet"></i></div><span>My Wallet</span></div>
+                  <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-cog spin-slow"></i></div><span>Settings</span></div>
+                </div>
+                <div class="phone-banner anim-fade-in" style="animation-delay:0.4s">
+                  <div class="phone-banner-text">REELS CREATED<br/>AND DELIVERED<br/><strong>ON THE SPOT</strong></div>
+                  <div class="phone-banner-img"><i class="fas fa-user-circle"></i></div>
+                  <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+                </div>
+                <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
+                <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
+                  <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
+                  <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
+                  <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
+                </div>
+                <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
+                  <i class="fas fa-home active"></i>
+                  <i class="fas fa-th"></i>
+                  <i class="fas fa-wallet"></i>
+                  <i class="fas fa-user"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="float-badge badge-top"><i class="fas fa-bolt"></i> 10 Min Delivery</div>
+          <div class="float-badge badge-bottom"><i class="fas fa-star"></i> 4.9 Rating</div>
+          <div class="float-badge badge-left"><i class="fas fa-camera"></i> Live Now</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll"><div class="hero-scroll-line"></div><span>Scroll</span></div>
+
+    <style>
+      .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:7rem 3rem 3rem;
+        background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(201,168,76,0.18) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 100%,rgba(201,168,76,0.08) 0%,transparent 55%),
+        radial-gradient(ellipse 40% 30% at 10% 80%,rgba(160,120,48,0.06) 0%,transparent 50%),
+        linear-gradient(180deg,#0a0808 0%,#080808 40%,#050505 100%);}
+      .hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+        background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(201,168,76,0.012) 2px,rgba(201,168,76,0.012) 4px),
+        repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(201,168,76,0.008) 2px,rgba(201,168,76,0.008) 4px);}
+      .hero-content{display:flex;align-items:center;justify-content:space-between;gap:4rem;max-width:1300px;margin:0 auto;width:100%;position:relative;z-index:1;}
+      .hero-left{flex:1;text-align:left;}
+      .hero-right{flex:0 0 auto;display:flex;justify-content:center;}
+      .hero-eyebrow{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.72rem;font-weight:700;padding:0.4rem 1rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.75rem;}
+      .hero-dot{width:7px;height:7px;border-radius:50%;background:#c9a84c;animation:hsPulse 1.5s ease-in-out infinite;flex-shrink:0;}
+      .hero-headline{font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:1.05;margin-bottom:1.5rem;letter-spacing:-2px;}
+      .hero-line1{display:block;color:#fff;}
+      .hero-line2{display:block;background:linear-gradient(135deg,#c9a84c,#f0d080,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200%;animation:hsShimmer 3s linear infinite;}
+      .hero-desc{font-size:1.05rem;color:#9a9080;line-height:1.8;margin-bottom:1.5rem;max-width:520px;}
+      .hero-typerow{display:flex;align-items:center;gap:0.75rem;margin-bottom:2rem;min-height:1.5rem;}
+      .hero-type{font-size:0.95rem;font-weight:700;color:#c9a84c;border-right:2px solid #c9a84c;padding-right:4px;white-space:nowrap;}
+      .hero-ctas{display:flex;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap;}
+      .hero-btn-primary{display:inline-flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-weight:800;font-size:0.95rem;padding:0.85rem 2rem;border-radius:12px;text-decoration:none;transition:all 0.25s;box-shadow:0 8px 30px rgba(201,168,76,0.3);}
+      .hero-btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(201,168,76,0.45);}
+      .hero-btn-secondary{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#fff;font-weight:700;font-size:0.95rem;padding:0.85rem 2rem;border-radius:12px;text-decoration:none;transition:all 0.25s;}
+      .hero-btn-secondary:hover{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.3);color:#c9a84c;transform:translateY(-3px);}
+      .hero-stats{display:flex;align-items:center;gap:2rem;margin-bottom:1.75rem;}
+      .hero-stat{text-align:left;}
+      .stat-num{display:block;font-size:1.4rem;font-weight:900;color:#fff;}
+      .stat-label{font-size:0.72rem;color:#6a6050;text-transform:uppercase;letter-spacing:1px;}
+      .stat-sep{width:1px;height:36px;background:rgba(255,255,255,0.08);}
+      .hero-pills{display:flex;gap:0.6rem;flex-wrap:wrap;}
+      .hero-pill{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#9a9080;font-size:0.78rem;padding:0.4rem 0.9rem;border-radius:50px;}
+      .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.4rem;color:#6a6050;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;z-index:2;}
+      .hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(201,168,76,0.5),transparent);animation:scrollLine 1.5s ease-in-out infinite;}
+      @keyframes scrollLine{0%,100%{opacity:0.3;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.2);}}
+      @media(max-width:960px){.hero-content{flex-direction:column;text-align:center;gap:3rem;}.hero-left{text-align:center;}.hero-desc{margin:0 auto 1.5rem;}.hero-ctas{justify-content:center;}.hero-stats{justify-content:center;}.hero-pills{justify-content:center;}.hero-eyebrow{margin-left:auto;margin-right:auto;}}
+      @media(max-width:600px){.hero{padding:6rem 1.25rem 3rem;}.hero-headline{font-size:clamp(2.5rem,12vw,4rem);}.hero-right{display:none;}}
+    </style>
+    <script>
+      // Typewriter
+      (function(){
+        var words=['Weddings','Birthdays','Corporates','Product Shoots','Parties','Portraits'];
+        var wi=0,ci=0,del=false;
+        var el=document.getElementById('heroType');
+        function tick(){
+          if(!el)return;
+          var w=words[wi];
+          if(!del){el.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(tick,1800);return;}}
+          else{el.textContent=w.slice(0,--ci);if(ci===0){del=false;wi=(wi+1)%words.length;}}
+          setTimeout(tick,del?60:100);
+        }
+        setTimeout(tick,800);
+      })();
+      // Particle canvas
+      (function(){
+        var c=document.getElementById('heroCanvas');
+        if(!c)return;
+        var ctx=c.getContext('2d');
+        var pts=[];
+        function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+        resize();window.addEventListener('resize',resize);
+        for(var i=0;i<55;i++)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.5+0.3,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,o:Math.random()*0.4+0.1});
+        function draw(){
+          ctx.clearRect(0,0,c.width,c.height);
+          pts.forEach(function(p){
+            ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle='rgba(201,168,76,'+p.o+')';ctx.fill();
+            p.x+=p.vx;p.y+=p.vy;
+            if(p.x<0||p.x>c.width)p.vx*=-1;
+            if(p.y<0||p.y>c.height)p.vy*=-1;
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+    </script>
 
     <!-- Chat Widget -->
   </section>
