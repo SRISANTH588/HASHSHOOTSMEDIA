@@ -14,7 +14,7 @@
     --card:#111111;--card2:#161616;
     --border:rgba(255,255,255,0.06);
     --text:#ffffff;--muted:#666666;
-    --sidebar-w:220px;
+    --sidebar-w:260px;
   }
 
   /* ── STEP-BY-STEP SIDEBAR ── */
@@ -58,6 +58,7 @@
     cursor:pointer;user-select:none;
     transition:color 0.2s;
     border-left:3px solid transparent;
+    white-space:normal;
   }
   .sidebar-section-label:hover{color:#888;}
   .sidebar-section-label.open{color:#c9a84c;border-left-color:#c9a84c;}
@@ -96,7 +97,7 @@
     font-family:inherit;width:100%;text-align:left;
     border-left:3px solid transparent;
     transition:all 0.15s;position:relative;
-    white-space:nowrap;
+    white-space:normal;word-break:break-word;
   }
   .sidebar-item:hover{color:#ccc;background:rgba(255,255,255,0.02);}
   .sidebar-item.active{
