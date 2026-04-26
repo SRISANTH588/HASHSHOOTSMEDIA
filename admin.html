@@ -5701,16 +5701,18 @@ Priority Support</textarea></div>
     // ── DELETE ASSIGNMENT ─────────────────────────────────────────────
     function deleteAssignment(id){
       if(!confirm('Delete this assignment?')) return;
-      var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
-      saveAssignedShoots(list);
-      renderAssignedList();
-      // Delete from Firebase
+      // Delete from Firebase first, then update local
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f) return;
           await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
-          console.log('Deleted from Firebase:', id);
-        }catch(e){ console.error('Firebase delete error:', e); }
+          // Only update local AFTER Firebase confirms deletion
+          var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
+          saveAssignedShoots(list);
+          renderAssignedList();
+        }catch(e){
+          alert('Delete failed: '+e.message);
+        }
       })();
     }
 
@@ -9274,7 +9276,9 @@ Priority Support</textarea></div>
           var f=await _fbAdmin();if(!f)return;
           var snap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
           var list=[];snap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;list.push(data);});
-          if(list.length){localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));renderAssignedList();}
+          // Only update local if Firebase has same or more items (prevents revert after delete)
+          var local=getAssignedShoots();
+          if(list.length>=local.length){localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));renderAssignedList();}
         }catch(e){}
       })();
     }
