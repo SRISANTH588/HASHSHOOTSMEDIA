@@ -259,6 +259,7 @@
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -3457,17 +3458,55 @@ Priority Support</textarea></div>
       const idx = bookings.findIndex(b=>String(b.id)===String(id));
       if(idx === -1) return;
 
-      var payAmount = bookings[idx].payAmount || 0;
-
-      // When confirming, prompt for payment amount
+      // When confirming — auto-charge plan amount via Razorpay
       if(status === 'confirmed'){
+        var bk = bookings[idx];
+        // Extract price from plan string e.g. "Basic ₹1499" or payAmount already set
+        var rawPrice = bk.payAmount || 0;
+        if(!rawPrice){
+          var planStr = bk.plan || bk.service || '';
+          var match = planStr.match(/[₹\d,]+/);
+          if(match) rawPrice = parseInt(match[0].replace(/[₹,]/g,'')) || 0;
+        }
         var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
-        var defaultAmt = bookings[idx].payAmount || rp.defaultAmount || '';
-        var amtInput = prompt('Enter payment amount (₹) to charge the customer via Razorpay:\n(Leave blank to skip — customer will see "Payment link coming soon")', defaultAmt);
-        if(amtInput === null) return; // cancelled
-        payAmount = parseInt(amtInput, 10) || 0;
-        bookings[idx].payAmount = payAmount;
-        bookings[idx].paymentStatus = 'pending';
+        var rzpKey = rp.keyId || '';
+        if(rzpKey && rawPrice > 0){
+          // Launch Razorpay with plan amount
+          var options = {
+            key: rzpKey,
+            amount: rawPrice * 100,
+            currency: 'INR',
+            name: 'OG Shoots',
+            description: (bk.plan||bk.service||'Booking') + ' — Order #' + (bk.orderId||id),
+            prefill: { name: bk.name, email: bk.email, contact: bk.phone },
+            theme: { color: '#c9a84c' },
+            handler: function(response){
+              // Payment success — confirm booking with payment details
+              bookings[idx].status = 'confirmed';
+              bookings[idx].payAmount = rawPrice;
+              bookings[idx].paymentId = response.razorpay_payment_id;
+              bookings[idx].paymentStatus = 'paid';
+              localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+              // Sync to Firebase
+              (async()=>{
+                var f = await _fbAdmin(); if(!f) return;
+                try{
+                  await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status:'confirmed',payAmount:rawPrice,paymentId:response.razorpay_payment_id,paymentStatus:'paid'},{merge:true});
+                }catch(e){}
+              })();
+              loadAll();
+              alert('✅ Payment of ₹'+rawPrice.toLocaleString('en-IN')+' received! Booking confirmed.');
+            },
+            modal:{ ondismiss: function(){ alert('Payment cancelled. Booking not confirmed.'); } }
+          };
+          var rzp = new Razorpay(options);
+          rzp.open();
+          return; // Don't proceed until payment done
+        } else {
+          // No Razorpay key — confirm without payment
+          bookings[idx].payAmount = rawPrice;
+          bookings[idx].paymentStatus = rawPrice > 0 ? 'pending' : 'free';
+        }
       }
 
       bookings[idx].status = status;
@@ -3480,9 +3519,8 @@ Priority Support</textarea></div>
         var f = await _fbAdmin(); if(!f) return;
         try{
           var update = {status};
-          if(status === 'confirmed'){ update.payAmount = payAmount; update.paymentStatus = 'pending'; }
+          if(status === 'confirmed'){ update.payAmount = bookings[idx].payAmount; update.paymentStatus = bookings[idx].paymentStatus; }
           await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)), update, {merge:true});
-          // Auto-update homepage reels delivered stat when a shoot is completed
           if(status === 'completed'){
             var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
             var newCount = 50000 + completed;
