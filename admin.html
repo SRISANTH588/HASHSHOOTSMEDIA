@@ -116,7 +116,7 @@
 
   .topbar-right{display:flex;align-items:center;gap:0.75rem;}
 
-  #adminContent{padding:0 1.75rem 3rem;flex:1;}
+  #adminContent{padding:0 1.75rem 3rem;flex:1;overflow-y:auto;height:calc(100vh - 48px);}
   .tab-panel.active > .about-form:first-child,
   .tab-panel.active > div:first-child { margin-top:0!important; }
 
@@ -233,7 +233,7 @@
     .empty i{font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.3;}
     .refresh-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:0.5rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;}
     .refresh-btn:hover{background:var(--gold);color:var(--text);}
-    .tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
+    .tabs{display:none!important;}
     .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(201,168,76,0.15);background:transparent;color:var(--muted);font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .tab-btn.active,.tab-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
     .tab-panel{display:none;margin:0;padding:0;}
@@ -8460,7 +8460,7 @@ Priority Support</textarea></div>
       document.getElementById("fw_featured").checked=!!t.featured;
       document.getElementById("fw_submit_btn").innerHTML='<i class="fas fa-save"></i> Update Testimonial';
       document.getElementById("fw_cancel_btn").style.display="inline-flex";
-      document.querySelector("#tab-feedback-writer").scrollIntoView({behavior:"smooth"});
+      document.querySelector("#tab-feedback-writer").scrollTop=0;
     }
 
     async function loadFeedbackWriter(){
@@ -9205,6 +9205,10 @@ Priority Support</textarea></div>
     // Show target panel
     var panel = document.getElementById('tab-'+name);
     if(panel) panel.classList.add('active');
+    // Scroll to top
+    var ac = document.getElementById('adminContent');
+    if(ac) ac.scrollTop = 0;
+    window.scrollTo(0,0);
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update topbar title
