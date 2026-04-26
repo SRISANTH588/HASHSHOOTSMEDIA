@@ -9337,7 +9337,7 @@ Priority Support</textarea></div>
       var cSnap = await f.s.getDocs(f.s.collection(f.db,'career_applications'));
       document.getElementById('db_careerCount').textContent = cSnap.size;
       // Demos
-      var dSnap = await f.s.getDocs(f.s.collection(f.db,'demo_sessions'));
+      var dSnap = await f.s.getDocs(f.s.collection(f.db,'demos'));
       document.getElementById('db_demoCount').textContent = dSnap.size;
       // Chart
       var ctx = document.getElementById('dashboardChart');
