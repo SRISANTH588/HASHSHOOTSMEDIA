@@ -388,6 +388,16 @@
         localStorage.setItem('hs_customer_username', custData.username||email);
         localStorage.setItem('hs_customer_photo', custData.photo||photo);
         localStorage.setItem('hs_customer_uid', uid);
+        // Fetch bookings from Firebase by email
+        try{
+          const bQuery = fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email));
+          const bSnap  = await fbStore.getDocs(bQuery);
+          if(!bSnap.empty){
+            const bList = [];
+            bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+            localStorage.setItem('hs_bookings', JSON.stringify(bList));
+          }
+        }catch(be){ console.warn('bookings fetch:',be); }
         window.location.href = 'index.html';
       } catch(e){
         if(e.code !== 'auth/popup-closed-by-user'){
@@ -761,6 +771,11 @@
         localStorage.setItem('hs_customer_username', custData.username||email);
         localStorage.setItem('hs_customer_photo', custData.photo||photo);
         localStorage.setItem('hs_customer_uid', uid);
+        try{
+          const bQuery2=fbStore.query(fbStore.collection(db,'bookings'),fbStore.where('email','==',email));
+          const bSnap2=await fbStore.getDocs(bQuery2);
+          if(!bSnap2.empty){const bList2=[];bSnap2.forEach(function(d){bList2.push(Object.assign({id:d.id},d.data()));});localStorage.setItem('hs_bookings',JSON.stringify(bList2));}
+        }catch(be){}
         window.location.href = 'index.html';
       }
     }catch(e){ console.log('Redirect result:', e); }

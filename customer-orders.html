@@ -333,7 +333,29 @@
       document.getElementById('mktTabBtn').style.border = tab==='marketing' ? 'none' : '1px solid rgba(201,168,76,0.3)';
     }
 
-    function loadBookings(){
+    async function loadBookings(){
+      // Always sync fresh bookings from Firebase for Google login users
+      var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+      if(custEmail){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='co';}) || fbMod.initializeApp(fbCfg,'co');
+          var db      = fbStore.getFirestore(app);
+          var bSnap   = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'),fbStore.where('email','==',custEmail)));
+          if(!bSnap.empty){
+            var fresh=[];
+            bSnap.forEach(function(d){fresh.push(Object.assign({id:d.id},d.data()));});
+            // Merge with existing local bookings
+            var local=JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            var merged={};
+            local.forEach(function(b){merged[String(b.id)]=b;});
+            fresh.forEach(function(b){merged[String(b.id)]=b;});
+            localStorage.setItem('hs_bookings',JSON.stringify(Object.values(merged)));
+          }
+        }catch(e){ console.warn('sync bookings:',e); }
+      }
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       // Deduplicate by id
       var _seen = {};
