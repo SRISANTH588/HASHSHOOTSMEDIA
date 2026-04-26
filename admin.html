@@ -3538,107 +3538,8 @@ Priority Support</textarea></div>
       updateFeedbackNotifBadge();
     }, 8000);
 
-    // TAB SWITCHING
-    function toggleSidebarGroup(label){
-      var isOpen=label.classList.contains('open');
-      label.classList.toggle('open',!isOpen);
-      var items=label.nextElementSibling;
-      if(items) items.classList.toggle('open',!isOpen);
-    }
+    // TAB SWITCHING - handled by switchTab() below
 
-    function switchTab(tab, btn) {
-      currentTab = tab;
-      document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      if(btn) btn.classList.add('active');
-      var panel = document.getElementById('tab-' + tab);
-      if(panel) panel.classList.add('active');
-      if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
-      if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
-      if (tab === 'wedding-plans') loadWeddingPlans();
-      if (tab === 'app-feedback') renderAppFeedback();
-      if (tab === 'withdraw') loadWithdrawTab();
-      if (tab === 'staffwallets') renderStaffWallets();
-      if (tab === 'staffbank') renderStaffBankAccounts();
-      if (tab === 'staffaddress') renderStaffAddresses();
-      if (tab === 'testimonial-videos') renderTestiVideos();
-      if (tab === 'tawk') loadTawkConfig();
-      if (tab === 'store') loadStoreAdmin();
-      if (tab === 'opening') loadOpening();
-      if (tab === 'razorpay') loadRazorpayTab();
-      if (tab === 'about') loadAboutForm();
-      if (tab === 'vibe') renderVibeAdmin();
-      if (tab === 'customer') { loadCustomerForm(); renderCustomerAccounts(); }
-      if (tab === 'staff') fetchAndRenderStaff();
-      if (tab === 'cwallets') renderCustWallets();
-      if (tab === 'bookings') { loadAll(); renderDressPhotos(); }
-      if (tab === 'enquiries') { fetchFirebaseEnquiries(); }
-      if (tab === 'order-enquiries') { fetchOrderEnquiries(); }
-      if (tab === 'notifications') renderNotifications();
-      if (tab === 'order-edits') loadOrderEdits();
-      if (tab === 'blog') { renderBlogList(); }
-      if (tab === 'feedback-writer') loadFeedbackWriter();
-      if (tab === 'press') { renderPressList(); loadPressStats(); }
-      if (tab === 'careers') renderCareerApps();
-      if (tab === 'affiliates') renderAffiliateApps();
-      if (tab === 'store-razorpay') loadStoreRazorpay();
-      if (tab === 'mkt-enquiries') renderMktEnquiries();
-      if (tab === 'invitations-admin') loadAdminInvitations();
-      if (tab === 'meetings-admin') loadAdminMeetings();
-      if (tab === 'invitations-admin') loadAdminInvitations();
-      if (tab === 'meetings-admin') loadAdminMeetings();
-      if (tab === 'wa-control') loadWaSettings();
-      if (tab === 'biz-enquiries') fetchBizEnquiries();
-      if (tab === 'support-tickets') renderSupportTickets();
-      if (tab === 'settings') loadSettingsTab();
-      if (tab === 'coupons') loadCoupons();
-      if (tab === 'hero-stats') loadHeroStatsTab();
-      if (tab === 'payments') {
-        // Fetch fresh assigned shoots + bank details from Firebase then render
-        (async function(){
-          try{
-            var f = await _fbAdmin(); if(!f){ renderAdminPayments(); return; }
-            var snap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
-            var list = [];
-            snap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; list.push(data); });
-            if(list.length) localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
-            // Also fetch bank details for each staff
-            var bankSnap = await f.s.getDocs(f.s.collection(f.db,'staff_bank'));
-            bankSnap.forEach(function(d){
-              var data = d.data();
-              if(data.staffId) localStorage.setItem('hs_bank_'+data.staffId, JSON.stringify(data));
-            });
-          }catch(e){ console.warn('payments tab sync:', e); }
-          renderAdminPayments();
-        })();
-      }
-      if (tab === 'txn-payments') renderPaymentsTab();
-      if (tab === 'storeorders') renderStoreOrders();
-      if (tab === 'demo') { populateDemoStaffSelect(); renderDemoAdminList(); }
-      if (tab === 'feedback') renderFeedbackAdmin();
-      if (tab === 'feedback') renderEventFeedbackAdmin();
-      if (tab === 'videos') renderStaffVideosAdmin();
-      if (tab === 'shoot-reels') renderShootReelsAdmin();
-      if (tab === 'assign') {
-        populateAssignSelects();
-        renderAssignedList();
-        // Sync fresh data from Firebase
-        (async function(){
-          try{
-            var f = await _fbAdmin(); if(!f) return;
-            var snap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
-            var list = [];
-            snap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; list.push(data); });
-            if(list.length){ localStorage.setItem('hs_assigned_shoots', JSON.stringify(list)); renderAssignedList(); }
-          }catch(e){ console.warn('assign tab sync:', e); }
-        })();
-      }
-    }
-
-    // Activate first visible tab
-    var firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(function(b){ return b.style.display !== 'none'; });
-    if(firstVisible) firstVisible.click();
 
     function loadHomePage(){
       var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
@@ -9225,6 +9126,7 @@ Priority Support</textarea></div>
     document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
     // Remove active from all sidebar items
     document.querySelectorAll('.sidebar-item').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     // Show target panel
     var panel = document.getElementById('tab-'+name);
     if(panel) panel.classList.add('active');
@@ -9236,6 +9138,77 @@ Priority Support</textarea></div>
     if(titleEl) titleEl.textContent = title;
     // Close sidebar on mobile
     if(window.innerWidth <= 900) closeSidebar();
+    // Load tab data
+    currentTab = name;
+    if(name==='demo') lastSubmittedCount = getDemos().filter(function(d){return d.status==='submitted';}).length;
+    if(name==='feedback') lastFeedbackCount = getFeedbacks().length;
+    if(name==='wedding-plans') loadWeddingPlans();
+    if(name==='app-feedback') renderAppFeedback();
+    if(name==='withdraw') loadWithdrawTab();
+    if(name==='staffwallets') renderStaffWallets();
+    if(name==='staffbank') renderStaffBankAccounts();
+    if(name==='staffaddress') renderStaffAddresses();
+    if(name==='testimonial-videos') renderTestiVideos();
+    if(name==='tawk') loadTawkConfig();
+    if(name==='store') loadStoreAdmin();
+    if(name==='opening') loadOpening();
+    if(name==='razorpay') loadRazorpayTab();
+    if(name==='about') loadAboutForm();
+    if(name==='vibe') renderVibeAdmin();
+    if(name==='customer'){loadCustomerForm();renderCustomerAccounts();}
+    if(name==='staff') fetchAndRenderStaff();
+    if(name==='cwallets') renderCustWallets();
+    if(name==='bookings'){loadAll();renderDressPhotos();}
+    if(name==='enquiries') fetchFirebaseEnquiries();
+    if(name==='order-enquiries') fetchOrderEnquiries();
+    if(name==='notifications') renderNotifications();
+    if(name==='order-edits') loadOrderEdits();
+    if(name==='blog') renderBlogList();
+    if(name==='feedback-writer') loadFeedbackWriter();
+    if(name==='press'){renderPressList();loadPressStats();}
+    if(name==='careers') renderCareerApps();
+    if(name==='affiliates') renderAffiliateApps();
+    if(name==='store-razorpay') loadStoreRazorpay();
+    if(name==='mkt-enquiries') renderMktEnquiries();
+    if(name==='invitations-admin') loadAdminInvitations();
+    if(name==='meetings-admin') loadAdminMeetings();
+    if(name==='wa-control') loadWaSettings();
+    if(name==='biz-enquiries') fetchBizEnquiries();
+    if(name==='support-tickets') renderSupportTickets();
+    if(name==='settings') loadSettingsTab();
+    if(name==='coupons') loadCoupons();
+    if(name==='hero-stats') loadHeroStatsTab();
+    if(name==='txn-payments') renderPaymentsTab();
+    if(name==='storeorders') renderStoreOrders();
+    if(name==='demo'){populateDemoStaffSelect();renderDemoAdminList();}
+    if(name==='feedback'){renderFeedbackAdmin();renderEventFeedbackAdmin();}
+    if(name==='videos') renderStaffVideosAdmin();
+    if(name==='shoot-reels') renderShootReelsAdmin();
+    if(name==='homepage') loadHomePage();
+    if(name==='assign'){
+      populateAssignSelects();renderAssignedList();
+      (async function(){
+        try{
+          var f=await _fbAdmin();if(!f)return;
+          var snap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+          var list=[];snap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;list.push(data);});
+          if(list.length){localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));renderAssignedList();}
+        }catch(e){}
+      })();
+    }
+    if(name==='payments'){
+      (async function(){
+        try{
+          var f=await _fbAdmin();if(!f){renderAdminPayments();return;}
+          var snap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
+          var list=[];snap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;list.push(data);});
+          if(list.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));
+          var bankSnap=await f.s.getDocs(f.s.collection(f.db,'staff_bank'));
+          bankSnap.forEach(function(d){var data=d.data();if(data.staffId)localStorage.setItem('hs_bank_'+data.staffId,JSON.stringify(data));});
+        }catch(e){}
+        renderAdminPayments();
+      })();
+    }
   }
 
   function toggleSidebar(){
