@@ -14,7 +14,7 @@
     --card:#111111;--card2:#161616;
     --border:rgba(255,255,255,0.06);
     --text:#ffffff;--muted:#666666;
-    --sidebar-w:240px;
+    --sidebar-w:280px;
   }
 
   /* ── CLEAN FLAT SIDEBAR ── */
@@ -51,13 +51,15 @@
 
   .sidebar-item{
     display:flex;align-items:center;gap:0.85rem;
-    padding:0.65rem 1.5rem;
-    color:#666;font-size:0.85rem;font-weight:400;
+    padding:0.7rem 1.5rem;
+    color:#888;font-size:0.88rem;font-weight:500;
     cursor:pointer;border:none;background:none;
     font-family:inherit;width:100%;text-align:left;
     border-left:3px solid transparent;
     transition:all 0.15s;
-    white-space:nowrap;overflow:hidden;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .sidebar-item:hover{color:#ccc;background:rgba(255,255,255,0.02);}
   .sidebar-item.active{color:#fff;border-left-color:#c9a84c;background:rgba(201,168,76,0.05);}
