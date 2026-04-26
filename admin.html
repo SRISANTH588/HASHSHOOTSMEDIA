@@ -9325,7 +9325,7 @@ Priority Support</textarea></div>
       var sSnap = await f.s.getDocs(f.s.collection(f.db,'staff'));
       document.getElementById('db_staffCount').textContent = sSnap.size;
       // Feedback
-      var fSnap = await f.s.getDocs(f.s.collection(f.db,'feedback'));
+      var fSnap = await f.s.getDocs(f.s.collection(f.db,'feedbacks'));
       document.getElementById('db_feedbackCount').textContent = fSnap.size;
       // Enquiries
       var eSnap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
