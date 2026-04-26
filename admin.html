@@ -273,7 +273,7 @@
     <div class="sidebar-group">
       <div class="sidebar-section-label">Overview</div>
       <div class="sidebar-items">
-        <button class="sidebar-item active" onclick="switchTab('bookings',this)" id="bookingsTabBtn" data-title="Dashboard"><i class="fas fa-th-large"></i> Dashboard</button>
+        <button class="sidebar-item active" onclick="switchTab('dashboard',this)" id="dashboardTabBtn" data-title="Dashboard"><i class="fas fa-th-large"></i> Dashboard</button>
       </div>
     </div>
 
@@ -493,7 +493,78 @@
     </div>
 
     <!-- BOOKINGS TAB / DASHBOARD -->
-    <div class="tab-panel active" id="tab-bookings">
+    <div class="tab-panel active" id="tab-dashboard">
+      <!-- DASHBOARD OVERVIEW -->
+      <div style="margin-bottom:2rem;">
+        <h2 style="font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:0.25rem;">Welcome back 👋</h2>
+        <p style="font-size:0.82rem;color:#555;">Here's everything happening across OG Shoots today.</p>
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('bookings',document.querySelector('[data-title=Bookings]'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-calendar-alt" style="color:#c9a84c;margin-right:0.4rem;"></i>Total Bookings</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;" id="db_totalBookings">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">All time</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('bookings',document.querySelector('[data-title=Bookings]'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-clock" style="color:#f5a623;margin-right:0.4rem;"></i>Pending</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#f5a623;line-height:1;" id="db_pendingBookings">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Awaiting action</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('staff',document.getElementById('staffTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-users" style="color:#2196f3;margin-right:0.4rem;"></i>Staff</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#2196f3;line-height:1;" id="db_staffCount">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Active members</div>
+        </div>
+        <div style="background:#c0392b;border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('feedback',document.getElementById('feedbackTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-star" style="margin-right:0.4rem;"></i>Feedback</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;" id="db_feedbackCount">0</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.4rem;">Customer reviews</div>
+        </div>
+      </div>
+
+      <!-- ROW 2 -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('enquiries',document.getElementById('enquiriesTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-concierge-bell" style="color:#c9a84c;margin-right:0.4rem;"></i>Enquiries</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;" id="db_enquiryCount">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Service requests</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('support-tickets',document.getElementById('supportTicketsTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-headset" style="color:#e91e63;margin-right:0.4rem;"></i>Support</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#e91e63;line-height:1;" id="db_supportCount">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Open tickets</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('careers',document.getElementById('careersTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-briefcase" style="color:#9c27b0;margin-right:0.4rem;"></i>Career Apps</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#9c27b0;line-height:1;" id="db_careerCount">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Applications</div>
+        </div>
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.5rem;cursor:pointer;" onclick="switchTab('demo',document.getElementById('demoTabBtn'))">
+          <div style="font-size:0.6rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem;"><i class="fas fa-chalkboard-teacher" style="color:#00bcd4;margin-right:0.4rem;"></i>Demo Sessions</div>
+          <div style="font-size:2.8rem;font-weight:900;color:#00bcd4;line-height:1;" id="db_demoCount">0</div>
+          <div style="font-size:0.7rem;color:#555;margin-top:0.4rem;">Submitted</div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1.5rem;margin-bottom:2rem;">
+        <div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:1.25rem;">Bookings Overview <span style="color:#555;font-size:0.85rem;font-weight:400;">&#8599;</span></div>
+        <canvas id="dashboardChart" height="80"></canvas>
+      </div>
+
+      <!-- RECENT BOOKINGS -->
+      <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="font-size:0.95rem;font-weight:700;color:#fff;">Recent Bookings</div>
+          <button onclick="switchTab('bookings',document.querySelector('[data-title=Bookings]'))" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;">View All</button>
+        </div>
+        <div id="db_recentBookings"><p style="color:#555;font-size:0.82rem;">Loading...</p></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-bookings">
 
     <!-- ROW 1: STAT CARDS — exactly like Flashoot -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1rem;margin-bottom:2rem;align-items:stretch;">
@@ -9158,6 +9229,7 @@ Priority Support</textarea></div>
     if(name==='customer'){loadCustomerForm();renderCustomerAccounts();}
     if(name==='staff') fetchAndRenderStaff();
     if(name==='cwallets') renderCustWallets();
+    if(name==='dashboard') loadDashboard();
     if(name==='bookings'){loadAll();renderDressPhotos();}
     if(name==='enquiries') fetchFirebaseEnquiries();
     if(name==='order-enquiries') fetchOrderEnquiries();
@@ -9222,14 +9294,65 @@ Priority Support</textarea></div>
     document.getElementById('sidebarOverlay').classList.remove('open');
   }
 
-  // Init: activate bookings tab
+  // Init: activate dashboard tab
   document.addEventListener('DOMContentLoaded', function(){
-    var firstBtn = document.querySelector('.sidebar-item.active');
-    if(firstBtn){
-      var tabName = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/)[1];
-      switchTab(tabName, firstBtn);
-    }
+    var firstBtn = document.getElementById('dashboardTabBtn');
+    if(firstBtn) switchTab('dashboard', firstBtn);
   });
+
+  async function loadDashboard(){
+    try{
+      var f = await _fbAdmin(); if(!f) return;
+      // Bookings
+      var bSnap = await f.s.getDocs(f.s.collection(f.db,'bookings'));
+      var bookings=[]; bSnap.forEach(function(d){bookings.push(Object.assign({id:d.id},d.data()));});
+      document.getElementById('db_totalBookings').textContent = bookings.length;
+      document.getElementById('db_pendingBookings').textContent = bookings.filter(function(b){return b.status==='pending';}).length;
+      // Recent bookings
+      var recent = bookings.slice(0,5);
+      var rbEl = document.getElementById('db_recentBookings');
+      if(rbEl){
+        if(!recent.length){ rbEl.innerHTML='<p style="color:#555;font-size:0.82rem;">No bookings yet.</p>'; }
+        else rbEl.innerHTML = recent.map(function(b){
+          var statusColor = b.status==='confirmed'?'#4caf50':b.status==='pending'?'#f5a623':b.status==='completed'?'#2196f3':'#f44336';
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+            +'<div><div style="font-size:0.85rem;font-weight:600;color:#fff;">'+( b.name||'Customer')+'</div><div style="font-size:0.72rem;color:#555;">'+( b.service||'')+(b.city?' · '+b.city:'')+'</div></div>'
+            +'<span style="background:rgba(255,255,255,0.05);color:'+statusColor+';font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;text-transform:uppercase;">'+( b.status||'pending')+'</span>'
+            +'</div>';
+        }).join('');
+      }
+      // Staff
+      var sSnap = await f.s.getDocs(f.s.collection(f.db,'staff'));
+      document.getElementById('db_staffCount').textContent = sSnap.size;
+      // Feedback
+      var fSnap = await f.s.getDocs(f.s.collection(f.db,'feedback'));
+      document.getElementById('db_feedbackCount').textContent = fSnap.size;
+      // Enquiries
+      var eSnap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+      document.getElementById('db_enquiryCount').textContent = eSnap.size;
+      // Support
+      var supSnap = await f.s.getDocs(f.s.collection(f.db,'support_tickets'));
+      document.getElementById('db_supportCount').textContent = supSnap.size;
+      // Careers
+      var cSnap = await f.s.getDocs(f.s.collection(f.db,'career_applications'));
+      document.getElementById('db_careerCount').textContent = cSnap.size;
+      // Demos
+      var dSnap = await f.s.getDocs(f.s.collection(f.db,'demo_sessions'));
+      document.getElementById('db_demoCount').textContent = dSnap.size;
+      // Chart
+      var ctx = document.getElementById('dashboardChart');
+      if(ctx && window.Chart){
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var counts = new Array(12).fill(0);
+        bookings.forEach(function(b){
+          var d = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt||0);
+          if(d) counts[d.getMonth()]++;
+        });
+        if(window._dashChart) window._dashChart.destroy();
+        window._dashChart = new Chart(ctx,{type:'bar',data:{labels:months,datasets:[{data:counts,backgroundColor:'rgba(201,168,76,0.5)',borderColor:'#c9a84c',borderWidth:1,borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:10},stepSize:1}}}}});
+      }
+    }catch(e){ console.warn('dashboard:',e); }
+  }
   </script>
 
   </div><!-- end adminContent -->
