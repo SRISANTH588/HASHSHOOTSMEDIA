@@ -3458,55 +3458,17 @@ Priority Support</textarea></div>
       const idx = bookings.findIndex(b=>String(b.id)===String(id));
       if(idx === -1) return;
 
-      // When confirming — auto-charge plan amount via Razorpay
+      // When confirming — set payAmount from plan, customer will pay from their orders page
       if(status === 'confirmed'){
         var bk = bookings[idx];
-        // Extract price from plan string e.g. "Basic ₹1499" or payAmount already set
         var rawPrice = bk.payAmount || 0;
         if(!rawPrice){
           var planStr = bk.plan || bk.service || '';
-          var match = planStr.match(/[₹\d,]+/);
-          if(match) rawPrice = parseInt(match[0].replace(/[₹,]/g,'')) || 0;
+          var match = planStr.match(/\d[\d,]*/);
+          if(match) rawPrice = parseInt(match[0].replace(/,/g,'')) || 0;
         }
-        var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
-        var rzpKey = rp.keyId || '';
-        if(rzpKey && rawPrice > 0){
-          // Launch Razorpay with plan amount
-          var options = {
-            key: rzpKey,
-            amount: rawPrice * 100,
-            currency: 'INR',
-            name: 'OG Shoots',
-            description: (bk.plan||bk.service||'Booking') + ' — Order #' + (bk.orderId||id),
-            prefill: { name: bk.name, email: bk.email, contact: bk.phone },
-            theme: { color: '#c9a84c' },
-            handler: function(response){
-              // Payment success — confirm booking with payment details
-              bookings[idx].status = 'confirmed';
-              bookings[idx].payAmount = rawPrice;
-              bookings[idx].paymentId = response.razorpay_payment_id;
-              bookings[idx].paymentStatus = 'paid';
-              localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-              // Sync to Firebase
-              (async()=>{
-                var f = await _fbAdmin(); if(!f) return;
-                try{
-                  await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{status:'confirmed',payAmount:rawPrice,paymentId:response.razorpay_payment_id,paymentStatus:'paid'},{merge:true});
-                }catch(e){}
-              })();
-              loadAll();
-              alert('✅ Payment of ₹'+rawPrice.toLocaleString('en-IN')+' received! Booking confirmed.');
-            },
-            modal:{ ondismiss: function(){ alert('Payment cancelled. Booking not confirmed.'); } }
-          };
-          var rzp = new Razorpay(options);
-          rzp.open();
-          return; // Don't proceed until payment done
-        } else {
-          // No Razorpay key — confirm without payment
-          bookings[idx].payAmount = rawPrice;
-          bookings[idx].paymentStatus = rawPrice > 0 ? 'pending' : 'free';
-        }
+        bookings[idx].payAmount = rawPrice;
+        bookings[idx].paymentStatus = 'pending';
       }
 
       bookings[idx].status = status;
@@ -3519,7 +3481,10 @@ Priority Support</textarea></div>
         var f = await _fbAdmin(); if(!f) return;
         try{
           var update = {status};
-          if(status === 'confirmed'){ update.payAmount = bookings[idx].payAmount; update.paymentStatus = bookings[idx].paymentStatus; }
+          if(status === 'confirmed'){
+            update.payAmount = bookings[idx].payAmount;
+            update.paymentStatus = 'pending';
+          }
           await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)), update, {merge:true});
           if(status === 'completed'){
             var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
