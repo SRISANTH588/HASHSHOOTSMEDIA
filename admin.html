@@ -14,10 +14,13 @@
     --card:#111111;--card2:#161616;
     --border:rgba(255,255,255,0.06);
     --text:#ffffff;--muted:#666666;
-    --sidebar-w:260px;
+    --sidebar-w:240px;
   }
 
-  /* ── STEP-BY-STEP SIDEBAR ── */
+  /* ── CLEAN FLAT SIDEBAR ── */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{display:flex;min-height:100vh;overflow-x:hidden;font-family:'Inter',sans-serif;background:#000;color:#fff;}
+
   #adminSidebar{
     width:var(--sidebar-w);min-width:var(--sidebar-w);
     background:#0a0a0a;
@@ -26,118 +29,59 @@
     position:fixed;top:0;left:0;height:100vh;
     z-index:100;overflow-y:auto;overflow-x:hidden;
     transition:transform 0.3s ease;
-    transform:translateX(0);
   }
   #adminSidebar::-webkit-scrollbar{width:2px;}
   #adminSidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px;}
 
-  .sidebar-logo{
-    padding:1.5rem 1.25rem 1rem;
-    flex-shrink:0;
-    border-bottom:1px solid #1a1a1a;
-  }
-  .sidebar-logo-text{
-    font-size:1.5rem;font-weight:900;color:#fff;line-height:1;
-    letter-spacing:-1px;margin-bottom:0.25rem;
-    display:flex;align-items:center;
-  }
-  .sidebar-logo-text span{color:#fff;}
-  .sidebar-logo-sub{font-size:0.6rem;color:#555;font-weight:400;letter-spacing:0.3px;}
+  .sidebar-logo{padding:1.75rem 1.5rem 1.25rem;flex-shrink:0;border-bottom:1px solid #1a1a1a;}
+  .sidebar-logo-text{font-size:1.6rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;margin-bottom:0.25rem;display:flex;align-items:center;}
+  .sidebar-logo-sub{font-size:0.6rem;color:#444;font-weight:400;letter-spacing:0.3px;}
 
-  .sidebar-nav{flex:1;padding:0.75rem 0;}
+  .sidebar-nav{flex:1;padding:1rem 0;}
 
-  /* Section group */
-  .sidebar-group{margin-bottom:0.25rem;}
-
-  /* Section header — clickable to expand/collapse */
   .sidebar-section-label{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0.6rem 1.25rem;
-    font-size:0.62rem;font-weight:800;color:#555;
-    text-transform:uppercase;letter-spacing:2px;
-    cursor:pointer;user-select:none;
-    transition:color 0.2s;
-    border-left:3px solid transparent;
-    white-space:normal;
-  }
-  .sidebar-section-label:hover{color:#888;}
-  .sidebar-section-label.open{color:#c9a84c;border-left-color:#c9a84c;}
-  .sidebar-section-label .sl-arrow{
-    font-size:0.6rem;transition:transform 0.25s;
-    color:#444;
-  }
-  .sidebar-section-label.open .sl-arrow{transform:rotate(90deg);color:#c9a84c;}
-
-  /* Step number badge */
-  .sidebar-step{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:16px;height:16px;border-radius:50%;
-    background:#1a1a1a;border:1px solid #333;
-    font-size:0.55rem;font-weight:800;color:#555;
-    margin-right:0.5rem;flex-shrink:0;
-    transition:all 0.2s;
-  }
-  .sidebar-section-label.open .sidebar-step{
-    background:rgba(201,168,76,0.15);border-color:#c9a84c;color:#c9a84c;
+    padding:1.25rem 1.5rem 0.4rem;
+    font-size:0.58rem;font-weight:700;color:#333;
+    text-transform:uppercase;letter-spacing:2.5px;
+    display:block;
   }
 
-  /* Items container — collapsible */
-  .sidebar-items{
-    overflow:hidden;
-    max-height:0;
-    transition:max-height 0.3s ease;
-  }
-  .sidebar-items.open{max-height:600px;}
+  .sidebar-group{margin-bottom:0;}
+  .sidebar-items{display:block;}
 
   .sidebar-item{
-    display:flex;align-items:center;gap:0.75rem;
-    padding:0.6rem 1.25rem 0.6rem 2.5rem;
-    color:#666;font-size:0.82rem;font-weight:400;
+    display:flex;align-items:center;gap:0.85rem;
+    padding:0.65rem 1.5rem;
+    color:#666;font-size:0.85rem;font-weight:400;
     cursor:pointer;border:none;background:none;
     font-family:inherit;width:100%;text-align:left;
     border-left:3px solid transparent;
-    transition:all 0.15s;position:relative;
-    white-space:normal;word-break:break-word;
+    transition:all 0.15s;
+    white-space:nowrap;overflow:hidden;
   }
   .sidebar-item:hover{color:#ccc;background:rgba(255,255,255,0.02);}
-  .sidebar-item.active{
-    color:#fff;background:rgba(201,168,76,0.06);
-    border-left-color:#c9a84c;
-  }
+  .sidebar-item.active{color:#fff;border-left-color:#c9a84c;background:rgba(201,168,76,0.05);}
   .sidebar-item.active i{color:#c9a84c;}
-  .sidebar-item i{
-    width:14px;text-align:center;
-    font-size:0.8rem;flex-shrink:0;color:#444;
-  }
+  .sidebar-item i{width:16px;text-align:center;font-size:0.85rem;flex-shrink:0;color:#444;}
   .sidebar-item:hover i{color:#999;}
+
   .sidebar-badge{
-    margin-left:auto;
-    background:#c9a84c;color:#000;
+    margin-left:auto;background:#c9a84c;color:#000;
     font-size:0.52rem;font-weight:900;
     padding:0.1rem 0.38rem;border-radius:50px;
-    min-width:15px;text-align:center;
+    min-width:15px;text-align:center;flex-shrink:0;
   }
   .sidebar-badge.red{background:#f44336;color:#fff;}
   .sidebar-badge.green{background:#4caf50;color:#fff;}
   .sidebar-badge.gold{background:#c9a84c;color:#000;}
 
-  .sidebar-footer{
-    padding:1rem 1.25rem 1.25rem;
-    flex-shrink:0;border-top:1px solid #1a1a1a;
-  }
-  .sidebar-footer-user{font-size:0.7rem;color:#555;margin-bottom:0.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sidebar-footer{padding:1rem 1.5rem 1.25rem;flex-shrink:0;border-top:1px solid #1a1a1a;}
+  .sidebar-footer-user{font-size:0.7rem;color:#444;margin-bottom:0.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .sidebar-footer-btns{display:flex;gap:0.5rem;}
-  .sidebar-footer-btn{
-    flex:1;padding:0.4rem 0.5rem;
-    border-radius:6px;border:1px solid rgba(255,255,255,0.1);
-    background:transparent;color:#666;
-    font-size:0.68rem;font-weight:600;cursor:pointer;
-    font-family:inherit;transition:all 0.15s;
-    display:flex;align-items:center;justify-content:center;gap:0.3rem;
-  }
-  .sidebar-footer-btn:hover{color:#fff;border-color:rgba(255,255,255,0.25);}
-  .sidebar-footer-btn.danger{color:#f44336;border-color:rgba(244,67,54,0.35);}
-  .sidebar-footer-btn.danger:hover{color:#fff;background:rgba(244,67,54,0.15);}
+  .sidebar-footer-btn{flex:1;padding:0.4rem 0.5rem;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#555;font-size:0.68rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
+  .sidebar-footer-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
+  .sidebar-footer-btn.danger{color:#f44336;border-color:rgba(244,67,54,0.3);}
+  .sidebar-footer-btn.danger:hover{color:#fff;background:rgba(244,67,54,0.12);}
 
   /* ── MAIN CONTENT ── */
   #adminMain{
@@ -323,14 +267,14 @@
   <nav class="sidebar-nav">
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label open" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">1</span>Overview</span><i class="fas fa-chevron-right sl-arrow"></i></div>
-      <div class="sidebar-items open">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="sidebar-items">
         <button class="sidebar-item active" onclick="switchTab('bookings',this)" id="bookingsTabBtn" data-title="Dashboard"><i class="fas fa-th-large"></i> Dashboard</button>
       </div>
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">2</span>Bookings</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Bookings</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('bookings',this)" data-title="Bookings"><i class="fas fa-calendar-alt"></i> Bookings</button>
         <button class="sidebar-item" onclick="switchTab('assign',this)" id="assignTabBtn" data-title="Assign Shoots"><i class="fas fa-tasks"></i> Assign Shoots</button>
@@ -341,7 +285,7 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">3</span>Content</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Content</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('vibe',this)" id="vibeTabBtn" data-title="Discover with Vibe"><i class="fas fa-fire"></i> Discover with Vibe</button>
         <button class="sidebar-item" onclick="switchTab('videos',this)" id="videosTabBtn" data-title="Staff Videos"><i class="fas fa-photo-video"></i> Staff Videos</button>
@@ -351,7 +295,7 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">4</span>Customers</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Customers</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('customer',this)" id="customerTabBtn" data-title="Customer Page"><i class="fas fa-user"></i> Customer Page</button>
         <button class="sidebar-item" onclick="switchTab('cwallets',this)" id="cwalletsTabBtn" data-title="Customer Wallets"><i class="fas fa-wallet"></i> Customer Wallets</button>
@@ -363,17 +307,17 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">5</span>Enquiries</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Enquiries</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('enquiries',this)" id="enquiriesTabBtn" data-title="Service Enquiries"><i class="fas fa-concierge-bell"></i> Service Enquiries <span class="sidebar-badge" id="enquiriesNotifBadge" style="display:none;">0</span></button>
         <button class="sidebar-item" onclick="switchTab('order-enquiries',this)" id="orderEnquiriesTabBtn" data-title="Order Enquiries"><i class="fas fa-shopping-cart"></i> Order Enquiries <span class="sidebar-badge" id="orderEnquiriesBadge" style="display:none;">0</span></button>
         <button class="sidebar-item" onclick="switchTab('biz-enquiries',this)" id="bizEnquiriesTabBtn" data-title="Business Enquiries"><i class="fas fa-briefcase"></i> Business Enquiries <span class="sidebar-badge" id="bizEnquiriesBadge" style="display:none;">0</span></button>
-        <button class="sidebar-item" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn" data-title="Marketing Enquiries"><i class="fas fa-bullhorn"></i> Marketing <span class="sidebar-badge" id="mktEnquiriesBadge" style="display:none;">0</span></button>
+        <button class="sidebar-item" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn" data-title="Marketing"><i class="fas fa-bullhorn"></i> Marketing <span class="sidebar-badge" id="mktEnquiriesBadge" style="display:none;">0</span></button>
       </div>
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">6</span>Staff</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Staff</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('staff',this)" id="staffTabBtn" data-title="Staff & Access"><i class="fas fa-users-cog"></i> Staff &amp; Access</button>
         <button class="sidebar-item" onclick="switchTab('demo',this)" id="demoTabBtn" data-title="Demo Sessions"><i class="fas fa-chalkboard-teacher"></i> Demo Sessions <span class="sidebar-badge" id="demoNotifBadge" style="display:none;">0</span></button>
@@ -386,7 +330,7 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">7</span>Website</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Website</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('homepage',this)" id="homepageTabBtn" data-title="Home Page"><i class="fas fa-home"></i> Home Page</button>
         <button class="sidebar-item" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn" data-title="Wedding Plans"><i class="fas fa-heart"></i> Wedding Plans</button>
@@ -399,7 +343,7 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">8</span>Finance</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">Finance</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('txn-payments',this)" id="paymentsTabBtn" data-title="Transactions"><i class="fas fa-credit-card"></i> Transactions</button>
         <button class="sidebar-item" onclick="switchTab('razorpay',this)" id="razorpayTabBtn" data-title="Razorpay"><i class="fas fa-credit-card"></i> Razorpay</button>
@@ -411,12 +355,12 @@
     </div>
 
     <div class="sidebar-group">
-      <div class="sidebar-section-label" onclick="toggleSidebarGroup(this)"><span><span class="sidebar-step">9</span>More</span><i class="fas fa-chevron-right sl-arrow"></i></div>
+      <div class="sidebar-section-label">More</div>
       <div class="sidebar-items">
         <button class="sidebar-item" onclick="switchTab('careers',this)" id="careersTabBtn" data-title="Career Apps"><i class="fas fa-briefcase"></i> Career Apps</button>
         <button class="sidebar-item" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn" data-title="Affiliate Apps"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
         <button class="sidebar-item" onclick="switchTab('feedback-writer',this)" id="feedbackWriterTabBtn" data-title="Feedback Writer"><i class="fas fa-quote-right"></i> Feedback Writer</button>
-        <button class="sidebar-item" onclick="switchTab('wa-control',this)" id="waControlTabBtn" data-title="WhatsApp Messages"><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp</button>
+        <button class="sidebar-item" onclick="switchTab('wa-control',this)" id="waControlTabBtn" data-title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp</button>
         <button class="sidebar-item" onclick="switchTab('tawk',this)" id="tawkTabBtn" data-title="Tawk.to"><i class="fas fa-comments"></i> Tawk.to</button>
         <button class="sidebar-item" onclick="switchTab('settings',this)" id="settingsTabBtn" data-title="Settings"><i class="fas fa-sliders-h"></i> Settings</button>
       </div>
