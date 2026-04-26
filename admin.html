@@ -3548,19 +3548,12 @@ Priority Support</textarea></div>
 
     function switchTab(tab, btn) {
       currentTab = tab;
+      document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      // Auto-open the sidebar group containing the active item
-      if(btn){
-        var group=btn.closest('.sidebar-items');
-        if(group){
-          group.classList.add('open');
-          var label=group.previousElementSibling;
-          if(label) label.classList.add('open');
-        }
-      }
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + tab).classList.add('active');
+      if(btn) btn.classList.add('active');
+      var panel = document.getElementById('tab-' + tab);
+      if(panel) panel.classList.add('active');
       if(tab === 'demo') lastSubmittedCount = getDemos().filter(function(d){ return d.status === 'submitted'; }).length;
       if(tab === 'feedback') lastFeedbackCount = getFeedbacks().length;
       if (tab === 'wedding-plans') loadWeddingPlans();
