@@ -3617,6 +3617,11 @@ Priority Support</textarea></div>
     }, 8000);
 
     // TAB SWITCHING - handled by switchTab() below
+    function _setMinDates(ids){
+      var today = new Date().toISOString().split('T')[0];
+      ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.min=today; });
+    }
+    function _esc(s){ var d=document.createElement('div'); d.textContent=String(s||''); return d.innerHTML; }
 
 
     function loadHomePage(){
@@ -7930,15 +7935,15 @@ Priority Support</textarea></div>
           var total = d.staffId==='all' ? staff.length : 1;
           return '<div style="background:#0d0d0d;border:1px solid rgba(201,168,76,0.15);border-left:4px solid #c9a84c;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;">'
-              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;">'+(d.title||'Invitation')+'</div>'
-              +'<div style="font-size:0.68rem;color:#6a6050;margin-top:0.1rem;">'+(d.date||'')+' '+(d.time||'')+' &bull; '+(d.venue||'')+'</div></div>'
+              +'<div><div style="font-size:0.9rem;font-weight:800;color:#fff;">'+_esc(d.title||'Invitation')+'</div>'
+              +'<div style="font-size:0.68rem;color:#6a6050;margin-top:0.1rem;">'+_esc(d.date||'')+' '+_esc(d.time||'')+' &bull; '+_esc(d.venue||'')+'</div></div>'
               +'<div style="display:flex;gap:0.4rem;">'
                 +'<span style="font-size:0.65rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);padding:0.18rem 0.55rem;border-radius:50px;"><i class="fas fa-check"></i> '+accepted+' accepted</span>'
                 +'<span style="font-size:0.65rem;font-weight:800;color:#f44336;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);padding:0.18rem 0.55rem;border-radius:50px;"><i class="fas fa-times"></i> '+declined+' declined</span>'
-                +'<button onclick="deleteInvitation(\''+d._fbId+'\')" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.18rem 0.55rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+                +'<button data-fbid="'+_esc(d._fbId)+'" onclick="deleteInvitation(this.getAttribute(\'data-fbid\'))" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.18rem 0.55rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
               +'</div>'
             +'</div>'
-            +(d.description?'<div style="font-size:0.78rem;color:#9a9080;">'+d.description+'</div>':'')
+            +(d.description?'<div style="font-size:0.78rem;color:#9a9080;">'+_esc(d.description)+'</div>':'')
           +'</div>';
         }).join('');
       } catch(e){ el.innerHTML='<p style="color:#f44336;font-size:0.82rem;">Error: '+e.message+'</p>'; }
@@ -7961,6 +7966,7 @@ Priority Support</textarea></div>
       var venue = document.getElementById('inv_venue').value.trim();
       var desc  = document.getElementById('inv_desc').value.trim();
       if(!title||!date){ alert('Title and Date are required.'); return; }
+      if(date < new Date().toISOString().split('T')[0]){ alert('Please select a future date.'); return; }
       // Collect recipients
       var toMarketing = document.getElementById('inv_toMarketing').checked;
       var staffIds = Array.from(document.querySelectorAll('.inv_staff_cb:checked')).map(function(c){ return c.value; });
@@ -8016,18 +8022,18 @@ Priority Support</textarea></div>
           return '<div style="background:#0d0d0d;border:1px solid rgba(33,150,243,0.15);border-left:4px solid '+borderColor+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;'+(isPast?'opacity:0.7;':'')+'">'
             +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;">'
               +'<div>'
-                +'<div style="font-size:0.9rem;font-weight:800;color:#fff;">'+(d.title||'Meeting')+'</div>'
-                +'<div style="font-size:0.68rem;color:#2196f3;margin-top:0.1rem;"><i class="fas fa-calendar-alt" style="margin-right:3px;"></i>'+(d.date||'')+' '+(d.time||'')+(d.duration?' &bull; '+d.duration:'')+(d.venue?' &bull; '+d.venue:'')+'</div>'
+                +'<div style="font-size:0.9rem;font-weight:800;color:#fff;">'+_esc(d.title||'Meeting')+'</div>'
+                +'<div style="font-size:0.68rem;color:#2196f3;margin-top:0.1rem;"><i class="fas fa-calendar-alt" style="margin-right:3px;"></i>'+_esc(d.date||'')+' '+_esc(d.time||'')+(d.duration?' &bull; '+_esc(d.duration):'')+(d.venue?' &bull; '+_esc(d.venue):'')+'</div>'
               +'</div>'
               +'<div style="display:flex;gap:0.4rem;align-items:center;">'
                 +(isPast?'<span style="font-size:0.62rem;color:#6a6050;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:0.18rem 0.55rem;border-radius:50px;">Past</span>':'')
                 +'<span style="font-size:0.65rem;font-weight:800;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);padding:0.18rem 0.55rem;border-radius:50px;">'+attending+' attending</span>'
                 +'<span style="font-size:0.65rem;font-weight:800;color:#f44336;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);padding:0.18rem 0.55rem;border-radius:50px;">'+declined+' declined</span>'
-                +'<button onclick="deleteMeeting(\''+d._fbId+'\')" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.18rem 0.55rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+                +'<button data-fbid="'+_esc(d._fbId)+'" onclick="deleteMeeting(this.getAttribute(\'data-fbid\'))" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.18rem 0.55rem;border-radius:6px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
               +'</div>'
             +'</div>'
-            +(d.description?'<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.5rem;">'+d.description+'</div>':'')
-            +(d.link?'<a href="'+d.link+'" target="_blank" style="font-size:0.75rem;color:#2196f3;font-weight:700;"><i class="fas fa-video" style="margin-right:4px;"></i>'+d.link+'</a>':'')
+            +(d.description?'<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.5rem;">'+_esc(d.description)+'</div>':'')
+            +(d.link?'<a href="'+_esc(d.link)+'" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem;color:#2196f3;font-weight:700;"><i class="fas fa-video" style="margin-right:4px;"></i>'+_esc(d.link)+'</a>':'')
           +'</div>';
         }).join('');
       } catch(e){ el.innerHTML='<p style="color:#f44336;font-size:0.82rem;">Error: '+e.message+'</p>'; }
@@ -8043,6 +8049,7 @@ Priority Support</textarea></div>
       var link     = document.getElementById('meet_link').value.trim();
       var desc     = document.getElementById('meet_desc').value.trim();
       if(!title||!date||!time){ alert('Title, Date and Time are required.'); return; }
+      if(date < new Date().toISOString().split('T')[0]){ alert('Please select a future date.'); return; }
       var toAll = document.getElementById('meet_toAll').checked;
       var toMarketing = document.getElementById('meet_toMarketing').checked;
       var staffIds = Array.from(document.querySelectorAll('.meet_staff_cb:checked')).map(function(c){ return c.value; });
@@ -9339,8 +9346,8 @@ Priority Support</textarea></div>
     if(name==='affiliates') renderAffiliateApps();
     if(name==='store-razorpay') loadStoreRazorpay();
     if(name==='mkt-enquiries') renderMktEnquiries();
-    if(name==='invitations-admin') loadAdminInvitations();
-    if(name==='meetings-admin') loadAdminMeetings();
+    if(name==='invitations-admin') { loadAdminInvitations(); _setMinDates(['inv_date']); }
+    if(name==='meetings-admin') { loadAdminMeetings(); _setMinDates(['meet_date']); }
     if(name==='wa-control') loadWaSettings();
     if(name==='biz-enquiries') fetchBizEnquiries();
     if(name==='support-tickets') renderSupportTickets();
