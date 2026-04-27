@@ -377,10 +377,17 @@
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         var app     = fbMod.getApps().find(function(a){return a.name==='about-page';})||fbMod.initializeApp(fbCfg,'about-page');
         var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','about'));
         var grid    = document.getElementById('ourTeamGrid');
         if(!grid) return;
-        var members = snap.exists() && snap.data().team ? snap.data().team : [];
+        // Load from team_members collection (new admin Team tab)
+        var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'team_members'),fbStore.orderBy('createdAt','asc')));
+        var members=[];
+        snap.forEach(function(d){members.push(Object.assign({id:d.id},d.data()));});
+        // Fallback to old settings/about doc
+        if(!members.length){
+          var oldSnap = await fbStore.getDoc(fbStore.doc(db,'settings','about'));
+          if(oldSnap.exists()&&oldSnap.data().team) members=oldSnap.data().team;
+        }
         if(!members.length){
           grid.innerHTML = '<p style="color:#6a6050;font-size:0.85rem;text-align:center;grid-column:1/-1;">Team members coming soon.</p>';
           return;

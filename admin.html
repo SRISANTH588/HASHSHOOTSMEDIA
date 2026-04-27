@@ -344,6 +344,7 @@
         <button class="sidebar-item" onclick="switchTab('homepage',this)" id="homepageTabBtn" data-title="Home Page"><i class="fas fa-home"></i> Home Page</button>
         <button class="sidebar-item" onclick="switchTab('wedding-plans',this)" id="weddingPlansTabBtn" data-title="Wedding Plans"><i class="fas fa-heart"></i> Wedding Plans</button>
         <button class="sidebar-item" onclick="switchTab('about',this)" id="aboutTabBtn" data-title="About Us"><i class="fas fa-info-circle"></i> About Us</button>
+        <button class="sidebar-item" onclick="switchTab('team',this)" id="teamTabBtn" data-title="Team Members"><i class="fas fa-users"></i> Team Members</button>
         <button class="sidebar-item" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn" data-title="Hero Stats"><i class="fas fa-chart-bar"></i> Hero Stats</button>
         <button class="sidebar-item" onclick="switchTab('opening',this)" id="openingTabBtn" data-title="Opening Screen"><i class="fas fa-rocket"></i> Opening Screen</button>
         <button class="sidebar-item" onclick="switchTab('blog',this)" id="blogTabBtn" data-title="Blog"><i class="fas fa-pen-nib"></i> Blog</button>
@@ -760,15 +761,38 @@
           <label>Cities Stat</label>
           <input type="text" id="ab_statCities" placeholder="e.g. 10+"/>
         </div>
-        <div class="form-group">
-          <label>Team Members</label>
-          <div id="teamRows"></div>
-          <button class="btn-add-team" onclick="addTeamRow()"><i class="fas fa-plus"></i> Add Team Member</button>
-        </div>
         <button class="btn-save-about" onclick="saveAbout()"><i class="fas fa-save"></i> Save Changes</button>
         <div class="save-toast" id="saveToast"><i class="fas fa-check-circle"></i> Saved successfully!</div>
       </div>
     </div><!-- end tab-about -->
+
+    <!-- TEAM TAB -->
+    <div class="tab-panel" id="tab-team">
+      <div class="about-form" style="margin-bottom:1rem;">
+        <h2><i class="fas fa-user-plus" style="color:#c9a84c;margin-right:0.5rem;"></i> Add Team Member</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="tm_name" placeholder="e.g. Boddu Srisanth"/></div>
+          <div class="form-group"><label>Role *</label><input type="text" id="tm_role" placeholder="e.g. Founder & CEO"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group"><label>Instagram Handle</label><input type="text" id="tm_insta" placeholder="e.g. @srisanth.18"/></div>
+          <div class="form-group"><label>Photo URL</label><input type="text" id="tm_photo" placeholder="https://... or leave blank"/></div>
+        </div>
+        <input type="hidden" id="tm_edit_id" value=""/>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn-save-about" id="tm_submit_btn" onclick="saveTeamMember()"><i class="fas fa-plus"></i> Add Member</button>
+          <button id="tm_cancel_btn" onclick="cancelTeamEdit()" style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9a9080;padding:0.65rem 1.25rem;border-radius:10px;font-size:0.88rem;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+        <div id="tmToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Saved!</div>
+      </div>
+      <div class="about-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-list" style="color:#c9a84c;margin-right:0.5rem;"></i> All Team Members</h2>
+          <button onclick="loadTeamTab()" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="tmList"><p style="color:#6a6050;font-size:0.85rem;">Loading...</p></div>
+      </div>
+    </div>
 
     <!-- VIBE TAB -->
     <div class="tab-panel" id="tab-vibe">
@@ -6975,6 +6999,87 @@ Priority Support</textarea></div>
     }
 
     // ABOUT US
+    // ── TEAM MEMBERS ──
+    var _tmItems = [];
+
+    async function saveTeamMember(){
+      var editId = document.getElementById('tm_edit_id').value||'';
+      var name   = document.getElementById('tm_name').value.trim();
+      var role   = document.getElementById('tm_role').value.trim();
+      var insta  = document.getElementById('tm_insta').value.trim();
+      var photo  = document.getElementById('tm_photo').value.trim();
+      if(!name||!role){alert('Name and Role are required.');return;}
+      try{
+        var f=await _fbAdmin();if(!f)throw new Error('Firebase not ready');
+        var data={name,role,insta,photo,updatedAt:f.s.serverTimestamp()};
+        if(editId){
+          await f.s.updateDoc(f.s.doc(f.db,'team_members',editId),data);
+        } else {
+          data.createdAt=f.s.serverTimestamp();
+          await f.s.addDoc(f.s.collection(f.db,'team_members'),data);
+        }
+        cancelTeamEdit();
+        var t=document.getElementById('tmToast');t.style.display='block';setTimeout(function(){t.style.display='none';},2500);
+        loadTeamTab();
+      }catch(e){alert('Error: '+e.message);}
+    }
+
+    function cancelTeamEdit(){
+      ['tm_name','tm_role','tm_insta','tm_photo','tm_edit_id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+      document.getElementById('tm_submit_btn').innerHTML='<i class="fas fa-plus"></i> Add Member';
+      document.getElementById('tm_cancel_btn').style.display='none';
+    }
+
+    function editTeamMember(idx){
+      var t=_tmItems[idx];if(!t)return;
+      document.getElementById('tm_edit_id').value=t.id;
+      document.getElementById('tm_name').value=t.name||'';
+      document.getElementById('tm_role').value=t.role||'';
+      document.getElementById('tm_insta').value=t.insta||'';
+      document.getElementById('tm_photo').value=t.photo||'';
+      document.getElementById('tm_submit_btn').innerHTML='<i class="fas fa-save"></i> Update Member';
+      document.getElementById('tm_cancel_btn').style.display='inline-flex';
+      document.getElementById('tab-team').scrollTop=0;
+    }
+
+    async function deleteTeamMember(id){
+      if(!confirm('Delete this team member?'))return;
+      try{
+        var f=await _fbAdmin();if(!f)return;
+        await f.s.deleteDoc(f.s.doc(f.db,'team_members',String(id)));
+        loadTeamTab();
+      }catch(e){alert('Error: '+e.message);}
+    }
+
+    async function loadTeamTab(){
+      var el=document.getElementById('tmList');if(!el)return;
+      el.innerHTML='<p style="color:#9a9080;font-size:0.85rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+      try{
+        var f=await _fbAdmin();if(!f)throw new Error('Firebase not ready');
+        var snap=await f.s.getDocs(f.s.query(f.s.collection(f.db,'team_members'),f.s.orderBy('createdAt','asc')));
+        var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()));});
+        _tmItems=items;
+        if(!items.length){el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;">No team members yet.</p>';return;}
+        el.innerHTML=items.map(function(t,i){
+          var ini=(t.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+          var avatar=t.photo
+            ?'<img src="'+t.photo+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.3);flex-shrink:0;" onerror="this.style.display=\'none\'"/>'
+            :'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:900;color:#000;flex-shrink:0;">'+ini+'</div>';
+          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;">'
+            +avatar
+            +'<div style="flex:1;">'
+            +'<div style="font-size:0.9rem;font-weight:800;color:#fff;">'+t.name+'</div>'
+            +'<div style="font-size:0.75rem;color:#c9a84c;font-weight:600;">'+t.role+'</div>'
+            +(t.insta?'<div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;"><i class="fab fa-instagram"></i> '+t.insta+'</div>':'')
+            +'</div>'
+            +'<div style="display:flex;gap:0.4rem;">'
+            +'<button onclick="editTeamMember('+i+')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>'
+            +'<button data-delid="'+t.id+'" onclick="deleteTeamMember(this.getAttribute(\'data-delid\'))" style="background:rgba(244,67,54,0.1);border:none;color:#f44336;padding:0.3rem 0.65rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
+            +'</div></div>';
+        }).join('');
+      }catch(e){el.innerHTML='<p style="color:#f44336;font-size:0.85rem;">Error: '+e.message+'</p>';}
+    }
+
     function loadAboutForm() {
       const a = JSON.parse(localStorage.getItem('hs_about') || '{}');
       document.getElementById('ab_heroTitle').value = a.heroTitle || '';
@@ -9215,6 +9320,7 @@ Priority Support</textarea></div>
     if(name==='store') loadStoreAdmin();
     if(name==='opening') loadOpening();
     if(name==='razorpay') loadRazorpayTab();
+    if(name==='team') loadTeamTab();
     if(name==='about') loadAboutForm();
     if(name==='vibe') renderVibeAdmin();
     if(name==='customer'){loadCustomerForm();renderCustomerAccounts();}
