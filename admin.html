@@ -2725,8 +2725,7 @@ Priority Support</textarea></div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-            <div class="form-group"><label>Date *</label><input type="date" id="inv_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/></div>
-            <div class="form-group"><label>Time</label><input type="time" id="inv_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/></div>
+            <div class="form-group"><label>Date &amp; Time *</label><input type="datetime-local" id="inv_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;"/></div>
             <div class="form-group"><label>Venue</label><input type="text" id="inv_venue" placeholder="e.g. OG Shoots Office"/></div>
           </div>
           <div class="form-group" style="margin-bottom:1rem;"><label>Description</label><textarea id="inv_desc" placeholder="Details about the invitation..."></textarea></div>
@@ -2766,8 +2765,7 @@ Priority Support</textarea></div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-            <div class="form-group"><label>Date *</label><input type="date" id="meet_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/></div>
-            <div class="form-group"><label>Time *</label><input type="time" id="meet_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/></div>
+            <div class="form-group"><label>Date &amp; Time *</label><input type="datetime-local" id="meet_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;"/></div>
             <div class="form-group"><label>Duration</label><input type="text" id="meet_duration" placeholder="e.g. 1 hour"/></div>
             <div class="form-group"><label>Venue</label><input type="text" id="meet_venue" placeholder="e.g. Office / Google Meet"/></div>
           </div>
@@ -3618,8 +3616,10 @@ Priority Support</textarea></div>
 
     // TAB SWITCHING - handled by switchTab() below
     function _setMinDates(ids){
-      var today = new Date().toISOString().split('T')[0];
-      ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.min=today; });
+      var now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      var minVal = now.toISOString().slice(0,16);
+      ids.forEach(function(id){ var el=document.getElementById(id); if(el){ el.min=minVal; if(!el.value) el.value=minVal; } });
     }
     function _esc(s){ var d=document.createElement('div'); d.textContent=String(s||''); return d.innerHTML; }
 
@@ -7961,12 +7961,13 @@ Priority Support</textarea></div>
     async function sendInvitation(){
       var title = document.getElementById('inv_title').value.trim();
       var type  = document.getElementById('inv_type').value;
-      var date  = document.getElementById('inv_date').value;
-      var time  = document.getElementById('inv_time').value;
+      var datetime = document.getElementById('inv_datetime').value;
+      var date  = datetime ? datetime.split('T')[0] : '';
+      var time  = datetime ? datetime.split('T')[1] : '';
       var venue = document.getElementById('inv_venue').value.trim();
       var desc  = document.getElementById('inv_desc').value.trim();
-      if(!title||!date){ alert('Title and Date are required.'); return; }
-      if(date < new Date().toISOString().split('T')[0]){ alert('Please select a future date.'); return; }
+      if(!title||!datetime){ alert('Title and Date & Time are required.'); return; }
+      if(new Date(datetime) < new Date()){ alert('Please select a future date and time.'); return; }
       // Collect recipients
       var toMarketing = document.getElementById('inv_toMarketing').checked;
       var staffIds = Array.from(document.querySelectorAll('.inv_staff_cb:checked')).map(function(c){ return c.value; });
@@ -7985,7 +7986,7 @@ Priority Support</textarea></div>
           message:'You have a new invitation for '+date+(time?' at '+time:'')+(venue?' at '+venue:''),
           staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
-        ['inv_title','inv_date','inv_time','inv_venue','inv_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        ['inv_title','inv_datetime','inv_venue','inv_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
         document.querySelectorAll('.inv_staff_cb').forEach(function(c){ c.checked=false; });
         var mk=document.getElementById('inv_toMarketing'); if(mk) mk.checked=false;
         var al=document.getElementById('inv_toAll'); if(al) al.checked=false;
@@ -8042,14 +8043,15 @@ Priority Support</textarea></div>
     async function scheduleMeeting(){
       var title    = document.getElementById('meet_title').value.trim();
       var type     = document.getElementById('meet_type').value;
-      var date     = document.getElementById('meet_date').value;
-      var time     = document.getElementById('meet_time').value;
+      var datetime = document.getElementById('meet_datetime').value;
+      var date     = datetime ? datetime.split('T')[0] : '';
+      var time     = datetime ? datetime.split('T')[1] : '';
       var duration = document.getElementById('meet_duration').value.trim();
       var venue    = document.getElementById('meet_venue').value.trim();
       var link     = document.getElementById('meet_link').value.trim();
       var desc     = document.getElementById('meet_desc').value.trim();
-      if(!title||!date||!time){ alert('Title, Date and Time are required.'); return; }
-      if(date < new Date().toISOString().split('T')[0]){ alert('Please select a future date.'); return; }
+      if(!title||!datetime){ alert('Title and Date & Time are required.'); return; }
+      if(new Date(datetime) < new Date()){ alert('Please select a future date and time.'); return; }
       var toAll = document.getElementById('meet_toAll').checked;
       var toMarketing = document.getElementById('meet_toMarketing').checked;
       var staffIds = Array.from(document.querySelectorAll('.meet_staff_cb:checked')).map(function(c){ return c.value; });
@@ -8066,7 +8068,7 @@ Priority Support</textarea></div>
           message:'New meeting on '+date+' at '+time+(venue?' at '+venue:''),
           staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
-        ['meet_title','meet_date','meet_time','meet_duration','meet_venue','meet_link','meet_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        ['meet_title','meet_datetime','meet_duration','meet_venue','meet_link','meet_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
         document.querySelectorAll('.meet_staff_cb').forEach(function(c){ c.checked=false; });
         var mk=document.getElementById('meet_toMarketing'); if(mk) mk.checked=false;
         var al=document.getElementById('meet_toAll'); if(al) al.checked=false;
@@ -9346,8 +9348,8 @@ Priority Support</textarea></div>
     if(name==='affiliates') renderAffiliateApps();
     if(name==='store-razorpay') loadStoreRazorpay();
     if(name==='mkt-enquiries') renderMktEnquiries();
-    if(name==='invitations-admin') { loadAdminInvitations(); _setMinDates(['inv_date']); }
-    if(name==='meetings-admin') { loadAdminMeetings(); _setMinDates(['meet_date']); }
+    if(name==='invitations-admin') { loadAdminInvitations(); _setMinDates(['inv_datetime']); }
+    if(name==='meetings-admin') { loadAdminMeetings(); _setMinDates(['meet_datetime']); }
     if(name==='wa-control') loadWaSettings();
     if(name==='biz-enquiries') fetchBizEnquiries();
     if(name==='support-tickets') renderSupportTickets();
