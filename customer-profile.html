@@ -132,7 +132,6 @@
           <div style="display:flex;"><div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,0.3);"></div><div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-8px;"></div></div>
         </div>
       </div>
-    </div>
   </div>
 
   <script>
@@ -140,34 +139,6 @@
     const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
-
-    // Load premium card
-    (async function(){
-      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
-      if(!email) return;
-      var card = JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
-      try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='prof-prem';})||fbMod.initializeApp(fbCfg,'prof-prem');
-        var db      = fbStore.getFirestore(app);
-        var key     = email.replace(/[.#$\[\]]/g,'_');
-        var snap    = await fbStore.getDoc(fbStore.doc(db,'premium_cards',key));
-        if(snap.exists()) card = snap.data();
-        // Also get wallet balance
-        var wSnap = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
-        if(wSnap.exists()) localStorage.setItem('hs_cw_'+email, String(wSnap.data().balance||0));
-      }catch(e){}
-      if(card && card.active){
-        var sec = document.getElementById('premiumCardSection');
-        if(sec) sec.style.display='block';
-        var bal = parseInt(localStorage.getItem('hs_cw_'+email)||'0');
-        var n=document.getElementById('pcName'); if(n) n.textContent=(card.name||email).toUpperCase();
-        var num=document.getElementById('pcNumber'); if(num) num.textContent=card.cardNumber||'';
-        var since=document.getElementById('pcSince'); if(since) since.textContent='Member since: '+(card.activatedAt||'').split(',')[0];
-        var w=document.getElementById('pcWallet'); if(w) w.textContent=bal.toLocaleString('en-IN');
-      }
     })();
 
     function loadProfile(){
