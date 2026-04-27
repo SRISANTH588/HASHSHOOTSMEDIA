@@ -334,8 +334,10 @@
     }
 
     async function loadBookings(){
-      // Always sync fresh bookings from Firebase for Google login users
+      // Always sync fresh bookings from Firebase - clear old data first
       var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+      // Clear any bookings from previous sessions to prevent cross-customer data leak
+      localStorage.removeItem('hs_bookings');
       if(custEmail){
         try{
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -344,16 +346,10 @@
           var app     = fbMod.getApps().find(function(a){return a.name==='co';}) || fbMod.initializeApp(fbCfg,'co');
           var db      = fbStore.getFirestore(app);
           var bSnap   = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'),fbStore.where('email','==',custEmail)));
-          if(!bSnap.empty){
-            var fresh=[];
-            bSnap.forEach(function(d){fresh.push(Object.assign({id:d.id},d.data()));});
-            // Merge with existing local bookings
-            var local=JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            var merged={};
-            local.forEach(function(b){merged[String(b.id)]=b;});
-            fresh.forEach(function(b){merged[String(b.id)]=b;});
-            localStorage.setItem('hs_bookings',JSON.stringify(Object.values(merged)));
-          }
+          var fresh=[];
+          bSnap.forEach(function(d){fresh.push(Object.assign({id:d.id},d.data()));});
+          // Only store THIS customer's bookings
+          localStorage.setItem('hs_bookings', JSON.stringify(fresh));
         }catch(e){ console.warn('sync bookings:',e); }
       }
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');

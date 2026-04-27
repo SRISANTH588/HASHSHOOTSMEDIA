@@ -379,15 +379,9 @@
           // Also save in customers collection for admin visibility
           await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
         }
-        // Set session
+        // Set session — clear previous customer's data first
+        localStorage.removeItem('hs_bookings');
         localStorage.setItem('hs_role','customer');
-        localStorage.setItem('hs_user', email);
-        localStorage.setItem('hs_customer_email', email);
-        localStorage.setItem('hs_customer_name', custData.name||name);
-        localStorage.setItem('hs_customer_phone', custData.phone||'');
-        localStorage.setItem('hs_customer_username', custData.username||email);
-        localStorage.setItem('hs_customer_photo', custData.photo||photo);
-        localStorage.setItem('hs_customer_uid', uid);
         // Fetch bookings from Firebase by email
         try{
           const bQuery = fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email));
@@ -511,6 +505,7 @@
           cust = customers.find(c=>c.username===id.toLowerCase()||c.email===id.toLowerCase())||null;
         }
         if(cust&&cust.password===p){
+          localStorage.removeItem('hs_bookings');
           localStorage.setItem('hs_role','customer');
           localStorage.setItem('hs_user',cust.email);
           localStorage.setItem('hs_customer_email',cust.email);
@@ -763,6 +758,7 @@
           await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
           await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
         }
+        localStorage.removeItem('hs_bookings');
         localStorage.setItem('hs_role','customer');
         localStorage.setItem('hs_user', email);
         localStorage.setItem('hs_customer_email', email);
