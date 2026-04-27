@@ -834,40 +834,12 @@
 
     function confirmSubmit() {
       if (!pendingData || !document.getElementById('tncCheck').checked) return;
-
-      // Get plan price
+      // Just save booking as pending — payment happens after admin confirms
       var plan = selectedPlanKey && planData[selectedPlanKey];
       var rawPrice = plan ? parseInt((plan.price||'').replace(/[^0-9]/g,'')) : 0;
       var discount = _appliedCoupon ? (_appliedCoupon.type==='percent' ? Math.round(rawPrice*_appliedCoupon.value/100) : _appliedCoupon.value) : 0;
       var finalPrice = Math.max(0, rawPrice - discount);
-
-      // Get Razorpay key
-      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
-      var rzpKey = rp.keyId || '';
-
-      if(rzpKey && finalPrice > 0){
-        // Launch Razorpay with auto amount
-        var d = pendingData;
-        var options = {
-          key: rzpKey,
-          amount: finalPrice * 100, // paise
-          currency: 'INR',
-          name: 'OG Shoots',
-          description: (plan ? plan.name : d.service) + ' Booking',
-          prefill: { name: d.name, email: d.email, contact: d.phone },
-          theme: { color: '#c9a84c' },
-          handler: function(response){
-            // Payment success — save booking with payment details
-            _saveBooking(finalPrice, response.razorpay_payment_id, 'paid');
-          },
-          modal: { ondismiss: function(){ console.log('Payment cancelled'); } }
-        };
-        var rzp = new Razorpay(options);
-        rzp.open();
-      } else {
-        // No Razorpay key or free plan — save directly
-        _saveBooking(finalPrice, '', finalPrice > 0 ? 'pending' : 'free');
-      }
+      _saveBooking(finalPrice, '', 'pending');
     }
 
     function _saveBooking(finalPrice, paymentId, paymentStatus) {
