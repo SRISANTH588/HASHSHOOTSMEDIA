@@ -1,4 +1,5 @@
 (function(){
+  // nav v2
   function initNav(){
     var page = window.location.pathname.split('/').pop() || 'index.html';
 
@@ -292,6 +293,7 @@ function hsGoContact(){
   else { window.location.href = 'index.html#contact'; }
 }
 function navigate(page){
-  var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-  window.location.href = base + page;
+  var allowed = ['customer-profile.html','customer-orders.html','customer-support.html','customer-wallet.html','index.html','booking.html','login.html'];
+  if(allowed.indexOf(page) === -1) return;
+  window.location.href = page;
 }
