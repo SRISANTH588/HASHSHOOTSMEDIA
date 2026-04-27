@@ -220,15 +220,15 @@
         var custName  = (localStorage.getItem('hs_customer_name') || '').trim();
 
         // Clear any stale bookings from previous customer session
-        var _sessionKey = 'hs_orders_session_' + custEmail;
-        if(!sessionStorage.getItem(_sessionKey)){
-          localStorage.removeItem('hs_bookings');
-          sessionStorage.setItem(_sessionKey, '1');
-        }
+        localStorage.removeItem('hs_bookings');
+
+        // Show loading while fetching
+        var listEl = document.getElementById('bookingsList');
+        if(listEl) listEl.innerHTML = '<div style="text-align:center;padding:3rem;color:#6a6050;"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;color:#c9a84c;display:block;margin-bottom:0.75rem;"></i>Loading your orders...</div>';
 
         // Query bookings directly by email and phone — no need to fetch all
         function mergeAndStore(docs){
-          // Only keep bookings belonging to THIS customer
+          // Only store bookings belonging to THIS customer
           var existing = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){
             var bEmail = (b.email||'').toLowerCase().trim();
             var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
