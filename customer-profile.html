@@ -143,14 +143,17 @@
 
     function loadProfile(){
       var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-      var name = prof.name || user;
-      document.getElementById('editName').value = name;
-      document.getElementById('editPhone').value = prof.phone || '';
-      document.getElementById('profileEmail').value = userEmail || '—';
-      document.getElementById('profileName').textContent = name;
-      var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+      var name  = prof.name  || localStorage.getItem('hs_customer_name')  || user || '';
+      var phone = prof.phone || localStorage.getItem('hs_customer_phone') || '';
+      var email = prof.email || localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      document.getElementById('editName').value    = name;
+      document.getElementById('editPhone').value   = phone;
+      document.getElementById('profileEmail').value = email || '—';
+      document.getElementById('profileName').textContent = name || 'Customer';
+      var initials = (name||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
       var av = document.getElementById('profileAv');
-      if(prof.pic){ av.innerHTML = '<img src="'+prof.pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'; }
+      var pic = prof.pic || localStorage.getItem('hs_customer_photo') || '';
+      if(pic){ av.innerHTML = '<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'; }
       else { av.textContent = initials; }
     }
     loadProfile();
