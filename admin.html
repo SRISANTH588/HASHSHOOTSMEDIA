@@ -7376,19 +7376,22 @@ Priority Support</textarea></div>
       if(!q || q.accepted) return;
       if(!confirm('Accept this enquiry and convert to booking?')) return;
 
+      // Admin enters amount to charge
+      var amtInput = prompt('Enter the amount (\u20b9) to charge this customer:\n(This will show as Pay Now after you confirm the booking)', '');
+      if(amtInput === null) return;
+      var payAmount = parseInt(amtInput) || 0;
+      if(!payAmount){ if(!confirm('No amount entered. Continue without payment amount?')) return; }
+
       enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{accepted:true}) : e; });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
       var msg = q.message||'';
-      var service  = q.service  || ((msg.match(/Service:\s*([^|]+)/)||[])[1]||'').trim();
+      var service  = q.service  || ((msg.match(/Service:\s*([^|]+)/)||[])[1]||'').trim() || 'Custom';
       var city     = q.city     || ((msg.match(/City:\s*([^|]+)/)||[])[1]||'').trim();
       var location = q.location || ((msg.match(/Location:\s*([^|]+)/)||[])[1]||'').trim();
-      var plan     = q.plan     || ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim();
+      var plan     = q.plan     || ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim() || service;
       var datePart = q.date     || ((msg.match(/Date:\s*([^|]+at)/)||[])[1]||'').replace(/\s*at\s*$/,'').trim();
       var timePart = q.time     || ((msg.match(/at\s+(\S.*)$/)||[])[1]||'').trim();
-      // Extract price from plan
-      var rawPrice = 0;
-      if(plan){ var pm=plan.match(/\d[\d,]*/); if(pm) rawPrice=parseInt(pm[0].replace(/,/g,''))||0; }
-      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:(q.email||'').toLowerCase().trim(), service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'pending', payAmount:rawPrice, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
+      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:(q.email||'').toLowerCase().trim(), service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'pending', payAmount:payAmount, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
       // Add to admin bookings
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       if(!bookings.find(function(b){ return String(b.id)===String(bk.id); })){
@@ -7408,7 +7411,7 @@ Priority Support</textarea></div>
             name:bk.name, phone:bk.phone, email:bk.email,
             service:bk.service, city:bk.city, location:bk.location,
             date:bk.date, time:bk.time, plan:bk.plan,
-            status:'pending', payAmount:rawPrice, paymentStatus:'pending',
+            status:'pending', payAmount:payAmount, paymentStatus:'pending',
             orderId:'OGS-'+new Date().getFullYear()+'-'+String(id).slice(-6),
             createdAt:fbStore.serverTimestamp()
           });
