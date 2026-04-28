@@ -6184,19 +6184,7 @@ Priority Support</textarea></div>
           + '\ud83d\udccd *Location:* ' + (booking2 ? (booking2.location || booking2.city) : '') + '\n\n'
           + '\ud83d\udc65 *Your Assigned Creator(s):*\n' + staffLines + '\n\n'
           + 'Your creator will arrive at the location on time. Track your order in the OG Shoots app. \ud83d\ude80';
-        // Show floating WhatsApp send button
-        var waUrl = 'https://wa.me/' + custPhone.replace(/\D/g,'') + '?text=' + encodeURIComponent(waMsg);
-        var existing = document.getElementById('waSendPopup'); if(existing) existing.remove();
-        var popup = document.createElement('div');
-        popup.id = 'waSendPopup';
-        popup.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:#1a1a1a;border:1px solid rgba(37,211,102,0.4);border-radius:16px;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.85rem;box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px;max-width:90vw;animation:waSlideUp 0.3s ease;';
-        popup.innerHTML = '<style>@keyframes waSlideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}</style>'
-          + '<div style="width:40px;height:40px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-whatsapp" style="color:#fff;font-size:1.2rem;"></i></div>'
-          + '<div style="flex:1;"><div style="font-size:0.82rem;font-weight:800;color:#fff;margin-bottom:0.15rem;">Notify Customer — Shoot Assigned</div><div style="font-size:0.7rem;color:#9a9080;">Tap Send to share creator details</div></div>'
-          + '<a href="' + waUrl + '" target="_blank" onclick="document.getElementById(\'waSendPopup\').remove()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:0.55rem 1.1rem;font-size:0.82rem;font-weight:800;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fab fa-whatsapp"></i> Send</a>'
-          + '<button onclick="document.getElementById(\'waSendPopup\').remove()" style="background:none;border:none;color:#555;font-size:1rem;cursor:pointer;padding:0.25rem;">&#10005;</button>';
-        document.body.appendChild(popup);
-        setTimeout(function(){ var el=document.getElementById('waSendPopup'); if(el) el.remove(); }, 30000);
+        // WhatsApp popup removed
       })();
 
       renderAssignedList();
