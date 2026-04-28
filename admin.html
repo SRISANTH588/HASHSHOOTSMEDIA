@@ -7374,13 +7374,7 @@ Priority Support</textarea></div>
       var enquiries = getEnquiries();
       var q = enquiries.find(function(e){ return String(e.id)===String(id); });
       if(!q || q.accepted) return;
-      if(!confirm('Accept this enquiry and add to Bookings?')) return;
-
-      // Prompt admin for payment amount
-      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
-      var defaultAmt = rp.defaultAmount || '';
-      var amtInput = prompt('Enter payment amount (₹) to charge the customer via Razorpay:\n(Leave blank to skip — customer will see "Payment link coming soon")', defaultAmt);
-      var payAmount = amtInput !== null ? parseInt(amtInput, 10) || 0 : 0;
+      if(!confirm('Accept this enquiry and convert to booking?')) return;
 
       enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{accepted:true}) : e; });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
@@ -7391,15 +7385,18 @@ Priority Support</textarea></div>
       var plan     = q.plan     || ((msg.match(/Plan:\s*([^|]+)/)||[])[1]||'').trim();
       var datePart = q.date     || ((msg.match(/Date:\s*([^|]+at)/)||[])[1]||'').replace(/\s*at\s*$/,'').trim();
       var timePart = q.time     || ((msg.match(/at\s+(\S.*)$/)||[])[1]||'').trim();
-      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:q.email||'', service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'confirmed', payAmount:payAmount, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
-      // Add to admin bookings immediately
+      // Extract price from plan
+      var rawPrice = 0;
+      if(plan){ var pm=plan.match(/\d[\d,]*/); if(pm) rawPrice=parseInt(pm[0].replace(/,/g,''))||0; }
+      var bk = { id:'enq_'+String(id), name:q.name||'', phone:q.phone||'', email:(q.email||'').toLowerCase().trim(), service:service, city:city, location:location, date:datePart, time:timePart, notes:'', plan:plan, status:'pending', payAmount:rawPrice, paymentStatus:'pending', createdAt:q.submittedAt||new Date().toLocaleString() };
+      // Add to admin bookings
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       if(!bookings.find(function(b){ return String(b.id)===String(bk.id); })){
         bookings.push(bk);
         localStorage.setItem('hs_bookings', JSON.stringify(bookings));
         allBookings = bookings;
       }
-      // Sync to Firestore using known ID so customer sees it instantly
+      // Sync to Firestore — customer's real-time listener will pick it up by email
       (async function(){
         try {
           var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -7407,20 +7404,21 @@ Priority Support</textarea></div>
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var fbApp = fbMod.getApps().find(function(a){ return a.name==='admin-app'; }) || fbMod.initializeApp(fbCfg,'admin-app');
           var fbDb = fbStore.getFirestore(fbApp);
-          // Use setDoc with known ID so customer onSnapshot picks it up immediately
-          await fbStore.setDoc(fbStore.doc(fbDb,'bookings',bk.id), {name:bk.name,phone:bk.phone,email:bk.email,service:bk.service,city:bk.city,location:bk.location,date:bk.date,time:bk.time,plan:bk.plan,status:'confirmed',payAmount:payAmount,paymentStatus:'pending',createdAt:fbStore.serverTimestamp()});
-          // Mark enquiry as accepted in Firestore
+          await fbStore.setDoc(fbStore.doc(fbDb,'bookings',bk.id), {
+            name:bk.name, phone:bk.phone, email:bk.email,
+            service:bk.service, city:bk.city, location:bk.location,
+            date:bk.date, time:bk.time, plan:bk.plan,
+            status:'pending', payAmount:rawPrice, paymentStatus:'pending',
+            orderId:'OGS-'+new Date().getFullYear()+'-'+String(id).slice(-6),
+            createdAt:fbStore.serverTimestamp()
+          });
+          // Mark enquiry accepted in Firestore
           await fbStore.setDoc(fbStore.doc(fbDb,'enquiries',String(id)),{accepted:true},{merge:true});
-          // Also query by phone as fallback for locally-submitted enquiries
-          if(bk.phone){
-            var eSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'enquiries'),fbStore.where('phone','==',bk.phone),fbStore.where('accepted','==',false)));
-            eSnap.forEach(function(ed){ fbStore.setDoc(ed.ref,{accepted:true},{merge:true}); });
-          }
         } catch(e){ console.error('acceptEnquiry error:',e); }
       })();
       renderEnquiries();
       loadAll();
-      alert('\u2705 Accepted! Booking confirmed' + (payAmount ? ' with payment of \u20b9' + payAmount.toLocaleString('en-IN') + '. Customer will see Pay Now button.' : '. No payment amount set.'));
+      alert('\u2705 Enquiry accepted! Booking created as Pending. Customer will see it in their orders. Confirm the booking from Bookings tab to trigger payment.');
     }
 
     function deleteEnquiry(id){
