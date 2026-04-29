@@ -524,13 +524,17 @@ window.hsStartListeners = async function() {
             const local = JSON.parse(window.localStorage.getItem('hs_assigned_shoots') || '[]');
             const merged = docs.map(fbDoc => {
               const loc = local.find(l => String(l.id) === String(fbDoc.id));
+              // If local has a more advanced status, keep it
               const advancedStatuses = ['done', 'completed', 'paid'];
               if (loc && advancedStatuses.includes(loc.status) && !advancedStatuses.includes(fbDoc.status)) {
                 return { ...fbDoc, ...loc };
               }
               return { ...loc, ...fbDoc };
             });
-            // Do NOT re-add local-only docs — if a doc is not in Firebase it was deleted
+            // Keep any local-only docs not yet in Firebase
+            local.forEach(loc => {
+              if (!merged.find(m => String(m.id) === String(loc.id))) merged.push(loc);
+            });
             window.localStorage.setItem(m.ls, JSON.stringify(merged));
           } else {
             window.localStorage.setItem(m.ls, JSON.stringify(docs));

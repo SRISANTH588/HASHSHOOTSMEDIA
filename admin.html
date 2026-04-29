@@ -9165,10 +9165,10 @@ Priority Support</textarea></div>
             if(!data.id) data.id = d.id;
             list.push(data);
           });
-          // Always trust Firebase as source of truth — this includes deletions
           localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
           if(currentTab==='assign') renderAssignedList();
           if(currentTab==='payments') renderAdminPayments();
+          // Update payments badge
           var done = list.filter(function(a){ return a.status==='done'; }).length;
           var badge = document.getElementById('paymentsAdminBadge');
           if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
@@ -9471,9 +9471,9 @@ Priority Support</textarea></div>
           var f=await _fbAdmin();if(!f)return;
           var snap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
           var list=[];snap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;list.push(data);});
-          // Always use Firebase result — it reflects deletions too
-          localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));renderAssignedList();
-        }catch(e){}
+          // Only update local if Firebase has same or more items (prevents revert after delete)
+          var local=getAssignedShoots();
+          if(list.length>=local.length){localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));renderAssignedList();}
         }catch(e){}
       })();
     }
