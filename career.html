@@ -418,11 +418,13 @@
       e.preventDefault();
       var form = this;
       var data = {
-        name:  form.querySelector('input[name=name]').value.trim(),
-        phone: form.querySelector('input[name=phone]').value.trim(),
-        email: form.querySelector('input[name=email]').value.trim(),
-        role:  document.getElementById('roleLabel').textContent,
-        type:  'career_application',
+        name:      form.querySelector('input[name=name]').value.trim(),
+        phone:     form.querySelector('input[name=phone]').value.trim(),
+        email:     form.querySelector('input[name=email]').value.trim(),
+        portfolio: form.querySelector('input[name=portfolio]').value.trim(),
+        message:   form.querySelector('textarea[name=message]').value.trim(),
+        role:      document.getElementById('roleLabel').textContent,
+        type:      'career_application',
         submittedAt: new Date().toLocaleString()
       };
       // Set reply-to for Formspree

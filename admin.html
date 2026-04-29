@@ -7842,17 +7842,62 @@ Priority Support</textarea></div>
     function renderCareerApps(){
       var list = JSON.parse(localStorage.getItem('hs_career_applications')||'[]').slice().reverse();
       var countEl = document.getElementById('careerAppsCount');
-      if(countEl) countEl.textContent = list.length+' application(s)';
+      if(countEl) countEl.textContent = list.length + ' application(s)';
       var el = document.getElementById('careerAppsList');
       if(!el) return;
-      if(!list.length){ el.innerHTML='<p style="color:#9a9080;text-align:center;padding:2rem;">No career applications yet.</p>'; return; }
-      el.innerHTML = list.map(function(a){
-        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;">'
-          +'<div style="font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+a.name+' &nbsp;<span style="color:#c9a84c;font-size:0.78rem;">'+a.role+'</span></div>'
-          +'<div style="font-size:0.75rem;color:#9a9080;">'+a.email+' &nbsp;·&nbsp; '+a.phone+'</div>'
-          +'<div style="font-size:0.68rem;color:#777;margin-top:0.3rem;">'+a.submittedAt+'</div>'
+      if(!list.length){
+        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#111;border-radius:14px;"><i class="fas fa-briefcase" style="font-size:2rem;color:#c9a84c;opacity:0.2;display:block;margin-bottom:0.75rem;"></i><p style="color:#6a5a40;font-size:0.85rem;">No career applications yet.</p></div>';
+        return;
+      }
+      el.innerHTML = list.map(function(a, i){
+        var idx = list.length - 1 - i; // original index in non-reversed array
+        return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;">'
+          // Header row
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">'
+          +'<div>'
+          +'<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+(a.name||'—')+'</div>'
+          +'<div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">'+(a.role||'—')+'</div>'
+          +'</div>'
+          +'<button onclick="deleteCareerApp('+idx+')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.4rem;"><i class="fas fa-trash"></i> Delete</button>'
+          +'</div>'
+          // Details grid
+          +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.65rem;margin-bottom:1rem;">'
+          +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:0.6rem 0.85rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;"><i class="fas fa-envelope" style="color:#c9a84c;"></i> Email</div><div style="font-size:0.82rem;color:#fff;font-weight:600;word-break:break-all;">'+(a.email||'—')+'</div></div>'
+          +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:0.6rem 0.85rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;"><i class="fas fa-phone" style="color:#c9a84c;"></i> Phone</div><div style="font-size:0.82rem;color:#fff;font-weight:600;">'+(a.phone||'—')+'</div></div>'
+          +(a.portfolio ? '<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:0.6rem 0.85rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;"><i class="fas fa-link" style="color:#c9a84c;"></i> Portfolio</div><div style="font-size:0.82rem;"><a href="'+a.portfolio+'" target="_blank" style="color:#c9a84c;word-break:break-all;">'+a.portfolio+'</a></div></div>' : '')
+          +'<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:0.6rem 0.85rem;"><div style="font-size:0.6rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;"><i class="fas fa-clock" style="color:#c9a84c;"></i> Applied On</div><div style="font-size:0.78rem;color:#fff;">'+(a.submittedAt||'—')+'</div></div>'
+          +'</div>'
+          // Message/Why
+          +(a.message ? '<div style="background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);border-left:3px solid rgba(201,168,76,0.4);border-radius:9px;padding:0.75rem 1rem;"><div style="font-size:0.62rem;color:#9a9080;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem;"><i class="fas fa-comment-alt" style="color:#c9a84c;"></i> Why OG Shoots?</div><div style="font-size:0.83rem;color:#d4c9a8;line-height:1.65;">'+a.message+'</div></div>' : '')
           +'</div>';
       }).join('');
+    }
+
+    function deleteCareerApp(idx){
+      if(!confirm('Delete this career application?')) return;
+      var list = JSON.parse(localStorage.getItem('hs_career_applications')||'[]');
+      var app = list[idx];
+      list.splice(idx, 1);
+      localStorage.setItem('hs_career_applications', JSON.stringify(list));
+      // Delete from Firebase
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var fbApp   = fbMod.getApps().find(function(a){return a.name==='career-del';}) || fbMod.initializeApp(fbCfg,'career-del');
+          var db      = fbStore.getFirestore(fbApp);
+          // Find and delete by matching email+role+submittedAt
+          var snap = await fbStore.getDocs(fbStore.collection(db,'career_applications'));
+          snap.forEach(async function(d){
+            var data = d.data();
+            if(app && data.email===app.email && data.role===app.role){
+              await fbStore.deleteDoc(fbStore.doc(db,'career_applications',d.id));
+            }
+          });
+        }catch(e){ console.error('deleteCareerApp Firebase error:',e); }
+      })();
+      renderCareerApps();
     }
 
     // AFFILIATE APPS
