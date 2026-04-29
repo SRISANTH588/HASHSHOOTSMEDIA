@@ -692,19 +692,22 @@
     })();
 
     function bookSelectedPlan() {
-      if (!selectedPlanKey) { document.getElementById('planErr').style.display = 'block'; return; }
+      if (!selectedPlanKey) { var pe=document.getElementById('planErr'); if(pe) pe.style.display = 'block'; return; }
       var p = planData[selectedPlanKey];
+      if(!p) return;
       // Show form, hide plan step
-      document.getElementById('planStep').style.display = 'none';
-      document.getElementById('formStep').style.display = 'block';
+      var planStep = document.getElementById('planStep');
+      var formStep = document.getElementById('formStep');
+      if(planStep) planStep.style.display = 'none';
+      if(formStep) formStep.style.display = 'block';
       // Update plan bar
-      document.getElementById('formPlanName').textContent = p.name;
-      document.getElementById('formPlanPrice').textContent = p.price + (p.per ? ' ' + p.per : '');
-      // Pre-fill service dropdown only if no specific service was requested via URL
+      var fpn = document.getElementById('formPlanName'); if(fpn) fpn.textContent = p.name;
+      var fpp = document.getElementById('formPlanPrice'); if(fpp) fpp.textContent = p.price + (p.per ? ' ' + p.per : '');
+      // Pre-fill service dropdown
       var _urlService = new URLSearchParams(window.location.search).get('service');
       var sel = document.getElementById('bk_service');
       if (sel && p.service && !_urlService) Array.from(sel.options).forEach(function(o){ if(o.value === p.service || o.text === p.service) o.selected = true; });
-      window.scrollTo({ top: document.getElementById('formStep').offsetTop - 80, behavior: 'smooth' });
+      if(formStep) window.scrollTo({ top: formStep.offsetTop - 80, behavior: 'smooth' });
     }
 
     function changePlan() {
@@ -927,6 +930,8 @@
         var settings = JSON.parse(localStorage.getItem('hs_wa_settings')||'{}');
         if(settings['wa_trigger_1'] === false) return;
         var waNum = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+      })();
+
       pendingData = null;
       // Redirect to My Orders after 2.5 seconds
       setTimeout(function(){ window.location.href = 'customer-orders.html'; }, 2500);
