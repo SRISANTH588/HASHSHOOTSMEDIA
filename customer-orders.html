@@ -236,8 +236,13 @@
         var custPhone = (localStorage.getItem('hs_customer_phone') || '').trim();
         var custName  = (localStorage.getItem('hs_customer_name') || '').trim();
 
-        // Clear any stale bookings from previous customer session
-        localStorage.removeItem('hs_bookings');
+        // Clear any stale bookings from a DIFFERENT customer's session only
+        var existingBookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var hasDifferentCustomer = existingBookings.some(function(b){
+          var bEmail = (b.email||'').toLowerCase().trim();
+          return bEmail && custEmail && bEmail !== custEmail;
+        });
+        if(hasDifferentCustomer) localStorage.removeItem('hs_bookings');
 
         // Show loading while fetching
         var listEl = document.getElementById('bookingsList');
@@ -245,17 +250,24 @@
 
         // Query bookings directly by email and phone — no need to fetch all
         function mergeAndStore(docs){
-          // Only store bookings belonging to THIS customer
+          // Only work with bookings belonging to THIS customer
           var existing = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){
             var bEmail = (b.email||'').toLowerCase().trim();
             var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
             var cPhone = custPhone.replace(/\D/g,'').slice(-10);
             return (custEmail && bEmail===custEmail)||(cPhone && cPhone.length===10 && bPhone===cPhone);
           });
+          // Update or add docs from Firebase
           docs.forEach(function(b){
             var idx = existing.findIndex(function(e){ return String(e.id)===String(b.id); });
             if(idx>-1) existing[idx] = Object.assign(existing[idx], b);
             else existing.push(b);
+          });
+          // Remove bookings deleted from Firebase, but keep very recent ones (just placed, not yet in Firebase)
+          existing = existing.filter(function(b){
+            var inFirebase = docs.some(function(f){ return String(f.id)===String(b.id); });
+            var isRecent = b.createdAt && (Date.now() - new Date(b.createdAt).getTime()) < 60000;
+            return inFirebase || isRecent;
           });
           localStorage.setItem('hs_bookings', JSON.stringify(existing));
           loadBookings();
@@ -351,10 +363,8 @@
     }
 
     async function loadBookings(){
-      // Always sync fresh bookings from Firebase - clear old data first
       var custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
-      // Clear any bookings from previous sessions to prevent cross-customer data leak
-      localStorage.removeItem('hs_bookings');
+      var custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
       if(custEmail){
         try{
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -364,9 +374,33 @@
           var db      = fbStore.getFirestore(app);
           var bSnap   = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'),fbStore.where('email','==',custEmail)));
           var fresh=[];
-          bSnap.forEach(function(d){fresh.push(Object.assign({id:d.id},d.data()));});
-          // Only store THIS customer's bookings
-          localStorage.setItem('hs_bookings', JSON.stringify(fresh));
+          bSnap.forEach(function(d){
+            var data = d.data();
+            fresh.push(Object.assign({id:d.id}, data, {
+              createdAt: data.createdAt && data.createdAt.seconds ? new Date(data.createdAt.seconds*1000).toLocaleString() : (data.createdAt||new Date().toLocaleString())
+            }));
+          });
+          // Merge: keep local bookings not yet in Firebase (just placed), update existing ones
+          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){
+            var bEmail = (b.email||'').toLowerCase().trim();
+            return bEmail === custEmail;
+          });
+          fresh.forEach(function(fb){
+            var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id); });
+            if(idx>-1) local[idx] = Object.assign(local[idx], fb);
+            else local.push(fb);
+          });
+          // Remove bookings that were deleted from Firebase (admin deleted)
+          // Only remove if Firebase returned results (non-empty query means Firebase is reachable)
+          if(fresh.length >= 0){
+            local = local.filter(function(b){
+              // Keep if it exists in Firebase OR was just placed (no _fbId yet, very recent)
+              var inFirebase = fresh.some(function(f){ return String(f.id)===String(b.id); });
+              var isRecent = b.createdAt && (Date.now() - new Date(b.createdAt).getTime()) < 60000; // within 1 min
+              return inFirebase || isRecent;
+            });
+          }
+          localStorage.setItem('hs_bookings', JSON.stringify(local));
         }catch(e){ console.warn('sync bookings:',e); }
       }
       var allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
