@@ -1124,7 +1124,7 @@
         var snap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
         var fresh = [];
         snap.forEach(function(d){
-          var data = Object.assign({}, d.data(), {id: d.data().id || d.id});
+          var data = Object.assign({}, d.data(), {id: d.data().id || d.id, _fbDocId: d.id});
           if(String(data.staffId)===myId || Number(data.staffId)===myIdNum){
             data.staffId = myId;
             fresh.push(data);
@@ -1133,7 +1133,7 @@
         var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
         var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
         var merged = fresh.map(function(fb){
-          var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
+          var loc = local.find(function(l){ return String(l.id)===String(fb.id) || String(l.id)===String(fb._fbDocId) || String(l._fbDocId)===String(fb._fbDocId); });
           if(loc && (loc.status==='done'||loc.status==='paid') && fb.status==='assigned') return loc;
           return Object.assign({}, loc||{}, fb);
         });
@@ -2196,17 +2196,16 @@
         fbStore.onSnapshot(fbStore.collection(db,'assigned_shoots'), function(snap){
           var myDocs = [];
           snap.forEach(function(d){
-            var data = Object.assign({}, d.data(), {id: d.data().id || d.id});
+            var data = Object.assign({}, d.data(), {id: d.data().id || d.id, _fbDocId: d.id});
             if(String(data.staffId)===myId || Number(data.staffId)===myIdNum){
               data.staffId = myId;
               myDocs.push(data);
             }
           });
-          // Merge: keep local status if already done/paid (don't let Firebase overwrite)
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
           var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
           var merged = myDocs.map(function(fb){
-            var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
+            var loc = local.find(function(l){ return String(l.id)===String(fb.id) || String(l.id)===String(fb._fbDocId) || String(l._fbDocId)===String(fb._fbDocId); });
             if(loc && (loc.status==='done'||loc.status==='paid') && fb.status==='assigned') return loc;
             return Object.assign({}, loc||{}, fb);
           });
