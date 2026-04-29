@@ -3248,7 +3248,7 @@ Priority Support</textarea></div>
         // 3. Assigned shoots
         var aSnap = await s.getDocs(s.collection(db,'assigned_shoots'));
         var aList = []; aSnap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; aList.push(data); });
-        if(aList.length) localStorage.setItem('hs_assigned_shoots', JSON.stringify(aList));
+        if(aList.length) saveAssignedShoots(aList);
 
         // 4. Settings - opening, homepage, about, customer_page, wedding, admin_config
         var settingsKeys = ['opening','homepage','about','customer_page','wedding_plans','admin_config','store_razorpay','tawk'];
@@ -3339,7 +3339,7 @@ Priority Support</textarea></div>
         // Sync assigned shoots
         var aSnap = await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
         var aList=[]; aSnap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;aList.push(data);});
-        if(aList.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(aList));
+        if(aList.length) saveAssignedShoots(aList);
         // Sync razorpay config
         try{
           var rpSnap = await f.s.getDoc(f.s.doc(f.db,'razorpay_config','main'));
@@ -3374,7 +3374,7 @@ Priority Support</textarea></div>
         if(stList.length) localStorage.setItem('hs_staff',JSON.stringify(stList));
         var aSnap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
         var aList=[];aSnap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;aList.push(data);});
-        if(aList.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(aList));
+        if(aList.length) saveAssignedShoots(aList);
         try{ var rpSnap=await f.s.getDoc(f.s.doc(f.db,'razorpay_config','main'));
           if(rpSnap.exists()) localStorage.setItem('hs_razorpay',JSON.stringify(rpSnap.data()));
         }catch(e2){}
@@ -5926,9 +5926,11 @@ Priority Support</textarea></div>
     }
 
     // ASSIGN SHOOTS
-    function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]'); }
+    function getAssignedShoots(){ return JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return !a._deleted; }); }
     function saveAssignedShoots(list){
-      localStorage.setItem('hs_assigned_shoots', JSON.stringify(list));
+      var deleted = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
+      var filtered = list.filter(function(a){ return !a._deleted && deleted.indexOf(String(a.id))===-1; });
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(filtered));
     }
 
     async function populateAssignSelects(autoBookingId){
@@ -5975,7 +5977,7 @@ Priority Support</textarea></div>
         var aSnap = await fbStore.getDocs(fbStore.collection(fbDb,'assigned_shoots'));
         var fbAssigns = [];
         aSnap.forEach(function(d){ var data=d.data(); if(!data.id) data.id=d.id; fbAssigns.push(data); });
-        localStorage.setItem('hs_assigned_shoots', JSON.stringify(fbAssigns));
+        saveAssignedShoots(fbAssigns);
         renderAssignedList();
       } catch(e){
         console.log('populateAssignSelects Firestore error:',e);
@@ -9498,7 +9500,7 @@ Priority Support</textarea></div>
           var f=await _fbAdmin();if(!f){renderAdminPayments();return;}
           var snap=await f.s.getDocs(f.s.collection(f.db,'assigned_shoots'));
           var list=[];snap.forEach(function(d){var data=d.data();if(!data.id)data.id=d.id;list.push(data);});
-          if(list.length) localStorage.setItem('hs_assigned_shoots',JSON.stringify(list));
+          if(list.length) saveAssignedShoots(list);
           var bankSnap=await f.s.getDocs(f.s.collection(f.db,'staff_bank'));
           bankSnap.forEach(function(d){var data=d.data();if(data.staffId)localStorage.setItem('hs_bank_'+data.staffId,JSON.stringify(data));});
         }catch(e){}
