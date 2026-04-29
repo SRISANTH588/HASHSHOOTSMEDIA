@@ -436,7 +436,6 @@
           <select id="bk_city" class="form-select" required>
             <option value="" disabled selected>Select city</option>
             <option>Vijayawada</option>
-            <option>Vijayawada</option>
             <option>Eluru</option>
           </select>
         </div>
@@ -938,12 +937,12 @@
       var cities = [];
       try{ if(window.loadCitiesFromFirebase) cities = await loadCitiesFromFirebase(); }catch(e){}
       if(!cities.length) cities = JSON.parse(localStorage.getItem('hs_cities')||'[]');
-      if(cities.length){
-        var sel = document.getElementById('bk_city');
-        if(sel){
-          sel.innerHTML = '<option value="" disabled selected>Select city</option>' +
-            cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
-        }
+      // Default to Vijayawada and Eluru if no cities configured
+      if(!cities.length) cities = ['Vijayawada','Eluru'];
+      var sel = document.getElementById('bk_city');
+      if(sel){
+        sel.innerHTML = '<option value="" disabled selected>Select city</option>' +
+          cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
       }
     })();
 
