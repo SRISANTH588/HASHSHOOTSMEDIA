@@ -5755,17 +5755,23 @@ Priority Support</textarea></div>
       if(!confirm('Delete this assignment?')) return;
       (async function(){
         try{
-          var f = await _fbAdmin(); if(!f) return;
-          await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
-          // Track deleted IDs so sync engine doesn't restore them
+          var f = await _fbAdmin(); if(!f){ alert('Firebase not available'); return; }
+          // Track deleted ID FIRST before any async ops
           var deleted = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
           if(deleted.indexOf(String(id))===-1) deleted.push(String(id));
           localStorage.setItem('hs_deleted_assigns', JSON.stringify(deleted));
+          // Remove from local immediately
           var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
           saveAssignedShoots(list);
           renderAssignedList();
+          // Delete from Firestore
+          await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
+          console.log('[Admin] Deleted assigned shoot:', id);
         }catch(e){
           alert('Delete failed: '+e.message);
+          // Remove from deleted list if Firestore delete failed
+          var deleted2 = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
+          localStorage.setItem('hs_deleted_assigns', JSON.stringify(deleted2.filter(function(x){ return x!==String(id); })));
         }
       })();
     }
@@ -6373,10 +6379,13 @@ Priority Support</textarea></div>
 
     function deletePayoutCard(id){
       if(!confirm('Delete this payout record? This cannot be undone.')) return;
+      // Track deleted ID so sync engine doesn't restore it
+      var deleted = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
+      if(deleted.indexOf(String(id))===-1) deleted.push(String(id));
+      localStorage.setItem('hs_deleted_assigns', JSON.stringify(deleted));
       var list = getAssignedShoots();
       var updated = list.filter(function(a){ return String(a.id) !== String(id); });
       saveAssignedShoots(updated);
-      // Also delete from Firebase so listener doesn't push it back
       (async function(){
         try{
           var f = await _fbAdmin();
