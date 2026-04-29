@@ -2179,8 +2179,8 @@
       renderAssignedShoots();
     }
 
-    // Activate shoots tab on load — ensures section is visible and Firebase sync runs
-    switchTab('shoots', document.getElementById('shootsTabBtn'));
+    // Activate shoots tab on load — called after a short delay so Firebase init doesn't override it
+    setTimeout(function(){ switchTab('shoots', document.getElementById('shootsTabBtn')); }, 800);
 
     // Single real-time onSnapshot listener — auto-updates UI whenever admin assigns/changes a shoot
     (async function startShootsListener(){
