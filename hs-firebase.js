@@ -457,7 +457,6 @@ const _HS_COLS = [
   { ls:'hs_bookings',        col:'bookings'           },
   { ls:'hs_staff',           col:'staff'              },
   { ls:'hs_demos',           col:'demos'              },
-  { ls:'hs_assigned_shoots', col:'assigned_shoots'    },
   { ls:'hs_career_apps',     col:'career_apps'        },
   { ls:'hs_affiliate_apps',  col:'affiliate_apps'     },
   { ls:'hs_enquiries',       col:'enquiries'          },
@@ -480,13 +479,7 @@ window.hsSyncFromFirebase = async function() {
           docs.push({ ...data, id: data.id || d.id, _fbId: d.id });
         });
         if (docs.length) {
-          if (m.ls === 'hs_assigned_shoots') {
-            const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
-            const filtered = docs.filter(d => !d._deleted && deleted.indexOf(String(d.id)) === -1);
-            window.localStorage.setItem(m.ls, JSON.stringify(filtered));
-          } else {
-            window.localStorage.setItem(m.ls, JSON.stringify(docs));
-          }
+          window.localStorage.setItem(m.ls, JSON.stringify(docs));
         }
       } catch(e) { /* silent per collection */ }
     }
@@ -527,27 +520,7 @@ window.hsStartListeners = async function() {
             delete data._synced;
             docs.push({ ...data, id: data.id || d.id, _fbId: d.id });
           });
-          // For assigned_shoots: protect local status changes (done/paid) from being overwritten
-          if (m.ls === 'hs_assigned_shoots') {
-            const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
-            const filtered = docs.filter(fbDoc => !fbDoc._deleted && deleted.indexOf(String(fbDoc.id)) === -1);
-            const local = JSON.parse(window.localStorage.getItem('hs_assigned_shoots') || '[]');
-            const merged = filtered.map(fbDoc => {
-              const loc = local.find(l => String(l.id) === String(fbDoc.id));
-              const advancedStatuses = ['done', 'completed', 'paid'];
-              if (loc && advancedStatuses.includes(loc.status) && !advancedStatuses.includes(fbDoc.status)) {
-                return { ...fbDoc, ...loc };
-              }
-              return { ...loc, ...fbDoc };
-            });
-            // Only keep local-only docs that are NOT deleted
-            local.forEach(loc => {
-              if (!merged.find(m => String(m.id) === String(loc.id)) && deleted.indexOf(String(loc.id)) === -1 && !loc._deleted) merged.push(loc);
-            });
-            window.localStorage.setItem(m.ls, JSON.stringify(merged));
-          } else {
-            window.localStorage.setItem(m.ls, JSON.stringify(docs));
-          }
+          window.localStorage.setItem(m.ls, JSON.stringify(docs));
           window.dispatchEvent(new CustomEvent('hs_sync', { detail: { key: m.ls } }));
         });
       } catch(e) {}
