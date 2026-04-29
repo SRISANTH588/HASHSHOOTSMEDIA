@@ -4155,10 +4155,24 @@ Priority Support</textarea></div>
               newMeta.thumbnail = res.thumbnail;
               var m2 = getTestiVideosMeta();
               var idx = m2.findIndex(function(x){return x.id===id;});
-              if(idx>-1){ m2[idx].cloudUrl=res.url; m2[idx].thumbnail=res.thumbnail; saveTestiVideosMeta(m2); }
-              if(window.fbSave) fbSave('testimonial_videos', newMeta);
+              if(window.fbSave) fbSave('testimonial_videos', newMeta).then(function(fbId){
+                if(fbId){
+                  newMeta._fbId = fbId;
+                  if(idx>-1){ m2[idx].cloudUrl=res.url; m2[idx].thumbnail=res.thumbnail; m2[idx]._fbId=fbId; saveTestiVideosMeta(m2); }
+                } else {
+                  if(idx>-1){ m2[idx].cloudUrl=res.url; m2[idx].thumbnail=res.thumbnail; saveTestiVideosMeta(m2); }
+                }
+              });
             }).catch(function(e){ console.error('Testi Cloudinary error:',e); });
-          } else if(window.fbSave){ fbSave('testimonial_videos', newMeta); }
+          } else if(window.fbSave){
+            fbSave('testimonial_videos', newMeta).then(function(fbId){
+              if(fbId){
+                var m3 = getTestiVideosMeta();
+                var i3 = m3.findIndex(function(x){return x.id===id;});
+                if(i3>-1){ m3[i3]._fbId=fbId; saveTestiVideosMeta(m3); }
+              }
+            });
+          }
           document.getElementById('tv_clientName').value='';
           document.getElementById('tv_caption').value='';
           document.getElementById('tv_file').value='';
@@ -4180,27 +4194,34 @@ Priority Support</textarea></div>
       meta.forEach(function(v){
         var card = document.createElement('div');
         card.style.cssText='background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;';
+        // Use Cloudinary URL directly if available (works on all devices)
+        var mediaHtml = v.cloudUrl
+          ? '<video src="'+v.cloudUrl+'" controls preload="metadata" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;"></video>'
+          : '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>';
         card.innerHTML=
-          '<div id="tvp_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-play-circle"></i></div>'
+          mediaHtml
           +'<div style="padding:0.85rem;">'
           +'<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.2rem;">'+v.clientName+'</div>'
           +(v.caption?'<div style="font-size:0.72rem;color:#c9a84c;font-weight:600;margin-bottom:0.2rem;">'+v.caption+'</div>':'')
           +'<div style="font-size:0.65rem;color:#777;margin-bottom:0.65rem;">'+(v.sizeMB||'')+(v.sizeMB?' MB &nbsp;&middot;&nbsp; ':'')+v.uploadedBy+' &nbsp;&middot;&nbsp; '+v.uploadedAt+'</div>'
           +'<div style="display:flex;gap:0.4rem;">'
           +'<button onclick="openTestiVidEdit(\''+String(v.id)+'\')" style="flex:1;background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i> Edit</button>'
-          +'<button onclick="downloadTestiVideo(\''+String(v.id)+'\',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>'
+          +(v.cloudUrl ? '<a href="'+v.cloudUrl+'" download target="_blank" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;"><i class="fas fa-download"></i> Download</a>' : '<button onclick="downloadTestiVideo(\''+String(v.id)+'\',\''+v.clientName+'\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-download"></i> Download</button>')
           +'<button onclick="deleteTestiVideo(\''+String(v.id)+'\')" style="flex:1;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.25);color:#f44336;padding:0.4rem;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Delete</button>'
           +'</div></div>';
-        openTestiVideoDB(function(db){
-          if(!db) return;
-          var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
-          req.onsuccess = function(){
-            if(!req.result) return;
-            var url = URL.createObjectURL(req.result.blob);
-            var ph = document.getElementById('tvp_'+v.id);
-            if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
-          };
-        });
+        // Fallback: try IndexedDB blob if no Cloudinary URL
+        if(!v.cloudUrl){
+          openTestiVideoDB(function(db){
+            if(!db) return;
+            var req = db.transaction('videos','readonly').objectStore('videos').get(v.id);
+            req.onsuccess = function(){
+              if(!req.result) return;
+              var url = URL.createObjectURL(req.result.blob);
+              var ph = document.getElementById('tvp_'+v.id);
+              if(ph){ var vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.preload='metadata'; vid.style.cssText='width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;'; ph.replaceWith(vid); }
+            };
+          });
+        }
         grid.appendChild(card);
       });
     }
@@ -4256,15 +4277,18 @@ Priority Support</textarea></div>
 
     function deleteTestiVideo(id){
       if(!confirm('Delete this testimonial video?')) return;
-      // Remove from localStorage immediately so UI updates at once
-      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return String(v.id)!==String(id); }));
+      var meta = getTestiVideosMeta();
+      var item = meta.find(function(v){ return String(v.id)===String(id); });
+      // Remove from localStorage immediately
+      saveTestiVideosMeta(meta.filter(function(v){ return String(v.id)!==String(id); }));
       renderTestiVideos();
       // Delete from IndexedDB (local blob)
       openTestiVideoDB(function(db){
         if(db) db.transaction('videos','readwrite').objectStore('videos').delete(Number(id)||id);
       });
-      // Delete from Firestore — onSnapshot will fire and confirm the deletion
-      if(window.fbDelete) fbDelete('testimonial_videos', String(id));
+      // Delete from Firestore using _fbId (Firestore auto-ID) if available, else fallback to id
+      var fbDocId = (item && item._fbId) ? item._fbId : String(id);
+      if(window.fbDelete) fbDelete('testimonial_videos', fbDocId);
     }
 
     // SHOOT REELS & FEEDBACK ADMIN
@@ -8997,8 +9021,18 @@ Priority Support</textarea></div>
         // Real-time testimonial videos metadata
         onSnapshot(collection(fbDb,'testimonial_videos'), function(snap){
           var items = [];
-          snap.forEach(function(d){ items.push(Object.assign({id:d.id}, d.data())); });
-          localStorage.setItem('hs_testi_videos', JSON.stringify(items));
+          snap.forEach(function(d){
+            var data = d.data();
+            // Use local id if present, else Firestore doc id; always store _fbId
+            items.push(Object.assign({}, data, { _fbId: d.id, id: data.id || d.id }));
+          });
+          // Merge with existing local meta to preserve IndexedDB blob references
+          var existing = getTestiVideosMeta();
+          var merged = items.map(function(fb){
+            var loc = existing.find(function(e){ return String(e._fbId)===String(fb._fbId) || String(e.id)===String(fb.id); });
+            return Object.assign({}, loc||{}, fb);
+          });
+          localStorage.setItem('hs_testi_videos', JSON.stringify(merged));
           if(currentTab==='testimonial-videos') renderTestiVideos();
         });
 
