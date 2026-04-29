@@ -2179,8 +2179,8 @@
       renderAssignedShoots();
     }
 
-    renderAssignedShoots();
-    syncAndRenderShoots(); // auto-sync on page load so shoots show without tab switch
+    // Activate shoots tab on load — ensures section is visible and Firebase sync runs
+    switchTab('shoots', document.getElementById('shootsTabBtn'));
 
     // Single real-time onSnapshot listener — auto-updates UI whenever admin assigns/changes a shoot
     (async function startShootsListener(){
