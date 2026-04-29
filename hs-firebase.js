@@ -479,7 +479,16 @@ window.hsSyncFromFirebase = async function() {
           delete data._synced;
           docs.push({ ...data, id: data.id || d.id, _fbId: d.id });
         });
-        if (docs.length) window.localStorage.setItem(m.ls, JSON.stringify(docs));
+        if (docs.length) {
+          if (m.ls === 'hs_assigned_shoots') {
+            // Filter out admin-deleted IDs before saving
+            const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
+            const filtered = docs.filter(d => deleted.indexOf(String(d.id)) === -1);
+            window.localStorage.setItem(m.ls, JSON.stringify(filtered));
+          } else {
+            window.localStorage.setItem(m.ls, JSON.stringify(docs));
+          }
+        }
       } catch(e) { /* silent per collection */ }
     }
     // Config docs
@@ -521,19 +530,20 @@ window.hsStartListeners = async function() {
           });
           // For assigned_shoots: protect local status changes (done/paid) from being overwritten
           if (m.ls === 'hs_assigned_shoots') {
+            const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
+            const filtered = docs.filter(fbDoc => deleted.indexOf(String(fbDoc.id)) === -1);
             const local = JSON.parse(window.localStorage.getItem('hs_assigned_shoots') || '[]');
-            const merged = docs.map(fbDoc => {
+            const merged = filtered.map(fbDoc => {
               const loc = local.find(l => String(l.id) === String(fbDoc.id));
-              // If local has a more advanced status, keep it
               const advancedStatuses = ['done', 'completed', 'paid'];
               if (loc && advancedStatuses.includes(loc.status) && !advancedStatuses.includes(fbDoc.status)) {
                 return { ...fbDoc, ...loc };
               }
               return { ...loc, ...fbDoc };
             });
-            // Keep any local-only docs not yet in Firebase
+            // Only keep local-only docs that are NOT in the deleted list
             local.forEach(loc => {
-              if (!merged.find(m => String(m.id) === String(loc.id))) merged.push(loc);
+              if (!merged.find(m => String(m.id) === String(loc.id)) && deleted.indexOf(String(loc.id)) === -1) merged.push(loc);
             });
             window.localStorage.setItem(m.ls, JSON.stringify(merged));
           } else {
