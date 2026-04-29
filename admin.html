@@ -4256,15 +4256,15 @@ Priority Support</textarea></div>
 
     function deleteTestiVideo(id){
       if(!confirm('Delete this testimonial video?')) return;
+      // Remove from localStorage immediately so UI updates at once
+      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return String(v.id)!==String(id); }));
+      renderTestiVideos();
       // Delete from IndexedDB (local blob)
       openTestiVideoDB(function(db){
         if(db) db.transaction('videos','readwrite').objectStore('videos').delete(Number(id)||id);
       });
-      // Delete from localStorage meta
-      saveTestiVideosMeta(getTestiVideosMeta().filter(function(v){ return String(v.id)!==String(id); }));
-      // Delete from Firestore
+      // Delete from Firestore — onSnapshot will fire and confirm the deletion
       if(window.fbDelete) fbDelete('testimonial_videos', String(id));
-      renderTestiVideos();
     }
 
     // SHOOT REELS & FEEDBACK ADMIN
@@ -8999,6 +8999,7 @@ Priority Support</textarea></div>
           var items = [];
           snap.forEach(function(d){ items.push(Object.assign({id:d.id}, d.data())); });
           localStorage.setItem('hs_testi_videos', JSON.stringify(items));
+          if(currentTab==='testimonial-videos') renderTestiVideos();
         });
 
         // Real-time staff videos from Cloudinary
