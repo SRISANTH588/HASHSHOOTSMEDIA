@@ -481,9 +481,8 @@ window.hsSyncFromFirebase = async function() {
         });
         if (docs.length) {
           if (m.ls === 'hs_assigned_shoots') {
-            // Filter out admin-deleted IDs before saving
             const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
-            const filtered = docs.filter(d => deleted.indexOf(String(d.id)) === -1);
+            const filtered = docs.filter(d => !d._deleted && deleted.indexOf(String(d.id)) === -1);
             window.localStorage.setItem(m.ls, JSON.stringify(filtered));
           } else {
             window.localStorage.setItem(m.ls, JSON.stringify(docs));
@@ -531,7 +530,7 @@ window.hsStartListeners = async function() {
           // For assigned_shoots: protect local status changes (done/paid) from being overwritten
           if (m.ls === 'hs_assigned_shoots') {
             const deleted = JSON.parse(window.localStorage.getItem('hs_deleted_assigns') || '[]');
-            const filtered = docs.filter(fbDoc => deleted.indexOf(String(fbDoc.id)) === -1);
+            const filtered = docs.filter(fbDoc => !fbDoc._deleted && deleted.indexOf(String(fbDoc.id)) === -1);
             const local = JSON.parse(window.localStorage.getItem('hs_assigned_shoots') || '[]');
             const merged = filtered.map(fbDoc => {
               const loc = local.find(l => String(l.id) === String(fbDoc.id));
@@ -541,9 +540,9 @@ window.hsStartListeners = async function() {
               }
               return { ...loc, ...fbDoc };
             });
-            // Only keep local-only docs that are NOT in the deleted list
+            // Only keep local-only docs that are NOT deleted
             local.forEach(loc => {
-              if (!merged.find(m => String(m.id) === String(loc.id)) && deleted.indexOf(String(loc.id)) === -1) merged.push(loc);
+              if (!merged.find(m => String(m.id) === String(loc.id)) && deleted.indexOf(String(loc.id)) === -1 && !loc._deleted) merged.push(loc);
             });
             window.localStorage.setItem(m.ls, JSON.stringify(merged));
           } else {
