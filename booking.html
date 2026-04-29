@@ -245,7 +245,7 @@
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:700px;margin:0 auto;" id="servicePlanGrid">
 
       <!-- HOURLY -->
-      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')" style="display:flex;flex-direction:column;">
+      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly');bookSelectedPlan();" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">STARTER</div>
         <div class="plan-card-name">Hourly Plan</div>
         <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
@@ -262,7 +262,7 @@
       </div>
 
       <!-- HALF-DAY -->
-      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')" style="display:flex;flex-direction:column;">
+      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday');bookSelectedPlan();" style="display:flex;flex-direction:column;">
         <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">BEST VALUE</div>
         <div class="plan-card-name">Half-Day Plan</div>
@@ -288,26 +288,26 @@
       <div style="font-size:0.85rem;color:#706050;margin-bottom:0.5rem;max-width:600px;">Professional coverage for your wedding celebrations, specializing in traditional and modern Indian ceremonies with elegant, timeless captures.</div>
       <div style="font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;">Starting from <span style="color:#c9a84c;font-weight:800;font-size:1rem;">&#8377;6,999</span> <span style="color:#4a4030;">/package &nbsp;&middot;&nbsp; + GST</span></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1rem;">
-        <div class="plan-card" id="pc_wedding_basic" onclick="pickPlan('wedding_basic')" style="display:flex;flex-direction:column;text-align:center;">
+        <div class="plan-card" id="pc_wedding_basic" onclick="pickPlan('wedding_basic');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
           <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">SINGLE EVENT</div>
           <div class="plan-card-name">Basic</div>
           <div class="plan-card-price">&#8377;6,999 <span>+ GST</span></div>
           <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">1 Event Coverage</div>
         </div>
-        <div class="plan-card" id="pc_wedding_silver" onclick="pickPlan('wedding_silver')" style="display:flex;flex-direction:column;text-align:center;">
+        <div class="plan-card" id="pc_wedding_silver" onclick="pickPlan('wedding_silver');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
           <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">THREE EVENTS</div>
           <div class="plan-card-name">Silver</div>
           <div class="plan-card-price">&#8377;8,999 <span>+ GST</span></div>
           <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">3 Events Coverage</div>
         </div>
-        <div class="plan-card" id="pc_wedding_gold" onclick="pickPlan('wedding_gold')" style="display:flex;flex-direction:column;text-align:center;">
+        <div class="plan-card" id="pc_wedding_gold" onclick="pickPlan('wedding_gold');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
           <div class="plan-card-badge" style="font-size:0.55rem;"><i class="fas fa-star"></i> Popular</div>
           <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">FOUR EVENTS</div>
           <div class="plan-card-name">Gold</div>
           <div class="plan-card-price">&#8377;11,999 <span>+ GST</span></div>
           <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">4 Events Coverage</div>
         </div>
-        <div class="plan-card" id="pc_wedding_platinum" onclick="pickPlan('wedding_platinum')" style="display:flex;flex-direction:column;text-align:center;">
+        <div class="plan-card" id="pc_wedding_platinum" onclick="pickPlan('wedding_platinum');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
           <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">COMPLETE WEDDING</div>
           <div class="plan-card-name">Platinum</div>
           <div class="plan-card-price">&#8377;18,999 <span>+ GST</span></div>
@@ -335,7 +335,7 @@
         <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Shot on latest iPhone &amp; pro gear</li>
       </ul>
       <div style="margin-top:1.5rem;">
-        <button onclick="pickPlan('reels_content')" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 2.5rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);display:inline-flex;align-items:center;gap:0.6rem;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 35px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)'"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>
+        <button onclick="pickPlan('reels_content');bookSelectedPlan();" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 2.5rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);display:inline-flex;align-items:center;gap:0.6rem;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 35px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)'"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>
       </div>
     </div>
 
@@ -349,38 +349,35 @@
 
   <script>
   // Load prices from localStorage (set by admin) then sync from Firebase
-  (function(){
-    function applyPrices(hp){
-      var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
-      Object.keys(map).forEach(function(k){
-        var val = hp['price_'+k];
-        if(val){
-          var el = document.getElementById(map[k]);
-          if(el) el.innerHTML = val + ' <span>starting price</span>';
-        }
-      });
-      // Also sync into planData
+  // Deferred so planData is available when applyPrices runs
+  window._applyPrices = function(hp){
+    var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
+    Object.keys(map).forEach(function(k){
+      var val = hp['price_'+k];
+      if(val){ var el = document.getElementById(map[k]); if(el) el.innerHTML = val + ' <span>starting price</span>'; }
+    });
+    if(window.planData){
       if(hp.bs1_price){ planData.hourly.price = hp.bs1_price; var e=document.getElementById('price_hourly'); if(e) e.innerHTML=hp.bs1_price+' <span>/ shoot</span>'; }
       if(hp.bs2_price){ planData.halfday.price = hp.bs2_price; var e=document.getElementById('price_halfday'); if(e) e.innerHTML=hp.bs2_price+' <span>/ session</span>'; }
     }
-    // 1. Apply from localStorage immediately
-    try{ applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
-    // 2. Fetch from Firebase and re-apply
-    (async function(){
-      try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='bk-hp';})||fbMod.initializeApp(fbCfg,'bk-hp');
-        var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','homepage'));
-        if(snap.exists()){
-          var hp = snap.data();
-          localStorage.setItem('hs_homepage', JSON.stringify(hp));
-          applyPrices(hp);
-        }
-      }catch(e){}
-    })();
+  };
+  // Apply from localStorage immediately (planData may not exist yet, guarded above)
+  try{ window._applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
+  // Fetch from Firebase and re-apply after page loads
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='bk-hp';})||fbMod.initializeApp(fbCfg,'bk-hp');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','homepage'));
+      if(snap.exists()){
+        var hp = snap.data();
+        localStorage.setItem('hs_homepage', JSON.stringify(hp));
+        window._applyPrices(hp);
+      }
+    }catch(e){}
   })();
   </script>
 
