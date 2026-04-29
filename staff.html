@@ -2186,7 +2186,7 @@
 
     renderAssignedShoots();
 
-    // Real-time onSnapshot listener — starts immediately on page load, no dependency on fbListen
+    // Single real-time onSnapshot listener — auto-updates UI whenever admin assigns/changes a shoot
     (async function startShootsListener(){
       try{
         var myId = String(localStorage.getItem('hs_staff_id')||'');
@@ -2195,8 +2195,9 @@
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='hs-shoots-live';})||fbMod.initializeApp(fbCfg,'hs-shoots-live');
-        var db      = fbStore.getFirestore(app);
+        // Use a single shared app instance — avoids duplicate listener conflicts
+        var app = fbMod.getApps().find(function(a){return a.name==='staff-shoots';}) || fbMod.initializeApp(fbCfg,'staff-shoots');
+        var db  = fbStore.getFirestore(app);
         fbStore.onSnapshot(fbStore.collection(db,'assigned_shoots'), function(snap){
           var myDocs = [];
           snap.forEach(function(d){
@@ -2206,84 +2207,24 @@
               myDocs.push(data);
             }
           });
+          // Merge: keep local status if already done/paid (don't let Firebase overwrite)
           var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
           var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
-          localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(myDocs)));
-          if(!_shootUploadInProgress) renderAssignedShoots();
-        });
-      }catch(e){ console.error('startShootsListener error:',e); }
-    })();
-
-    // Fetch assigned shoots directly from Firestore — no dependency on fbListen
-    (async function fetchMyShootsFromFirebase(){
-      try {
-        var myId = String(localStorage.getItem('hs_staff_id')||'');
-        if(!myId || myId === 'null' || myId === '') return;
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
-        var db      = fbStore.getFirestore(app);
-        // Fetch ALL assigned_shoots and filter by staffId — avoids index/type issues
-        var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
-        var fresh = [];
-        allSnap.forEach(function(d){
-          var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
-          data.staffId = String(data.staffId);
-          if(data.staffId === myId) fresh.push(data);
-        });
-        // Merge with local (keep other staff's shoots, replace mine with fresh)
-        var local = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]');
-        var others = local.filter(function(x){ return String(x.staffId) !== myId; });
-        localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
-        renderAssignedShoots();
-        console.log('Shoots synced from Firebase:', fresh.length, 'shoots for staff', myId);
-      } catch(e){ console.warn('shoots fetch error:', e); }
-    })();
-    // Re-sync every 10 seconds
-    setInterval(function(){
-      if(!_shootUploadInProgress){
-        // Don't re-render if user is actively rating/typing in a feedback form
-        var active = document.activeElement;
-        var inFeedback = active && (active.tagName === 'TEXTAREA' || active.classList.contains('sfbstar'));
-        if(!inFeedback) renderAssignedShoots();
-        renderPayout();
-      }
-    }, 5000);
-    setInterval(function fetchMyShootsLoop(){
-      var myId = String(localStorage.getItem('hs_staff_id')||'');
-      if(!myId || myId==='null') return;
-      if(_shootUploadInProgress) return;
-      var myIdNum = Number(myId);
-      (async function(){
-        try{
-          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app     = fbMod.getApps().find(function(a){return a.name==='staff-shoots';})||fbMod.initializeApp(fbCfg,'staff-shoots');
-          var db = fbStore.getFirestore(app);
-          var allSnap = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
-          var fresh = [];
-          allSnap.forEach(function(d){
-            var data = Object.assign({},d.data(),{id:d.data().id||d.id});
-            var sid = data.staffId;
-            if(String(sid)===myId || Number(sid)===myIdNum){
-              data.staffId = myId;
-              fresh.push(data);
-            }
-          });
-          var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
-          var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
-          var merged = fresh.map(function(fb){
+          var merged = myDocs.map(function(fb){
             var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
-            if(loc && (loc.status==='done' || loc.status==='paid') && fb.status==='assigned') return loc;
-            return fb;
+            if(loc && (loc.status==='done'||loc.status==='paid') && fb.status==='assigned') return loc;
+            return Object.assign({}, loc||{}, fb);
           });
           localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(merged)));
-          renderAssignedShoots();
-        }catch(e){}
-      })();
-    }, 10000);
+          if(!_shootUploadInProgress){
+            var active = document.activeElement;
+            var inFeedback = active && (active.tagName==='TEXTAREA' || active.classList.contains('sfbstar'));
+            if(!inFeedback) renderAssignedShoots();
+          }
+        }, function(e){ console.warn('shoots listener error:',e); });
+        console.log('[OG Shoots] Real-time shoots listener active for staff', myId);
+      }catch(e){ console.error('startShootsListener error:',e); }
+    })();
     // Auto-refresh when Firebase syncs
     window.addEventListener('hs_sync', function(e){
       var key = e.detail && e.detail.key;
