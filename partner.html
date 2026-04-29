@@ -463,182 +463,137 @@
   <div class="divider"></div>
 
   <!-- CTA -->
-  <div id="apply" style="padding:7rem 1.5rem;background:#050505;position:relative;overflow:hidden;">
-    <!-- BG Effects -->
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,0.07),transparent 65%);pointer-events:none;"></div>
+  <div id="apply" style="padding:5rem 1.5rem;background:#050505;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 50%,rgba(201,168,76,0.06),transparent 60%);pointer-events:none;"></div>
     <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);"></div>
 
-    <div style="max-width:700px;margin:0 auto;position:relative;">
+    <!-- 16:9 Container -->
+    <div style="max-width:1100px;margin:0 auto;aspect-ratio:16/9;display:flex;border:1px solid rgba(201,168,76,0.15);overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.7);">
 
-      <!-- Header -->
-      <div style="text-align:center;margin-bottom:4rem;">
-        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:800;padding:0.5rem 1.25rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem;">
-          <i class="fas fa-bolt"></i> Creator Application
+      <!-- LEFT PANEL - Branding (40%) -->
+      <div style="width:40%;background:linear-gradient(160deg,#0f0d00,#0a0800,#050500);border-right:1px solid rgba(201,168,76,0.12);display:flex;flex-direction:column;justify-content:space-between;padding:3rem 2.5rem;position:relative;overflow:hidden;flex-shrink:0;">
+        <!-- BG glow -->
+        <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;"></div>
+        <!-- Top -->
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.65rem;font-weight:800;padding:0.4rem 1rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem;"><i class="fas fa-bolt"></i> Creator Program</div>
+          <h2 style="font-size:clamp(1.6rem,2.5vw,2.4rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:1rem;letter-spacing:-0.5px;">Become an<br/><span style="background:linear-gradient(135deg,#c9a84c,#f0d080);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">OG Creator</span></h2>
+          <p style="color:#555;font-size:0.82rem;line-height:1.75;margin-bottom:2rem;">Join India's fastest growing content creator network. Earn per shoot using just your iPhone.</p>
+          <!-- Stats -->
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:32px;height:32px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-rupee-sign" style="color:#c9a84c;font-size:0.75rem;"></i></div><div style="font-size:0.8rem;color:#888;">Earn <strong style="color:#fff;">&#8377;500–&#8377;2000</strong> per shoot</div></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:32px;height:32px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-clock" style="color:#c9a84c;font-size:0.75rem;"></i></div><div style="font-size:0.8rem;color:#888;"><strong style="color:#fff;">Flexible</strong> hours, work anytime</div></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:32px;height:32px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-apple" style="color:#c9a84c;font-size:0.75rem;"></i></div><div style="font-size:0.8rem;color:#888;">Only need an <strong style="color:#fff;">iPhone 12+</strong></div></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:32px;height:32px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check-circle" style="color:#c9a84c;font-size:0.75rem;"></i></div><div style="font-size:0.8rem;color:#888;"><strong style="color:#fff;">24hr</strong> application review</div></div>
+          </div>
         </div>
-        <h2 style="font-size:clamp(2.2rem,5vw,3.2rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:1rem;letter-spacing:-1px;">
-          Become an <span style="background:linear-gradient(135deg,#c9a84c,#f0d080);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">OG Creator</span>
-        </h2>
-        <p style="color:#555;font-size:0.95rem;max-width:480px;margin:0 auto;line-height:1.7;">Join India's fastest growing content creator network. We review every application within 24 hours.</p>
+        <!-- Bottom -->
+        <div style="border-top:1px solid rgba(201,168,76,0.1);padding-top:1.5rem;">
+          <div style="font-size:0.65rem;color:#444;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;">Trusted by creators in</div>
+          <div style="font-size:0.82rem;color:#888;">Hyderabad &nbsp;·&nbsp; Vijayawada &nbsp;·&nbsp; Bangalore &nbsp;·&nbsp; Chennai &nbsp;+&nbsp; more</div>
+        </div>
       </div>
 
-      <!-- Form Card -->
-      <div style="background:linear-gradient(145deg,#0f0f0f,#0a0a0a);border:1px solid rgba(201,168,76,0.12);border-radius:4px;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,0.6);">
+      <!-- RIGHT PANEL - Form (60%) -->
+      <div style="flex:1;background:#0a0a0a;overflow-y:auto;padding:2.5rem 3rem;display:flex;flex-direction:column;justify-content:center;">
+        <!-- Gold top accent -->
+        <div style="height:2px;background:linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c);margin-bottom:2rem;"></div>
 
-        <!-- Gold top bar -->
-        <div style="height:3px;background:linear-gradient(90deg,transparent,#c9a84c,#f0d080,#c9a84c,transparent);"></div>
+        <form id="partnerForm" onsubmit="submitPartnerForm(event)">
 
-        <div style="padding:3rem;">
-          <form id="partnerForm" onsubmit="submitPartnerForm(event)">
-
-            <!-- Step 1 -->
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
-              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#000;flex-shrink:0;">1</div>
-              <div style="font-size:0.7rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;">Personal Information</div>
-              <div style="flex:1;height:1px;background:rgba(201,168,76,0.1);"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Full Name <span style="color:#c9a84c;">*</span></label>
+              <div style="position:relative;"><i class="fas fa-user" style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#333;font-size:0.75rem;pointer-events:none;"></i><input id="pf_name" type="text" required placeholder="Your full name" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem 0.75rem 2.5rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'"/></div>
             </div>
-
-            <div style="display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:1.25rem;">
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Full Name <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fas fa-user" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                  <input id="pf_name" type="text" required placeholder="Your full name" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)';this.style.background='#141414'" onblur="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='#111'"/>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Phone Number <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fas fa-phone" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                  <input id="pf_phone" type="tel" required placeholder="+91 XXXXX XXXXX" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)';this.style.background='#141414'" onblur="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='#111'"/>
-                </div>
-              </div>
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Phone <span style="color:#c9a84c;">*</span></label>
+              <div style="position:relative;"><i class="fas fa-phone" style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#333;font-size:0.75rem;pointer-events:none;"></i><input id="pf_phone" type="tel" required placeholder="+91 XXXXX XXXXX" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem 0.75rem 2.5rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'"/></div>
             </div>
+          </div>
 
-            <div style="display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:2.5rem;">
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Email Address <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fas fa-envelope" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                  <input id="pf_email" type="email" required placeholder="you@email.com" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)';this.style.background='#141414'" onblur="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='#111'"/>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">City / Location <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fas fa-map-marker-alt" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                  <input id="pf_city" type="text" required placeholder="e.g. Hyderabad" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)';this.style.background='#141414'" onblur="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='#111'"/>
-                </div>
-              </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Email <span style="color:#c9a84c;">*</span></label>
+              <div style="position:relative;"><i class="fas fa-envelope" style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#333;font-size:0.75rem;pointer-events:none;"></i><input id="pf_email" type="email" required placeholder="you@email.com" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem 0.75rem 2.5rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'"/></div>
             </div>
-
-            <!-- Step 2 -->
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
-              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#000;flex-shrink:0;">2</div>
-              <div style="font-size:0.7rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;">Equipment & Skills</div>
-              <div style="flex:1;height:1px;background:rgba(201,168,76,0.1);"></div>
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">City <span style="color:#c9a84c;">*</span></label>
+              <div style="position:relative;"><i class="fas fa-map-marker-alt" style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#333;font-size:0.75rem;pointer-events:none;"></i><input id="pf_city" type="text" required placeholder="e.g. Hyderabad" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem 0.75rem 2.5rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'"/></div>
             </div>
+          </div>
 
-            <div style="display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:1.25rem;">
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">iPhone Model <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fab fa-apple" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.9rem;pointer-events:none;"></i>
-                  <select id="pf_instagram" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;appearance:none;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
-                    <option value="">-- Select Model --</option>
-                    <option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16 Plus</option><option>iPhone 16</option>
-                    <option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15 Plus</option><option>iPhone 15</option>
-                    <option>iPhone 14 Pro Max</option><option>iPhone 14 Pro</option><option>iPhone 14</option>
-                    <option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option>
-                    <option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>Other iPhone</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Editing App <span style="color:#c9a84c;">*</span></label>
-                <div style="position:relative;">
-                  <i class="fas fa-magic" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                  <select id="pf_app" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;appearance:none;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
-                    <option value="">-- Select App --</option>
-                    <option>CapCut</option><option>InShot</option><option>VN Video Editor</option><option>Adobe Premiere Rush</option>
-                    <option>iMovie</option><option>Final Cut Pro</option><option>DaVinci Resolve</option><option>Splice</option>
-                    <option>Other</option><option>I do not edit yet (willing to learn)</option>
-                  </select>
-                </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">iPhone Model <span style="color:#c9a84c;">*</span></label>
+              <select id="pf_instagram" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
+                <option value="">-- Model --</option>
+                <option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16 Plus</option><option>iPhone 16</option>
+                <option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15 Plus</option><option>iPhone 15</option>
+                <option>iPhone 14 Pro Max</option><option>iPhone 14 Pro</option><option>iPhone 14</option>
+                <option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option>
+                <option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>Other iPhone</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Editing App <span style="color:#c9a84c;">*</span></label>
+              <select id="pf_app" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
+                <option value="">-- App --</option>
+                <option>CapCut</option><option>InShot</option><option>VN Video Editor</option><option>Adobe Premiere Rush</option>
+                <option>iMovie</option><option>Final Cut Pro</option><option>DaVinci Resolve</option><option>Splice</option>
+                <option>Other</option><option>Willing to learn</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Experience</label>
+              <select id="pf_iphone" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onchange="toggleVideoLink(this)" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
+                <option value="">-- Level --</option>
+                <option value="none">No experience</option>
+                <option value="some">Under 6 months</option>
+                <option value="some">6 months - 1 yr</option>
+                <option value="some">1 - 2 years</option>
+                <option value="some">2+ years</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Video link -->
+          <div id="pf_video_wrap" style="display:none;margin-bottom:1rem;">
+            <label style="font-size:0.62rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;"><i class="fas fa-film" style="margin-right:0.3rem;"></i> Reel / Video Link <span style="color:#f44336;">*</span></label>
+            <div style="position:relative;"><i class="fas fa-link" style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#c9a84c;font-size:0.75rem;pointer-events:none;"></i><input id="pf_videolink" type="url" placeholder="Instagram, YouTube or Drive link" style="width:100%;background:#111;border:1px solid rgba(201,168,76,0.25);padding:0.75rem 0.85rem 0.75rem 2.5rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.6)'" onblur="this.style.borderColor='rgba(201,168,76,0.25)'"/></div>
+          </div>
+
+          <!-- Reel edited + Why -->
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;margin-bottom:1rem;align-items:start;">
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Edited reel? <span style="color:#c9a84c;">*</span></label>
+              <div style="display:flex;gap:0.5rem;">
+                <label id="pf_reel_yes_lbl" onclick="highlightRadio()" style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.65rem 1rem;cursor:pointer;font-size:0.82rem;color:#fff;white-space:nowrap;transition:border-color 0.2s;"><input type="radio" name="pf_reel" value="Yes" style="accent-color:#c9a84c;"/> Yes</label>
+                <label id="pf_reel_no_lbl" onclick="highlightRadio()" style="display:flex;align-items:center;gap:0.5rem;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.65rem 1rem;cursor:pointer;font-size:0.82rem;color:#fff;white-space:nowrap;transition:border-color 0.2s;"><input type="radio" name="pf_reel" value="No" style="accent-color:#c9a84c;"/> No</label>
               </div>
             </div>
-
-            <div style="margin-bottom:1.25rem;">
-              <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Experience Level</label>
-              <div style="position:relative;">
-                <i class="fas fa-chart-line" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#444;font-size:0.8rem;pointer-events:none;"></i>
-                <select id="pf_iphone" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem 0.9rem 2.75rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:all 0.2s;appearance:none;" onchange="toggleVideoLink(this)" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
-                  <option value="">-- Select Experience --</option>
-                  <option value="none">No experience (willing to learn)</option>
-                  <option value="some">Less than 6 months</option>
-                  <option value="some">6 months - 1 year</option>
-                  <option value="some">1 - 2 years</option>
-                  <option value="some">2+ years</option>
-                </select>
-              </div>
+            <div>
+              <label style="font-size:0.62rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.4rem;">Why join OG Shoots? <span style="color:#c9a84c;">*</span></label>
+              <textarea id="pf_why" required placeholder="Your motivation and goals..." rows="3" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);padding:0.75rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:none;transition:border-color 0.2s;line-height:1.6;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'"></textarea>
             </div>
+          </div>
 
-            <!-- Video Link (shown when experience) -->
-            <div id="pf_video_wrap" style="display:none;margin-bottom:2.5rem;">
-              <div style="background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(160,120,48,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem 1.5rem;">
-                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
-                  <div style="width:28px;height:28px;background:rgba(201,168,76,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:#c9a84c;font-size:0.75rem;"></i></div>
-                  <div style="font-size:0.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;">Share Your Best Reel <span style="color:#f44336;">*</span></div>
-                </div>
-                <input id="pf_videolink" type="url" placeholder="https://instagram.com/reel/... or YouTube / Drive link" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:0.85rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='rgba(201,168,76,0.6)'" onblur="this.style.borderColor='rgba(201,168,76,0.2)'"/>
-                <div style="font-size:0.7rem;color:#555;margin-top:0.5rem;"><i class="fas fa-info-circle" style="margin-right:0.3rem;color:#c9a84c;"></i>Instagram Reel, YouTube Short, Google Drive — any public link works</div>
-              </div>
-            </div>
+          <div id="pf_error" style="display:none;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.65rem 0.85rem;font-size:0.8rem;margin-bottom:0.75rem;"><i class="fas fa-exclamation-circle" style="margin-right:0.4rem;"></i>Please fill all required fields.</div>
+          <div id="pf_success" style="display:none;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);color:#4caf50;padding:0.65rem 0.85rem;font-size:0.8rem;margin-bottom:0.75rem;"><i class="fas fa-check-circle" style="margin-right:0.4rem;"></i>Application submitted! We will contact you within 24 hours.</div>
 
-            <!-- Step 3 -->
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
-              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#000;flex-shrink:0;">3</div>
-              <div style="font-size:0.7rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;">Your Story</div>
-              <div style="flex:1;height:1px;background:rgba(201,168,76,0.1);"></div>
-            </div>
-
-            <div style="margin-bottom:1.5rem;">
-              <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.75rem;">Have you edited a reel before? <span style="color:#c9a84c;">*</span></label>
-              <div style="display:grid;grid-template-columns:1fr;gap:1rem;">
-                <label id="pf_reel_yes_lbl" onclick="highlightRadio()" style="display:flex;align-items:center;gap:0.85rem;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.2s;">
-                  <div style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><input type="radio" name="pf_reel" value="Yes" style="accent-color:#c9a84c;width:12px;height:12px;"/></div>
-                  <div><div style="font-size:0.9rem;font-weight:700;color:#fff;">Yes, I have</div><div style="font-size:0.7rem;color:#555;">I've edited reels before</div></div>
-                </label>
-                <label id="pf_reel_no_lbl" onclick="highlightRadio()" style="display:flex;align-items:center;gap:0.85rem;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.2s;">
-                  <div style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><input type="radio" name="pf_reel" value="No" style="accent-color:#c9a84c;width:12px;height:12px;"/></div>
-                  <div><div style="font-size:0.9rem;font-weight:700;color:#fff;">Not yet</div><div style="font-size:0.7rem;color:#555;">Willing to learn</div></div>
-                </label>
-              </div>
-            </div>
-
-            <div style="margin-bottom:2.5rem;">
-              <label style="font-size:0.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:0.6rem;">Why do you want to join OG Shoots? <span style="color:#c9a84c;">*</span></label>
-              <textarea id="pf_why" required placeholder="Tell us your motivation, goals, and what makes you a great fit for OG Shoots..." rows="4" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:0.9rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;resize:vertical;transition:all 0.2s;line-height:1.7;" onfocus="this.style.borderColor='rgba(201,168,76,0.5)';this.style.background='#141414'" onblur="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='#111'"></textarea>
-            </div>
-
-            <!-- Alerts -->
-            <div id="pf_error" style="display:none;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:4px;padding:0.85rem 1rem;font-size:0.85rem;margin-bottom:1.25rem;"><i class="fas fa-exclamation-circle" style="margin-right:0.5rem;"></i>Please fill all required fields.</div>
-            <div id="pf_success" style="display:none;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);color:#4caf50;border-radius:4px;padding:0.85rem 1rem;font-size:0.85rem;margin-bottom:1.25rem;"><i class="fas fa-check-circle" style="margin-right:0.5rem;"></i>Application submitted! We will contact you within 24 hours.</div>
-
-            <!-- Submit Button -->
-            <button id="pf_btn" type="submit" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:4px;padding:1.15rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.75rem;letter-spacing:0.5px;box-shadow:0 8px 32px rgba(201,168,76,0.25);transition:all 0.3s;position:relative;overflow:hidden;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 16px 48px rgba(201,168,76,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(201,168,76,0.25)'">
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <button id="pf_btn" type="submit" style="flex:1;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;padding:0.9rem;font-size:0.95rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(201,168,76,0.25);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,0.25)'">
               <i class="fas fa-paper-plane"></i> Submit Application
             </button>
+            <div style="font-size:0.65rem;color:#333;text-align:center;line-height:1.5;"><i class="fas fa-lock" style="color:#444;display:block;font-size:0.8rem;margin-bottom:0.2rem;"></i>Secure &<br/>Private</div>
+          </div>
 
-            <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.25rem;flex-wrap:wrap;">
-              <span style="font-size:0.72rem;color:#333;display:flex;align-items:center;gap:0.35rem;"><i class="fas fa-lock" style="color:#555;"></i> 100% Secure</span>
-              <span style="font-size:0.72rem;color:#333;display:flex;align-items:center;gap:0.35rem;"><i class="fas fa-clock" style="color:#555;"></i> 24hr Response</span>
-              <span style="font-size:0.72rem;color:#333;display:flex;align-items:center;gap:0.35rem;"><i class="fas fa-shield-alt" style="color:#555;"></i> Privacy Protected</span>
-            </div>
-
-          </form>
-        </div>
+        </form>
       </div>
     </div>
+
+    <!-- Mobile fallback note -->
+    <p style="text-align:center;font-size:0.72rem;color:#333;margin-top:1rem;">Best viewed on desktop. <a href="#apply" style="color:#c9a84c;">Scroll up</a> to apply on mobile.</p>
   </div>
 
   <script>
