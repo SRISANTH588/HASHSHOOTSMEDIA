@@ -5810,10 +5810,11 @@ Priority Support</textarea></div>
           });
           // Also sync wallet balances from Firebase into localStorage
           var wsnap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
+          window._cwDocIds = {};
           wsnap.forEach(function(d){
             var data = d.data();
-            // Only update localStorage if no pending local change
             if(data.email && !window._cwPendingUpdate) localStorage.setItem('hs_cw_' + data.email, String(data.balance||0));
+            if(data.email) window._cwDocIds[data.email] = d.id;
           });
         }
       } catch(e){}
@@ -5882,15 +5883,16 @@ Priority Support</textarea></div>
       localStorage.removeItem('hs_cw_' + email);
       try{
         var f = await _fbAdmin(); if(!f) return;
-        // Find the doc by querying all and matching email field
-        var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
-        var deleted = false;
-        var batch = f.s.writeBatch(f.db);
-        snap.forEach(function(d){
-          var data = d.data();
-          if((data.email||'').toLowerCase()===email.toLowerCase()) { batch.delete(d.ref); deleted=true; }
-        });
-        if(deleted) await batch.commit();
+        var docId = window._cwDocIds && window._cwDocIds[email];
+        if(docId){
+          await f.s.deleteDoc(f.s.doc(f.db,'customer_wallets', docId));
+        } else {
+          // Fallback: scan all docs
+          var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
+          snap.forEach(async function(d){
+            if((d.data().email||'').toLowerCase()===email.toLowerCase()) await f.s.deleteDoc(d.ref);
+          });
+        }
       }catch(e){ console.warn('deleteCustWallet:', e); }
       renderCustWallets();
     }
