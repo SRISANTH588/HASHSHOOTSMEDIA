@@ -1460,7 +1460,7 @@
       var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
       var myDemos = getDemos()
         .filter(function(d){ return String(d.staffId) === staffId; })
-        .filter(function(d){ return hidden.indexOf(String(d.id)) === -1; })
+        .filter(function(d){ return hidden.indexOf(String(d.id)) === -1 && hidden.indexOf(String(d._fbDocId)) === -1; })
         .slice().reverse();
 
       // update demo pending badge
@@ -1556,12 +1556,14 @@
 
     function removeDemoSession(demoId){
       if(!confirm('Remove this demo session from your list?')) return;
-      // Track hidden demos so Firebase listener doesn't restore them
       var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
       if(hidden.indexOf(String(demoId)) === -1) hidden.push(String(demoId));
+      // Also store the _fbDocId if available
+      var demos = getDemos();
+      var demo = demos.find(function(d){ return String(d.id)===String(demoId); });
+      if(demo && demo._fbDocId && hidden.indexOf(String(demo._fbDocId))===-1) hidden.push(String(demo._fbDocId));
       localStorage.setItem('hs_demos_hidden', JSON.stringify(hidden));
-      var demos = getDemos().filter(function(d){ return d.id !== demoId; });
-      saveDemos(demos);
+      localStorage.setItem('hs_demos', JSON.stringify(demos.filter(function(d){ return String(d.id) !== String(demoId); })));
       _renderCreatorDemosFromLocal();
     }
 
@@ -2239,7 +2241,10 @@
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
     initCreatorDemo();
-    setInterval(_renderCreatorDemosFromLocal, 5000);
+    setInterval(function(){
+      // Only re-render from local, don't re-fetch from Firebase (would restore hidden demos)
+      _renderCreatorDemosFromLocal();
+    }, 10000);
 
     // FEEDBACK SUB-TABS
     function switchFbTab(name, btn){
@@ -4774,7 +4779,15 @@
       var mine = docs.filter(function(d){
         return !d.staffIds || d.staffIds.length===0 || d.staffIds.map(String).includes(String(staffId)) || d.toAll;
       });
-      mine.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
+      mine.sort(function(a,b){
+        var now = new Date();
+        var da = new Date((a.date||'')+(a.time?' '+a.time:''));
+        var db2 = new Date((b.date||'')+(b.time?' '+b.time:''));
+        var aFuture = da >= now, bFuture = db2 >= now;
+        if(aFuture && !bFuture) return -1;
+        if(!aFuture && bFuture) return 1;
+        return aFuture ? da-db2 : db2-da;
+      });
       var nb = document.getElementById('invitationsNotifBadge');
       if(nb){ if(mine.length>0){nb.textContent=mine.length;nb.style.display='';}else nb.style.display='none'; }
       if(!mine.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-envelope" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No invitations yet.</p>'; return; }
@@ -4812,7 +4825,16 @@
       var snap    = await fbStore.getDocs(fbStore.collection(db,'meetings'));
       var docs = [];
       snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
-      docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
+      docs.sort(function(a,b){ 
+        var now = new Date();
+        var da = new Date((a.date||'')+(a.time?' '+a.time:''));
+        var db2 = new Date((b.date||'')+(b.time?' '+b.time:''));
+        // Upcoming first, then past; within each group sort by nearest
+        var aFuture = da >= now, bFuture = db2 >= now;
+        if(aFuture && !bFuture) return -1;
+        if(!aFuture && bFuture) return 1;
+        return aFuture ? da-db2 : db2-da;
+      });
       var nb = document.getElementById('meetingsNotifBadge');
       if(nb){ if(docs.length>0){nb.textContent=docs.length;nb.style.display='';}else nb.style.display='none'; }
       if(!docs.length){ el.innerHTML='<p style="color:#6a6050;font-size:0.85rem;text-align:center;padding:2rem;"><i class="fas fa-calendar" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.5rem;"></i>No meetings scheduled yet.</p>'; return; }

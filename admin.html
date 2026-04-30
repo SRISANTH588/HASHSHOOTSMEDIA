@@ -9160,7 +9160,7 @@ Priority Support</textarea></div>
           onSnapshot(collection(fbDb,'payments'), function(snap){
             var list = [];
             snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
-            var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.paymentId, customerName: p.customerName, service: p.service, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : '' }; });
+            var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.razorpayId||p.paymentId, customerName: p.customerName||p.name, service: p.service, phone: p.phone, city: p.city, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : (p.createdAt ? (p.createdAt.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString() : p.createdAt) : '') }; });
             mapped.sort(function(a,b){ return new Date(b.paidAt||0) - new Date(a.paidAt||0); });
             localStorage.setItem('hs_payments', JSON.stringify(mapped));
             if(currentTab==='txn-payments') renderPaymentsTab();
