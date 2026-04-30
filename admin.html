@@ -5845,6 +5845,7 @@ Priority Support</textarea></div>
               + '<input type="number" id="cw_inp_' + cu.email + '" placeholder="Amount" min="0" style="width:100px;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.4rem 0.6rem;color:#fff;font-size:0.82rem;font-family:inherit;outline:none;"/>'
               + '<button onclick="setCustWalletRow(\''+cu.email+'\',\''+cu.phone+'\')" style="background:#c9a84c;color:#fff;border:none;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Set</button>'
               + '<button onclick="addCustWalletRow(\''+cu.email+'\',\''+cu.phone+'\')" style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">Add</button>'
+              + '<button onclick="deleteCustWallet(\''+cu.email+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'
               + '</td></tr>';
           }).join('')
         + '</tbody></table>';
@@ -5873,6 +5874,17 @@ Priority Support</textarea></div>
       if(phone) localStorage.setItem('hs_cw_' + phone, newBal);
       if(window.setCustWalletFirebase) setCustWalletFirebase(email, newBal).finally(function(){ window._cwPendingUpdate = false; });
       inp.value = '';
+      renderCustWallets();
+    }
+
+    async function deleteCustWallet(email){
+      if(!confirm('Delete wallet for ' + email + '? This cannot be undone.')) return;
+      localStorage.removeItem('hs_cw_' + email);
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        var key = email.replace(/[.#$\[\]]/g,'_');
+        await f.s.deleteDoc(f.s.doc(f.db,'customer_wallets',key));
+      }catch(e){ console.warn('deleteCustWallet:', e); }
       renderCustWallets();
     }
 
