@@ -1455,6 +1455,7 @@
     }
 
     function _renderCreatorDemosFromLocal(){
+      var scrollY = window.scrollY;
       var staffId = String(localStorage.getItem('hs_staff_id'));
       var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
       var myDemos = getDemos()
@@ -1550,6 +1551,7 @@
 
         listEl.appendChild(card);
       });
+      window.scrollTo(0, scrollY);
     }
 
     function removeDemoSession(demoId){
@@ -1615,6 +1617,7 @@
     }
 
     function renderAssignedShoots(){
+      var scrollY = window.scrollY;
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
@@ -1659,6 +1662,7 @@
       el.innerHTML = '';
 
       shoots.forEach(function(a){
+
         try{
         var color = statusColors[a.status] || '#ff9800';
         var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
@@ -1769,6 +1773,8 @@
           el.appendChild(errDiv);
         }
       });
+      // Restore scroll position after re-render
+      window.scrollTo(0, scrollY);
       // Restore inline star selections after re-render
       Object.keys(_shootFbStars).forEach(function(id){
         var val = _shootFbStars[id];
@@ -2461,6 +2467,7 @@
     }
 
     function _renderShootFeedbackFromLocal(){
+      var scrollY = window.scrollY;
       var staffId = String(localStorage.getItem('hs_staff_id'));
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
       var assigned = JSON.parse(localStorage.getItem('hs_assigned_shoots') || '[]')
@@ -2506,6 +2513,7 @@
           s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#555';
         });
       });
+      window.scrollTo(0, scrollY);
     }
 
 
