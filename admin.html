@@ -19,7 +19,6 @@
 
   /* ── CLEAN FLAT SIDEBAR ── */
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:auto !important;}
   body{display:flex;min-height:100vh;overflow-x:hidden;font-family:'Inter',sans-serif;background:#000;color:#fff;}
 
   #adminSidebar{
@@ -91,10 +90,9 @@
   /* ── MAIN CONTENT ── */
   #adminMain{
     margin-left:var(--sidebar-w);
-    flex:1;height:100vh;
+    flex:1;min-height:100vh;
     background:#000;
     display:flex;flex-direction:column;
-    overflow:hidden;
   }
 
   /* No topbar — Flashoot style has page title inside content */
@@ -103,7 +101,7 @@
     border-bottom:1px solid rgba(255,255,255,0.05);
     padding:0.65rem 2rem;
     display:flex;align-items:center;justify-content:space-between;
-    position:relative;z-index:50;
+    position:sticky;top:0;z-index:50;
     flex-shrink:0;
     min-height:0;
   }
@@ -118,7 +116,7 @@
 
   .topbar-right{display:flex;align-items:center;gap:0.75rem;}
 
-  #adminContent{padding:0 1.75rem 3rem;flex:1;overflow-y:auto;min-height:0;height:0;}
+  #adminContent{padding:0 1.75rem 3rem;flex:1;overflow-y:auto;}
   .tab-panel.active > .about-form:first-child,
   .tab-panel.active > div:first-child { margin-top:0!important; }
 
@@ -243,7 +241,6 @@
     .tab-btn.active,.tab-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
     .tab-panel{display:none;margin:0;padding:0;}
     .tab-panel.active{display:block;padding-top:1.25rem;}
-    .tab-panel.active > .about-form:first-child { margin-top:0!important; }
     .about-form{background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.75rem;}
     .about-form h2{font-size:1rem;font-weight:700;color:#fff;margin-bottom:1.5rem;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
@@ -2894,7 +2891,7 @@ Priority Support</textarea></div>
     </div>
 
     <!-- CUSTOMER ISSUES / SUPPORT TICKETS TAB -->
-    <div class="tab-panel" id="tab-support-tickets" style="padding-top:0;">
+    <div class="tab-panel" id="tab-support-tickets">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-headset" style="color:#f44336;margin-right:0.5rem;"></i> Customer Issues</h2>
@@ -5813,11 +5810,10 @@ Priority Support</textarea></div>
           });
           // Also sync wallet balances from Firebase into localStorage
           var wsnap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
-          window._cwDocIds = {};
           wsnap.forEach(function(d){
             var data = d.data();
+            // Only update localStorage if no pending local change
             if(data.email && !window._cwPendingUpdate) localStorage.setItem('hs_cw_' + data.email, String(data.balance||0));
-            if(data.email) window._cwDocIds[data.email] = d.id;
           });
         }
       } catch(e){}
@@ -5886,16 +5882,8 @@ Priority Support</textarea></div>
       localStorage.removeItem('hs_cw_' + email);
       try{
         var f = await _fbAdmin(); if(!f) return;
-        var docId = window._cwDocIds && window._cwDocIds[email];
-        if(docId){
-          await f.s.deleteDoc(f.s.doc(f.db,'customer_wallets', docId));
-        } else {
-          // Fallback: scan all docs
-          var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
-          snap.forEach(async function(d){
-            if((d.data().email||'').toLowerCase()===email.toLowerCase()) await f.s.deleteDoc(d.ref);
-          });
-        }
+        var key = email.replace(/[.#$\[\]]/g,'_');
+        await f.s.deleteDoc(f.s.doc(f.db,'customer_wallets',key));
       }catch(e){ console.warn('deleteCustWallet:', e); }
       renderCustWallets();
     }
@@ -8361,7 +8349,7 @@ Priority Support</textarea></div>
       var open = tickets.filter(function(t){ return t.status !== 'resolved'; }).length;
       if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
       if(!tickets.length){
-        el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
         return;
       }
       var typeColors = {
@@ -9526,6 +9514,7 @@ Priority Support</textarea></div>
     if(btn) btn.classList.add('active');
     // Update URL without reload
     history.replaceState(null,'','admin.html?tab='+name);
+    window.scrollTo(0,0);
     // Update topbar title
     var title = btn ? (btn.dataset.title || btn.textContent.trim()) : name;
     var titleEl = document.getElementById('currentPageTitle');
@@ -9633,15 +9622,10 @@ Priority Support</textarea></div>
 
   // Init: activate dashboard tab
   document.addEventListener('DOMContentLoaded', function(){
-    var params = new URLSearchParams(window.location.search);
-    var hash = window.location.hash.replace('#','');
-    var tabName = params.get('tab') || hash || 'dashboard';
+    var hash = new URLSearchParams(window.location.search).get('tab') || window.location.hash.replace('#','');
+    var tabName = hash || 'dashboard';
     var btn = document.getElementById(tabName+'TabBtn') || document.getElementById('dashboardTabBtn');
-    // Clear hash to prevent browser anchor scroll
-    if(window.location.hash) history.replaceState(null,'','admin.html?tab='+tabName);
     switchTab(tabName, btn);
-    // Force scroll to top after everything renders
-    setTimeout(function(){ window.scrollTo(0,0); document.body.scrollTop=0; document.documentElement.scrollTop=0; }, 50);
   });
 
   async function loadDashboard(){
