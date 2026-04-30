@@ -9524,7 +9524,7 @@ Priority Support</textarea></div>
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
-    history.replaceState(null,'','admin.html#'+name);
+    history.replaceState(null,'','admin.html?tab='+name);
     // Update topbar title
     var title = btn ? (btn.dataset.title || btn.textContent.trim()) : name;
     var titleEl = document.getElementById('currentPageTitle');
@@ -9632,8 +9632,9 @@ Priority Support</textarea></div>
 
   // Init: activate dashboard tab
   document.addEventListener('DOMContentLoaded', function(){
+    var params = new URLSearchParams(window.location.search);
     var hash = window.location.hash.replace('#','');
-    var tabName = hash || 'dashboard';
+    var tabName = params.get('tab') || hash || 'dashboard';
     var btn = document.getElementById(tabName+'TabBtn') || document.getElementById('dashboardTabBtn');
     switchTab(tabName, btn);
   });
