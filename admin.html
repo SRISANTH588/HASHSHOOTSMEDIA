@@ -2893,7 +2893,7 @@ Priority Support</textarea></div>
     </div>
 
     <!-- CUSTOMER ISSUES / SUPPORT TICKETS TAB -->
-    <div class="tab-panel" id="tab-support-tickets">
+    <div class="tab-panel" id="tab-support-tickets" style="padding-top:0;">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-headset" style="color:#f44336;margin-right:0.5rem;"></i> Customer Issues</h2>
@@ -8360,7 +8360,7 @@ Priority Support</textarea></div>
       var open = tickets.filter(function(t){ return t.status !== 'resolved'; }).length;
       if(badge){ badge.textContent = open; badge.style.display = open > 0 ? 'inline' : 'none'; }
       if(!tickets.length){
-        el.innerHTML = '<div style="text-align:center;padding:3rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
+        el.innerHTML = '<div style="text-align:center;padding:1.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-headset" style="display:block;font-size:2rem;opacity:0.2;margin-bottom:0.75rem;"></i>No customer issues yet.</div>';
         return;
       }
       var typeColors = {
