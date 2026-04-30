@@ -9487,6 +9487,11 @@ Priority Support</textarea></div>
     window.scrollTo(0,0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    setTimeout(function(){
+      var ac2 = document.getElementById('adminContent');
+      if(ac2) ac2.scrollTop = 0;
+      window.scrollTo(0,0);
+    }, 0);
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
