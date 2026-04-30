@@ -4848,12 +4848,24 @@ Priority Support</textarea></div>
       renderDemoAdminList();
       (async function(){
         try {
-          var f = await _fbAdmin(); if(!f) return;
+          var f = await _fbAdmin(); if(!f){ alert('Firebase not ready'); return; }
           var snap = await f.s.getDocs(f.s.collection(f.db,'demos'));
+          if(snap.empty){ console.log('No demos to delete'); return; }
           var batch = f.s.writeBatch(f.db);
           snap.forEach(function(d){ batch.delete(d.ref); });
           await batch.commit();
-        } catch(e){ console.warn('clearAllDemos Firestore:', e); }
+          console.log('Deleted', snap.size, 'demos from Firebase');
+          renderDemoAdminList();
+        } catch(e){ 
+          console.error('clearAllDemos error:', e);
+          // Fallback: delete one by one
+          try{
+            var f2 = await _fbAdmin(); if(!f2) return;
+            var snap2 = await f2.s.getDocs(f2.s.collection(f2.db,'demos'));
+            for(var doc of snap2.docs){ await f2.s.deleteDoc(doc.ref); }
+            renderDemoAdminList();
+          }catch(e2){ alert('Delete failed: '+e2.message); }
+        }
       })();
     }
     function getStaff(){ return JSON.parse(localStorage.getItem('hs_staff')||'[]'); }
