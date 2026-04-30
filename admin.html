@@ -5882,13 +5882,15 @@ Priority Support</textarea></div>
       localStorage.removeItem('hs_cw_' + email);
       try{
         var f = await _fbAdmin(); if(!f) return;
-        // Try both key formats used by setCustWalletFirebase
-        var key1 = 'cw_' + email.replace(/[^a-zA-Z0-9]/g,'_');
-        var key2 = email.replace(/[.#$\[\]]/g,'_');
-        var key3 = email;
-        for(var k of [key1, key2, key3]){
-          try{ var snap = await f.s.getDoc(f.s.doc(f.db,'customer_wallets',k)); if(snap.exists()){ await f.s.deleteDoc(f.s.doc(f.db,'customer_wallets',k)); break; } }catch(e2){}
-        }
+        // Find the doc by querying all and matching email field
+        var snap = await f.s.getDocs(f.s.collection(f.db,'customer_wallets'));
+        var deleted = false;
+        var batch = f.s.writeBatch(f.db);
+        snap.forEach(function(d){
+          var data = d.data();
+          if((data.email||'').toLowerCase()===email.toLowerCase()) { batch.delete(d.ref); deleted=true; }
+        });
+        if(deleted) await batch.commit();
       }catch(e){ console.warn('deleteCustWallet:', e); }
       renderCustWallets();
     }
