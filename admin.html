@@ -90,9 +90,10 @@
   /* ── MAIN CONTENT ── */
   #adminMain{
     margin-left:var(--sidebar-w);
-    flex:1;min-height:100vh;
+    flex:1;min-height:100vh;height:100vh;
     background:#000;
     display:flex;flex-direction:column;
+    overflow:hidden;
   }
 
   /* No topbar — Flashoot style has page title inside content */
@@ -9492,6 +9493,10 @@ Priority Support</textarea></div>
       if(ac2) ac2.scrollTop = 0;
       window.scrollTo(0,0);
     }, 0);
+    requestAnimationFrame(function(){
+      var ac3 = document.getElementById('adminContent');
+      if(ac3) ac3.scrollTop = 0;
+    });
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
