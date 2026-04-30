@@ -9482,7 +9482,11 @@ Priority Support</textarea></div>
     // Scroll to top
     var ac = document.getElementById('adminContent');
     if(ac) ac.scrollTop = 0;
+    var am = document.getElementById('adminMain');
+    if(am) am.scrollTop = 0;
     window.scrollTo(0,0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
