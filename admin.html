@@ -90,10 +90,9 @@
   /* ── MAIN CONTENT ── */
   #adminMain{
     margin-left:var(--sidebar-w);
-    flex:1;min-height:100vh;height:100vh;
+    flex:1;min-height:100vh;
     background:#000;
     display:flex;flex-direction:column;
-    overflow:hidden;
   }
 
   /* No topbar — Flashoot style has page title inside content */
@@ -2427,7 +2426,7 @@ Priority Support</textarea></div>
     </div><!-- end tab-enquiries -->
 
     <!-- ORDER ENQUIRIES TAB -->
-    <div class="tab-panel" id="tab-order-enquiries">
+    <div class="tab-panel" id="tab-order-enquiries" style="padding-top:0;">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-shopping-cart" style="color:#c9a84c;margin-right:0.5rem;"></i> Order Enquiries</h2>
@@ -2616,7 +2615,7 @@ Priority Support</textarea></div>
     </div>
 
     <!-- MARKETING ENQUIRIES TAB -->
-    <div class="tab-panel" id="tab-mkt-enquiries">
+    <div class="tab-panel" id="tab-mkt-enquiries" style="padding-top:0;">
 
       <!-- Header -->
       <div style="background:linear-gradient(135deg,rgba(156,39,176,0.15),rgba(33,150,243,0.08));border:1px solid rgba(156,39,176,0.3);border-radius:20px;padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
@@ -2833,7 +2832,7 @@ Priority Support</textarea></div>
     </div>
 
     <!-- BUSINESS ENQUIRIES TAB -->
-    <div class="tab-panel" id="tab-biz-enquiries">
+    <div class="tab-panel" id="tab-biz-enquiries" style="padding-top:0;">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-briefcase" style="color:#c9a84c;margin-right:0.5rem;"></i> Business Enquiries</h2>
@@ -9496,6 +9495,8 @@ Priority Support</textarea></div>
     requestAnimationFrame(function(){
       var ac3 = document.getElementById('adminContent');
       if(ac3) ac3.scrollTop = 0;
+      window.scrollTo(0,0);
+      setTimeout(function(){ window.scrollTo(0,0); var ac4=document.getElementById('adminContent'); if(ac4) ac4.scrollTop=0; }, 100);
     });
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
