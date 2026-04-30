@@ -1322,11 +1322,41 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group">
             <label>Demo Date *</label>
-            <input type="date" id="dm_date" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;color-scheme:dark;cursor:pointer;width:100%;"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;">
+              <select id="dm_date_day" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option value="">Day</option>
+              </select>
+              <select id="dm_date_month" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option value="">Month</option>
+                <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option>
+                <option value="04">Apr</option><option value="05">May</option><option value="06">Jun</option>
+                <option value="07">Jul</option><option value="08">Aug</option><option value="09">Sep</option>
+                <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select id="dm_date_year" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option value="">Year</option>
+                <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+              </select>
+            </div>
+            <input type="hidden" id="dm_date"/>
           </div>
           <div class="form-group">
             <label>Demo Time *</label>
-            <input type="time" id="dm_time" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;color-scheme:dark;cursor:pointer;width:100%;"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;">
+              <select id="dm_time_hour" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option value="">Hr</option>
+                <option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option>
+                <option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <select id="dm_time_min" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option value="">Min</option>
+                <option>00</option><option>15</option><option>30</option><option>45</option>
+              </select>
+              <select id="dm_time_ampm" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 0.5rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;cursor:pointer;">
+                <option>AM</option><option>PM</option>
+              </select>
+            </div>
+            <input type="hidden" id="dm_time"/>
           </div>
         </div>
         <div class="form-group">
@@ -5420,10 +5450,17 @@ Priority Support</textarea></div>
     function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
     function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
 
+    // Populate day dropdown
+    (function(){
+      var sel = document.getElementById('dm_date_day');
+      if(!sel) return;
+      for(var i=1;i<=31;i++){ var o=document.createElement('option'); o.value=i<10?'0'+i:String(i); o.textContent=i; sel.appendChild(o); }
+    })();
+
     function createDemo(){
       var title     = (document.getElementById('dm_title')||{}).value||'';
-      var date      = (document.getElementById('dm_date')||{}).value||'';
-      var time      = (document.getElementById('dm_time')||{}).value||'';
+      var date      = (function(){ var d=document.getElementById('dm_date_day').value, m=document.getElementById('dm_date_month').value, y=document.getElementById('dm_date_year').value; return (y&&m&&d) ? y+'-'+m+'-'+(d.length<2?'0'+d:d) : ''; })();
+      var time      = (function(){ var h=document.getElementById('dm_time_hour').value, mi=document.getElementById('dm_time_min').value, ap=document.getElementById('dm_time_ampm').value; if(!h||!mi) return ''; return h+':'+mi+' '+ap; })();
       var place     = (document.getElementById('dm_place')||{}).value||'';
       var desc      = (document.getElementById('dm_desc')||{}).value||'';
       var headName  = (document.getElementById('dm_head_name')||{}).value||'';
@@ -5462,7 +5499,9 @@ Priority Support</textarea></div>
       })();
       if(toast){toast.textContent='Demo session created!';toast.style.color='#4caf50';toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
       // Clear form
-      ['dm_title','dm_date','dm_time','dm_place','dm_desc','dm_head_name','dm_head_phone','dm_head_email'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+      ['dm_title','dm_place','dm_desc','dm_head_name','dm_head_phone','dm_head_email'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+      ['dm_date_day','dm_date_month','dm_date_year','dm_time_hour','dm_time_min'].forEach(function(id){ var el=document.getElementById(id); if(el) el.selectedIndex=0; });
+      var ap=document.getElementById('dm_time_ampm'); if(ap) ap.selectedIndex=0;
       if(staffSel) staffSel.selectedIndex=0;
       renderDemoAdminList();
     }
