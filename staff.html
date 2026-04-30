@@ -1419,38 +1419,32 @@
 
     function renderCreatorDemos(){
       var staffId = String(localStorage.getItem('hs_staff_id'));
-
-      // Always fetch fresh from Firebase then re-render
+      var myIdNum = Number(staffId);
+      // Use onSnapshot so deletions from admin reflect immediately
       (async function(){
         try{
-          var myIdNum = Number(staffId);
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
           var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var app     = fbMod.getApps().find(function(a){return a.name==='staff-demos-render';})||fbMod.initializeApp(fbCfg,'staff-demos-render');
           var db      = fbStore.getFirestore(app);
-          var snap    = await fbStore.getDocs(fbStore.collection(db,'demos'));
-          var myDemos = [];
-          var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
-          snap.forEach(function(d){
-            var data = Object.assign({}, d.data(), { id: d.data().id || d.id });
-            if(String(data.staffId)===staffId || String(data.staffId)===String(myIdNum)){
-              if(hidden.indexOf(String(data.id)) === -1){
-                data.staffId = staffId;
-                myDemos.push(data);
+          fbStore.onSnapshot(fbStore.collection(db,'demos'), function(snap){
+            var hidden = JSON.parse(localStorage.getItem('hs_demos_hidden')||'[]');
+            var myDemos = [];
+            snap.forEach(function(d){
+              var data = Object.assign({}, d.data(), { id: d.data().id || d.id, _fbDocId: d.id });
+              if(String(data.staffId)===staffId || Number(data.staffId)===myIdNum){
+                if(hidden.indexOf(String(data.id))===-1 && hidden.indexOf(String(data._fbDocId))===-1){
+                  data.staffId = staffId;
+                  myDemos.push(data);
+                }
               }
-            }
-          });
-          if(myDemos.length){
-            var local = JSON.parse(localStorage.getItem('hs_demos')||'[]');
-            myDemos.forEach(function(d){
-              var idx = local.findIndex(function(x){ return String(x.id)===String(d.id); });
-              if(idx>-1){ Object.assign(local[idx],d); } else { local.push(d); }
             });
-            localStorage.setItem('hs_demos', JSON.stringify(local));
-          }
-        }catch(e){ console.warn('[demos] renderCreatorDemos fetch:', e); }
-        _renderCreatorDemosFromLocal();
+            // Replace localStorage with exactly what Firebase has (respecting hidden)
+            localStorage.setItem('hs_demos', JSON.stringify(myDemos));
+            _renderCreatorDemosFromLocal();
+          });
+        }catch(e){ console.warn('[demos] renderCreatorDemos:', e); _renderCreatorDemosFromLocal(); }
       })();
     }
 
@@ -2241,10 +2235,7 @@
     // ── END ASSIGNED SHOOTS ──────────────────────────────────────
 
     initCreatorDemo();
-    setInterval(function(){
-      // Only re-render from local, don't re-fetch from Firebase (would restore hidden demos)
-      _renderCreatorDemosFromLocal();
-    }, 10000);
+    // onSnapshot in renderCreatorDemos handles real-time updates
 
     // FEEDBACK SUB-TABS
     function switchFbTab(name, btn){
