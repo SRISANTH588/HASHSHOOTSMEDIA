@@ -456,7 +456,6 @@ console.log('[OG Shoots] hs-firebase.js ready — project: hash-shoots');
 const _HS_COLS = [
   { ls:'hs_bookings',        col:'bookings'           },
   { ls:'hs_staff',           col:'staff'              },
-  { ls:'hs_demos',           col:'demos'              },
   { ls:'hs_career_apps',     col:'career_apps'        },
   { ls:'hs_affiliate_apps',  col:'affiliate_apps'     },
   { ls:'hs_enquiries',       col:'enquiries'          },
