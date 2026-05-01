@@ -3857,9 +3857,10 @@
       if(!msg){ alert('Please describe your issue.'); return; }
       var staffId   = localStorage.getItem('hs_staff_id');
       var staffName = localStorage.getItem('hs_staff_name')||'Staff';
+      var staffPhone = localStorage.getItem('hs_staff_phone')||'';
       var ticket = {
         id: Date.now(),
-        staffId: staffId, staffName: staffName,
+        staffId: staffId, staffName: staffName, phone: staffPhone,
         type: type, message: msg, priority: pri,
         status: 'open',
         createdAt: new Date().toLocaleString()

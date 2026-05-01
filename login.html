@@ -469,6 +469,7 @@
           localStorage.setItem('hs_staff_name',staff.name);
           localStorage.setItem('hs_staff_role',staff.role);
           localStorage.setItem('hs_staff_access',JSON.stringify(staff.access||[]));
+          localStorage.setItem('hs_staff_phone',staff.phone||'');
           window.location.href='staff.html'; return;
         }
 
