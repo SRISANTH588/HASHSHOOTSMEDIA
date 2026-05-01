@@ -8684,11 +8684,12 @@ Priority Support</textarea></div>
       var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
       var raw = JSON.parse(localStorage.getItem('hs_payments')||'[]');
       raw.forEach(function(p){
-        if(!p.customerName || p.customerName === 'Customer'){
+        if(!p.customerName){
           var rid = p.paymentId||p.razorpayId||'';
-          var b = bookings.find(function(bk){ return String(bk.id)===String(p.bookingId); })
-               || bookings.find(function(bk){ return rid && (String(bk.razorpayId)===rid || String(bk.paymentId)===rid); });
-          if(b){ p.customerName=b.name||p.customerName; p.service=b.service||p.service; p.phone=b.phone||p.phone; p.city=b.city||p.city; }
+          var bid = String(p.bookingId||'');
+          var b = bookings.find(function(bk){ return String(bk.id)===bid || String(bk.id)==='bk_'+bid || 'bk_'+String(bk.id)===bid; })
+               || bookings.find(function(bk){ return rid&&(String(bk.razorpayId)===rid||String(bk.paymentId)===rid); });
+          if(b){ p.customerName=b.name; p.service=b.service||p.service; p.phone=b.phone||p.phone; p.city=b.city||p.city; }
         }
       });
       localStorage.setItem('hs_payments', JSON.stringify(raw));
@@ -8721,8 +8722,9 @@ Priority Support</textarea></div>
           custHTML = custPayments.map(function(p){
             // Fallback: look up booking data if payment fields are missing
             var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            var booking = bookings.find(function(b){ return String(b.id)===String(p.bookingId); })
-                      || bookings.find(function(b){ var rid=p.paymentId||p.razorpayId||''; return rid&&(String(b.razorpayId)===rid||String(b.paymentId)===rid); });
+            var bid2 = String(p.bookingId||''), rid2 = p.paymentId||p.razorpayId||'';
+            var booking = bookings.find(function(b){ return String(b.id)===bid2||String(b.id)==='bk_'+bid2||'bk_'+String(b.id)===bid2; })
+                      || bookings.find(function(b){ return rid2&&(String(b.razorpayId)===rid2||String(b.paymentId)===rid2); });
             var custName = p.customerName || (booking&&booking.name) || 'Customer';
             var service  = p.service     || (booking&&booking.service) || '';
             var phone    = p.phone       || (booking&&booking.phone) || '';
@@ -9074,7 +9076,8 @@ Priority Support</textarea></div>
           rawPm.forEach(function(p){
             if(!p.customerName){
               var rid = p.paymentId||p.razorpayId||'';
-              var bk = fbBookings.find(function(b){ return String(b.id)===String(p.bookingId); })
+              var bid = String(p.bookingId||'');
+              var bk = fbBookings.find(function(b){ return String(b.id)===bid||String(b.id)==='bk_'+bid||'bk_'+String(b.id)===bid; })
                     || fbBookings.find(function(b){ return rid&&(String(b.razorpayId)===rid||String(b.paymentId)===rid); });
               if(bk){ p.customerName=bk.name; p.service=bk.service||p.service; p.phone=bk.phone||p.phone; p.city=bk.city||p.city; changed=true; }
             }
@@ -9273,8 +9276,9 @@ Priority Support</textarea></div>
             snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
             var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
             var mapped = list.map(function(p){
-              var rid = p.razorpayId||p.paymentId||p.razorpay_payment_id||'';
-              var b = bookings.find(function(bk){ return String(bk.id)===String(p.bookingId); })
+              var rid = p.paymentId||p.razorpayId||p.razorpay_payment_id||'';
+              var bid = String(p.bookingId||'');
+              var b = bookings.find(function(bk){ return String(bk.id)===bid || String(bk.id)==='bk_'+bid || 'bk_'+String(bk.id)===bid; })
                    || bookings.find(function(bk){ return rid && (String(bk.razorpayId)===rid || String(bk.paymentId)===rid); })
                    || {};
               return {
