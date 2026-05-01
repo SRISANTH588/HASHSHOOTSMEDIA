@@ -398,7 +398,6 @@
               <div style="font-size:1.1rem;font-weight:900;color:#fff;" id="classPlayerTitle"></div>
             </div>
             <div style="display:flex;gap:0.5rem;align-items:center;">
-              <!-- Mode toggle -->
               <div style="display:flex;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;">
                 <button id="modeYTBtn" onclick="setClassMode('youtube')" style="padding:0.35rem 0.75rem;border:none;background:#c9a84c;color:#000;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-youtube"></i> YouTube</button>
                 <button id="modeDIDBtn" onclick="setClassMode('did')" style="padding:0.35rem 0.75rem;border:none;background:transparent;color:#888;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-robot"></i> AI Avatar</button>
@@ -407,32 +406,38 @@
             </div>
           </div>
 
-          <!-- Video container -->
-          <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);">
-            <!-- YouTube iframe -->
-            <iframe id="classYTFrame" style="position:absolute;inset:0;width:100%;height:100%;border:none;display:none;" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-            <!-- D-ID video -->
-            <video id="classDIDVideo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;" controls playsinline></video>
-            <!-- Loading overlay -->
-            <div id="classLoadingOverlay" style="position:absolute;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
-              <div style="width:48px;height:48px;border:3px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-              <div style="font-size:0.82rem;color:#c9a84c;font-weight:700;" id="classLoadingText">Loading...</div>
+          <!-- YouTube mode -->
+          <div id="classYTPanel">
+            <!-- Featured video card -->
+            <div id="classFeaturedCard" onclick="openYT()" style="position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <img id="classFeaturedThumb" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>
+              <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div style="width:64px;height:64px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                  <i class="fab fa-youtube" style="color:#fff;font-size:1.8rem;"></i>
+                </div>
+                <div style="font-size:0.9rem;font-weight:800;color:#fff;" id="classFeaturedTitle"></div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:0.3rem;">Tap to watch on YouTube</div>
+              </div>
+            </div>
+            <!-- Playlist -->
+            <div id="classYTPlaylist" style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.4rem;max-height:200px;overflow-y:auto;"></div>
+          </div>
+
+          <!-- D-ID mode -->
+          <div id="classDIDPanel" style="display:none;">
+            <video id="classDIDVideo" style="width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;display:none;" controls playsinline></video>
+            <div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">
+              <div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-bottom:0.5rem;"><i class="fas fa-key"></i> D-ID API Key <span style="color:#555;font-weight:400;">(free at d-id.com)</span></div>
+              <div style="display:flex;gap:0.5rem;">
+                <input type="password" id="didApiKeyInput" placeholder="Basic xxxxxxxxxxxxxxxx" style="flex:1;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>
+                <button onclick="generateDIDVideo()" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-magic"></i> Generate</button>
+              </div>
+              <div style="font-size:0.68rem;color:#555;margin-top:0.4rem;">Get free API key → <a href="https://studio.d-id.com" target="_blank" style="color:#c9a84c;">studio.d-id.com</a></div>
+              <div id="didStatusMsg" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:600;"></div>
             </div>
           </div>
 
-          <!-- YouTube playlist (shown in YT mode) -->
-          <div id="classYTPlaylist" style="margin-top:0.85rem;display:flex;flex-direction:column;gap:0.5rem;max-height:220px;overflow-y:auto;"></div>
-
-          <!-- D-ID key input (shown in DID mode) -->
-          <div id="classDIDPanel" style="display:none;margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">
-            <div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-bottom:0.5rem;"><i class="fas fa-key"></i> D-ID API Key <span style="color:#555;font-weight:400;">(free at d-id.com)</span></div>
-            <div style="display:flex;gap:0.5rem;">
-              <input type="password" id="didApiKeyInput" placeholder="Basic xxxxxxxxxxxxxxxx" style="flex:1;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>
-              <button onclick="generateDIDVideo()" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-magic"></i> Generate</button>
-            </div>
-            <div style="font-size:0.68rem;color:#555;margin-top:0.4rem;">Get free API key → <a href="https://studio.d-id.com" target="_blank" style="color:#c9a84c;">studio.d-id.com</a></div>
-            <div id="didStatusMsg" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:600;"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -3479,67 +3484,49 @@
       setClassMode('youtube');
     }
 
+    var _currentYTId = '';
+
     function setClassMode(mode){
       _classMode = mode;
-      var ytBtn  = document.getElementById('modeYTBtn');
-      var didBtn = document.getElementById('modeDIDBtn');
-      var ytFrame   = document.getElementById('classYTFrame');
-      var didVideo  = document.getElementById('classDIDVideo');
-      var ytList    = document.getElementById('classYTPlaylist');
-      var didPanel  = document.getElementById('classDIDPanel');
-      var loading   = document.getElementById('classLoadingOverlay');
-
-      // Toggle button styles
-      ytBtn.style.background  = mode==='youtube' ? '#c9a84c' : 'transparent';
-      ytBtn.style.color       = mode==='youtube' ? '#000' : '#888';
-      didBtn.style.background = mode==='did' ? '#c9a84c' : 'transparent';
-      didBtn.style.color      = mode==='did' ? '#000' : '#888';
-
+      document.getElementById('modeYTBtn').style.background  = mode==='youtube' ? '#c9a84c' : 'transparent';
+      document.getElementById('modeYTBtn').style.color       = mode==='youtube' ? '#000' : '#888';
+      document.getElementById('modeDIDBtn').style.background = mode==='did' ? '#c9a84c' : 'transparent';
+      document.getElementById('modeDIDBtn').style.color      = mode==='did' ? '#000' : '#888';
+      document.getElementById('classYTPanel').style.display  = mode==='youtube' ? 'block' : 'none';
+      document.getElementById('classDIDPanel').style.display = mode==='did'     ? 'block' : 'none';
       if(mode === 'youtube'){
-        didVideo.style.display = 'none'; didVideo.pause && didVideo.pause(); didVideo.src='';
-        didPanel.style.display = 'none';
-        ytList.style.display   = 'flex';
-        loading.style.display  = 'flex';
-        document.getElementById('classLoadingText').textContent = 'Loading videos...';
-        // Build playlist
         var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
-        ytList.innerHTML = videos.map(function(v, i){
-          return '<div onclick="playYT(\''+v.id+'\')" style="display:flex;align-items:center;gap:0.75rem;background:'+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:10px;padding:0.6rem 0.85rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.1)\'" onmouseout="this.style.background=\''+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+'\'">'
-            +'<div style="width:64px;height:36px;background:rgba(255,0,0,0.15);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;font-size:1.1rem;"></i></div>'
-            +'<span style="font-size:0.8rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'
-            +(i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;white-space:nowrap;">PLAYING</span>':'')
+        selectYT(videos[0].id, videos[0].title);
+        document.getElementById('classYTPlaylist').innerHTML = videos.map(function(v,i){
+          return '<div onclick="selectYT(\''+v.id+'\',\''+v.title.replace(/'/g,'')+'\')"
+            style="display:flex;align-items:center;gap:0.75rem;background:'+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:10px;padding:0.65rem 0.85rem;cursor:pointer;">'
+            +'<div style="width:40px;height:40px;background:rgba(255,0,0,0.15);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;"></i></div>'
+            +'<span style="font-size:0.82rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'
+            +(i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">SELECTED</span>':'')
             +'</div>';
         }).join('');
-        // Auto-play first
-        playYT(videos[0].id);
       } else {
-        // D-ID mode
-        ytFrame.src = '';
-        ytList.style.display  = 'none';
-        didPanel.style.display = 'block';
-        loading.style.display  = 'none';
-        didVideo.style.display = 'block';
-        // Show placeholder
-        didVideo.poster = '';
-        didVideo.src = '';
+        var vid = document.getElementById('classDIDVideo');
+        vid.pause && vid.pause(); vid.src='';
       }
     }
 
-    function playYT(videoId){
-      var loading = document.getElementById('classLoadingOverlay');
-      var frame = document.getElementById('classYTFrame');
-      loading.style.display = 'flex';
-      document.getElementById('classLoadingText').textContent = 'Loading video...';
-      frame.style.display = 'block';
-      frame.src = 'https://www.youtube-nocookie.com/embed/'+videoId+'?autoplay=1&rel=0&modestbranding=1&enablejsapi=1';
-      frame.onload = function(){ loading.style.display = 'none'; };
-      setTimeout(function(){ loading.style.display = 'none'; }, 3000);
-      // Highlight active
+    function selectYT(videoId, title){
+      _currentYTId = videoId;
+      document.getElementById('classFeaturedTitle').textContent = title||'';
+      document.getElementById('classFeaturedThumb').src = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
+      // Highlight in playlist
       document.querySelectorAll('#classYTPlaylist > div').forEach(function(el){
-        var isActive = (el.getAttribute('onclick')||'').includes(videoId);
-        el.style.background = isActive ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)';
-        el.style.borderColor = isActive ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.06)';
+        var active = (el.getAttribute('onclick')||'').includes(videoId);
+        el.style.background  = active ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)';
+        el.style.borderColor = active ? 'rgba(201,168,76,0.3)'  : 'rgba(255,255,255,0.06)';
+        var badge = el.querySelector('span:last-child');
+        if(badge && badge.textContent==='SELECTED') badge.style.display = active ? 'inline' : 'none';
       });
+    }
+
+    function openYT(){
+      if(_currentYTId) window.open('https://www.youtube.com/watch?v='+_currentYTId, '_blank');
     }
 
     async function generateDIDVideo(){
@@ -3594,9 +3581,8 @@
     }
 
     function closeClassPlayer(){
-      var frame = document.getElementById('classYTFrame');
-      var vid   = document.getElementById('classDIDVideo');
-      frame.src = ''; vid.pause && vid.pause(); vid.src = '';
+      var vid = document.getElementById('classDIDVideo');
+      vid.pause && vid.pause(); vid.src = '';
       document.getElementById('classPlayerOverlay').style.display = 'none';
     }
 
