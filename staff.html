@@ -1135,7 +1135,10 @@
         var merged = fresh.map(function(fb){
           var loc = local.find(function(l){ return String(l.id)===String(fb.id) || String(l.id)===String(fb._fbDocId) || String(l._fbDocId)===String(fb._fbDocId); });
           if(loc && (loc.status==='done'||loc.status==='paid') && fb.status==='assigned') return loc;
-          return Object.assign({}, loc||{}, fb);
+          var result = Object.assign({}, loc||{}, fb);
+          // Preserve local feedback submitted flag
+          if(loc && loc.creatorFeedbackSubmitted) result.creatorFeedbackSubmitted = true;
+          return result;
         });
         localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(merged)));
         renderAssignedShoots();
@@ -2434,7 +2437,7 @@
       var staffId = String(localStorage.getItem('hs_staff_id'));
       var creatorName = localStorage.getItem('hs_staff_name') || 'Staff';
 
-      // Always fetch fresh assigned shoots from Firebase first
+      // Always fetch fresh assigned shoots AND submitted feedbacks from Firebase
       (async function(){
         try{
           var myIdNum = Number(staffId);
@@ -2443,6 +2446,7 @@
           var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
           var app     = fbMod.getApps().find(function(a){return a.name==='staff-fb-sync';})||fbMod.initializeApp(fbCfg,'staff-fb-sync');
           var db      = fbStore.getFirestore(app);
+          // Fetch shoots
           var snap    = await fbStore.getDocs(fbStore.collection(db,'assigned_shoots'));
           var fresh = [];
           snap.forEach(function(d){
@@ -2455,7 +2459,24 @@
           if(fresh.length){
             var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
             var others = local.filter(function(x){ return String(x.staffId)!==staffId && Number(x.staffId)!==myIdNum; });
-            localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(fresh)));
+            // Preserve local creatorFeedbackSubmitted flag — don't let Firebase overwrite it
+            var merged = fresh.map(function(fb){
+              var loc = local.find(function(l){ return String(l.id)===String(fb.id); });
+              if(loc && loc.creatorFeedbackSubmitted) fb.creatorFeedbackSubmitted = true;
+              return fb;
+            });
+            localStorage.setItem('hs_assigned_shoots', JSON.stringify(others.concat(merged)));
+          }
+          // Fetch submitted feedbacks from Firebase and merge into localStorage
+          var fbSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'creator_feedbacks'), fbStore.where('staffId','==',staffId)));
+          var fbFeedbacks = [];
+          fbSnap.forEach(function(d){ fbFeedbacks.push(Object.assign({id:d.id}, d.data())); });
+          if(fbFeedbacks.length){
+            var localFb = JSON.parse(localStorage.getItem('hs_creator_feedbacks')||'[]');
+            fbFeedbacks.forEach(function(fb){
+              if(!localFb.find(function(l){ return String(l.assignId)===String(fb.assignId); })) localFb.push(fb);
+            });
+            localStorage.setItem('hs_creator_feedbacks', JSON.stringify(localFb));
           }
         }catch(e){ console.warn('renderCreatorShootFeedback sync:', e); }
         _renderShootFeedbackFromLocal();
