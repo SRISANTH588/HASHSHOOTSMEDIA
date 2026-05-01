@@ -8141,7 +8141,9 @@ Priority Support</textarea></div>
       if(!el) return;
       el.innerHTML = '<p style="color:#6a6050;font-size:0.82rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
       try {
-        var docs = await window.fbGetAll('invitations');
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        var snap = await f.s.getDocs(f.s.collection(f.db,'invitations'));
+        var docs = []; snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
         docs.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
         var badge = document.getElementById('invAdminBadge');
         if(badge){ badge.textContent=docs.length; badge.style.display=docs.length?'':'none'; }
@@ -8192,7 +8194,8 @@ Priority Support</textarea></div>
       var toAll = document.getElementById('inv_toAll').checked;
       if(!toAll && !staffIds.length && !toMarketing){ alert('Please select at least one recipient.'); return; }
       try {
-        await window.fbSave('invitations', {
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        await f.s.addDoc(f.s.collection(f.db,'invitations'), {
           title: title, type: type, date: date, time: time, venue: venue, description: desc,
           staffId: toAll ? 'all' : staffIds,
           staffIds: toAll ? [] : staffIds,
@@ -8200,18 +8203,20 @@ Priority Support</textarea></div>
           toMarketing: toMarketing || toAll,
           responses: {}, createdAt: new Date().toLocaleString()
         });
-        await window.fbSave('admin_notifications', {
+        await f.s.addDoc(f.s.collection(f.db,'admin_notifications'), {
           type:'invitation', title:'\uD83D\uDCE8 New Invitation: '+title,
           message:'You have a new invitation for '+date+(time?' at '+time:'')+(venue?' at '+venue:''),
           staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
-        ['inv_title','inv_datetime','inv_venue','inv_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        ['inv_title','inv_venue','inv_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        var invDate=document.getElementById('inv_datetime'); if(invDate) invDate.value='';
+        var invTime=document.getElementById('inv_time_sel'); if(invTime) invTime.selectedIndex=0;
         document.querySelectorAll('.inv_staff_cb').forEach(function(c){ c.checked=false; });
         var mk=document.getElementById('inv_toMarketing'); if(mk) mk.checked=false;
         var al=document.getElementById('inv_toAll'); if(al) al.checked=false;
         var t=document.getElementById('inv_toast'); if(t){t.style.display='block';setTimeout(function(){t.style.display='none';},2500);}
         loadAdminInvitations();
-      } catch(e){ alert('Error: '+e.message); }
+      } catch(e){ alert('Error saving invitation: '+e.message); }
     }
 
     async function deleteInvitation(id){
@@ -8226,7 +8231,9 @@ Priority Support</textarea></div>
       if(!el) return;
       el.innerHTML = '<p style="color:#6a6050;font-size:0.82rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
       try {
-        var docs = await window.fbGetAll('meetings');
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        var snap = await f.s.getDocs(f.s.collection(f.db,'meetings'));
+        var docs = []; snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
         docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
         var badge = document.getElementById('meetAdminBadge');
         if(badge){ badge.textContent=docs.length; badge.style.display=docs.length?'':'none'; }
@@ -8274,7 +8281,8 @@ Priority Support</textarea></div>
       var staffIds = Array.from(document.querySelectorAll('.meet_staff_cb:checked')).map(function(c){ return c.value; });
       if(!toAll && !staffIds.length && !toMarketing){ alert('Please select at least one attendee.'); return; }
       try {
-        await window.fbSave('meetings', {
+        var f = await _fbAdmin(); if(!f) throw new Error('Firebase not ready');
+        await f.s.addDoc(f.s.collection(f.db,'meetings'), {
           title: title, type: type, date: date, time: time, duration: duration, venue: venue, link: link, description: desc,
           staffId: toAll ? 'all' : staffIds,
           staffIds: toAll ? [] : staffIds,
@@ -8282,7 +8290,7 @@ Priority Support</textarea></div>
           toMarketing: toMarketing || toAll,
           attendees: {}, createdAt: new Date().toLocaleString()
         });
-        await window.fbSave('admin_notifications', {
+        await f.s.addDoc(f.s.collection(f.db,'admin_notifications'), {
           type:'meeting', title:'\uD83D\uDC65 Meeting Scheduled: '+title,
           message:'New meeting on '+date+' at '+time+(venue?' at '+venue:''),
           staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
