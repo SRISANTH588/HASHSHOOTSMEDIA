@@ -1616,18 +1616,6 @@
     }
 
     function renderAssignedShoots(){
-      // Don't wipe cards if user recently clicked a star (within 30s)
-      if(Date.now() - (_lastStarClick||0) < 30000 && Object.keys(_shootFbStars||{}).length > 0){
-        // Just restore star colors instead of full re-render
-        Object.keys(_shootFbStars).forEach(function(id){
-          var val = _shootFbStars[id];
-          var container = document.getElementById('shootFbStars_' + id);
-          if(val && container) container.querySelectorAll('[data-star]').forEach(function(s){
-            s.style.color = Number(s.dataset.star) <= val ? '#f5a623' : '#333';
-          });
-        });
-        return;
-      }
       var scrollY = window.scrollY;
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
@@ -1771,7 +1759,7 @@
               + [1,2,3,4,5].map(function(v){ return '<span data-star="'+v+'" data-assign="'+a.id+'" style="font-size:1.8rem;cursor:pointer;color:#333;transition:color 0.15s;display:inline-block;">&#9733;</span>'; }).join('')
               + '</div>'
               + '<textarea id="shootFbComment_'+a.id+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:60px;" placeholder="How was the shoot experience? Any feedback..."></textarea>'
-              + '<button onclick="submitShootFeedbackInline(\''+a.id+'\')" style="margin-top:0.6rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
+              + '<button data-submit="'+a.id+'" style="margin-top:0.6rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
               + '</div>';
           uploadHTML = paidLabel + feedbackSection;
         }
@@ -2552,21 +2540,27 @@
     var _shootFbStars = {};
     var _lastStarClick = 0;
 
-    // Event delegation for star rating — works even after innerHTML re-render
+    // Event delegation for star rating and submit — works even after innerHTML re-render
     document.addEventListener('click', function(e){
-      var star = e.target.closest ? e.target.closest('[data-star][data-assign]') : null;
-      if(!star && e.target.dataset && e.target.dataset.star) star = e.target;
-      if(!star) return;
-      var assignId = String(star.dataset.assign);
-      var val = Number(star.dataset.star);
-      _shootFbStars[assignId] = val;
-      _lastStarClick = Date.now();
-      // Color all stars in this shoot's row
-      var container = document.getElementById('shootFbStars_' + assignId);
-      if(container){
-        container.querySelectorAll('[data-star]').forEach(function(s){
+      var t = e.target;
+      // Star click
+      var star = (t.dataset && t.dataset.star && t.dataset.assign) ? t : null;
+      if(star){
+        var assignId = String(star.dataset.assign);
+        var val = Number(star.dataset.star);
+        _shootFbStars[assignId] = val;
+        _lastStarClick = Date.now();
+        var container = document.getElementById('shootFbStars_' + assignId);
+        if(container) container.querySelectorAll('[data-star]').forEach(function(s){
           s.style.color = Number(s.dataset.star) <= val ? '#f5a623' : '#333';
         });
+        return;
+      }
+      // Submit button click
+      var btn = (t.dataset && t.dataset.submit) ? t : (t.parentElement && t.parentElement.dataset && t.parentElement.dataset.submit ? t.parentElement : null);
+      if(btn && btn.dataset.submit){
+        submitShootFeedbackInline(String(btn.dataset.submit));
+        return;
       }
     });
 
