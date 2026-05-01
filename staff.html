@@ -1755,9 +1755,9 @@
             ? '<div style="margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:9px;padding:0.5rem 1rem;font-size:0.78rem;font-weight:700;color:#4caf50;"><i class="fas fa-star"></i> Feedback Submitted &#8212; ' + (existingFb ? '\u2605'.repeat(existingFb.rating) : 'Thank you!') + '</div>'
             : '<div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">'
               + '<div style="font-size:0.82rem;font-weight:800;color:#c9a84c;margin-bottom:0.65rem;"><i class="fas fa-star"></i> Rate this Shoot <span style="color:#f44336;font-size:0.72rem;">*Required</span></div>'
-              + '<div style="display:flex;gap:0.35rem;margin-bottom:0.65rem;" id="shootFbStars_'+a.id+'">' + [1,2,3,4,5].map(function(v){ return '<span onclick="setShootFbStar('+a.id+','+v+')" style="font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;" class="sfbstar" data-id="'+a.id+'" data-val="'+v+'">&#9733;</span>'; }).join('') + '</div>'
+              + '<div style="display:flex;gap:0.35rem;margin-bottom:0.65rem;" id="shootFbStars_'+a.id+'">' + [1,2,3,4,5].map(function(v){ return '<span onclick="setShootFbStar(\''+a.id+'\','+v+')" style="font-size:1.6rem;cursor:pointer;color:#333;transition:color 0.15s;" class="sfbstar" data-id="'+a.id+'" data-val="'+v+'">&#9733;</span>'; }).join('') + '</div>'
               + '<textarea id="shootFbComment_'+a.id+'" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:60px;" placeholder="How was the shoot experience? Any feedback..."></textarea>'
-              + '<button onclick="submitShootFeedbackInline('+a.id+')" style="margin-top:0.6rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
+              + '<button onclick="submitShootFeedbackInline(\''+a.id+'\')" style="margin-top:0.6rem;width:100%;background:#c9a84c;color:#fff;border:none;border-radius:9px;padding:0.6rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-paper-plane"></i> Submit Feedback</button>'
               + '</div>';
           uploadHTML = paidLabel + feedbackSection;
         }
@@ -2537,6 +2537,7 @@
     var _shootFbStars = {};
 
     function setShootFbStar(assignId, val){
+      assignId = String(assignId);
       _shootFbStars[assignId] = val;
       document.querySelectorAll('.sfbstar[data-id="'+assignId+'"]').forEach(function(s){
         s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
