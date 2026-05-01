@@ -373,63 +373,29 @@
       <div id="creatorDemoList"></div>
     </div>
 
-    <!-- UPLOAD -->
     <div class="section" id="sec-classes">
       <div class="sec-title"><i class="fas fa-robot"></i> AI Classes</div>
 
       <!-- Class Cards Grid -->
       <div class="classes-grid" id="classesGrid">
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-film"></i></div><h4>Reel Editing Mastery</h4><p>Master reel editing techniques used by top creators.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Reel Editing Mastery','Editing')">Start <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-camera"></i></div><h4>Shoot Composition</h4><p>Framing, lighting and composition for professional shoots.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Shoot Composition','Photography')">Start <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-bullhorn"></i></div><h4>Content Strategy</h4><p>Plan, script and deliver viral content for clients consistently.</p><div class="class-meta"><span class="class-tag">Strategy</span></div><button class="btn-start" onclick="startClass('Content Strategy for Creators','Strategy')">Start <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-comments"></i></div><h4>Client Communication</h4><p>Handle client expectations and deliver a 5-star experience.</p><div class="class-meta"><span class="class-tag">Soft Skills</span></div><button class="btn-start" onclick="startClass('Client Communication for Creators','Soft Skills')">Start <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-lightbulb"></i></div><h4>Lighting Basics</h4><p>Natural and artificial lighting setups for any shoot environment.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Lighting Basics for Photographers','Photography')">Start <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-mobile-alt"></i></div><h4>Mobile Shooting Pro</h4><p>Get DSLR-quality results using just your smartphone.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Mobile Shooting Pro Tips','Editing')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-film"></i></div><h4>Reel Editing Mastery</h4><p>Master reel editing techniques used by top creators.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Reel Editing Mastery')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-camera"></i></div><h4>Shoot Composition</h4><p>Framing, lighting and composition for professional shoots.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Shoot Composition')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-bullhorn"></i></div><h4>Content Strategy</h4><p>Plan, script and deliver viral content for clients consistently.</p><div class="class-meta"><span class="class-tag">Strategy</span></div><button class="btn-start" onclick="startClass('Content Strategy')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-comments"></i></div><h4>Client Communication</h4><p>Handle client expectations and deliver a 5-star experience.</p><div class="class-meta"><span class="class-tag">Soft Skills</span></div><button class="btn-start" onclick="startClass('Client Communication')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-lightbulb"></i></div><h4>Lighting Basics</h4><p>Natural and artificial lighting setups for any shoot environment.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Lighting Basics')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-mobile-alt"></i></div><h4>Mobile Shooting Pro</h4><p>Get DSLR-quality results using just your smartphone.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Mobile Shooting Pro')">Start <i class="fas fa-play"></i></button></div>
       </div>
 
-      <!-- AI Class Player Modal — moved outside .section so display:none is not overridden -->
+      <!-- Inline video list — shown below cards when a class is selected -->
+      <div id="classVideoList" style="display:none;margin-top:1.5rem;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:1.25rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-size:0.95rem;font-weight:800;color:#fff;" id="classVideoTitle"></div>
+          <button onclick="document.getElementById('classVideoList').style.display='none'" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#aaa;padding:0.3rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.78rem;">Close</button>
+        </div>
+        <div id="classVideoLinks" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+      </div>
     </div>
 
-    <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
-        <div style="width:100%;max-width:760px;">
-
-          <!-- Header -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
-            <div>
-              <div style="font-size:0.6rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:2px;"><i class="fas fa-magic"></i> AI Generated Class</div>
-              <div style="font-size:1.1rem;font-weight:900;color:#fff;" id="classPlayerTitle"></div>
-            </div>
-            <div style="display:flex;gap:0.5rem;align-items:center;">
-              <div style="display:flex;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;">
-                <button id="modeYTBtn" onclick="setClassMode('youtube')" style="padding:0.35rem 0.75rem;border:none;background:#c9a84c;color:#000;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-youtube"></i> YouTube</button>
-                <button id="modeDIDBtn" onclick="setClassMode('did')" style="padding:0.35rem 0.75rem;border:none;background:transparent;color:#888;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-robot"></i> AI Avatar</button>
-              </div>
-              <button onclick="closeClassPlayer()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>
-            </div>
-          </div>
-
-          <!-- YouTube mode -->
-          <div id="classYTPanel">
-            <!-- Video list as direct links -->
-            <div id="classYTPlaylist" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
-          </div>
-
-          <!-- D-ID mode -->
-          <div id="classDIDPanel" style="display:none;">
-            <video id="classDIDVideo" style="width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;display:none;" controls playsinline></video>
-            <div style="margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">
-              <div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-bottom:0.5rem;"><i class="fas fa-key"></i> D-ID API Key <span style="color:#555;font-weight:400;">(free at d-id.com)</span></div>
-              <div style="display:flex;gap:0.5rem;">
-                <input type="password" id="didApiKeyInput" placeholder="Basic xxxxxxxxxxxxxxxx" style="flex:1;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>
-                <button onclick="generateDIDVideo()" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-magic"></i> Generate</button>
-              </div>
-              <div style="font-size:0.68rem;color:#555;margin-top:0.4rem;">Get free API key → <a href="https://studio.d-id.com" target="_blank" style="color:#c9a84c;">studio.d-id.com</a></div>
-              <div id="didStatusMsg" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:600;"></div>
-            </div>
-          </div>
-
-        </div>
-      </div>
 
     <!-- FEEDBACK -->
     <div class="section" id="sec-feedback">
@@ -3423,149 +3389,32 @@
     // ── END STAFF ADDRESS ──────────────────────────────────────
 
     // Start class
-    // ── AI CLASS PLAYER ──────────────────────────────────────────────
-    var _classTopic = '', _classMode = 'youtube';
-
-    // YouTube video IDs curated per topic
+    // ── AI CLASS PLAYER ──
     var _ytVideos = {
-      'Reel Editing Mastery': [
-        {id:'ySXxliDLFsE', title:'Reel Editing Masterclass'},
-        {id:'LXb3EKWsInQ', title:'How to Edit Reels Like a Pro'},
-        {id:'3tmd-ClpJxA', title:'Instagram Reels Editing Tips'},
-        {id:'9bZkp7q19f0', title:'Viral Reel Editing Techniques'}
-      ],
-      'Shoot Composition': [
-        {id:'VArISvggas0', title:'Photography Composition Rules'},
-        {id:'7ZVyNjKSr0M', title:'Rule of Thirds Explained'},
-        {id:'iF-s9Xt_Iqo', title:'Composition Techniques for Beginners'},
-        {id:'Qpa6BNjGMiA', title:'Advanced Framing Techniques'}
-      ],
-      'Content Strategy for Creators': [
-        {id:'mGDFGMpAAIs', title:'Content Strategy for Social Media'},
-        {id:'pqMiHBMhFnk', title:'How to Plan Viral Content'},
-        {id:'ysz5S6PUM-U', title:'Content Creation Strategy 2024'},
-        {id:'C3wNR5CVhDo', title:'Creator Content Planning Tips'}
-      ],
-      'Client Communication for Creators': [
-        {id:'HAnw168huqA', title:'Client Communication for Photographers'},
-        {id:'1g7kZjGiZyc', title:'How to Handle Difficult Clients'},
-        {id:'saXfavo1OQo', title:'Professional Client Management'},
-        {id:'MnIPpUX3gZI', title:'Setting Client Expectations'}
-      ],
-      'Lighting Basics for Photographers': [
-        {id:'8Oj_QLXL0Ek', title:'Photography Lighting Basics'},
-        {id:'Ys3HoSbMoEY', title:'Natural Light Photography Tips'},
-        {id:'3Aq9FoZLFiI', title:'3-Point Lighting Setup'},
-        {id:'sLkBMnMDJNo', title:'Golden Hour Photography Guide'}
-      ],
-      'Mobile Shooting Pro Tips': [
-        {id:'9bZkp7q19f0', title:'Mobile Photography Masterclass'},
-        {id:'LXb3EKWsInQ', title:'Smartphone Video Tips'},
-        {id:'ySXxliDLFsE', title:'Pro Mobile Shooting Techniques'},
-        {id:'VArISvggas0', title:'Mobile Composition Guide'}
-      ]
+      'Reel Editing Mastery':   [{id:'ySXxliDLFsE',title:'Reel Editing Masterclass'},{id:'LXb3EKWsInQ',title:'How to Edit Reels Like a Pro'},{id:'3tmd-ClpJxA',title:'Instagram Reels Editing Tips'},{id:'9bZkp7q19f0',title:'Viral Reel Editing Techniques'}],
+      'Shoot Composition':      [{id:'VArISvggas0',title:'Photography Composition Rules'},{id:'7ZVyNjKSr0M',title:'Rule of Thirds Explained'},{id:'iF-s9Xt_Iqo',title:'Composition Techniques for Beginners'},{id:'Qpa6BNjGMiA',title:'Advanced Framing Techniques'}],
+      'Content Strategy':       [{id:'mGDFGMpAAIs',title:'Content Strategy for Social Media'},{id:'pqMiHBMhFnk',title:'How to Plan Viral Content'},{id:'ysz5S6PUM-U',title:'Content Creation Strategy 2024'},{id:'C3wNR5CVhDo',title:'Creator Content Planning Tips'}],
+      'Client Communication':   [{id:'HAnw168huqA',title:'Client Communication for Photographers'},{id:'1g7kZjGiZyc',title:'How to Handle Difficult Clients'},{id:'saXfavo1OQo',title:'Professional Client Management'},{id:'MnIPpUX3gZI',title:'Setting Client Expectations'}],
+      'Lighting Basics':        [{id:'8Oj_QLXL0Ek',title:'Photography Lighting Basics'},{id:'Ys3HoSbMoEY',title:'Natural Light Photography Tips'},{id:'3Aq9FoZLFiI',title:'3-Point Lighting Setup'},{id:'sLkBMnMDJNo',title:'Golden Hour Photography Guide'}],
+      'Mobile Shooting Pro':    [{id:'9bZkp7q19f0',title:'Mobile Photography Masterclass'},{id:'LXb3EKWsInQ',title:'Smartphone Video Tips'},{id:'ySXxliDLFsE',title:'Pro Mobile Shooting Techniques'},{id:'VArISvggas0',title:'Mobile Composition Guide'}]
     };
 
-    function startClass(topic, category){
-      _classTopic = topic;
-      document.getElementById('classPlayerTitle').textContent = topic;
-      document.getElementById('classPlayerOverlay').style.display = 'flex';
-      setClassMode('youtube');
+    function startClass(topic){
+      var videos = _ytVideos[topic] || _ytVideos['Reel Editing Mastery'];
+      document.getElementById('classVideoTitle').textContent = '🎬 ' + topic + ' — Watch on YouTube';
+      document.getElementById('classVideoLinks').innerHTML = videos.map(function(v){
+        return '<a href="https://www.youtube.com/watch?v='+v.id+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.85rem 1rem;text-decoration:none;">'
+          +'<div style="width:44px;height:44px;background:rgba(255,0,0,0.15);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;font-size:1.2rem;"></i></div>'
+          +'<div style="flex:1;"><div style="font-size:0.88rem;font-weight:700;color:#fff;">'+v.title+'</div><div style="font-size:0.7rem;color:#9a9080;margin-top:0.1rem;">youtube.com • Tap to watch</div></div>'
+          +'<i class="fas fa-external-link-alt" style="color:#c9a84c;"></i>'
+          +'</a>';
+      }).join('');
+      document.getElementById('classVideoList').style.display = 'block';
+      document.getElementById('classVideoList').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
-    var _currentYTId = '';
-
-    function setClassMode(mode){
-      _classMode = mode;
-      document.getElementById('modeYTBtn').style.background  = mode==='youtube' ? '#c9a84c' : 'transparent';
-      document.getElementById('modeYTBtn').style.color       = mode==='youtube' ? '#000' : '#888';
-      document.getElementById('modeDIDBtn').style.background = mode==='did' ? '#c9a84c' : 'transparent';
-      document.getElementById('modeDIDBtn').style.color      = mode==='did' ? '#000' : '#888';
-      document.getElementById('classYTPanel').style.display  = mode==='youtube' ? 'block' : 'none';
-      document.getElementById('classDIDPanel').style.display = mode==='did'     ? 'block' : 'none';
-      if(mode === 'youtube'){
-        var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
-        document.getElementById('classYTPlaylist').innerHTML = videos.map(function(v,i){
-          var url = 'https://www.youtube.com/watch?v='+v.id;
-          return '<a href="'+url+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:0.85rem;background:'+(i===0?'rgba(201,168,76,0.1)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:12px;padding:0.85rem 1rem;text-decoration:none;">'
-            +'<div style="width:48px;height:48px;background:rgba(255,0,0,0.15);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;font-size:1.3rem;"></i></div>'
-            +'<div style="flex:1;"><div style="font-size:0.88rem;font-weight:700;color:#fff;">'+v.title+'</div><div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;">Tap to watch on YouTube</div></div>'
-            +'<i class="fas fa-external-link-alt" style="color:#c9a84c;font-size:0.8rem;"></i>'
-            +'</a>';
-        }).join('');
-      } else {
-        var vid = document.getElementById('classDIDVideo');
-        vid.pause && vid.pause(); vid.src='';
-      }
-    }
-
-    function selectYT(){}
-    function openYT(){}
-
-    async function generateDIDVideo(){
-      var key = document.getElementById('didApiKeyInput').value.trim();
-      if(!key){ alert('Please enter your D-ID API key.'); return; }
-      var statusEl = document.getElementById('didStatusMsg');
-      var didVideo = document.getElementById('classDIDVideo');
-      statusEl.style.display = 'block';
-      statusEl.style.color = '#c9a84c';
-      statusEl.textContent = '⏳ Generating AI avatar video...';
-      // Generate script via Pollinations
-      var script = 'Welcome to '+_classTopic+'. In this class, you will learn the most important professional techniques used by top creators. Let us get started with the fundamentals and build your skills step by step.';
-      try {
-        var res = await fetch('https://text.pollinations.ai/'+encodeURIComponent('Write a 60-second spoken lesson script for a photography/video creator training class on: '+_classTopic+'. Keep it motivational, practical and under 120 words. Plain text only.'), {cache:'no-store'});
-        var txt = await res.text();
-        if(txt && txt.length > 20) script = txt.trim().substring(0, 500);
-      } catch(e){}
-      // Call D-ID API
-      try {
-        var createRes = await fetch('https://api.d-id.com/talks', {
-          method: 'POST',
-          headers: { 'Authorization': key.startsWith('Basic') ? key : 'Basic '+btoa(key+':'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            script: { type:'text', input: script, provider:{ type:'microsoft', voice_id:'en-US-JennyNeural' } },
-            source_url: 'https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.jpeg'
-          })
-        });
-        var createData = await createRes.json();
-        if(!createData.id) throw new Error(createData.message||'Failed to create talk');
-        statusEl.textContent = '⏳ Processing video (this takes ~30 seconds)...';
-        // Poll for result
-        var talkId = createData.id, videoUrl = null, attempts = 0;
-        while(attempts < 20){
-          await new Promise(function(r){ setTimeout(r, 3000); });
-          var pollRes = await fetch('https://api.d-id.com/talks/'+talkId, { headers:{ 'Authorization': key.startsWith('Basic') ? key : 'Basic '+btoa(key+':') } });
-          var pollData = await pollRes.json();
-          if(pollData.status === 'done'){ videoUrl = pollData.result_url; break; }
-          if(pollData.status === 'error') throw new Error('D-ID error: '+pollData.error);
-          attempts++;
-        }
-        if(!videoUrl) throw new Error('Timed out waiting for video');
-        didVideo.src = videoUrl;
-        didVideo.style.display = 'block';
-        didVideo.play();
-        statusEl.style.color = '#4caf50';
-        statusEl.textContent = '✅ AI avatar video ready!';
-        localStorage.setItem('hs_did_key', key);
-      } catch(e){
-        statusEl.style.color = '#f44336';
-        statusEl.textContent = '❌ '+e.message;
-      }
-    }
-
-    function closeClassPlayer(){
-      var vid = document.getElementById('classDIDVideo');
-      vid.pause && vid.pause(); vid.src = '';
-      document.getElementById('classPlayerOverlay').style.display = 'none';
-    }
-
-    // Restore saved D-ID key
-    window.addEventListener('load', function(){
-      var saved = localStorage.getItem('hs_did_key');
-      var inp = document.getElementById('didApiKeyInput');
-      if(saved && inp) inp.value = saved;
-    });
-    // ── END AI CLASS PLAYER ──────────────────────────────────────────
+    function setClassMode(){} function selectYT(){} function openYT(){} function closeClassPlayer(){}
+    // ── END AI CLASS PLAYER ──
 
         // EVENT FEEDBACK
     var efbStars = 0;
