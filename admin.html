@@ -373,7 +373,7 @@
         <button class="sidebar-item" onclick="switchTab('careers',this)" id="careersTabBtn" data-title="Career Apps"><i class="fas fa-briefcase"></i> Career Apps</button>
         <button class="sidebar-item" onclick="switchTab('affiliates',this)" id="affiliatesTabBtn" data-title="Affiliate Apps"><i class="fas fa-rupee-sign"></i> Affiliate Apps</button>
         <button class="sidebar-item" onclick="switchTab('feedback-writer',this)" id="feedbackWriterTabBtn" data-title="Feedback Writer"><i class="fas fa-quote-right"></i> Feedback Writer</button>
-        <button class="sidebar-item" onclick="switchTab('wa-control',this)" id="waControlTabBtn" data-title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp</button>
+
         <button class="sidebar-item" onclick="switchTab('tawk',this)" id="tawkTabBtn" data-title="Tawk.to"><i class="fas fa-comments"></i> Tawk.to</button>
         <button class="sidebar-item" onclick="switchTab('settings',this)" id="settingsTabBtn" data-title="Settings"><i class="fas fa-sliders-h"></i> Settings</button>
       </div>
@@ -444,7 +444,7 @@
       <button class="tab-btn" onclick="switchTab('mkt-enquiries',this)" id="mktEnquiriesTabBtn"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span id="mktEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('invitations-admin',this)" id="invitationsAdminTabBtn"><i class="fas fa-envelope-open-text"></i> Invitations <span id="invAdminBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('meetings-admin',this)" id="meetingsAdminTabBtn"><i class="fas fa-users"></i> Meetings <span id="meetAdminBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('wa-control',this)" id="waControlTabBtn"><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp Messages</button>
+
       <button class="tab-btn" onclick="switchTab('biz-enquiries',this)" id="bizEnquiriesTabBtn"><i class="fas fa-briefcase"></i> Business Enquiries <span id="bizEnquiriesBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('support-tickets',this)" id="supportTicketsTabBtn"><i class="fas fa-headset"></i> Customer Issues <span id="supportTicketsBadge" style="display:none;background:#f44336;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('hero-stats',this)" id="heroStatsTabBtn"><i class="fas fa-chart-bar"></i> Hero Stats</button>
@@ -2889,15 +2889,8 @@ Priority Support</textarea></div>
     </div>
 
     <!-- WHATSAPP CONTROL CENTER -->
-    <div class="tab-panel" id="tab-wa-control">
-      <div class="about-form">
-        <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1.75rem;">
-          <div style="width:48px;height:48px;background:#25d366;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-whatsapp" style="color:#fff;font-size:1.4rem;"></i></div>
-          <div>
-            <div style="font-size:1.1rem;font-weight:900;color:#fff;">WhatsApp Message Control</div>
-            <div style="font-size:0.78rem;color:#9a9080;margin-top:0.1rem;">Enable or disable each WhatsApp notification trigger</div>
-          </div>
-        </div>
+    <div class="tab-panel" id="tab-wa-control" style="display:none;"><!-- removed -->
+      <div class="about-form" style="display:none;">
         <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;">
 
           <div style="background:#1a1a1a;border:1px solid rgba(37,211,102,0.2);border-radius:14px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
