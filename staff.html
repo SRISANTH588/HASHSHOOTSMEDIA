@@ -3498,12 +3498,10 @@
         var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
         selectYT(videos[0].id, videos[0].title);
         document.getElementById('classYTPlaylist').innerHTML = videos.map(function(v,i){
-          return '<div onclick="selectYT(\''+v.id+'\',\''+v.title.replace(/'/g,'')+'\')"
-            style="display:flex;align-items:center;gap:0.75rem;background:'+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:10px;padding:0.65rem 0.85rem;cursor:pointer;">'
-            +'<div style="width:40px;height:40px;background:rgba(255,0,0,0.15);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;"></i></div>'
-            +'<span style="font-size:0.82rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'
-            +(i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">SELECTED</span>':'')
-            +'</div>';
+          var bg = i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)';
+          var bd = i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)';
+          var badge = i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">SELECTED</span>':'';
+          return '<div onclick="selectYT(\''+v.id+'\',\''+v.title.replace(/'/g,'')+'\')"; style="display:flex;align-items:center;gap:0.75rem;background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:0.65rem 0.85rem;cursor:pointer;"><div style="width:40px;height:40px;background:rgba(255,0,0,0.15);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;"></i></div><span style="font-size:0.82rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'+badge+'</div>';
         }).join('');
       } else {
         var vid = document.getElementById('classDIDVideo');
