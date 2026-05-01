@@ -1,6 +1,6 @@
 // hs-update-check.js — Shows notification when new version is deployed
 (function(){
-  var CURRENT = '7ec6a74397ad2980ab8618de29c3a9ea1bb98b5e';
+  var CURRENT = 'b2e06131d35c24659ff10257a59e727db0651ed5';
   // Inject banner HTML
   var banner = document.createElement('div');
   banner.id = 'hs_update_banner';
