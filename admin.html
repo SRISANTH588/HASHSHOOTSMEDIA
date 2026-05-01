@@ -7600,18 +7600,26 @@ Priority Support</textarea></div>
 
     function clearAllOrderEnquiries(){
       if(!confirm('Delete ALL order enquiries? This cannot be undone.')) return;
-      fetchOrderEnquiries();
+      var el = document.getElementById('orderEnquiriesList');
+      var countEl = document.getElementById('orderEnquiriesCount');
+      if(el) el.innerHTML = '<p style="color:#9a9080;text-align:center;padding:2rem;">No order enquiries yet.</p>';
+      if(countEl) countEl.textContent = '0 enquiries';
+      var badge = document.getElementById('orderEnquiriesBadge');
+      if(badge){ badge.style.display='none'; badge.textContent='0'; }
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f) return;
-          var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+          // Delete from enquiries collection (non-general/business types)
+          var snap1 = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
           var batch = f.s.writeBatch(f.db);
-          snap.forEach(function(d){
+          snap1.forEach(function(d){
             var t = (d.data().type||'').toLowerCase();
-            if(t && t!=='general' && t!=='business' && t!=='booking' && t!=='order') batch.delete(d.ref);
+            if(t && t!=='general' && t!=='business') batch.delete(d.ref);
           });
+          // Delete all marketing_enquiries
+          var snap2 = await f.s.getDocs(f.s.collection(f.db,'marketing_enquiries'));
+          snap2.forEach(function(d){ batch.delete(d.ref); });
           await batch.commit();
-          fetchOrderEnquiries();
         }catch(e){ console.warn('clearAllOrderEnquiries:', e); }
       })();
     }
