@@ -387,8 +387,10 @@
         <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-mobile-alt"></i></div><h4>Mobile Shooting Pro</h4><p>Get DSLR-quality results using just your smartphone.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Mobile Shooting Pro Tips','Editing')">Start <i class="fas fa-play"></i></button></div>
       </div>
 
-      <!-- AI Class Player Modal -->
-      <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
+      <!-- AI Class Player Modal — moved outside .section so display:none is not overridden -->
+    </div>
+
+    <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
         <div style="width:100%;max-width:760px;">
 
           <!-- Header -->
@@ -428,7 +430,6 @@
 
         </div>
       </div>
-    </div>
 
     <!-- FEEDBACK -->
     <div class="section" id="sec-feedback">
