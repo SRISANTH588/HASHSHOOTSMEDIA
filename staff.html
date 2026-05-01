@@ -4764,7 +4764,13 @@
       var docs = [];
       snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
       var mine = docs.filter(function(d){
-        return !d.staffIds || d.staffIds.length===0 || d.staffIds.map(String).includes(String(staffId)) || d.toAll;
+        var sid = d.staffId;
+        var sids = d.staffIds;
+        if(d.toAll || sid === 'all') return true;
+        if(Array.isArray(sids) && sids.length) return sids.map(String).includes(String(staffId));
+        if(Array.isArray(sid)) return sid.map(String).includes(String(staffId));
+        if(typeof sid === 'string') return sid === String(staffId);
+        return false;
       });
       mine.sort(function(a,b){
         var now = new Date();
@@ -4812,6 +4818,16 @@
       var snap    = await fbStore.getDocs(fbStore.collection(db,'meetings'));
       var docs = [];
       snap.forEach(function(d){ docs.push(Object.assign({_fbId:d.id},d.data())); });
+      // Filter to only show meetings for this staff
+      docs = docs.filter(function(d){
+        var sid = d.staffId;
+        var sids = d.staffIds;
+        if(d.toAll || sid === 'all') return true;
+        if(Array.isArray(sids) && sids.length) return sids.map(String).includes(String(staffId));
+        if(Array.isArray(sid)) return sid.map(String).includes(String(staffId));
+        if(typeof sid === 'string') return sid === String(staffId);
+        return false;
+      });
       docs.sort(function(a,b){ 
         var now = new Date();
         var da = new Date((a.date||'')+(a.time?' '+a.time:''));
