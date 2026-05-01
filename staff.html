@@ -375,19 +375,56 @@
 
     <!-- UPLOAD -->
     <div class="section" id="sec-classes">
-      <div class="sec-title"><i class="fas fa-robot"></i> AI Generated Classes</div>
-      <div class="classes-grid">
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-sparkles"></i> AI Generated</div><div class="class-icon"><i class="fas fa-film"></i></div><h4>Reel Editing Mastery</h4><p>Master AI-powered reel editing techniques used by top creators.</p><div class="class-meta"><span class="class-tag">Editing</span><span class="class-duration"><i class="fas fa-clock"></i> 45 mins</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div><button class="btn-start btn-continue" onclick="startClass('Reel Editing Mastery')">Continue <i class="fas fa-arrow-right"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-sparkles"></i> AI Generated</div><div class="class-icon"><i class="fas fa-camera"></i></div><h4>Shoot Composition</h4><p>Learn AI-assisted framing, lighting and composition for professional-grade shoots.</p><div class="class-meta"><span class="class-tag">Photography</span><span class="class-duration"><i class="fas fa-clock"></i> 30 mins</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><button class="btn-start" onclick="startClass('Shoot Composition')">Start Course <i class="fas fa-play"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-sparkles"></i> AI Generated</div><div class="class-icon"><i class="fas fa-magic"></i></div><h4>Content Strategy with AI</h4><p>Use AI tools to plan, script and deliver viral content for clients consistently.</p><div class="class-meta"><span class="class-tag">Strategy</span><span class="class-duration"><i class="fas fa-clock"></i> 60 mins</span></div><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div><button class="btn-start btn-continue" onclick="startClass('Content Strategy with AI')">Continue <i class="fas fa-arrow-right"></i></button></div>
-        <div class="class-card"><div class="ai-badge"><i class="fas fa-sparkles"></i> AI Generated</div><div class="class-icon"><i class="fas fa-mobile-alt"></i></div><h4>Client Communication</h4><p>AI-powered scripts and tips to handle client expectations professionally.</p><div class="class-meta"><span class="class-tag">Soft Skills</span><span class="class-duration"><i class="fas fa-clock"></i> 25 mins</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><button class="btn-start" onclick="startClass('Client Communication')">Start Course <i class="fas fa-play"></i></button></div>
+      <div class="sec-title"><i class="fas fa-robot"></i> AI Classes</div>
+
+      <!-- Class Cards Grid -->
+      <div class="classes-grid" id="classesGrid">
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-film"></i></div><h4>Reel Editing Mastery</h4><p>Master reel editing techniques used by top creators.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Reel Editing Mastery','Editing')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-camera"></i></div><h4>Shoot Composition</h4><p>Framing, lighting and composition for professional shoots.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Shoot Composition','Photography')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-bullhorn"></i></div><h4>Content Strategy</h4><p>Plan, script and deliver viral content for clients consistently.</p><div class="class-meta"><span class="class-tag">Strategy</span></div><button class="btn-start" onclick="startClass('Content Strategy for Creators','Strategy')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-comments"></i></div><h4>Client Communication</h4><p>Handle client expectations and deliver a 5-star experience.</p><div class="class-meta"><span class="class-tag">Soft Skills</span></div><button class="btn-start" onclick="startClass('Client Communication for Creators','Soft Skills')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-lightbulb"></i></div><h4>Lighting Basics</h4><p>Natural and artificial lighting setups for any shoot environment.</p><div class="class-meta"><span class="class-tag">Photography</span></div><button class="btn-start" onclick="startClass('Lighting Basics for Photographers','Photography')">Start <i class="fas fa-play"></i></button></div>
+        <div class="class-card"><div class="ai-badge"><i class="fas fa-magic"></i> AI</div><div class="class-icon"><i class="fas fa-mobile-alt"></i></div><h4>Mobile Shooting Pro</h4><p>Get DSLR-quality results using just your smartphone.</p><div class="class-meta"><span class="class-tag">Editing</span></div><button class="btn-start" onclick="startClass('Mobile Shooting Pro Tips','Editing')">Start <i class="fas fa-play"></i></button></div>
       </div>
-      <div class="cert-section" style="margin-top:1.75rem;">
-        <div class="cert-header"><div class="sec-title" style="margin-bottom:0"><i class="fas fa-certificate"></i> Certifications</div></div>
-        <div class="cert-grid">
-          <div class="cert-card"><div class="cert-icon">🎬</div><h5>Content Maker Pro</h5><p>Complete Reel Editing class</p><span class="cert-status available">Available</span></div>
-          <div class="cert-card"><div class="cert-icon">📸</div><h5>Shoot Expert</h5><p>Complete Composition class</p><span class="cert-status locked">Locked</span></div>
-          <div class="cert-card"><div class="cert-icon">⭐</div><h5>OG Certified</h5><p>Complete all 4 classes</p><span class="cert-status locked">Locked</span></div>
+
+      <!-- AI Class Player Modal -->
+      <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;">
+        <div style="width:100%;max-width:680px;">
+
+          <!-- Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <div>
+              <div style="font-size:0.6rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:2px;"><i class="fas fa-magic"></i> AI Generated Class</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#fff;" id="classPlayerTitle"></div>
+            </div>
+            <button onclick="closeClassPlayer()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>
+          </div>
+
+          <!-- Slide Canvas -->
+          <div style="position:relative;width:100%;aspect-ratio:16/9;background:#0a0a0a;border-radius:16px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);">
+            <canvas id="classCanvas" style="width:100%;height:100%;"></canvas>
+            <!-- Loading overlay -->
+            <div id="classLoadingOverlay" style="position:absolute;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+              <div style="width:48px;height:48px;border:3px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+              <div style="font-size:0.82rem;color:#c9a84c;font-weight:700;" id="classLoadingText">Generating your class with AI...</div>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div style="margin-top:0.75rem;background:rgba(255,255,255,0.06);border-radius:50px;height:4px;overflow:hidden;">
+            <div id="classProgressBar" style="height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);width:0%;transition:width 0.4s;"></div>
+          </div>
+
+          <!-- Controls -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.75rem;color:#555;" id="classSlideCounter">Slide 0 / 0</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button onclick="classPrev()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-chevron-left"></i></button>
+              <button onclick="classPlayPause()" id="classPlayBtn" style="background:#c9a84c;border:none;color:#000;padding:0.4rem 1.1rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:700;"><i class="fas fa-pause"></i> Pause</button>
+              <button onclick="classNext()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-chevron-right"></i></button>
+              <button onclick="toggleClassVoice()" id="classVoiceBtn" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-volume-up"></i></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1082,6 +1119,7 @@
         var sec = document.getElementById('sec-' + name);
         if(sec) sec.classList.add('active');
         if(btn) btn.classList.add('active');
+        try { if(name === 'classes') {} } catch(e){}
         try { if(name === 'shoots') { renderAssignedShoots(); syncAndRenderShoots(); } } catch(e){}
         try { if(name === 'videos') renderMyVideos(); } catch(e){}
         try { if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); } } catch(e){}
@@ -3383,9 +3421,170 @@
     // ── END STAFF ADDRESS ──────────────────────────────────────
 
     // Start class
-    function startClass(name){
-      alert('Starting: ' + name + '\n\nAI class content coming soon!');
+    // ── AI CLASS PLAYER ──────────────────────────────────────────────
+    var _classSlides = [], _classIdx = 0, _classTimer = null, _classVoice = true, _classPlaying = false;
+
+    async function startClass(topic, category){
+      _classSlides = []; _classIdx = 0; _classPlaying = false;
+      var overlay = document.getElementById('classPlayerOverlay');
+      var loading = document.getElementById('classLoadingOverlay');
+      var loadTxt = document.getElementById('classLoadingText');
+      document.getElementById('classPlayerTitle').textContent = topic;
+      overlay.style.display = 'flex';
+      loading.style.display = 'flex';
+      loadTxt.textContent = 'Generating your class with AI...';
+      try {
+        var prompt = 'Create a 6-slide training class for photography/video creators on the topic: "'+topic+'". '
+          +'Return ONLY a JSON array of 6 objects, each with: "title" (short slide title), "content" (2-3 key bullet points as a single string separated by \\n), "tip" (one pro tip). No markdown, no explanation, just the JSON array.';
+        var res = await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt), {cache:'no-store'});
+        var text = await res.text();
+        // Extract JSON array from response
+        var match = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+        if(!match) throw new Error('Bad response');
+        _classSlides = JSON.parse(match[0]);
+        if(!Array.isArray(_classSlides) || !_classSlides.length) throw new Error('Empty slides');
+      } catch(e){
+        // Fallback slides
+        _classSlides = [
+          {title:'Introduction to '+topic, content:'Welcome to this AI-generated class\nYou will learn key professional skills\nApply these in every shoot', tip:'Take notes as you go!'},
+          {title:'Core Fundamentals', content:'Master the basics before advanced techniques\nConsistency beats perfection\nPractice daily for best results', tip:'Start with simple setups'},
+          {title:'Professional Techniques', content:'Use the rule of thirds for composition\nAlways check your lighting first\nShoot in bursts to capture the moment', tip:'Golden hour is your best friend'},
+          {title:'Client Workflow', content:'Communicate clearly before the shoot\nSet expectations on deliverables\nDeliver on time, every time', tip:'Under-promise, over-deliver'},
+          {title:'Editing & Delivery', content:'Keep edits clean and consistent\nUse color grading to set the mood\nExport at the right resolution', tip:'Less is more in editing'},
+          {title:'Level Up', content:'Review your work critically\nStudy top creators in your niche\nKeep learning and experimenting', tip:'Every shoot is a learning opportunity'}
+        ];
+      }
+      loading.style.display = 'none';
+      _classIdx = 0;
+      _classPlaying = true;
+      renderClassSlide();
+      scheduleNextSlide();
     }
+
+    function renderClassSlide(){
+      var slide = _classSlides[_classIdx];
+      if(!slide) return;
+      var canvas = document.getElementById('classCanvas');
+      var ctx = canvas.getContext('2d');
+      canvas.width = 960; canvas.height = 540;
+
+      // Background gradient
+      var bg = ctx.createLinearGradient(0,0,960,540);
+      bg.addColorStop(0,'#0a0a0a'); bg.addColorStop(1,'#111111');
+      ctx.fillStyle = bg; ctx.fillRect(0,0,960,540);
+
+      // Gold accent bar
+      ctx.fillStyle = '#c9a84c'; ctx.fillRect(0,0,6,540);
+
+      // Slide number
+      ctx.fillStyle = 'rgba(201,168,76,0.15)';
+      ctx.beginPath(); ctx.arc(900,60,36,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 18px Inter,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText((_classIdx+1)+'/'+_classSlides.length, 900, 67);
+
+      // Title
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 13px Inter,sans-serif';
+      ctx.fillText('OG SHOOTS — AI CLASS', 40, 55);
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 34px Inter,sans-serif';
+      wrapText(ctx, slide.title||'', 40, 110, 860, 42);
+
+      // Divider
+      ctx.fillStyle = 'rgba(201,168,76,0.3)'; ctx.fillRect(40,155,880,1);
+
+      // Content bullets
+      var lines = (slide.content||'').split('\n').filter(Boolean);
+      ctx.fillStyle = '#dddddd'; ctx.font = '18px Inter,sans-serif';
+      lines.forEach(function(line, i){
+        ctx.fillStyle = '#c9a84c'; ctx.fillText('▸', 40, 200 + i*44);
+        ctx.fillStyle = '#dddddd'; ctx.fillText(line, 68, 200 + i*44);
+      });
+
+      // Tip box
+      if(slide.tip){
+        ctx.fillStyle = 'rgba(201,168,76,0.08)';
+        roundRect(ctx, 40, 390, 880, 110, 12); ctx.fill();
+        ctx.strokeStyle = 'rgba(201,168,76,0.3)'; ctx.lineWidth=1;
+        roundRect(ctx, 40, 390, 880, 110, 12); ctx.stroke();
+        ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 13px Inter,sans-serif';
+        ctx.fillText('💡 PRO TIP', 60, 418);
+        ctx.fillStyle = '#ffffff'; ctx.font = '16px Inter,sans-serif';
+        wrapText(ctx, slide.tip, 60, 445, 840, 22);
+      }
+
+      // Update UI
+      var pct = ((_classIdx+1)/_classSlides.length)*100;
+      document.getElementById('classProgressBar').style.width = pct+'%';
+      document.getElementById('classSlideCounter').textContent = 'Slide '+(_classIdx+1)+' / '+_classSlides.length;
+
+      // Speak
+      if(_classVoice && window.speechSynthesis){
+        window.speechSynthesis.cancel();
+        var utt = new SpeechSynthesisUtterance((slide.title||'')+'. '+(slide.content||'').replace(/\n/g,'. ')+(slide.tip?'. Pro tip: '+slide.tip:''));
+        utt.rate = 0.92; utt.pitch = 1;
+        window.speechSynthesis.speak(utt);
+      }
+    }
+
+    function wrapText(ctx, text, x, y, maxW, lineH){
+      var words = text.split(' '), line = '';
+      words.forEach(function(w){
+        var test = line + w + ' ';
+        if(ctx.measureText(test).width > maxW && line){
+          ctx.fillText(line.trim(), x, y); y += lineH; line = w + ' ';
+        } else { line = test; }
+      });
+      if(line.trim()) ctx.fillText(line.trim(), x, y);
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+      ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+      ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+    }
+
+    function scheduleNextSlide(){
+      clearTimeout(_classTimer);
+      if(!_classPlaying) return;
+      _classTimer = setTimeout(function(){
+        if(_classIdx < _classSlides.length - 1){ _classIdx++; renderClassSlide(); scheduleNextSlide(); }
+        else { _classPlaying = false; document.getElementById('classPlayBtn').innerHTML = '<i class="fas fa-redo"></i> Replay'; }
+      }, 8000);
+    }
+
+    function classNext(){ clearTimeout(_classTimer); if(_classIdx < _classSlides.length-1){ _classIdx++; renderClassSlide(); if(_classPlaying) scheduleNextSlide(); } }
+    function classPrev(){ clearTimeout(_classTimer); if(_classIdx > 0){ _classIdx--; renderClassSlide(); if(_classPlaying) scheduleNextSlide(); } }
+
+    function classPlayPause(){
+      _classPlaying = !_classPlaying;
+      var btn = document.getElementById('classPlayBtn');
+      if(_classPlaying){
+        btn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        if(_classIdx >= _classSlides.length-1) _classIdx = 0;
+        renderClassSlide(); scheduleNextSlide();
+      } else {
+        clearTimeout(_classTimer);
+        if(window.speechSynthesis) window.speechSynthesis.cancel();
+        btn.innerHTML = '<i class="fas fa-play"></i> Play';
+      }
+    }
+
+    function toggleClassVoice(){
+      _classVoice = !_classVoice;
+      var btn = document.getElementById('classVoiceBtn');
+      btn.innerHTML = _classVoice ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+      if(!_classVoice && window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+
+    function closeClassPlayer(){
+      clearTimeout(_classTimer);
+      if(window.speechSynthesis) window.speechSynthesis.cancel();
+      _classPlaying = false;
+      document.getElementById('classPlayerOverlay').style.display = 'none';
+    }
+    // ── END AI CLASS PLAYER ──────────────────────────────────────────
 
         // EVENT FEEDBACK
     var efbStars = 0;
@@ -4058,7 +4257,8 @@
     </div>
   </div>
 
-  <style>@keyframes aie_spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
+  <style>@keyframes aie_spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+  @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
 
   <script>
   // ── STAFF AI VIDEO EDITOR ─────────────────────────────────────
