@@ -2543,6 +2543,7 @@
         s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
       });
     }
+    window.setShootFbStar = setShootFbStar;
 
     function submitShootFeedbackInline(assignId){
       var rating = _shootFbStars[assignId] || 0;
@@ -2585,8 +2586,7 @@
       renderAssignedShoots();
       alert('Feedback submitted successfully!');
     }
-
-    function submitCreatorFeedback(assignId){
+    window.submitShootFeedbackInline = submitShootFeedbackInline;
       assignId = String(assignId);
       var rating = creatorSelectedStars[assignId] || 0;
       if(!rating){ alert('Please select a star rating.'); return; }
@@ -3903,6 +3903,15 @@
       ['hs_role','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
       window.location.href = 'login.html';
     }
+
+    // Expose all functions used in dynamic innerHTML onclick handlers
+    window.setShootFbStar = setShootFbStar;
+    window.submitShootFeedbackInline = submitShootFeedbackInline;
+    window.markShootDone = markShootDone;
+    window.uploadFeedbackVideo = uploadFeedbackVideo;
+    window.openEventFeedback = openEventFeedback;
+    window.syncAndRenderShoots = syncAndRenderShoots;
+    window.renderAssignedShoots = renderAssignedShoots;
   </script>
 
   <!-- TAWK.TO LIVE CHAT - PASTE YOUR SCRIPT BELOW -->
