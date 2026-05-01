@@ -783,7 +783,17 @@
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
           <div class="form-group"><label>Instagram Handle</label><input type="text" id="tm_insta" placeholder="e.g. @srisanth.18"/></div>
-          <div class="form-group"><label>Photo URL</label><input type="text" id="tm_photo" placeholder="https://... or leave blank"/></div>
+          <div class="form-group">
+            <label>Photo <span style="color:#9a9080;font-weight:400;">(upload or paste URL)</span></label>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <input type="text" id="tm_photo" placeholder="https://... or upload below" style="flex:1;background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.65rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;"/>
+              <label style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:10px;padding:0.65rem 0.9rem;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:0.4rem;">
+                <i class="fas fa-upload"></i> Upload
+                <input type="file" id="tm_photo_file" accept="image/*" style="display:none;" onchange="uploadTeamPhoto(this)"/>
+              </label>
+            </div>
+            <div id="tm_photo_preview" style="display:none;margin-top:0.5rem;"><img id="tm_photo_img" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.3);"/></div>
+          </div>
         </div>
         <input type="hidden" id="tm_edit_id" value=""/>
         <div style="display:flex;gap:0.75rem;">
@@ -7121,6 +7131,21 @@ Priority Support</textarea></div>
     // ABOUT US
     // ── TEAM MEMBERS ──
     var _tmItems = [];
+
+    async function uploadTeamPhoto(input){
+      var file = input.files[0];
+      if(!file) return;
+      var label = input.parentElement;
+      label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+      try{
+        var res = await cloudinaryUpload(file, 'team_photos', null);
+        document.getElementById('tm_photo').value = res.url;
+        var prev = document.getElementById('tm_photo_preview');
+        var img = document.getElementById('tm_photo_img');
+        if(prev && img){ img.src = res.url; prev.style.display='block'; }
+      }catch(e){ alert('Upload failed: '+e.message); }
+      label.innerHTML = '<i class="fas fa-upload"></i> Upload<input type="file" id="tm_photo_file" accept="image/*" style="display:none;" onchange="uploadTeamPhoto(this)"/>';
+    }
 
     async function saveTeamMember(){
       var editId = document.getElementById('tm_edit_id').value||'';
