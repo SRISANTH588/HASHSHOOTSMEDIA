@@ -2767,7 +2767,7 @@ Priority Support</textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
             <div class="form-group">
               <label>Date *</label>
-              <input type="date" id="inv_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;"/>
+              <input type="date" id="inv_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;color-scheme:dark;cursor:pointer;"/>
             </div>
             <div class="form-group">
               <label>Time</label>
@@ -2823,7 +2823,7 @@ Priority Support</textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
             <div class="form-group">
               <label>Date *</label>
-              <input type="date" id="meet_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;"/>
+              <input type="date" id="meet_datetime" style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;color-scheme:dark;cursor:pointer;"/>
             </div>
             <div class="form-group">
               <label>Time *</label>
@@ -8262,14 +8262,13 @@ Priority Support</textarea></div>
     async function scheduleMeeting(){
       var title    = document.getElementById('meet_title').value.trim();
       var type     = document.getElementById('meet_type').value;
-      var datetime = document.getElementById('meet_datetime').value;
-      var date     = datetime ? datetime.split('T')[0] : '';
-      var time     = datetime ? datetime.split('T')[1] : '';
+      var date     = document.getElementById('meet_datetime').value;
+      var time     = (document.getElementById('meet_time_sel')||{}).value||'';
       var duration = document.getElementById('meet_duration').value.trim();
       var venue    = document.getElementById('meet_venue').value.trim();
       var link     = document.getElementById('meet_link').value.trim();
       var desc     = document.getElementById('meet_desc').value.trim();
-      if(!title||!datetime){ alert('Title and Date & Time are required.'); return; }
+      if(!title||!date){ alert('Title and Date are required.'); return; }
       var toAll = document.getElementById('meet_toAll').checked;
       var toMarketing = document.getElementById('meet_toMarketing').checked;
       var staffIds = Array.from(document.querySelectorAll('.meet_staff_cb:checked')).map(function(c){ return c.value; });
@@ -8288,7 +8287,9 @@ Priority Support</textarea></div>
           message:'New meeting on '+date+' at '+time+(venue?' at '+venue:''),
           staffId: toAll ? 'all' : staffIds, read:false, createdAt:new Date().toLocaleString()
         });
-        ['meet_title','meet_datetime','meet_duration','meet_venue','meet_link','meet_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        ['meet_title','meet_duration','meet_venue','meet_link','meet_desc'].forEach(function(id){ var e=document.getElementById(id); if(e)e.value=''; });
+        var meetDate=document.getElementById('meet_datetime'); if(meetDate) meetDate.value='';
+        var meetTime=document.getElementById('meet_time_sel'); if(meetTime) meetTime.selectedIndex=0;
         document.querySelectorAll('.meet_staff_cb').forEach(function(c){ c.checked=false; });
         var mk=document.getElementById('meet_toMarketing'); if(mk) mk.checked=false;
         var al=document.getElementById('meet_toAll'); if(al) al.checked=false;
