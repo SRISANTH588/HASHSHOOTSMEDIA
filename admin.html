@@ -9359,6 +9359,8 @@ Priority Support</textarea></div>
               date: data.date||'',
               time: data.time||'',
               accepted: data.accepted||false,
+              status: data.status||'',
+              doneAt: data.doneAt||'',
               submittedAt: data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleString():new Date().toLocaleString()
             });
           });
