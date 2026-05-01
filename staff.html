@@ -1616,6 +1616,17 @@
     }
 
     function renderAssignedShoots(){
+      // Don't wipe cards if user recently clicked a star (within 30s)
+      if(Date.now() - (_lastStarClick||0) < 30000 && Object.keys(_shootFbStars||{}).length > 0){
+        // Just restore star colors instead of full re-render
+        Object.keys(_shootFbStars).forEach(function(id){
+          var val = _shootFbStars[id];
+          if(val) document.querySelectorAll('.sfbstar[data-id="'+id+'"]').forEach(function(s){
+            s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
+          });
+        });
+        return;
+      }
       var scrollY = window.scrollY;
       var rawId  = localStorage.getItem('hs_staff_id');
       var staffId = rawId;
@@ -2535,10 +2546,12 @@
 
 
     var _shootFbStars = {};
+    var _lastStarClick = 0;
 
     function setShootFbStar(assignId, val){
       assignId = String(assignId);
       _shootFbStars[assignId] = val;
+      _lastStarClick = Date.now();
       document.querySelectorAll('.sfbstar[data-id="'+assignId+'"]').forEach(function(s){
         s.style.color = Number(s.dataset.val) <= val ? '#f5a623' : '#333';
       });
