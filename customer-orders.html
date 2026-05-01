@@ -763,7 +763,7 @@
         handler: function(response){
           // Save payment locally
           var payments = JSON.parse(localStorage.getItem('hs_payments')||'[]');
-          var rec = { bookingId: String(bookingId), amount: amount, razorpayId: response.razorpay_payment_id, paidAt: new Date().toLocaleString() };
+          var rec = { bookingId: String(bookingId), amount: amount, razorpayId: response.razorpay_payment_id, paidAt: new Date().toLocaleString(), customerName: custName, service: service };
           payments.push(rec);
           localStorage.setItem('hs_payments', JSON.stringify(payments));
           // Sync to Firestore
