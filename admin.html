@@ -9619,17 +9619,21 @@ Priority Support</textarea></div>
     // Show target panel
     var panel = document.getElementById('tab-'+name);
     if(panel) panel.classList.add('active');
-    // Scroll to top
-    var am = document.getElementById('adminMain');
-    if(am) am.scrollTop = 0;
-    window.scrollTo(0,0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    // Scroll to top — immediate + delayed to handle async renders
+    function resetScroll(){
+      var am = document.getElementById('adminMain');
+      if(am) am.scrollTop = 0;
+      window.scrollTo(0,0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+    resetScroll();
+    setTimeout(resetScroll, 100);
+    setTimeout(resetScroll, 400);
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
     history.replaceState(null,'','admin.html?tab='+name);
-    window.scrollTo(0,0);
     // Update topbar title
     var title = btn ? (btn.dataset.title || btn.textContent.trim()) : name;
     var titleEl = document.getElementById('currentPageTitle');
