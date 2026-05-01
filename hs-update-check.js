@@ -4,7 +4,7 @@
   if(window._hsUpdateCheckRunning) return;
   window._hsUpdateCheckRunning = true;
 
-  var CURRENT = '5cf6b96bc1402f532e58edbb4ad9cf8644d2912d';
+  var CURRENT = '1c0e2977aa3338ca3a6b6109d66742dda8a09526';
 
   // Don't show if user already dismissed this version
   if(localStorage.getItem('hs_dismissed_update') === CURRENT) return;
@@ -25,7 +25,7 @@
     fetch('https://api.github.com/repos/SRISANTH588/HASHSHOOTSMEDIA/commits/main', {cache:'no-store'})
       .then(function(r){ return r.json(); })
       .then(function(d){
-        if(d.sha && d.sha !== CURRENT && localStorage.getItem('hs_dismissed_update') !== d.sha){
+        if(d.sha && d.sha !== CURRENT && localStorage.getItem('hs_dismissed_update') !== d.sha && localStorage.getItem('hs_dismissed_update') !== CURRENT){
           injectBanner();
           var b = document.getElementById('hs_update_banner');
           if(b) b.style.display = 'flex';
