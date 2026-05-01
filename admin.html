@@ -8680,6 +8680,16 @@ Priority Support</textarea></div>
     }
 
     function renderPaymentsTab(){
+      // Re-enrich payments with booking data
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+      var raw = JSON.parse(localStorage.getItem('hs_payments')||'[]');
+      raw.forEach(function(p){
+        if(!p.customerName || p.customerName === 'Customer'){
+          var b = bookings.find(function(bk){ return String(bk.id)===String(p.bookingId); });
+          if(b){ p.customerName=b.name||p.customerName; p.service=b.service||p.service; p.phone=b.phone||p.phone; p.city=b.city||p.city; }
+        }
+      });
+      localStorage.setItem('hs_payments', JSON.stringify(raw));
       var custSearch  = (document.getElementById('pm_custSearch')  || {}).value || '';
       var storeSearch = (document.getElementById('pm_storeSearch') || {}).value || '';
 
@@ -9246,7 +9256,22 @@ Priority Support</textarea></div>
           onSnapshot(collection(fbDb,'payments'), function(snap){
             var list = [];
             snap.forEach(function(d){ list.push(Object.assign({ _fbId: d.id }, d.data())); });
-            var mapped = list.map(function(p){ return { id: p._fbId, bookingId: p.bookingId, paymentId: p.razorpayId||p.paymentId, customerName: p.customerName||p.name, service: p.service, phone: p.phone, city: p.city, amount: p.amount, status: p.status||'paid', paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : (p.createdAt ? (p.createdAt.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString() : p.createdAt) : '') }; });
+            var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            var mapped = list.map(function(p){
+              var b = bookings.find(function(bk){ return String(bk.id)===String(p.bookingId); }) || {};
+              return {
+                id: p._fbId,
+                bookingId: p.bookingId,
+                paymentId: p.razorpayId||p.paymentId||p.razorpay_payment_id||'',
+                customerName: p.customerName||p.name||b.name||'',
+                service: p.service||b.service||'',
+                phone: p.phone||b.phone||'',
+                city: p.city||b.city||'',
+                amount: p.amount||0,
+                status: p.status||'paid',
+                paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt) : (p.createdAt ? (p.createdAt.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString() : p.createdAt) : '')
+              };
+            });
             mapped.sort(function(a,b){ return new Date(b.paidAt||0) - new Date(a.paidAt||0); });
             localStorage.setItem('hs_payments', JSON.stringify(mapped));
             if(currentTab==='txn-payments') renderPaymentsTab();
