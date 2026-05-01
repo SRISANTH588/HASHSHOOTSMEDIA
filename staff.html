@@ -410,7 +410,7 @@
           <!-- Video container -->
           <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);">
             <!-- YouTube iframe -->
-            <iframe id="classYTFrame" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <iframe id="classYTFrame" style="position:absolute;inset:0;width:100%;height:100%;border:none;display:none;" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
             <!-- D-ID video -->
             <video id="classDIDVideo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;" controls playsinline></video>
             <!-- Loading overlay -->
@@ -3505,9 +3505,9 @@
         var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
         ytList.innerHTML = videos.map(function(v, i){
           return '<div onclick="playYT(\''+v.id+'\')" style="display:flex;align-items:center;gap:0.75rem;background:'+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:10px;padding:0.6rem 0.85rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.1)\'" onmouseout="this.style.background=\''+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+'\'">'
-            +'<img src="https://img.youtube.com/vi/'+v.id+'/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;"/>'
-            +'<span style="font-size:0.8rem;color:#fff;font-weight:600;">'+v.title+'</span>'
-            +(i===0?'<span style="margin-left:auto;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">NOW PLAYING</span>':'')
+            +'<div style="width:64px;height:36px;background:rgba(255,0,0,0.15);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;font-size:1.1rem;"></i></div>'
+            +'<span style="font-size:0.8rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'
+            +(i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;white-space:nowrap;">PLAYING</span>':'')
             +'</div>';
         }).join('');
         // Auto-play first
@@ -3528,14 +3528,15 @@
     function playYT(videoId){
       var loading = document.getElementById('classLoadingOverlay');
       var frame = document.getElementById('classYTFrame');
-      frame.src = 'https://www.youtube.com/embed/'+videoId+'?autoplay=1&rel=0&modestbranding=1';
+      loading.style.display = 'flex';
+      document.getElementById('classLoadingText').textContent = 'Loading video...';
       frame.style.display = 'block';
-      // Hide loading once iframe fires load
+      frame.src = 'https://www.youtube-nocookie.com/embed/'+videoId+'?autoplay=1&rel=0&modestbranding=1&enablejsapi=1';
       frame.onload = function(){ loading.style.display = 'none'; };
-      setTimeout(function(){ loading.style.display = 'none'; }, 2000);
-      // Highlight active in playlist
+      setTimeout(function(){ loading.style.display = 'none'; }, 3000);
+      // Highlight active
       document.querySelectorAll('#classYTPlaylist > div').forEach(function(el){
-        var isActive = el.getAttribute('onclick') && el.getAttribute('onclick').includes(videoId);
+        var isActive = (el.getAttribute('onclick')||'').includes(videoId);
         el.style.background = isActive ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)';
         el.style.borderColor = isActive ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.06)';
       });
