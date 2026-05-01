@@ -408,18 +408,8 @@
 
           <!-- YouTube mode -->
           <div id="classYTPanel">
-            <!-- Featured video card -->
-            <a id="classFeaturedCard" href="#" target="_blank" rel="noopener" style="position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;">
-              <img id="classFeaturedThumb" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>
-              <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
-              <div style="position:relative;z-index:1;text-align:center;">
-                <div style="width:64px;height:64px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                  <i class="fab fa-youtube" style="color:#fff;font-size:1.8rem;"></i>
-                </div>
-                <div style="font-size:0.9rem;font-weight:800;color:#fff;" id="classFeaturedTitle"></div>
-                <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:0.3rem;">Tap to watch on YouTube</div>
-            </a>
-            <div id="classYTPlaylist" style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.4rem;max-height:200px;overflow-y:auto;"></div>
+            <!-- Video list as direct links -->
+            <div id="classYTPlaylist" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
           </div>
 
           <!-- D-ID mode -->
@@ -3494,12 +3484,13 @@
       document.getElementById('classDIDPanel').style.display = mode==='did'     ? 'block' : 'none';
       if(mode === 'youtube'){
         var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
-        selectYT(videos[0].id, videos[0].title);
         document.getElementById('classYTPlaylist').innerHTML = videos.map(function(v,i){
-          var bg = i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)';
-          var bd = i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)';
-          var badge = i===0?'<span style="background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">SELECTED</span>':'';
-          return '<div onclick="selectYT(\''+v.id+'\',\''+v.title.replace(/'/g,'')+'\')"; style="display:flex;align-items:center;gap:0.75rem;background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:0.65rem 0.85rem;cursor:pointer;"><div style="width:40px;height:40px;background:rgba(255,0,0,0.15);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;"></i></div><span style="font-size:0.82rem;color:#fff;font-weight:600;flex:1;">'+v.title+'</span>'+badge+'</div>';
+          var url = 'https://www.youtube.com/watch?v='+v.id;
+          return '<a href="'+url+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:0.85rem;background:'+(i===0?'rgba(201,168,76,0.1)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:12px;padding:0.85rem 1rem;text-decoration:none;">'
+            +'<div style="width:48px;height:48px;background:rgba(255,0,0,0.15);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fab fa-youtube" style="color:#ff4444;font-size:1.3rem;"></i></div>'
+            +'<div style="flex:1;"><div style="font-size:0.88rem;font-weight:700;color:#fff;">'+v.title+'</div><div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;">Tap to watch on YouTube</div></div>'
+            +'<i class="fas fa-external-link-alt" style="color:#c9a84c;font-size:0.8rem;"></i>'
+            +'</a>';
         }).join('');
       } else {
         var vid = document.getElementById('classDIDVideo');
@@ -3507,22 +3498,8 @@
       }
     }
 
-    function selectYT(videoId, title){
-      _currentYTId = videoId;
-      var card = document.getElementById('classFeaturedCard');
-      card.href = 'https://www.youtube.com/watch?v='+videoId;
-      document.getElementById('classFeaturedTitle').textContent = title||'';
-      document.getElementById('classFeaturedThumb').src = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
-      document.querySelectorAll('#classYTPlaylist > div').forEach(function(el){
-        var active = (el.getAttribute('onclick')||'').includes(videoId);
-        el.style.background  = active ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)';
-        el.style.borderColor = active ? 'rgba(201,168,76,0.3)'  : 'rgba(255,255,255,0.06)';
-      });
-    }
-
-    function openYT(){
-      if(_currentYTId) window.open('https://www.youtube.com/watch?v='+_currentYTId, '_blank');
-    }
+    function selectYT(){}
+    function openYT(){}
 
     async function generateDIDVideo(){
       var key = document.getElementById('didApiKeyInput').value.trim();
