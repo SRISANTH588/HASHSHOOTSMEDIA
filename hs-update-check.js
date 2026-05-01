@@ -4,7 +4,7 @@
   if(window._hsUpdateCheckRunning) return;
   window._hsUpdateCheckRunning = true;
 
-  var CURRENT = 'dbf82034f08ebf3525ff57ba04e6effecb2b11b6';
+  var CURRENT = 'e1a3d103ccd076a7765d94bfd2cf859313dbdf2c';
 
   // Don't show if user already dismissed this version
   if(localStorage.getItem('hs_dismissed_update') === CURRENT) return;
