@@ -388,42 +388,50 @@
       </div>
 
       <!-- AI Class Player Modal -->
-      <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;">
-        <div style="width:100%;max-width:680px;">
+      <div id="classPlayerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
+        <div style="width:100%;max-width:760px;">
 
           <!-- Header -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
             <div>
               <div style="font-size:0.6rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:2px;"><i class="fas fa-magic"></i> AI Generated Class</div>
               <div style="font-size:1.1rem;font-weight:900;color:#fff;" id="classPlayerTitle"></div>
             </div>
-            <button onclick="closeClassPlayer()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <!-- Mode toggle -->
+              <div style="display:flex;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;">
+                <button id="modeYTBtn" onclick="setClassMode('youtube')" style="padding:0.35rem 0.75rem;border:none;background:#c9a84c;color:#000;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fab fa-youtube"></i> YouTube</button>
+                <button id="modeDIDBtn" onclick="setClassMode('did')" style="padding:0.35rem 0.75rem;border:none;background:transparent;color:#888;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-robot"></i> AI Avatar</button>
+              </div>
+              <button onclick="closeClassPlayer()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>
+            </div>
           </div>
 
-          <!-- Slide Canvas -->
-          <div style="position:relative;width:100%;aspect-ratio:16/9;background:#0a0a0a;border-radius:16px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);">
-            <canvas id="classCanvas" style="width:100%;height:100%;"></canvas>
+          <!-- Video container -->
+          <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);">
+            <!-- YouTube iframe -->
+            <iframe id="classYTFrame" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <!-- D-ID video -->
+            <video id="classDIDVideo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;" controls playsinline></video>
             <!-- Loading overlay -->
             <div id="classLoadingOverlay" style="position:absolute;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
               <div style="width:48px;height:48px;border:3px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-              <div style="font-size:0.82rem;color:#c9a84c;font-weight:700;" id="classLoadingText">Generating your class with AI...</div>
+              <div style="font-size:0.82rem;color:#c9a84c;font-weight:700;" id="classLoadingText">Loading...</div>
             </div>
           </div>
 
-          <!-- Progress bar -->
-          <div style="margin-top:0.75rem;background:rgba(255,255,255,0.06);border-radius:50px;height:4px;overflow:hidden;">
-            <div id="classProgressBar" style="height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);width:0%;transition:width 0.4s;"></div>
-          </div>
+          <!-- YouTube playlist (shown in YT mode) -->
+          <div id="classYTPlaylist" style="margin-top:0.85rem;display:flex;flex-direction:column;gap:0.5rem;max-height:220px;overflow-y:auto;"></div>
 
-          <!-- Controls -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.85rem;flex-wrap:wrap;gap:0.5rem;">
-            <div style="font-size:0.75rem;color:#555;" id="classSlideCounter">Slide 0 / 0</div>
+          <!-- D-ID key input (shown in DID mode) -->
+          <div id="classDIDPanel" style="display:none;margin-top:0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:#c9a84c;margin-bottom:0.5rem;"><i class="fas fa-key"></i> D-ID API Key <span style="color:#555;font-weight:400;">(free at d-id.com)</span></div>
             <div style="display:flex;gap:0.5rem;">
-              <button onclick="classPrev()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-chevron-left"></i></button>
-              <button onclick="classPlayPause()" id="classPlayBtn" style="background:#c9a84c;border:none;color:#000;padding:0.4rem 1.1rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:700;"><i class="fas fa-pause"></i> Pause</button>
-              <button onclick="classNext()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-chevron-right"></i></button>
-              <button onclick="toggleClassVoice()" id="classVoiceBtn" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.8rem;"><i class="fas fa-volume-up"></i></button>
+              <input type="password" id="didApiKeyInput" placeholder="Basic xxxxxxxxxxxxxxxx" style="flex:1;background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.82rem;outline:none;"/>
+              <button onclick="generateDIDVideo()" style="background:#c9a84c;color:#000;border:none;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-magic"></i> Generate</button>
             </div>
+            <div style="font-size:0.68rem;color:#555;margin-top:0.4rem;">Get free API key → <a href="https://studio.d-id.com" target="_blank" style="color:#c9a84c;">studio.d-id.com</a></div>
+            <div id="didStatusMsg" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:600;"></div>
           </div>
         </div>
       </div>
@@ -3422,168 +3430,181 @@
 
     // Start class
     // ── AI CLASS PLAYER ──────────────────────────────────────────────
-    var _classSlides = [], _classIdx = 0, _classTimer = null, _classVoice = true, _classPlaying = false;
+    var _classTopic = '', _classMode = 'youtube';
 
-    async function startClass(topic, category){
-      _classSlides = []; _classIdx = 0; _classPlaying = false;
-      var overlay = document.getElementById('classPlayerOverlay');
-      var loading = document.getElementById('classLoadingOverlay');
-      var loadTxt = document.getElementById('classLoadingText');
+    // YouTube video IDs curated per topic
+    var _ytVideos = {
+      'Reel Editing Mastery': [
+        {id:'ySXxliDLFsE', title:'Reel Editing Masterclass'},
+        {id:'LXb3EKWsInQ', title:'How to Edit Reels Like a Pro'},
+        {id:'3tmd-ClpJxA', title:'Instagram Reels Editing Tips'},
+        {id:'9bZkp7q19f0', title:'Viral Reel Editing Techniques'}
+      ],
+      'Shoot Composition': [
+        {id:'VArISvggas0', title:'Photography Composition Rules'},
+        {id:'7ZVyNjKSr0M', title:'Rule of Thirds Explained'},
+        {id:'iF-s9Xt_Iqo', title:'Composition Techniques for Beginners'},
+        {id:'Qpa6BNjGMiA', title:'Advanced Framing Techniques'}
+      ],
+      'Content Strategy for Creators': [
+        {id:'mGDFGMpAAIs', title:'Content Strategy for Social Media'},
+        {id:'pqMiHBMhFnk', title:'How to Plan Viral Content'},
+        {id:'ysz5S6PUM-U', title:'Content Creation Strategy 2024'},
+        {id:'C3wNR5CVhDo', title:'Creator Content Planning Tips'}
+      ],
+      'Client Communication for Creators': [
+        {id:'HAnw168huqA', title:'Client Communication for Photographers'},
+        {id:'1g7kZjGiZyc', title:'How to Handle Difficult Clients'},
+        {id:'saXfavo1OQo', title:'Professional Client Management'},
+        {id:'MnIPpUX3gZI', title:'Setting Client Expectations'}
+      ],
+      'Lighting Basics for Photographers': [
+        {id:'8Oj_QLXL0Ek', title:'Photography Lighting Basics'},
+        {id:'Ys3HoSbMoEY', title:'Natural Light Photography Tips'},
+        {id:'3Aq9FoZLFiI', title:'3-Point Lighting Setup'},
+        {id:'sLkBMnMDJNo', title:'Golden Hour Photography Guide'}
+      ],
+      'Mobile Shooting Pro Tips': [
+        {id:'9bZkp7q19f0', title:'Mobile Photography Masterclass'},
+        {id:'LXb3EKWsInQ', title:'Smartphone Video Tips'},
+        {id:'ySXxliDLFsE', title:'Pro Mobile Shooting Techniques'},
+        {id:'VArISvggas0', title:'Mobile Composition Guide'}
+      ]
+    };
+
+    function startClass(topic, category){
+      _classTopic = topic;
       document.getElementById('classPlayerTitle').textContent = topic;
-      overlay.style.display = 'flex';
-      loading.style.display = 'flex';
-      loadTxt.textContent = 'Generating your class with AI...';
-      try {
-        var prompt = 'Create a 6-slide training class for photography/video creators on the topic: "'+topic+'". '
-          +'Return ONLY a JSON array of 6 objects, each with: "title" (short slide title), "content" (2-3 key bullet points as a single string separated by \\n), "tip" (one pro tip). No markdown, no explanation, just the JSON array.';
-        var res = await fetch('https://text.pollinations.ai/'+encodeURIComponent(prompt), {cache:'no-store'});
-        var text = await res.text();
-        // Extract JSON array from response
-        var match = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
-        if(!match) throw new Error('Bad response');
-        _classSlides = JSON.parse(match[0]);
-        if(!Array.isArray(_classSlides) || !_classSlides.length) throw new Error('Empty slides');
-      } catch(e){
-        // Fallback slides
-        _classSlides = [
-          {title:'Introduction to '+topic, content:'Welcome to this AI-generated class\nYou will learn key professional skills\nApply these in every shoot', tip:'Take notes as you go!'},
-          {title:'Core Fundamentals', content:'Master the basics before advanced techniques\nConsistency beats perfection\nPractice daily for best results', tip:'Start with simple setups'},
-          {title:'Professional Techniques', content:'Use the rule of thirds for composition\nAlways check your lighting first\nShoot in bursts to capture the moment', tip:'Golden hour is your best friend'},
-          {title:'Client Workflow', content:'Communicate clearly before the shoot\nSet expectations on deliverables\nDeliver on time, every time', tip:'Under-promise, over-deliver'},
-          {title:'Editing & Delivery', content:'Keep edits clean and consistent\nUse color grading to set the mood\nExport at the right resolution', tip:'Less is more in editing'},
-          {title:'Level Up', content:'Review your work critically\nStudy top creators in your niche\nKeep learning and experimenting', tip:'Every shoot is a learning opportunity'}
-        ];
-      }
-      loading.style.display = 'none';
-      _classIdx = 0;
-      _classPlaying = true;
-      renderClassSlide();
-      scheduleNextSlide();
+      document.getElementById('classPlayerOverlay').style.display = 'flex';
+      setClassMode('youtube');
     }
 
-    function renderClassSlide(){
-      var slide = _classSlides[_classIdx];
-      if(!slide) return;
-      var canvas = document.getElementById('classCanvas');
-      var ctx = canvas.getContext('2d');
-      canvas.width = 960; canvas.height = 540;
+    function setClassMode(mode){
+      _classMode = mode;
+      var ytBtn  = document.getElementById('modeYTBtn');
+      var didBtn = document.getElementById('modeDIDBtn');
+      var ytFrame   = document.getElementById('classYTFrame');
+      var didVideo  = document.getElementById('classDIDVideo');
+      var ytList    = document.getElementById('classYTPlaylist');
+      var didPanel  = document.getElementById('classDIDPanel');
+      var loading   = document.getElementById('classLoadingOverlay');
 
-      // Background gradient
-      var bg = ctx.createLinearGradient(0,0,960,540);
-      bg.addColorStop(0,'#0a0a0a'); bg.addColorStop(1,'#111111');
-      ctx.fillStyle = bg; ctx.fillRect(0,0,960,540);
+      // Toggle button styles
+      ytBtn.style.background  = mode==='youtube' ? '#c9a84c' : 'transparent';
+      ytBtn.style.color       = mode==='youtube' ? '#000' : '#888';
+      didBtn.style.background = mode==='did' ? '#c9a84c' : 'transparent';
+      didBtn.style.color      = mode==='did' ? '#000' : '#888';
 
-      // Gold accent bar
-      ctx.fillStyle = '#c9a84c'; ctx.fillRect(0,0,6,540);
-
-      // Slide number
-      ctx.fillStyle = 'rgba(201,168,76,0.15)';
-      ctx.beginPath(); ctx.arc(900,60,36,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 18px Inter,sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText((_classIdx+1)+'/'+_classSlides.length, 900, 67);
-
-      // Title
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 13px Inter,sans-serif';
-      ctx.fillText('OG SHOOTS — AI CLASS', 40, 55);
-      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 34px Inter,sans-serif';
-      wrapText(ctx, slide.title||'', 40, 110, 860, 42);
-
-      // Divider
-      ctx.fillStyle = 'rgba(201,168,76,0.3)'; ctx.fillRect(40,155,880,1);
-
-      // Content bullets
-      var lines = (slide.content||'').split('\n').filter(Boolean);
-      ctx.fillStyle = '#dddddd'; ctx.font = '18px Inter,sans-serif';
-      lines.forEach(function(line, i){
-        ctx.fillStyle = '#c9a84c'; ctx.fillText('▸', 40, 200 + i*44);
-        ctx.fillStyle = '#dddddd'; ctx.fillText(line, 68, 200 + i*44);
-      });
-
-      // Tip box
-      if(slide.tip){
-        ctx.fillStyle = 'rgba(201,168,76,0.08)';
-        roundRect(ctx, 40, 390, 880, 110, 12); ctx.fill();
-        ctx.strokeStyle = 'rgba(201,168,76,0.3)'; ctx.lineWidth=1;
-        roundRect(ctx, 40, 390, 880, 110, 12); ctx.stroke();
-        ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 13px Inter,sans-serif';
-        ctx.fillText('💡 PRO TIP', 60, 418);
-        ctx.fillStyle = '#ffffff'; ctx.font = '16px Inter,sans-serif';
-        wrapText(ctx, slide.tip, 60, 445, 840, 22);
-      }
-
-      // Update UI
-      var pct = ((_classIdx+1)/_classSlides.length)*100;
-      document.getElementById('classProgressBar').style.width = pct+'%';
-      document.getElementById('classSlideCounter').textContent = 'Slide '+(_classIdx+1)+' / '+_classSlides.length;
-
-      // Speak
-      if(_classVoice && window.speechSynthesis){
-        window.speechSynthesis.cancel();
-        var utt = new SpeechSynthesisUtterance((slide.title||'')+'. '+(slide.content||'').replace(/\n/g,'. ')+(slide.tip?'. Pro tip: '+slide.tip:''));
-        utt.rate = 0.92; utt.pitch = 1;
-        window.speechSynthesis.speak(utt);
-      }
-    }
-
-    function wrapText(ctx, text, x, y, maxW, lineH){
-      var words = text.split(' '), line = '';
-      words.forEach(function(w){
-        var test = line + w + ' ';
-        if(ctx.measureText(test).width > maxW && line){
-          ctx.fillText(line.trim(), x, y); y += lineH; line = w + ' ';
-        } else { line = test; }
-      });
-      if(line.trim()) ctx.fillText(line.trim(), x, y);
-    }
-
-    function roundRect(ctx, x, y, w, h, r){
-      ctx.beginPath();
-      ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-      ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-      ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-    }
-
-    function scheduleNextSlide(){
-      clearTimeout(_classTimer);
-      if(!_classPlaying) return;
-      _classTimer = setTimeout(function(){
-        if(_classIdx < _classSlides.length - 1){ _classIdx++; renderClassSlide(); scheduleNextSlide(); }
-        else { _classPlaying = false; document.getElementById('classPlayBtn').innerHTML = '<i class="fas fa-redo"></i> Replay'; }
-      }, 8000);
-    }
-
-    function classNext(){ clearTimeout(_classTimer); if(_classIdx < _classSlides.length-1){ _classIdx++; renderClassSlide(); if(_classPlaying) scheduleNextSlide(); } }
-    function classPrev(){ clearTimeout(_classTimer); if(_classIdx > 0){ _classIdx--; renderClassSlide(); if(_classPlaying) scheduleNextSlide(); } }
-
-    function classPlayPause(){
-      _classPlaying = !_classPlaying;
-      var btn = document.getElementById('classPlayBtn');
-      if(_classPlaying){
-        btn.innerHTML = '<i class="fas fa-pause"></i> Pause';
-        if(_classIdx >= _classSlides.length-1) _classIdx = 0;
-        renderClassSlide(); scheduleNextSlide();
+      if(mode === 'youtube'){
+        didVideo.style.display = 'none'; didVideo.pause && didVideo.pause(); didVideo.src='';
+        didPanel.style.display = 'none';
+        ytList.style.display   = 'flex';
+        loading.style.display  = 'flex';
+        document.getElementById('classLoadingText').textContent = 'Loading videos...';
+        // Build playlist
+        var videos = _ytVideos[_classTopic] || _ytVideos['Reel Editing Mastery'];
+        ytList.innerHTML = videos.map(function(v, i){
+          return '<div onclick="playYT(\''+v.id+'\')" style="display:flex;align-items:center;gap:0.75rem;background:'+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+';border:1px solid '+(i===0?'rgba(201,168,76,0.3)':'rgba(255,255,255,0.06)')+';border-radius:10px;padding:0.6rem 0.85rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(201,168,76,0.1)\'" onmouseout="this.style.background=\''+(i===0?'rgba(201,168,76,0.12)':'rgba(255,255,255,0.03)')+'\'">'
+            +'<img src="https://img.youtube.com/vi/'+v.id+'/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;"/>'
+            +'<span style="font-size:0.8rem;color:#fff;font-weight:600;">'+v.title+'</span>'
+            +(i===0?'<span style="margin-left:auto;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;">NOW PLAYING</span>':'')
+            +'</div>';
+        }).join('');
+        // Auto-play first
+        playYT(videos[0].id);
       } else {
-        clearTimeout(_classTimer);
-        if(window.speechSynthesis) window.speechSynthesis.cancel();
-        btn.innerHTML = '<i class="fas fa-play"></i> Play';
+        // D-ID mode
+        ytFrame.src = '';
+        ytList.style.display  = 'none';
+        didPanel.style.display = 'block';
+        loading.style.display  = 'none';
+        didVideo.style.display = 'block';
+        // Show placeholder
+        didVideo.poster = '';
+        didVideo.src = '';
       }
     }
 
-    function toggleClassVoice(){
-      _classVoice = !_classVoice;
-      var btn = document.getElementById('classVoiceBtn');
-      btn.innerHTML = _classVoice ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-      if(!_classVoice && window.speechSynthesis) window.speechSynthesis.cancel();
+    function playYT(videoId){
+      var loading = document.getElementById('classLoadingOverlay');
+      var frame = document.getElementById('classYTFrame');
+      frame.src = 'https://www.youtube.com/embed/'+videoId+'?autoplay=1&rel=0&modestbranding=1';
+      frame.style.display = 'block';
+      // Hide loading once iframe fires load
+      frame.onload = function(){ loading.style.display = 'none'; };
+      setTimeout(function(){ loading.style.display = 'none'; }, 2000);
+      // Highlight active in playlist
+      document.querySelectorAll('#classYTPlaylist > div').forEach(function(el){
+        var isActive = el.getAttribute('onclick') && el.getAttribute('onclick').includes(videoId);
+        el.style.background = isActive ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)';
+        el.style.borderColor = isActive ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.06)';
+      });
+    }
+
+    async function generateDIDVideo(){
+      var key = document.getElementById('didApiKeyInput').value.trim();
+      if(!key){ alert('Please enter your D-ID API key.'); return; }
+      var statusEl = document.getElementById('didStatusMsg');
+      var didVideo = document.getElementById('classDIDVideo');
+      statusEl.style.display = 'block';
+      statusEl.style.color = '#c9a84c';
+      statusEl.textContent = '⏳ Generating AI avatar video...';
+      // Generate script via Pollinations
+      var script = 'Welcome to '+_classTopic+'. In this class, you will learn the most important professional techniques used by top creators. Let us get started with the fundamentals and build your skills step by step.';
+      try {
+        var res = await fetch('https://text.pollinations.ai/'+encodeURIComponent('Write a 60-second spoken lesson script for a photography/video creator training class on: '+_classTopic+'. Keep it motivational, practical and under 120 words. Plain text only.'), {cache:'no-store'});
+        var txt = await res.text();
+        if(txt && txt.length > 20) script = txt.trim().substring(0, 500);
+      } catch(e){}
+      // Call D-ID API
+      try {
+        var createRes = await fetch('https://api.d-id.com/talks', {
+          method: 'POST',
+          headers: { 'Authorization': key.startsWith('Basic') ? key : 'Basic '+btoa(key+':'), 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            script: { type:'text', input: script, provider:{ type:'microsoft', voice_id:'en-US-JennyNeural' } },
+            source_url: 'https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.jpeg'
+          })
+        });
+        var createData = await createRes.json();
+        if(!createData.id) throw new Error(createData.message||'Failed to create talk');
+        statusEl.textContent = '⏳ Processing video (this takes ~30 seconds)...';
+        // Poll for result
+        var talkId = createData.id, videoUrl = null, attempts = 0;
+        while(attempts < 20){
+          await new Promise(function(r){ setTimeout(r, 3000); });
+          var pollRes = await fetch('https://api.d-id.com/talks/'+talkId, { headers:{ 'Authorization': key.startsWith('Basic') ? key : 'Basic '+btoa(key+':') } });
+          var pollData = await pollRes.json();
+          if(pollData.status === 'done'){ videoUrl = pollData.result_url; break; }
+          if(pollData.status === 'error') throw new Error('D-ID error: '+pollData.error);
+          attempts++;
+        }
+        if(!videoUrl) throw new Error('Timed out waiting for video');
+        didVideo.src = videoUrl;
+        didVideo.style.display = 'block';
+        didVideo.play();
+        statusEl.style.color = '#4caf50';
+        statusEl.textContent = '✅ AI avatar video ready!';
+        localStorage.setItem('hs_did_key', key);
+      } catch(e){
+        statusEl.style.color = '#f44336';
+        statusEl.textContent = '❌ '+e.message;
+      }
     }
 
     function closeClassPlayer(){
-      clearTimeout(_classTimer);
-      if(window.speechSynthesis) window.speechSynthesis.cancel();
-      _classPlaying = false;
+      var frame = document.getElementById('classYTFrame');
+      var vid   = document.getElementById('classDIDVideo');
+      frame.src = ''; vid.pause && vid.pause(); vid.src = '';
       document.getElementById('classPlayerOverlay').style.display = 'none';
     }
+
+    // Restore saved D-ID key
+    window.addEventListener('load', function(){
+      var saved = localStorage.getItem('hs_did_key');
+      var inp = document.getElementById('didApiKeyInput');
+      if(saved && inp) inp.value = saved;
+    });
     // ── END AI CLASS PLAYER ──────────────────────────────────────────
 
         // EVENT FEEDBACK
