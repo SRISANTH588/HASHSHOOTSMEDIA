@@ -2587,6 +2587,8 @@
       alert('Feedback submitted successfully!');
     }
     window.submitShootFeedbackInline = submitShootFeedbackInline;
+
+    function submitCreatorFeedback(assignId){
       assignId = String(assignId);
       var rating = creatorSelectedStars[assignId] || 0;
       if(!rating){ alert('Please select a star rating.'); return; }
