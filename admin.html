@@ -9068,6 +9068,18 @@ Priority Support</textarea></div>
           localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
           allBookings = fbBookings;
           if(currentTab==='bookings'){ updateStats(); renderTable(); }
+          // Re-enrich payments now that bookings are loaded
+          var rawPm = JSON.parse(localStorage.getItem('hs_payments')||'[]');
+          var changed = false;
+          rawPm.forEach(function(p){
+            if(!p.customerName){
+              var rid = p.paymentId||p.razorpayId||'';
+              var bk = fbBookings.find(function(b){ return String(b.id)===String(p.bookingId); })
+                    || fbBookings.find(function(b){ return rid&&(String(b.razorpayId)===rid||String(b.paymentId)===rid); });
+              if(bk){ p.customerName=bk.name; p.service=bk.service||p.service; p.phone=bk.phone||p.phone; p.city=bk.city||p.city; changed=true; }
+            }
+          });
+          if(changed){ localStorage.setItem('hs_payments', JSON.stringify(rawPm)); if(currentTab==='txn-payments') renderPaymentsTab(); }
         });
 
         // Real-time support tickets
