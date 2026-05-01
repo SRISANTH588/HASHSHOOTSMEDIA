@@ -116,7 +116,7 @@
 
   .topbar-right{display:flex;align-items:center;gap:0.75rem;}
 
-  #adminContent{padding:0 1.75rem 3rem;flex:1;overflow-y:auto;}
+  #adminContent{padding:0 1.75rem 3rem;flex:1;overflow-y:visible;}
   .tab-panel.active > .about-form:first-child,
   .tab-panel.active > div:first-child { margin-top:0!important; }
 
@@ -240,7 +240,7 @@
     .tab-btn{padding:0.5rem 1.2rem;border-radius:8px;border:1px solid rgba(201,168,76,0.15);background:transparent;color:var(--muted);font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
     .tab-btn.active,.tab-btn:hover{background:var(--gold);color:var(--text);border-color:transparent;}
     .tab-panel{display:none;margin:0;padding:0;}
-    .tab-panel.active{display:block;padding-top:1.25rem;}
+    .tab-panel.active{display:block;padding-top:0;}
     .about-form{background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.75rem;}
     .about-form h2{font-size:1rem;font-weight:700;color:#fff;margin-bottom:1.5rem;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
@@ -2925,7 +2925,7 @@ Priority Support</textarea></div>
     </div>
 
     <!-- CUSTOMER ISSUES / SUPPORT TICKETS TAB -->
-    <div class="tab-panel" id="tab-support-tickets">
+    <div class="tab-panel" id="tab-support-tickets" style="padding-top:0;">
       <div class="about-form">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
           <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-headset" style="color:#f44336;margin-right:0.5rem;"></i> Customer Issues</h2>
@@ -9625,17 +9625,18 @@ Priority Support</textarea></div>
     window.scrollTo(0,0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    setTimeout(function(){
-      var ac2 = document.getElementById('adminContent');
-      if(ac2) ac2.scrollTop = 0;
-      window.scrollTo(0,0);
-    }, 0);
-    requestAnimationFrame(function(){
-      var ac3 = document.getElementById('adminContent');
-      if(ac3) ac3.scrollTop = 0;
-      window.scrollTo(0,0);
-      setTimeout(function(){ window.scrollTo(0,0); var ac4=document.getElementById('adminContent'); if(ac4) ac4.scrollTop=0; }, 100);
+    // Force scroll on all possible containers
+    ['adminContent','adminMain'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.scrollTop = 0;
     });
+    setTimeout(function(){
+      window.scrollTo(0,0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      var el = document.getElementById('adminContent');
+      if(el) el.scrollTop = 0;
+    }, 50);
     // Mark sidebar item active
     if(btn) btn.classList.add('active');
     // Update URL without reload
