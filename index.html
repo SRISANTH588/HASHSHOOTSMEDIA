@@ -240,80 +240,70 @@
   <!-- HERO -->
   <section class="hero" id="home">
     <div class="hero-content">
-      <p class="hero-tag">The Future of Instant Content Creation</p>
-      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
-      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
+      <!-- Cinematic background -->
+      <div style="position:absolute;inset:0;z-index:0;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,0.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(201,168,76,0.08) 0%,transparent 50%),linear-gradient(180deg,#000 0%,#050505 100%);"></div>
+        <div style="position:absolute;top:10%;left:5%;width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);animation:hsPulse 4s ease-in-out infinite;"></div>
+        <div style="position:absolute;bottom:20%;right:5%;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.04),transparent 70%);animation:hsPulse 6s ease-in-out infinite;"></div>
+      </div>
 
-      <div class="phone-mockup">
-        <div class="phone-glow"></div>
-        <div class="phone-frame" id="phoneFrame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span>9:41</span>
-              <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-            </div>
-            <div class="phone-body">
-              <div class="phone-header anim-slide-down">
-                <div>
-                  <p class="phone-city">Vijayawada ▾</p>
-                  <p class="phone-greeting">Hey, there</p>
-                  <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
-                </div>
-                <div class="phone-bell"><i class="fas fa-bell"></i></div>
-              </div>
-              <div class="phone-actions anim-slide-up" style="animation-delay:0.2s">
-                <div class="phone-action"><div class="phone-action-icon red pulse-red"><i class="fas fa-plus"></i></div><span>Book Now</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-box"></i></div><span>Packages</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-wallet"></i></div><span>My Wallet</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-cog spin-slow"></i></div><span>Settings</span></div>
-              </div>
-              <div class="phone-banner anim-fade-in" style="animation-delay:0.4s">
-                <div class="phone-banner-text">REELS CREATED<br/>AND DELIVERED<br/><strong>ON THE SPOT</strong></div>
-                <div class="phone-banner-img"><i class="fas fa-user-circle"></i></div>
-                <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
-              </div>
-              <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
-              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
-              </div>
-              <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
-                <i class="fas fa-home active"></i>
-                <i class="fas fa-th"></i>
-                <i class="fas fa-wallet"></i>
-                <i class="fas fa-user"></i>
-              </div>
-            </div>
+      <!-- Main hero content -->
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:6rem 2rem 3rem;max-width:900px;margin:0 auto;">
+
+        <!-- Badge -->
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.68rem;font-weight:800;padding:0.4rem 1.1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem;animation:hsFadeUp 0.6s ease both;">
+          <span style="width:6px;height:6px;background:#c9a84c;border-radius:50%;animation:hsPulse 1.5s infinite;"></span>
+          India's #1 On-Demand Content Studio
+        </div>
+
+        <!-- Main heading -->
+        <h1 style="font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;color:#fff;margin-bottom:1.25rem;animation:hsFadeUp 0.7s ease both;letter-spacing:-2px;">
+          Your Story.<br/>
+          <span style="background:linear-gradient(135deg,#c9a84c,#e8c96a,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Shot. Edited.</span><br/>
+          Delivered in <span style="color:#c9a84c;">10 Min.</span>
+        </h1>
+
+        <!-- Subtext -->
+        <p style="font-size:clamp(1rem,2vw,1.2rem);color:#9a9080;max-width:560px;line-height:1.7;margin-bottom:2.5rem;animation:hsFadeUp 0.8s ease both;">
+          Book a certified OG creator near you. We arrive, shoot, edit and deliver your reel — all on the spot. Starting at just <strong style="color:#c9a84c;">₹1,499</strong>.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:3rem;animation:hsFadeUp 0.9s ease both;">
+          <a href="customer.html" style="display:inline-flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-weight:800;font-size:1rem;padding:0.9rem 2.2rem;border-radius:50px;text-decoration:none;box-shadow:0 8px 30px rgba(201,168,76,0.35);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.35)'">
+            <i class="fas fa-bolt"></i> Book Your Shoot
+          </a>
+          <a href="partner.html" style="display:inline-flex;align-items:center;gap:0.6rem;background:transparent;color:#c9a84c;font-weight:700;font-size:1rem;padding:0.9rem 2.2rem;border-radius:50px;text-decoration:none;border:1px solid rgba(201,168,76,0.4);transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
+            <i class="fas fa-users"></i> Join as Creator
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;justify-content:center;animation:hsFadeUp 1s ease both;">
+          <div style="text-align:center;">
+            <div style="font-size:1.8rem;font-weight:900;color:#fff;" id="statReels">50,002+</div>
+            <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:2px;margin-top:0.2rem;">Reels Delivered</div>
+          </div>
+          <div style="width:1px;height:40px;background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:1.8rem;font-weight:900;color:#c9a84c;" id="statRating">5.0/5</div>
+            <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:2px;margin-top:0.2rem;">Rating</div>
+          </div>
+          <div style="width:1px;height:40px;background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:1.8rem;font-weight:900;color:#fff;" id="statMakers">200+</div>
+            <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:2px;margin-top:0.2rem;">Content Makers</div>
           </div>
         </div>
-        <!-- Floating badges -->
-        <div class="float-badge badge-top"><i class="fas fa-bolt"></i> 10 Min Delivery</div>
-        <div class="float-badge badge-bottom"><i class="fas fa-star"></i> 4.9 Rating</div>
-        <div class="float-badge badge-left"><i class="fas fa-camera"></i> Live Now</div>
-      </div>
 
-      <!-- Below Phone -->
-      <div class="below-phone">
-        <div class="hero-pills">
-          <div class="hero-pill"><i class="fab fa-apple"></i> Shot on iPhone</div>
-          <div class="hero-pill"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
-          <div class="hero-pill">🎞️ Content Maker</div>
-        </div>
-        <div class="hero-btns">
-          <a href="booking.html" class="btn btn-book">Book Now</a>
-          <a href="partner.html" class="btn btn-partner">Become a Partner</a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat"><span class="stat-num" id="statReels">50,002+</span><span class="stat-label">Reels Delivered</span></div>
-          <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
-          <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statMakers">200+</span><span class="stat-label">Content Makers</span></div>
+        <!-- Pills -->
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;margin-top:2.5rem;animation:hsFadeUp 1.1s ease both;">
+          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;font-size:0.75rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;"><i class="fab fa-apple"></i> Shot on iPhone</div>
+          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;font-size:0.75rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
+          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;font-size:0.75rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;">🎞️ Same Day Delivery</div>
+          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;font-size:0.75rem;font-weight:600;padding:0.4rem 1rem;border-radius:50px;"><i class="fas fa-map-marker-alt"></i> Vijayawada & Eluru</div>
         </div>
       </div>
-
     </div>
 
     <!-- Chat Widget -->
