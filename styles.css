@@ -147,8 +147,9 @@ body {
 .hero-big {
   font-size: clamp(3rem, 8vw, 7rem); font-weight: 900;
   color: var(--red); line-height: 1; margin-bottom: 3rem;
+  white-space: nowrap; text-align: center; width: 100%;
   text-shadow: 0 0 80px rgba(201,168,76,0.25);
-  letter-spacing: -3px;
+  letter-spacing: -3px; display: block;
 }
 .asterisk { font-size: 0.4em; vertical-align: super; color: var(--red); }
 
