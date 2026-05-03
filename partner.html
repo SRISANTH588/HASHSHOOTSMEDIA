@@ -671,7 +671,7 @@
       Object.keys(data).forEach(function(k){ fd.append(k,data[k]); });
       fd.append('_subject','New Partner Application — '+data.name+' | '+data.city);
       fd.append('_replyto', data.email);
-      await fetch('https://formspree.io/f/xpwzgvkd',{method:'POST',body:fd,headers:{Accept:'application/json'}});
+      await fetch('https://formspree.io/f/mvzlzjgz',{method:'POST',body:fd,headers:{Accept:'application/json'}});
     }catch(e){}
 
     btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Application';
