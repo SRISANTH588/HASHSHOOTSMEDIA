@@ -507,14 +507,16 @@ body {
 
   /* Hero */
   .hero { padding: 5.5rem 1.25rem 2rem; }
-  .hero-big { font-size: clamp(2rem, 10vw, 3.5rem); letter-spacing: -1px; white-space: normal; }
-  .hero-sub { font-size: 0.85rem; }
-  .hero-tag { font-size: 0.75rem; }
-  .phone-frame { width: 220px; }
-  .phone-screen { min-height: 460px; }
-  .float-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
-  .badge-top { top: 40px; right: -8px; }
-  .badge-bottom { bottom: 60px; right: -8px; }
+  .hero-content { max-width: 100%; padding: 0 0.5rem; }
+  .hero-big { font-size: clamp(1.8rem, 8vw, 3rem); letter-spacing: -1px; white-space: normal; }
+  .hero-sub { font-size: 0.8rem; letter-spacing: 1px; }
+  .hero-tag { font-size: 0.7rem; letter-spacing: 1.5px; }
+  .phone-frame { width: 200px; }
+  .phone-screen { min-height: 420px; }
+  .phone-mockup { transform: scale(0.75); transform-origin: top center; }
+  .float-badge { font-size: 0.6rem; padding: 0.3rem 0.6rem; }
+  .badge-top { top: 30px; right: -5px; }
+  .badge-bottom { bottom: 50px; right: -5px; }
   .badge-left { display: none; }
   .hero-pills { gap: 0.5rem; }
   .hero-pill { font-size: 0.78rem; padding: 0.45rem 1rem; }
