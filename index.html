@@ -240,9 +240,11 @@
   <!-- HERO -->
   <section class="hero" id="home">
     <div class="hero-content">
-      <p class="hero-tag">The Future of Instant Content Creation</p>
-      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
-      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
+      <p class="hero-tag"><span style="width:7px;height:7px;background:#c9a84c;border-radius:50%;display:inline-block;margin-right:0.5rem;"></span>INDIA'S #1 ON-DEMAND CONTENT STUDIO</p>
+      <h1 class="hero-sub">Book. Shoot.</h1>
+      <h2 class="hero-big">Create Reels in Minutes<span class="asterisk">*</span></h2>
+      <p style="color:#9a9080;font-size:1rem;line-height:1.7;max-width:500px;margin-bottom:0.5rem;">Professional reels shot, edited &amp; delivered in <strong style="color:#fff;">10 minutes</strong>.<br/>Certified creators at your doorstep &mdash; starting at <strong style="color:#c9a84c;">&#8377;1,499</strong>.</p>
+      <p style="color:#9a9080;font-size:0.95rem;margin-bottom:2rem;">Perfect for &rarr; <span id="heroTyping" style="color:#fff;font-weight:700;"></span><span style="color:#c9a84c;">|</span></p>
 
       <div class="phone-mockup">
         <div class="phone-glow"></div>
@@ -2041,5 +2043,19 @@ s0.parentNode.insertBefore(s1,s0);
     }catch(e){ console.warn('promo banner:',e); }
   })();
   </script>
+<script>
+(function(){
+  var words=['Portraits','Weddings','Reels','Events','Products','Brands','Birthdays','Car Shoots'];
+  var i=0,j=0,del=false;
+  var el=document.getElementById('heroTyping');
+  if(!el)return;
+  function type(){
+    if(!del){el.textContent=words[i].substring(0,j+1);j++;if(j===words[i].length){del=true;setTimeout(type,1500);return;}}
+    else{el.textContent=words[i].substring(0,j-1);j--;if(j===0){del=false;i=(i+1)%words.length;}}
+    setTimeout(type,del?60:100);
+  }
+  setTimeout(type,800);
+})();
+</script>
 </body>
 </html>
