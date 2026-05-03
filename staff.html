@@ -1,3 +1,6 @@
+---
+permalink: /staff/
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1327,7 +1330,9 @@
         } else if(msg.toLowerCase().indexOf('size') > -1 || msg.toLowerCase().indexOf('large') > -1){
           alert('Upload failed: File is too large. Try compressing the video first.');
         } else {
-          alert('Upload failed: ' + msg + '\n\nPlease try again or contact support.');
+          alert('Upload failed: ' + msg + '
+
+Please try again or contact support.');
         }
       });
     }
@@ -1958,14 +1963,26 @@
         var custPhone = booking ? booking.phone : (s.clientPhone||'');
         var orderId = s.orderId || ('OGS-'+new Date().getFullYear()+'-'+String(s.id).slice(-6));
         var staffName = localStorage.getItem('hs_staff_name') || 'Your Creator';
-        var msg = '✅ *Your Shoot is Done!*\n\n'
-          + '📋 *Order ID:* ' + orderId + '\n'
-          + '🎬 *Service:* ' + (s.service||'') + '\n'
-          + '👤 *Creator:* ' + staffName + '\n'
-          + '📅 *Completed:* ' + s.doneAt + '\n\n'
-          + '🌟 *Your edited reel will be delivered shortly!*\n\n'
-          + '🎁 *Rate your experience & get an exciting COUPON or CASHBACK!*\n'
-          + 'Open My Orders → tap “Rate Your Experience” to submit your feedback.\n\n'
+        var msg = '✅ *Your Shoot is Done!*
+
+'
+          + '📋 *Order ID:* ' + orderId + '
+'
+          + '🎬 *Service:* ' + (s.service||'') + '
+'
+          + '👤 *Creator:* ' + staffName + '
+'
+          + '📅 *Completed:* ' + s.doneAt + '
+
+'
+          + '🌟 *Your edited reel will be delivered shortly!*
+
+'
+          + '🎁 *Rate your experience & get an exciting COUPON or CASHBACK!*
+'
+          + 'Open My Orders → tap “Rate Your Experience” to submit your feedback.
+
+'
           + 'Thank you for choosing OG Shoots LUXE! 🚀';
         if(custPhone) sendWA(custPhone, msg, 4);
       })();
@@ -2083,11 +2100,19 @@
         var custPhone = booking ? booking.phone : (s.clientPhone||'');
         var orderId = s.orderId || ('OGS-'+new Date().getFullYear()+'-'+String(s.id).slice(-6));
         var staffName = localStorage.getItem('hs_staff_name') || 'Your Creator';
-        var msg = '📍 *Your Creator Has Arrived!*\n\n'
-          + '📋 *Order ID:* ' + orderId + '\n'
-          + '👤 *Creator:* ' + staffName + '\n'
-          + '⏰ *Arrived at:* ' + arrivedAt + '\n\n'
-          + '⚠️ *Important:* Please be present at the shoot location within *15 minutes*. If you are not available, the shoot will be automatically cancelled.\n\n'
+        var msg = '📍 *Your Creator Has Arrived!*
+
+'
+          + '📋 *Order ID:* ' + orderId + '
+'
+          + '👤 *Creator:* ' + staffName + '
+'
+          + '⏰ *Arrived at:* ' + arrivedAt + '
+
+'
+          + '⚠️ *Important:* Please be present at the shoot location within *15 minutes*. If you are not available, the shoot will be automatically cancelled.
+
+'
           + 'Reply to this message if you need help. 🙏';
         if(custPhone) sendWA(custPhone, msg, 3);
       }
@@ -2878,7 +2903,9 @@
       var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
       
       if(!bankData || !bankData.accNo){
-        alert('\u26A0\uFE0F Bank Details Required\n\nPlease add your bank account details in the Bank tab before requesting a payout.');
+        alert('\u26A0\uFE0F Bank Details Required
+
+Please add your bank account details in the Bank tab before requesting a payout.');
         switchTab('bank', document.getElementById('bankTabBtn'));
         return;
       }
@@ -2888,7 +2915,12 @@
       var maxPayout = Math.min(availableBalance, 10000); // Maximum ₹10,000 per request
       
       if(availableBalance < minPayout){
-        alert('💰 Minimum Payout Not Met\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYour current balance: ₹' + availableBalance.toLocaleString('en-IN') + '\n\nComplete more shoots to reach minimum payout.');
+        alert('💰 Minimum Payout Not Met
+
+Minimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.
+Your current balance: ₹' + availableBalance.toLocaleString('en-IN') + '
+
+Complete more shoots to reach minimum payout.');
         return;
       }
       
@@ -2896,7 +2928,9 @@
         .find(function(r){ return String(r.staffId) === String(staffId) && r.status === 'pending'; });
       
       if(pendingReq){
-        alert('⏳ Payout Request Pending\n\nYou already have a pending payout request of ₹' + pendingReq.amount.toLocaleString('en-IN') + '. Please wait for admin approval.');
+        alert('⏳ Payout Request Pending
+
+You already have a pending payout request of ₹' + pendingReq.amount.toLocaleString('en-IN') + '. Please wait for admin approval.');
         return;
       }
       
@@ -2919,18 +2953,30 @@
       var weeklyLimit = 50000; // ₹50,000 per week
       
       if(todayTotal >= dailyLimit){
-        alert('🚫 Daily Limit Reached\n\nYou have reached your daily payout limit of ₹' + dailyLimit.toLocaleString('en-IN') + '.\nToday\'s total: ₹' + todayTotal.toLocaleString('en-IN') + '\n\nTry again tomorrow.');
+        alert('🚫 Daily Limit Reached
+
+You have reached your daily payout limit of ₹' + dailyLimit.toLocaleString('en-IN') + '.
+Today\'s total: ₹' + todayTotal.toLocaleString('en-IN') + '
+
+Try again tomorrow.');
         return;
       }
       
       if(weekTotal >= weeklyLimit){
-        alert('🚫 Weekly Limit Reached\n\nYou have reached your weekly payout limit of ₹' + weeklyLimit.toLocaleString('en-IN') + '.\nThis week\'s total: ₹' + weekTotal.toLocaleString('en-IN') + '\n\nTry again next week.');
+        alert('🚫 Weekly Limit Reached
+
+You have reached your weekly payout limit of ₹' + weeklyLimit.toLocaleString('en-IN') + '.
+This week\'s total: ₹' + weekTotal.toLocaleString('en-IN') + '
+
+Try again next week.');
         return;
       }
       
       // Check if already processing a request (prevent double submission)
       if(window._payoutProcessing){
-        alert('⏳ Processing Request\n\nPlease wait, your payout request is being processed...');
+        alert('⏳ Processing Request
+
+Please wait, your payout request is being processed...');
         return;
       }
       
@@ -3033,7 +3079,15 @@
             ? '<img src="'+t.image+'" style="width:100%;height:200px;object-fit:cover;display:block;"/>'
             : '<div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:flex;align-items:center;justify-content:center;"><i class="fas fa-tshirt" style="font-size:3rem;color:#c9a84c;opacity:0.3;"></i></div>';
           var mailSubject = encodeURIComponent('Order \u2014 ' + t.name + ' \u2014 ' + staffName);
-          var mailBody = encodeURIComponent('Hi OG Shoots Team,\n\nProduct: ' + t.name + '\nPrice: \u20b9' + t.price + '\nSize: [Please fill]\n\nStaff Name: ' + staffName + '\n\nThank you!');
+          var mailBody = encodeURIComponent('Hi OG Shoots Team,
+
+Product: ' + t.name + '
+Price: \u20b9' + t.price + '
+Size: [Please fill]
+
+Staff Name: ' + staffName + '
+
+Thank you!');
           var payBtnDisabled = hasSizes ? 'opacity:0.45;cursor:not-allowed;pointer-events:none;' : '';
           var payBtnId = 'payBtn_' + i;
           var payBtnClick = hasSizes ? '' : 'onclick="storePayNowBtn(this)"';
@@ -3055,9 +3109,26 @@
       var idEl = document.getElementById('storeIdCard');
       var discountEmail = storeCfg.discountEmail || contactEmail;
       var idMailSubject = encodeURIComponent('ID Card Request \u2014 ' + staffName);
-      var idMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI would like to request my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\n\nPlease process my ID card request.\n\nThank you!');
+      var idMailBody = encodeURIComponent('Hi OG Shoots Team,
+
+I would like to request my official OG Shoots ID Card.
+
+Staff Name: ' + staffName + '
+Staff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '
+
+Please process my ID card request.
+
+Thank you!');
       var discountMailSubject = encodeURIComponent('ID Card Discount Request \u2014 ' + staffName);
-      var discountMailBody = encodeURIComponent('Hi OG Shoots Team,\n\nI am writing to request a discount on my official OG Shoots ID Card.\n\nStaff Name: ' + staffName + '\nStaff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '\nReason for discount: [Please mention your reason]\n\nThank you!');
+      var discountMailBody = encodeURIComponent('Hi OG Shoots Team,
+
+I am writing to request a discount on my official OG Shoots ID Card.
+
+Staff Name: ' + staffName + '
+Staff ID: #' + (localStorage.getItem('hs_staff_id')||'') + '
+Reason for discount: [Please mention your reason]
+
+Thank you!');
       var idPayBtn = idcard.price
         ? '<button onclick="storePayNow(\'OG Shoots ID Card\','+idcard.price+',-1)" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.2s;"><i class="fas fa-credit-card"></i> Pay \u20b9'+Number(idcard.price||0).toLocaleString('en-IN')+'</button>'
         : '';
@@ -3172,7 +3243,13 @@
             orderId: orderId, read: false, createdAt: Date.now()
           });
         }
-        alert('\u2705 Order Placed!\n\nOrder ID: ' + orderId + (paymentId && !isPending ? '\nPayment ID: ' + paymentId : '\nPayment: Pending (Admin will collect)') + '\n\nYour order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
+        alert('\u2705 Order Placed!
+
+Order ID: ' + orderId + (paymentId && !isPending ? '
+Payment ID: ' + paymentId : '
+Payment: Pending (Admin will collect)') + '
+
+Your order for ' + itemName + (selectedSize?' (Size: '+selectedSize+')':'') + ' has been placed. Our team will contact you shortly.');
         renderStore();
       }
 
@@ -3194,7 +3271,13 @@
         new Razorpay(options).open();
       } else {
         // Fallback: show order confirmation modal
-        var confirm = window.confirm('\uD83D\uDED2 Confirm Order\n\nItem: ' + itemName + (selectedSize ? '\nSize: ' + selectedSize : '') + '\nAmount: \u20b9' + Number(price).toLocaleString('en-IN') + '\n\nClick OK to place this order. Payment will be collected by the admin.');
+        var confirm = window.confirm('\uD83D\uDED2 Confirm Order
+
+Item: ' + itemName + (selectedSize ? '
+Size: ' + selectedSize : '') + '
+Amount: \u20b9' + Number(price).toLocaleString('en-IN') + '
+
+Click OK to place this order. Payment will be collected by the admin.');
         if(confirm) saveOrder('PENDING_' + Date.now());
       }
     }
@@ -3227,20 +3310,34 @@
       };
       
       if(!data.name || !data.bankName || !data.accNo || !data.ifsc){ 
-        alert('❌ Missing Required Fields\n\nPlease fill all required fields:\n• Account Holder Name\n• Bank Name\n• Account Number\n• IFSC Code'); 
+        alert('❌ Missing Required Fields
+
+Please fill all required fields:
+• Account Holder Name
+• Bank Name
+• Account Number
+• IFSC Code'); 
         return; 
       }
       
       // Validate IFSC format (4 letters + 7 digits)
       var ifscPattern = /^[A-Z]{4}[0-9]{7}$/;
       if(!ifscPattern.test(data.ifsc)){
-        alert('❌ Invalid IFSC Code\n\nIFSC code should be 11 characters:\n• First 4 letters (bank code)\n• Last 7 digits (branch code)\n\nExample: SBIN0001234');
+        alert('❌ Invalid IFSC Code
+
+IFSC code should be 11 characters:
+• First 4 letters (bank code)
+• Last 7 digits (branch code)
+
+Example: SBIN0001234');
         return;
       }
       
       // Validate account number (6-18 digits)
       if(!/^[0-9]{6,18}$/.test(data.accNo)){
-        alert('❌ Invalid Account Number\n\nAccount number should be 6-18 digits only.');
+        alert('❌ Invalid Account Number
+
+Account number should be 6-18 digits only.');
         return;
       }
       
@@ -4721,20 +4818,32 @@
       var maxPayout = Math.min(w.balance || 0, 10000);
       
       if(!amt || amt < minPayout){
-        alert('❌ Amount Too Low\n\nMinimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.\nYou entered: ₹' + (amt||0).toLocaleString('en-IN'));
+        alert('❌ Amount Too Low
+
+Minimum payout amount is ₹' + minPayout.toLocaleString('en-IN') + '.
+You entered: ₹' + (amt||0).toLocaleString('en-IN'));
         window._payoutProcessing = false;
         return;
       }
       
       if(amt > maxPayout){
-        alert('❌ Amount Too High\n\nMaximum allowed: ₹' + maxPayout.toLocaleString('en-IN') + '\nYou entered: ₹' + amt.toLocaleString('en-IN'));
+        alert('❌ Amount Too High
+
+Maximum allowed: ₹' + maxPayout.toLocaleString('en-IN') + '
+You entered: ₹' + amt.toLocaleString('en-IN'));
         window._payoutProcessing = false;
         return;
       }
       
       // Final confirmation
       var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
-      if(confirm('💳 Confirm Payout Request\n\nAmount: ₹' + amt.toLocaleString('en-IN') + '\nBank: ' + bankData.bankName + '\nAccount: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '\n\nSubmit payout request?')){
+      if(confirm('💳 Confirm Payout Request
+
+Amount: ₹' + amt.toLocaleString('en-IN') + '
+Bank: ' + bankData.bankName + '
+Account: ' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '
+
+Submit payout request?')){
         submitPayoutRequest(amt);
         closePayoutModal();
       } else {
