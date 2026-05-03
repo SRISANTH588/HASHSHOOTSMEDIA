@@ -204,13 +204,13 @@ body {
   width: 90px; height: 26px; background: #000;
   border-radius: 0 0 18px 18px; z-index: 10;
 }
-.phone-screen { background: #0f0f0f; min-height: 560px; }
+.phone-screen { background: #0f0f0f; min-height: 420px; }
 .phone-status {
   display: flex; justify-content: space-between; align-items: center;
   padding: 0.6rem 1.2rem 0.3rem; font-size: 0.7rem; color: #fff;
 }
 .phone-status span:last-child { display: flex; gap: 4px; align-items: center; }
-.phone-body { padding: 0.5rem 1rem 0; }
+.phone-body { padding: 0.4rem 0.75rem 0; }
 
 /* Phone inner animations */
 .anim-slide-down { animation: slideDown 0.6s ease forwards; opacity: 0; }
@@ -221,9 +221,9 @@ body {
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
 .phone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.phone-city { font-size: 0.65rem; color: var(--red); font-weight: 600; }
-.phone-greeting { font-size: 0.75rem; color: #888; }
-.phone-msg { font-size: 0.85rem; color: #fff; line-height: 1.4; margin-top: 0.2rem; }
+.phone-city { font-size: 0.55rem; color: var(--red); font-weight: 600; }
+.phone-greeting { font-size: 0.62rem; color: #888; }
+.phone-msg { font-size: 0.72rem; color: #fff; line-height: 1.4; margin-top: 0.2rem; }
 .phone-msg strong { color: #fff; }
 .phone-bell { color: #888; font-size: 1rem; }
 .phone-actions { display: flex; justify-content: space-between; margin-bottom: 1rem; }
@@ -254,12 +254,12 @@ body {
   animation: shimmer 2.5s infinite;
 }
 @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-.phone-banner-text { font-size: 0.7rem; font-weight: 800; color: #fff; line-height: 1.4; }
+.phone-banner-text { font-size: 0.6rem; font-weight: 800; color: #fff; line-height: 1.4; }
 .phone-banner-img { font-size: 2.5rem; color: rgba(255,255,255,0.3); }
 .banner-dots { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
 .dot.active { background: #fff; width: 14px; border-radius: 3px; }
-.phone-discover { font-size: 0.75rem; color: #fff; font-weight: 600; margin-bottom: 0.5rem; }
+.phone-discover { font-size: 0.62rem; color: #fff; font-weight: 600; margin-bottom: 0.5rem; }
 .phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.4rem; margin-bottom: 0.75rem; }
 .phone-grid-item {
   border-radius: 10px; padding: 0.6rem 0.4rem; display: flex;
