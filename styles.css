@@ -507,8 +507,9 @@ body {
 
   /* Hero */
   .hero { padding: 5.5rem 1.25rem 2rem; }
-  .hero-big { font-size: clamp(3.5rem, 14vw, 6rem); letter-spacing: -2px; }
-  .hero-sub { font-size: 1.1rem; }
+  .hero-big { font-size: clamp(2rem, 10vw, 3.5rem); letter-spacing: -1px; white-space: normal; }
+  .hero-sub { font-size: 0.85rem; }
+  .hero-tag { font-size: 0.75rem; }
   .phone-frame { width: 220px; }
   .phone-screen { min-height: 460px; }
   .float-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
@@ -555,7 +556,7 @@ body {
 
   /* Hero */
   .hero { padding: 5rem 1rem 2rem; }
-  .hero-big { font-size: 5rem; letter-spacing: -2px; }
+  .hero-big { font-size: clamp(1.8rem, 9vw, 3rem); letter-spacing: -1px; white-space: normal; }
   .hero-tag { font-size: 0.7rem; }
   .phone-mockup { transform: scale(0.88); transform-origin: top center; }
   .badge-top, .badge-bottom, .badge-left { display: none; }
@@ -603,7 +604,7 @@ body {
 
 /* Small mobile — up to 360px */
 @media (max-width: 360px) {
-  .hero-big { font-size: 4rem; }
+  .hero-big { font-size: clamp(1.5rem, 8vw, 2.5rem); white-space: normal; }
   .phone-mockup { transform: scale(0.78); transform-origin: top center; }
   #ogLogoWrap { font-size: 2rem !important; letter-spacing: 3px !important; }
   #ogLaunchBtn { padding: 0.8rem 1.8rem !important; }
