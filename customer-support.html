@@ -156,6 +156,27 @@
       tickets.push(ticket);
       localStorage.setItem('hs_support_tickets', JSON.stringify(tickets));
       if(window.fbSave) fbSave('support_tickets', ticket);
+      (async function(){ try{ var fd=new FormData(); fd.append('name',name); fd.append('phone',phone); fd.append('email',email); fd.append('type',type); fd.append('message',msg); fd.append('_replyto',email); await fetch('https://formspree.io/f/xeenebkd',{method:'POST',body:fd,headers:{Accept:'application/json'}}); }catch(e){} })();
+      // Send via Formspree
+      (async function(){
+        try{
+          var fd = new FormData();
+          fd.append('name', name); fd.append('phone', phone); fd.append('email', email);
+          fd.append('type', type); fd.append('message', msg);
+          fd.append('_replyto', email);
+          await fetch('https://formspree.io/f/xeenebkd', {method:'POST', body:fd, headers:{Accept:'application/json'}});
+        }catch(e){ console.error('Formspree error:', e); }
+      })();
+      // Send via Formspree
+      (async function(){
+        try{
+          var fd = new FormData();
+          fd.append('name', name); fd.append('phone', phone); fd.append('email', email);
+          fd.append('type', type); fd.append('message', msg);
+          fd.append('_replyto', email);
+          await fetch('https://formspree.io/f/xeenebkd', {method:'POST', body:fd, headers:{Accept:'application/json'}});
+        }catch(e){ console.error('Formspree error:', e); }
+      })();
       document.getElementById('custName').value = '';
       document.getElementById('custPhone').value = '';
       document.getElementById('custEmail').value = '';
