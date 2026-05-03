@@ -3869,6 +3869,7 @@
       list.push(ticket);
       localStorage.setItem('hs_support_tickets', JSON.stringify(list));
       if(window.fbSave) fbSave('support_tickets', ticket);
+      (async function(){ try{ var fd=new FormData(); fd.append('staffId',staffId); fd.append('staffName',staffName); fd.append('type',type); fd.append('message',msg); fd.append('priority',pri); await fetch('https://formspree.io/f/xgodojyj',{method:'POST',body:fd,headers:{Accept:'application/json'}}); }catch(e){} })();
       if(window.fbSave) fbSave('admin_notifications', {
         type: 'support_ticket',
         title: '\uD83C\uDFAF Support Ticket: '+type,
