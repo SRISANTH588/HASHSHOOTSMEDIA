@@ -1,6 +1,3 @@
----
-permalink: /admin/
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1000,9 +997,7 @@ permalink: /admin/
       btn.disabled=false; btn.innerHTML='<i class="fas fa-upload"></i> Upload to Vibe';
       if(pw) pw.style.display='none';
       if(pl) pl.textContent='';
-      alert('Upload failed:
-
-' + (e.message||'Unknown error'));
+      alert('Upload failed:\n\n' + (e.message||'Unknown error'));
     }
   }
 
@@ -3716,22 +3711,19 @@ Priority Support</textarea></div>
       document.getElementById('hp_bs1_price').value    = hp.bs1_price    || '';
       document.getElementById('hp_bs1_per').value      = hp.bs1_per      || '';
       document.getElementById('hp_bs1_gstnote').value  = hp.bs1_gstnote  || '';
-      document.getElementById('hp_bs1_features').value = hp.bs1_features ? hp.bs1_features.join('
-') : '';
+      document.getElementById('hp_bs1_features').value = hp.bs1_features ? hp.bs1_features.join('\n') : '';
       document.getElementById('hp_bs2_tag').value      = hp.bs2_tag      || '';
       document.getElementById('hp_bs2_name').value     = hp.bs2_name     || '';
       document.getElementById('hp_bs2_tagline').value  = hp.bs2_tagline  || '';
       document.getElementById('hp_bs2_price').value    = hp.bs2_price    || '';
       document.getElementById('hp_bs2_per').value      = hp.bs2_per      || '';
       document.getElementById('hp_bs2_gstnote').value  = hp.bs2_gstnote  || '';
-      document.getElementById('hp_bs2_features').value = hp.bs2_features ? hp.bs2_features.join('
-') : '';
+      document.getElementById('hp_bs2_features').value = hp.bs2_features ? hp.bs2_features.join('\n') : '';
       // Wedding plans
       ['w1','w2','w3','w4'].forEach(function(k){
         var p = document.getElementById('hp_'+k+'_price');    if(p) p.value = hp[k+'_price']    || '';
         var t = document.getElementById('hp_'+k+'_tagline');  if(t) t.value = hp[k+'_tagline']  || '';
-        var f = document.getElementById('hp_'+k+'_features'); if(f) f.value = hp[k+'_features'] ? hp[k+'_features'].join('
-') : '';
+        var f = document.getElementById('hp_'+k+'_features'); if(f) f.value = hp[k+'_features'] ? hp[k+'_features'].join('\n') : '';
       });
       document.getElementById('hp_instagram').value  = hp.instagram  || '';
       document.getElementById('hp_location').value   = hp.location   || '';
@@ -3804,22 +3796,19 @@ Priority Support</textarea></div>
       hp.bs1_price   = document.getElementById('hp_bs1_price').value.trim();
       hp.bs1_per     = document.getElementById('hp_bs1_per').value.trim();
       hp.bs1_gstnote = document.getElementById('hp_bs1_gstnote').value.trim();
-      hp.bs1_features= document.getElementById('hp_bs1_features').value.split('
-').map(function(f){return f.trim();}).filter(Boolean);
+      hp.bs1_features= document.getElementById('hp_bs1_features').value.split('\n').map(function(f){return f.trim();}).filter(Boolean);
       hp.bs2_tag     = document.getElementById('hp_bs2_tag').value.trim();
       hp.bs2_name    = document.getElementById('hp_bs2_name').value.trim();
       hp.bs2_tagline = document.getElementById('hp_bs2_tagline').value.trim();
       hp.bs2_price   = document.getElementById('hp_bs2_price').value.trim();
       hp.bs2_per     = document.getElementById('hp_bs2_per').value.trim();
       hp.bs2_gstnote = document.getElementById('hp_bs2_gstnote').value.trim();
-      hp.bs2_features= document.getElementById('hp_bs2_features').value.split('
-').map(function(f){return f.trim();}).filter(Boolean);
+      hp.bs2_features= document.getElementById('hp_bs2_features').value.split('\n').map(function(f){return f.trim();}).filter(Boolean);
       // Wedding plans
       ['w1','w2','w3','w4'].forEach(function(k){
         var p = document.getElementById('hp_'+k+'_price');    hp[k+'_price']    = p ? p.value.trim() : '';
         var t = document.getElementById('hp_'+k+'_tagline');  hp[k+'_tagline']  = t ? t.value.trim() : '';
-        var f = document.getElementById('hp_'+k+'_features'); hp[k+'_features'] = f ? f.value.split('
-').map(function(x){return x.trim();}).filter(Boolean) : [];
+        var f = document.getElementById('hp_'+k+'_features'); hp[k+'_features'] = f ? f.value.split('\n').map(function(x){return x.trim();}).filter(Boolean) : [];
       });
       hp.email       = document.getElementById('hp_email').value.trim();
       hp.instagram   = document.getElementById('hp_instagram').value.trim();
@@ -3859,8 +3848,7 @@ Priority Support</textarea></div>
           var el = document.getElementById('wp_'+k+'_'+f);
           if(!el) return;
           hp[k+'_'+f] = f==='features'
-            ? el.value.split('
-').map(function(x){return x.trim();}).filter(Boolean)
+            ? el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean)
             : el.value.trim();
         });
       });
@@ -3879,8 +3867,7 @@ Priority Support</textarea></div>
           if(!el) return;
           var val = hp[k+'_'+f];
           if(val === undefined || val === '') return;
-          el.value = Array.isArray(val) ? val.join('
-') : val;
+          el.value = Array.isArray(val) ? val.join('\n') : val;
         });
       });
     }
@@ -4666,15 +4653,13 @@ Priority Support</textarea></div>
       // Convert to CSV
       var csv = 'data:text/csv;charset=utf-8,';
       var headers = Object.keys(exportData[0] || {});
-      csv += headers.join(',') + '
-';
+      csv += headers.join(',') + '\n';
       
       exportData.forEach(function(row) {
         csv += headers.map(function(header) {
           var value = row[header] || '';
           return '"' + String(value).replace(/"/g, '""') + '"';
-        }).join(',') + '
-';
+        }).join(',') + '\n';
       });
       
       // Download
@@ -5421,10 +5406,8 @@ Priority Support</textarea></div>
       ['cp_bannerColor','cp_bannerTextColor','cp_btnColor','cp_btnTextColor','cp_bgColor','cp_cardColor','cp_accentColor'].forEach(function(id){
         var el = document.getElementById(id); if(el) cfg[id] = el.value;
       });
-      // Normalize services: strip , clean blank lines
-      if(cfg.cp_services) cfg.services = cfg.cp_services.replace(//g,'').split('
-').filter(function(s){ return s.trim(); }).join('
-');
+      // Normalize services: strip \r, clean blank lines
+      if(cfg.cp_services) cfg.services = cfg.cp_services.replace(/\r/g,'').split('\n').filter(function(s){ return s.trim(); }).join('\n');
       localStorage.setItem('hs_customer_page', JSON.stringify(cfg));
       (async function(){try{var f=await _fbAdmin();if(f)await f.s.setDoc(f.s.doc(f.db,"settings","customer_page"),cfg,{merge:true});}catch(e){}})();
       var t = document.getElementById('cpToast'); if(t){ t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
@@ -5500,8 +5483,7 @@ Priority Support</textarea></div>
           console.log('Demo saved to Firebase:', demo.id);
         }catch(e){
           console.error('createDemo Firebase error:', e);
-          alert('Demo saved locally but Firebase sync failed: ' + e.message + '
-Staff may not see it.');
+          alert('Demo saved locally but Firebase sync failed: ' + e.message + '\nStaff may not see it.');
         }
       })();
       if(toast){toast.textContent='Demo session created!';toast.style.color='#4caf50';toast.style.display='block';setTimeout(function(){toast.style.display='none';},3000);}
@@ -6267,26 +6249,15 @@ Staff may not see it.');
         var staffLines = selectedIds.map(function(sid){
           var sm = allStaff2.find(function(s){ return String(s.id)===String(sid); });
           return sm ? ('\ud83d\udc64 *' + sm.name + '*' + (sm.phone ? '  \ud83d\udcde ' + sm.phone : '') + (sm.email ? '  \u2709\ufe0f ' + sm.email : '')) : '';
-        }).filter(Boolean).join('
-');
+        }).filter(Boolean).join('\n');
         var firstShoot = assigned[assigned.length - selectedIds.length];
         var orderId2 = firstShoot ? firstShoot.orderId : '';
-        var waMsg = '\ud83c\udf89 *Creator Assigned to Your Shoot!*
-
-'
-          + '\ud83d\udccb *Order ID:* ' + orderId2 + '
-'
-          + '\ud83d\udcf8 *Service:* ' + (booking2 ? booking2.service : '') + '
-'
-          + '\ud83d\udcc5 *Date:* ' + date + ' at ' + time + '
-'
-          + '\ud83d\udccd *Location:* ' + (booking2 ? (booking2.location || booking2.city) : '') + '
-
-'
-          + '\ud83d\udc65 *Your Assigned Creator(s):*
-' + staffLines + '
-
-'
+        var waMsg = '\ud83c\udf89 *Creator Assigned to Your Shoot!*\n\n'
+          + '\ud83d\udccb *Order ID:* ' + orderId2 + '\n'
+          + '\ud83d\udcf8 *Service:* ' + (booking2 ? booking2.service : '') + '\n'
+          + '\ud83d\udcc5 *Date:* ' + date + ' at ' + time + '\n'
+          + '\ud83d\udccd *Location:* ' + (booking2 ? (booking2.location || booking2.city) : '') + '\n\n'
+          + '\ud83d\udc65 *Your Assigned Creator(s):*\n' + staffLines + '\n\n'
           + 'Your creator will arrive at the location on time. Track your order in the OG Shoots app. \ud83d\ude80';
         // WhatsApp popup removed
       })();
@@ -6615,205 +6586,97 @@ Staff may not see it.');
     // Step-specific messages for Shoot Tracker
     var _stepMessages = {
       confirmed: function(a){
-        return '🎬 *OG SHOOTS LUXE* — Booking Confirmed!
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'📋 *ORDER DETAILS*
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-'
-          +'📸 Service: *'+a.service+'*
-'
-          +'📅 Date: *'+a.date+'*
-'
-          +'⏰ Time: *'+a.time+'*
-'
-          +'📍 Location: *'+(a.location||a.city||'—')+'*
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'👤 *YOUR CREATOR*
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'🎥 Name: *'+a.staffName+'*
-'
-          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*
-':'')
-          +'🏆 Certified OG Shoots Creator
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*, your shoot is confirmed! Please be ready at the location on time. Our creator will arrive and deliver your content on the spot.
-
-'
-          +'For any queries: wa.me/916304279351
-'
+        return '🎬 *OG SHOOTS LUXE* — Booking Confirmed!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'👤 *YOUR CREATOR*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🎥 Name: *'+a.staffName+'*\n'
+          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*\n':'')
+          +'🏆 Certified OG Shoots Creator\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*, your shoot is confirmed! Please be ready at the location on time. Our creator will arrive and deliver your content on the spot.\n\n'
+          +'For any queries: wa.me/916304279351\n'
           +'— *OG Shoots Media* 🚀';
       },
       arrived: function(a){
-        return '📍 *OG SHOOTS LUXE* — Creator Arrived!
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*! 👋
-
-'
-          +'Your creator has arrived at the location!
-
-'
-          +'🎥 *'+a.staffName+'* is ready for your *'+a.service+'* shoot.
-'
-          +'📍 Location: *'+(a.location||a.city||'—')+'*
-'
-          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-
-'
-          +'Please come out — your creator is waiting! 🙏
-
-'
+        return '📍 *OG SHOOTS LUXE* — Creator Arrived!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 👋\n\n'
+          +'Your creator has arrived at the location!\n\n'
+          +'🎥 *'+a.staffName+'* is ready for your *'+a.service+'* shoot.\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n\n'
+          +'Please come out — your creator is waiting! 🙏\n\n'
           +'— *OG Shoots Media* 🚀';
       },
       noshow: function(a){
-        return '⚠️ *OG SHOOTS LUXE* — Missed Shoot
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*,
-
-'
-          +'Our creator *'+a.staffName+'* arrived at *'+(a.location||a.city||'your location')+'* for your *'+a.service+'* shoot on *'+a.date+'* but could not find you.
-
-'
-          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-
-'
-          +'Please contact us to reschedule your shoot at no extra charge.
-
-'
-          +'📞 WhatsApp: wa.me/916304279351
-
-'
+        return '⚠️ *OG SHOOTS LUXE* — Missed Shoot\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*,\n\n'
+          +'Our creator *'+a.staffName+'* arrived at *'+(a.location||a.city||'your location')+'* for your *'+a.service+'* shoot on *'+a.date+'* but could not find you.\n\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n\n'
+          +'Please contact us to reschedule your shoot at no extra charge.\n\n'
+          +'📞 WhatsApp: wa.me/916304279351\n\n'
           +'— *OG Shoots Media* 🚀';
       },
       done: function(a){
-        return '✅ *OG SHOOTS LUXE* — Shoot Complete!
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*! 🎉
-
-'
-          +'Your *'+a.service+'* shoot is complete!
-
-'
-          +'📋 *ORDER DETAILS*
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-'
-          +'📸 Service: *'+a.service+'*
-'
-          +'📅 Date: *'+a.date+'*
-'
-          +'⏰ Time: *'+a.time+'*
-'
-          +'📍 Location: *'+(a.location||a.city||'—')+'*
-
-'
-          +'👤 *CREATOR DETAILS*
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'🎥 Name: *'+a.staffName+'*
-'
-          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*
-':'')
-          +(a.staffEmail?'📧 Email: *'+a.staffEmail+'*
-':'')
-          +'🏆 Certified OG Shoots Creator
-
-'
-          +'⭐ Rate your experience & get an exclusive coupon!
-
-'
+        return '✅ *OG SHOOTS LUXE* — Shoot Complete!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 🎉\n\n'
+          +'Your *'+a.service+'* shoot is complete!\n\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🆔 Order ID: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'👤 *CREATOR DETAILS*\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'🎥 Name: *'+a.staffName+'*\n'
+          +(a.staffPhone?'📞 Contact: *'+a.staffPhone+'*\n':'')
+          +(a.staffEmail?'📧 Email: *'+a.staffEmail+'*\n':'')
+          +'🏆 Certified OG Shoots Creator\n\n'
+          +'⭐ Rate your experience & get an exclusive coupon!\n\n'
           +'— *OG Shoots Media* 🚀';
       },
       paid: function(a){
-        return '🎁 *OG SHOOTS LUXE* — Content Delivered!
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*! 🎊
-
-'
-          +'Your *'+a.service+'* content has been delivered!
-
-'
-          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-'
-          +'🎥 Creator: *'+a.staffName+'*
-
-'
-          +'Thank you for choosing OG Shoots! We hope you love your content. 💛
-
-'
-          +'⭐ Rate & get an exclusive coupon on your next shoot!
-'
-          +'📞 Support: wa.me/916304279351
-
-'
+        return '🎁 *OG SHOOTS LUXE* — Content Delivered!\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 🎊\n\n'
+          +'Your *'+a.service+'* content has been delivered!\n\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'🎥 Creator: *'+a.staffName+'*\n\n'
+          +'Thank you for choosing OG Shoots! We hope you love your content. 💛\n\n'
+          +'⭐ Rate & get an exclusive coupon on your next shoot!\n'
+          +'📞 Support: wa.me/916304279351\n\n'
           +'— *OG Shoots Media* 🚀';
       },
       reminder: function(a){
-        return '🔔 *OG SHOOTS LUXE* — Shoot Reminder
-
-'
-          +'━━━━━━━━━━━━━━━━━━━━━━
-'
-          +'Hi *'+a.clientName+'*! 👋
-
-'
-          +'This is a reminder for your upcoming shoot!
-
-'
-          +'📋 *ORDER DETAILS*
-'
-          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*
-'
-          +'📸 Service: *'+a.service+'*
-'
-          +'📅 Date: *'+a.date+'*
-'
-          +'⏰ Time: *'+a.time+'*
-'
-          +'📍 Location: *'+(a.location||a.city||'—')+'*
-
-'
-          +'👤 *YOUR CREATOR*
-'
-          +'🎥 *'+a.staffName+'*'+(a.staffPhone?' — '+a.staffPhone:'')+' will be there!
-
-'
-          +'Please be ready on time. See you soon! 🚀
-
-'
+        return '🔔 *OG SHOOTS LUXE* — Shoot Reminder\n\n'
+          +'━━━━━━━━━━━━━━━━━━━━━━\n'
+          +'Hi *'+a.clientName+'*! 👋\n\n'
+          +'This is a reminder for your upcoming shoot!\n\n'
+          +'📋 *ORDER DETAILS*\n'
+          +'🆔 Order: *'+(a.orderId||('OGS-'+String(a.id).slice(-6)))+'*\n'
+          +'📸 Service: *'+a.service+'*\n'
+          +'📅 Date: *'+a.date+'*\n'
+          +'⏰ Time: *'+a.time+'*\n'
+          +'📍 Location: *'+(a.location||a.city||'—')+'*\n\n'
+          +'👤 *YOUR CREATOR*\n'
+          +'🎥 *'+a.staffName+'*'+(a.staffPhone?' — '+a.staffPhone:'')+' will be there!\n\n'
+          +'Please be ready on time. See you soon! 🚀\n\n'
           +'— *OG Shoots Media* 🚀';
       },
-      custom: function(a){ return 'Hi *'+a.clientName+'*, 
-
-— *OG Shoots Media* 🚀'; }
+      custom: function(a){ return 'Hi *'+a.clientName+'*, \n\n— *OG Shoots Media* 🚀'; }
     };
 
     function sendStepMsg(id, step){
@@ -6822,9 +6685,7 @@ Staff may not see it.');
       if(!a) return;
       var phone = (a.clientPhone||'').replace(/\D/g,'').slice(-10);
       if(!phone){ alert('No customer phone number found.'); return; }
-      var defaultMsg = _stepMessages[step] ? _stepMessages[step](a) : 'Hi '+a.clientName+', 
-
-— OG Shoots Media';
+      var defaultMsg = _stepMessages[step] ? _stepMessages[step](a) : 'Hi '+a.clientName+', \n\n— OG Shoots Media';
       var msg = prompt('Edit message before sending to '+a.clientName+':', defaultMsg);
       if(!msg) return;
       window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank');
@@ -6971,11 +6832,7 @@ Staff may not see it.');
       var r = reqs.find(function(x){ return x.id === reqId; });
       if(!r) return;
       if(r.status === 'approved') { alert('This withdrawal has already been approved.'); return; }
-      if(!confirm('Approve withdrawal of ₹' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?
-
-Bank: ' + r.bankName + '
-A/C: ' + r.accNo + '
-IFSC: ' + r.ifsc)) return;
+      if(!confirm('Approve withdrawal of ₹' + r.amount.toLocaleString('en-IN') + ' to ' + r.staffName + '?\n\nBank: ' + r.bankName + '\nA/C: ' + r.accNo + '\nIFSC: ' + r.ifsc)) return;
       r.status = 'approved';
       r.processedAt = new Date().toLocaleString();
       localStorage.setItem('hs_payout_requests', JSON.stringify(reqs));
@@ -7637,8 +7494,7 @@ IFSC: ' + r.ifsc)) return;
       if(!confirm('Accept this enquiry and convert to booking?')) return;
 
       // Admin enters amount to charge
-      var amtInput = prompt('Enter the amount (\u20b9) to charge this customer:
-(This will show as Pay Now after you confirm the booking)', '');
+      var amtInput = prompt('Enter the amount (\u20b9) to charge this customer:\n(This will show as Pay Now after you confirm the booking)', '');
       if(amtInput === null) return;
       var payAmount = parseInt(amtInput) || 0;
       if(!payAmount){ if(!confirm('No amount entered. Continue without payment amount?')) return; }
@@ -8626,8 +8482,7 @@ IFSC: ' + r.ifsc)) return;
       var doc = _mktDocs ? _mktDocs.find(function(d){ return d.id===id; }) : null;
       var planPrices = {'Basic':9999,'Standard':16999,'Premium':25999};
       var defaultAmt = doc ? (planPrices[doc.plan]||0) : 0;
-      var amtInput = prompt('Enter payment amount (\u20b9) for this enquiry:
-(Plan: '+(doc?doc.plan:'')+')', defaultAmt);
+      var amtInput = prompt('Enter payment amount (\u20b9) for this enquiry:\n(Plan: '+(doc?doc.plan:'')+')', defaultAmt);
       if(amtInput === null) return;
       var payAmount = parseInt(amtInput)||0;
       if(payAmount <= 0){ alert('Please enter a valid amount.'); return; }

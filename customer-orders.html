@@ -1,6 +1,3 @@
----
-permalink: /customer-orders/
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1109,9 +1106,7 @@ permalink: /customer-orders/
 
       } catch(e){
         if(btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback'; }
-        alert('Could not submit feedback. Please check your internet connection and try again.
-
-Error: ' + e.message);
+        alert('Could not submit feedback. Please check your internet connection and try again.\n\nError: ' + e.message);
         return;
       }
 

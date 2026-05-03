@@ -1,6 +1,3 @@
----
-permalink: /customer/
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -559,12 +556,7 @@ permalink: /customer/
       var email = (localStorage.getItem('hs_user')||'').toLowerCase();
       var name  = localStorage.getItem('hs_customer_name')||email;
       var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
-      if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?
-
-This is a one-time lifetime membership.
-Once activated, it CANNOT be cancelled or refunded.
-
-The membership fee will be added to your wallet.')) return;
+      if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\nThe membership fee will be added to your wallet.')) return;
       // Generate unique card number
       var cardNumber = 'LUXE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
       var card = { email:email, name:name, cardNumber:cardNumber, active:true, activatedAt:new Date().toLocaleString(), price:price };
@@ -580,11 +572,7 @@ The membership fee will be added to your wallet.')) return;
       }catch(e){ alert('Error activating card: '+e.message); return; }
       localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
       localStorage.setItem('hs_is_premium','1');
-      alert('\u2705 Welcome to OG Shoots Luxe!
-
-Your card number: '+cardNumber+'
-
-You are now a lifetime Luxe member!');
+      alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card number: '+cardNumber+'\n\nYou are now a lifetime Luxe member!');
       renderPremiumCard();
     }
 
@@ -683,9 +671,7 @@ You are now a lifetime Luxe member!');
             localStorage.setItem('hs_bookings', JSON.stringify(bks));
             document.getElementById('mktPaymentBanner').style.display='none';
             _mktEnquiryDoc = null;
-            alert('\u2705 Payment successful! Your marketing package booking is confirmed.
-
-Payment ID: '+response.razorpay_payment_id);
+            alert('\u2705 Payment successful! Your marketing package booking is confirmed.\n\nPayment ID: '+response.razorpay_payment_id);
           }catch(e){ alert('Payment recorded but booking failed: '+e.message); }
         },
         modal: { ondismiss: function(){ console.log('Payment dismissed'); } }
@@ -780,9 +766,7 @@ Payment ID: '+response.razorpay_payment_id);
             localStorage.setItem('hs_bookings', JSON.stringify(bks));
             document.getElementById('mktPaymentBanner').style.display='none';
             _mktEnquiryDoc = null;
-            alert('\u2705 Payment successful! Your marketing package booking is confirmed.
-
-Payment ID: '+response.razorpay_payment_id);
+            alert('\u2705 Payment successful! Your marketing package booking is confirmed.\n\nPayment ID: '+response.razorpay_payment_id);
           }catch(e){ alert('Payment recorded but booking failed: '+e.message); }
         },
         modal:{ondismiss:function(){console.log('Payment dismissed');}}
@@ -862,8 +846,7 @@ Payment ID: '+response.razorpay_payment_id);
 
     function openPlanPreview(serviceName){
       var cfg = JSON.parse(localStorage.getItem('hs_customer_page') || '{}');
-      var svcs = cfg.services ? (Array.isArray(cfg.services) ? cfg.services : cfg.services.split(/?
-/).filter(function(s){ return s.trim(); })) : [];
+      var svcs = cfg.services ? (Array.isArray(cfg.services) ? cfg.services : cfg.services.split(/\r?\n/).filter(function(s){ return s.trim(); })) : [];
       var match = svcs.find(function(s){ return s.split('|')[0].trim().toLowerCase() === serviceName.trim().toLowerCase(); });
       var parts = match ? match.split('|') : [];
       var planName = parts[0] ? parts[0].trim() : serviceName;
@@ -1006,8 +989,7 @@ Payment ID: '+response.razorpay_payment_id);
     // Services — format: Name|Price|Description (price/desc optional)
     const sel = document.getElementById('service');
     const services = c.services
-      ? (Array.isArray(c.services) ? c.services : c.services.split(/?
-/).filter(function(s){ return s.trim(); }))
+      ? (Array.isArray(c.services) ? c.services : c.services.split(/\r?\n/).filter(function(s){ return s.trim(); }))
       : ['Reel Shoot','Portrait Session','Event Coverage','Product Shoot','Wedding Photography','Food Photography'];
     services.forEach(s => {
       const o = document.createElement('option');
