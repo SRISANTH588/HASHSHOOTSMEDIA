@@ -192,7 +192,8 @@ body {
 .phone-screen { background: #0f0f0f; display: flex; flex-direction: column; }
 .phone-status {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 1.8rem 1rem 0.3rem; font-size: 0.68rem; color: #fff; flex-shrink: 0;
+  padding: 0.6rem 1rem 0.3rem; font-size: 0.68rem; color: #fff; flex-shrink: 0;
+  position: relative; z-index: 11; margin-top: 0;
 }
 .phone-status span:last-child { display: flex; gap: 4px; align-items: center; }
 .phone-body { padding: 0.3rem 0.85rem 0; display: flex; flex-direction: column; }
@@ -557,7 +558,7 @@ body {
   .hero-tag { font-size: 3vw; white-space: nowrap; }
   .phone-mockup { transform: scale(1); transform-origin: top center; }
   .phone-frame { width: 60vw; height: auto; border-radius: 34px; }
-  .phone-status { padding: 3.5rem 1rem 0.5rem; }
+  .phone-status { padding: 0.6rem 1rem 0.3rem; }
   .phone-body { padding: 0.6rem 0.75rem 0; }
   .phone-header { margin-bottom: 1rem; }
   .phone-actions { margin-bottom: 1rem; }
