@@ -245,9 +245,9 @@ body {
 .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
 .dot.active { background: #fff; width: 14px; border-radius: 3px; }
 .phone-discover { font-size: 0.75rem; color: #fff; font-weight: 600; margin-bottom: 0.35rem; flex-shrink: 0; }
-.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; margin-bottom: 0; flex: 1; }
+.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; height: 100%; }
 .phone-grid-item {
-  border-radius: 10px; padding: 0; display: flex;
+  border-radius: 10px; display: flex;
   flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem;
   font-size: 0.6rem; color: #fff; transition: transform 0.2s;
   animation: gridPop 0.4s ease backwards;
