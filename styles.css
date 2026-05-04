@@ -170,6 +170,7 @@ body {
 .phone-mockup {
   display: flex; justify-content: center;
   position: relative; flex-shrink: 0;
+  transform: scale(0.78); transform-origin: top center;
   animation: phoneFloat 4s ease-in-out infinite;
 }
 @keyframes phoneFloat {
@@ -189,7 +190,7 @@ body {
   50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
 }
 .phone-frame {
-  width: 220px; background: #0d0d0d; border-radius: 40px;
+  width: 280px; background: #0d0d0d; border-radius: 40px;
   border: 1px solid rgba(201,168,76,0.2);
   box-shadow: 0 40px 80px rgba(0,0,0,0.95), 0 0 80px rgba(201,168,76,0.12), 0 0 0 1px rgba(201,168,76,0.06), inset 0 1px 0 rgba(201,168,76,0.1);
   overflow: hidden; position: relative; z-index: 1;
