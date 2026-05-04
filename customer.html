@@ -164,13 +164,35 @@
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     @keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+  
+  @media(max-width:600px){
+    .container{padding:0 0.75rem 2rem!important;}
+    h1{font-size:1.4rem!important;}
+    .stat-card .num{font-size:1.4rem!important;}
+    table{font-size:0.75rem!important;}
+    th,td{padding:0.5rem 0.6rem!important;}
+    .about-form{padding:1rem!important;}
+    .form-row{grid-template-columns:1fr!important;}
+    .stats-row{grid-template-columns:1fr 1fr!important;}
+    .filters{gap:0.35rem!important;}
+    .filter-btn{font-size:0.7rem!important;padding:0.35rem 0.65rem!important;}
+    .tab-btn{font-size:0.72rem!important;padding:0.4rem 0.75rem!important;}
+    .page-header{flex-direction:column!important;}
+    .nav-right{gap:0.5rem!important;}
+    .search-bar{max-width:100%!important;width:100%!important;}
+  }
+  @media(max-width:900px){
+    .stats-row{grid-template-columns:repeat(2,1fr)!important;}
+    .container{padding:0 1rem 2rem!important;}
+  }
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-fixes.js"></script>
 </head>
 <body>
+<div id="promoBanner" style="display:none;"></div>
   <nav>
-    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup> <sup style="font-size:0.45em;font-weight:700;color:var(--gold);letter-spacing:2px;vertical-align:super;opacity:0.85;">LUXE</sup></div>
+    <div class="logo"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
     <div class="nav-right">
       <span id="welcomeMsg">Welcome, Customer</span>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -179,12 +201,9 @@
   <!-- TAB NAV -->
   <div style="background:#0a0a0a;border-bottom:1px solid rgba(201,168,76,0.06);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
     <button class="ctab active" onclick="showTab('home',this)"><i class="fas fa-house"></i> Home</button>
-    <button class="ctab" onclick="showTab('book',this)"><i class="fas fa-camera"></i> Book</button>
-    <a class="ctab" href="customer-orders.html"><i class="fas fa-list"></i> My Orders</a>
-    <a class="ctab" href="customer-support.html"><i class="fas fa-headset"></i> Support</a>
-    <a class="ctab" href="customer-wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
-    <a class="ctab" id="testiTab" onclick="showTab('testimonials',this);return false;" href="#"><i class="fas fa-play-circle"></i> Testimonials</a>
-    <a class="ctab" href="customer-profile.html"><i class="fas fa-user"></i> Profile</a>
+    <a class="ctab" href="vibe.html"><i class="fas fa-fire"></i> Discover the Vibe</a>
+    <a class="ctab" href="partner.html"><i class="fas fa-handshake"></i> Become a Partner</a>
+    <a class="ctab" href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
   </div>
 
   <div class="container">
@@ -220,12 +239,25 @@
             <div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Completed</div>
           </div>
         </div>
+
       </div>
     </div>
 
     <!-- BOOK TAB -->
     <div class="tab-section" id="tab-book">
       <div style="padding-top:2rem;">
+        <!-- MARKETING ENQUIRY PAYMENT BANNER -->
+        <div id="mktPaymentBanner" style="display:none;background:linear-gradient(135deg,rgba(156,39,176,0.12),rgba(33,150,243,0.08));border:1px solid rgba(156,39,176,0.3);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
+            <div style="width:40px;height:40px;background:linear-gradient(135deg,#9c27b0,#673ab7);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-bullhorn" style="color:#fff;"></i></div>
+            <div>
+              <div style="font-size:0.95rem;font-weight:900;color:#fff;">Marketing Package Accepted!</div>
+              <div style="font-size:0.75rem;color:#9a9080;margin-top:0.1rem;">Your enquiry has been accepted. Complete payment to confirm your booking.</div>
+            </div>
+          </div>
+          <div id="mktPaymentDetails" style="background:rgba(0,0,0,0.3);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#d4c9a8;"></div>
+          <button id="mktPayBtn" onclick="payMktEnquiry()" style="width:100%;background:linear-gradient(135deg,#9c27b0,#673ab7);color:#fff;border:none;border-radius:10px;padding:0.85rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-credit-card"></i> Pay &amp; Confirm Booking</button>
+        </div>
         <h1 class="page-title" id="pageTitle2">Book Your <span style="color:#c9a84c;">Shoot</span></h1>
         <p class="subtitle" id="pageSubtitle2">Fill in the details and we'll assign a shooter for you.</p>
 
@@ -239,7 +271,7 @@
         </div>
         <div class="form-group"><label id="lbl_city">City</label><input type="text" id="city" placeholder="Your city"/></div>
         <div class="form-group" id="dateGroup"><label>Date</label><input type="date" id="date"/></div>
-        <div class="form-group" id="timeGroup"><label>Time</label><input type="time" id="time"/></div>
+        <div class="form-group" id="timeGroup"><label>Time</label><input type="time" id="time" min="00:00" max="23:59" style="background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.7rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;width:100%;color-scheme:dark;"/></div>
         <div class="form-group full" id="creatorGroup">
           <label>Preferred Creator <span style="color:#9a9080;font-weight:400;">(optional)</span></label>
           <select id="preferredCreator"><option value="">No preference — Admin will assign</option></select>
@@ -280,6 +312,73 @@
       <div id="demoFeedbackList"></div>
     </div>
 
+    <!-- FEEDBACK TAB -->
+    <div class="tab-section" id="tab-feedback" style="display:none;">
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;">&#128172; App Feedback</h2>
+      <p style="font-size:0.82rem;color:#9a9080;margin-bottom:1.5rem;">Share your experience with OG SHOOTS. Your feedback helps us improve.</p>
+      <div style="text-align:center;padding:1rem 0;">
+        <button onclick="openAppFeedbackModal()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:50px;padding:0.9rem 2.5rem;font-size:0.95rem;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:1px;box-shadow:0 4px 20px rgba(201,168,76,0.35);display:inline-flex;align-items:center;gap:0.6rem;">
+          <i class="fas fa-comment-dots"></i> Give App Feedback
+        </button>
+      </div>
+    </div>
+
+    <!-- APP FEEDBACK MODAL -->
+    <div id="appFeedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99999;align-items:flex-end;justify-content:center;">
+      <div style="background:#1a1a1a;border-radius:24px 24px 0 0;width:100%;max-width:480px;overflow:hidden;animation:afSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);">
+        <style>
+          @keyframes afSlideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+          .af-type-chip{padding:0.45rem 1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#9a9080;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.18s;white-space:nowrap;}
+          .af-type-chip.active{background:rgba(201,168,76,0.18);border-color:#c9a84c;color:#c9a84c;}
+          .af-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:0.9rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;box-sizing:border-box;}
+          .af-input:focus{border-color:rgba(201,168,76,0.4);}
+          .af-star{font-size:2.2rem;cursor:pointer;color:#2a2a2a;transition:color 0.15s;line-height:1;}
+          .af-star.lit{color:#c9a84c;}
+        </style>
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;align-items:center;gap:0.85rem;">
+            <div style="width:44px;height:44px;background:#222;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">&#128172;</div>
+            <div>
+              <div style="font-size:1.05rem;font-weight:900;color:#fff;">App Feedback</div>
+              <div style="font-size:0.75rem;color:#6a6050;">Help us improve OG Shoots</div>
+            </div>
+          </div>
+          <button onclick="closeAppFeedbackModal()" style="background:none;border:none;color:#6a6050;font-size:1.3rem;cursor:pointer;padding:0.25rem;">&#10005;</button>
+        </div>
+        <!-- Body -->
+        <div style="padding:1.5rem;overflow-y:auto;max-height:70vh;">
+          <div id="afDone" style="display:none;text-align:center;padding:2rem 0;">
+            <div style="font-size:3rem;margin-bottom:0.75rem;">&#9989;</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Thank you!</div>
+            <div style="font-size:0.85rem;color:#9a9080;">Your feedback has been sent to the team.</div>
+          </div>
+          <div id="afForm">
+            <div style="font-size:0.7rem;font-weight:800;color:#6a6050;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">TYPE</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">
+              <button class="af-type-chip" data-type="Bug" onclick="afSelectType(this)">&#129442; Bug</button>
+              <button class="af-type-chip" data-type="Suggestion" onclick="afSelectType(this)">&#128161; Suggestion</button>
+              <button class="af-type-chip" data-type="Complaint" onclick="afSelectType(this)">&#128548; Complaint</button>
+              <button class="af-type-chip active" data-type="Compliment" onclick="afSelectType(this)">&#127775; Compliment</button>
+              <button class="af-type-chip" data-type="Other" onclick="afSelectType(this)">&#128203; Other</button>
+            </div>
+            <div style="font-size:0.7rem;font-weight:800;color:#6a6050;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">YOUR RATING</div>
+            <div style="display:flex;gap:0.3rem;margin-bottom:1.5rem;" id="afStarRow">
+              <span class="af-star" data-v="1">&#9733;</span>
+              <span class="af-star" data-v="2">&#9733;</span>
+              <span class="af-star" data-v="3">&#9733;</span>
+              <span class="af-star" data-v="4">&#9733;</span>
+              <span class="af-star" data-v="5">&#9733;</span>
+            </div>
+            <input class="af-input" id="afName" placeholder="Your name (optional)" style="margin-bottom:0.75rem;"/>
+            <input class="af-input" id="afPage" placeholder="Page / Feature (e.g. Booking, Home)" style="margin-bottom:0.75rem;"/>
+            <textarea class="af-input" id="afDesc" placeholder="Describe the issue or suggestion *" style="min-height:110px;resize:vertical;margin-bottom:1.5rem;"></textarea>
+            <button onclick="submitAppFeedback()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:14px;padding:1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.6rem;"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- WALLET -->
     <div id="wallet" style="display:none;">
       <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:1.25rem;">My Wallet</h2>
@@ -308,7 +407,7 @@
             <label for="profilePicInput" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #1a1a1a;">
               <i class="fas fa-camera" style="font-size:0.65rem;color:#fff;"></i>
             </label>
-            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(this)"/>
+            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="previewProfilePic(this)"/>
           </div>
           <div>
             <div id="profileName" style="font-size:1.15rem;font-weight:800;color:#fff;"></div>
@@ -356,17 +455,381 @@
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
 
+    // Populate Luxe card
+    (function(){
+      var name = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'MEMBER';
+      var email = localStorage.getItem('hs_user') || '';
+      var cardName = document.getElementById('luxeCardName');
+      var cardId = document.getElementById('luxeCardId');
+      var walletBal = document.getElementById('luxeWalletBal');
+      var totalShoots = document.getElementById('luxeTotalShoots');
+      if(cardName) cardName.textContent = name.toUpperCase();
+      if(cardId) cardId.textContent = 'ID: ' + (email ? email.split('@')[0].toUpperCase() : '#000000');
+      var bal = parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0');
+      if(walletBal) walletBal.textContent = bal.toLocaleString('en-IN');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email||b.phone===localStorage.getItem('hs_customer_phone'); });
+      if(totalShoots) totalShoots.textContent = bookings.length;
+      // Also populate full card tab
+      var cn2=document.getElementById('luxeCardName2'); if(cn2) cn2.textContent=name.toUpperCase();
+      var ci2=document.getElementById('luxeCardId2'); if(ci2) ci2.textContent='ID: '+(email?email.split('@')[0].toUpperCase():'#000000');
+      var wb2=document.getElementById('luxeWalletBal2'); if(wb2) wb2.textContent=bal.toLocaleString('en-IN');
+      var ts2=document.getElementById('luxeTotalShoots2'); if(ts2) ts2.textContent=bookings.length;
+    })();
+
+    // ── PREMIUM CARD ──────────────────────────────────────────────
+    async function renderPremiumCard(){
+      var el = document.getElementById('premiumCardContent');
+      if(!el) return;
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var name  = localStorage.getItem('hs_customer_name')||email;
+      var bal   = parseInt(localStorage.getItem('hs_cw_'+email)||localStorage.getItem('hs_customer_wallet')||'0');
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.email===email; });
+      // Check if premium card exists
+      var card = JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
+      // Fetch from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='prem-card';})||fbMod.initializeApp(fbCfg,'prem-card');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'premium_cards',key));
+        if(snap.exists()){ card=snap.data(); localStorage.setItem('hs_premium_card_'+email,JSON.stringify(card)); }
+        // Also fetch premium price from settings
+        var sSnap = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
+        if(sSnap.exists()){
+          var cfg = sSnap.data();
+          if(cfg.premiumPrice) localStorage.setItem('hs_premium_price', String(cfg.premiumPrice));
+          localStorage.setItem('hs_premium_settings', JSON.stringify({price: cfg.premiumPrice||129, enabled: cfg.premiumEnabled !== false, name: cfg.premiumName||'OG Shoots Luxe'}));
+        }
+      }catch(e){}
+      var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
+      if(card && card.active){
+        // Show active card
+        el.innerHTML = '<div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:12px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.6rem;"><i class="fas fa-check-circle" style="color:#4caf50;"></i><span style="font-size:0.85rem;font-weight:700;color:#4caf50;">Active Lifetime Member &nbsp;&middot;&nbsp; Non-Cancellable</span></div>'
+          + luxeCardHTML(name, card.cardNumber, bal, bookings.length, card.activatedAt);
+      } else {
+        // Show purchase option
+        el.innerHTML = '<div style="background:#111;border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">'
+          +'<div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:0.5rem;"><i class="fas fa-crown" style="color:#c9a84c;"></i> OG Shoots Luxe Membership</div>'
+          +'<div style="font-size:0.85rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.6;">One-time payment. Lifetime membership. Non-cancellable once activated.</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;">'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Priority Booking</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Skip the Queue ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Wallet Credit</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Fee added to wallet ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Exclusive Offers</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Members Only ✓</div></div>'
+          +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;">Lifetime Card</div><div style="font-size:0.78rem;color:#fff;font-weight:700;">Never Expires ✓</div></div>'
+          +'</div>'
+          +'<div style="font-size:2rem;font-weight:900;color:#c9a84c;margin-bottom:1rem;">&#8377;'+price.toLocaleString('en-IN')+'<span style="font-size:0.75rem;color:#9a9080;font-weight:400;"> one-time</span></div>'
+          +'<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);border-radius:8px;padding:0.6rem 0.85rem;font-size:0.75rem;color:#ff9800;margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i> Once activated, this membership cannot be cancelled or refunded.</div>'
+          +'<button onclick="activatePremiumCard()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit;"><i class="fas fa-crown"></i> Activate Luxe Membership &nbsp;&middot;&nbsp; &#8377;'+price.toLocaleString('en-IN')+'</button>'
+          +'</div>';
+      }
+    }
+
+    function luxeCardHTML(name, cardNumber, bal, shoots, activatedAt){
+      return '<div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.4);border-radius:24px;padding:2rem;position:relative;overflow:hidden;max-width:400px;">'
+        +'<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.12),transparent 70%);pointer-events:none;"></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;position:relative;">'
+        +'<div><div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.4rem;">LIFETIME MEMBERSHIP</div>'
+        +'<div style="font-size:1.5rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>'
+        +'<div style="font-size:0.62rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">Premium Member</div></div>'
+        +'<div style="width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">⚡</div>'
+        +'</div>'
+        +'<div style="margin-bottom:1.25rem;position:relative;">'
+        +'<div style="font-size:1.1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;">'+name.toUpperCase()+'</div>'
+        +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;letter-spacing:2px;">'+cardNumber+'</div>'
+        +'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;position:relative;">'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Wallet Balance</div><div style="font-size:1.1rem;color:#4caf50;font-weight:900;">&#8377;'+bal.toLocaleString('en-IN')+'</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Total Shoots</div><div style="font-size:1.1rem;color:#fff;font-weight:900;">'+shoots+'</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Priority Booking</div><div style="font-size:0.78rem;color:#f0ece0;font-weight:700;">Skip the Queue ✓</div></div>'
+        +'<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem;"><div style="font-size:0.6rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Member Since</div><div style="font-size:0.72rem;color:#f0ece0;font-weight:700;">'+(activatedAt||'').split(',')[0]+'</div></div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;position:relative;border-top:1px solid rgba(201,168,76,0.12);padding-top:1rem;">'
+        +'<div style="font-size:0.62rem;color:#6a6050;font-weight:600;letter-spacing:1px;">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>'
+        +'<div style="display:flex;"><div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.3);"></div><div style="width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-10px;"></div></div>'
+        +'</div></div>';
+    }
+
+    async function activatePremiumCard(){
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var name  = localStorage.getItem('hs_customer_name')||email;
+      var price = parseInt(localStorage.getItem('hs_premium_price')||'999');
+      if(!confirm('Activate OG Shoots Luxe Membership for \u20b9'+price.toLocaleString('en-IN')+'?\n\nThis is a one-time lifetime membership.\nOnce activated, it CANNOT be cancelled or refunded.\n\nThe membership fee will be added to your wallet.')) return;
+      // Generate unique card number
+      var cardNumber = 'LUXE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+      var card = { email:email, name:name, cardNumber:cardNumber, active:true, activatedAt:new Date().toLocaleString(), price:price };
+      // Save to Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='prem-card';})||fbMod.initializeApp(fbCfg,'prem-card');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        await fbStore.setDoc(fbStore.doc(db,'premium_cards',key), card);
+      }catch(e){ alert('Error activating card: '+e.message); return; }
+      localStorage.setItem('hs_premium_card_'+email, JSON.stringify(card));
+      localStorage.setItem('hs_is_premium','1');
+      alert('\u2705 Welcome to OG Shoots Luxe!\n\nYour card number: '+cardNumber+'\n\nYou are now a lifetime Luxe member!');
+      renderPremiumCard();
+    }
+
+    // ── MARKETING ENQUIRY PAYMENT ──────────────────────────────
+    var _mktEnquiryDoc = null;
+
+    async function checkMktEnquiryPayment(){
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var phone = localStorage.getItem('hs_customer_phone')||'';
+      if(!email && !phone) return;
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-mkt';})||fbMod.initializeApp(fbCfg,'cust-mkt');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.collection(db,'marketing_enquiries'));
+        var found   = null;
+        snap.forEach(function(d){
+          var data = d.data();
+          if(data.status==='accepted' && data.payAmount > 0 && !data.paid){
+            if((email && data.email && data.email.toLowerCase()===email) ||
+               (phone && data.phone && data.phone.replace(/\D/g,'')===phone.replace(/\D/g,''))){
+              found = Object.assign({id:d.id}, data);
+            }
+          }
+        });
+        if(found){
+          _mktEnquiryDoc = found;
+          var banner  = document.getElementById('mktPaymentBanner');
+          var details = document.getElementById('mktPaymentDetails');
+          var btn     = document.getElementById('mktPayBtn');
+          if(banner) banner.style.display='block';
+          if(details) details.innerHTML =
+            '<div style="margin-bottom:0.4rem;"><strong style="color:#ce93d8;">Plan:</strong> '+( found.plan||'Marketing Package')+'</div>'
+            +'<div style="margin-bottom:0.4rem;"><strong style="color:#ce93d8;">Brand:</strong> '+(found.brand||found.name||'')+'</div>'
+            +'<div style="font-size:1.1rem;font-weight:900;color:#fff;margin-top:0.5rem;">Amount: <span style="color:#c9a84c;">&#8377;'+Number(found.payAmount).toLocaleString('en-IN')+'</span></div>';
+          if(btn) btn.innerHTML = '<i class="fas fa-credit-card"></i> Pay &#8377;'+Number(found.payAmount).toLocaleString('en-IN')+' &amp; Confirm Booking';
+        }
+      }catch(e){ console.warn('mkt enquiry check:', e); }
+    }
+
+    async function payMktEnquiry(){
+      if(!_mktEnquiryDoc){ alert('No pending payment found.'); return; }
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
+      if(!rp.keyId){ alert('Payment gateway not configured. Please contact admin.'); return; }
+      var amount = Number(_mktEnquiryDoc.payAmount) * 100;
+      var custName = localStorage.getItem('hs_customer_name') || _mktEnquiryDoc.name || 'Customer';
+      var custEmail = localStorage.getItem('hs_user') || _mktEnquiryDoc.email || '';
+      var custPhone = localStorage.getItem('hs_customer_phone') || _mktEnquiryDoc.phone || '';
+      var options = {
+        key: rp.keyId,
+        amount: amount,
+        currency: rp.currency || 'INR',
+        name: rp.businessName || 'OG SHOOTS',
+        description: (_mktEnquiryDoc.plan||'Marketing Package') + ' — ' + (_mktEnquiryDoc.brand||''),
+        prefill: { name: custName, email: custEmail, contact: custPhone },
+        theme: { color: (rp && rp.themeColor) || '#c9a84c' },
+        handler: async function(response){
+          try{
+            var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var app     = fbMod.getApps().find(function(a){return a.name==='cust-mkt';})||fbMod.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'cust-mkt');
+            var db      = fbStore.getFirestore(app);
+            // Mark enquiry as paid
+            await fbStore.setDoc(fbStore.doc(db,'marketing_enquiries',String(_mktEnquiryDoc.id)),{
+              paid: true, paidAt: new Date().toLocaleString(),
+              paymentId: response.razorpay_payment_id,
+              status: 'paid'
+            },{merge:true});
+            // Create booking automatically
+            var bookingId = Date.now();
+            var booking = {
+              id: bookingId,
+              name: custName,
+              phone: custPhone,
+              email: custEmail,
+              service: _mktEnquiryDoc.plan || 'Marketing Package',
+              plan: _mktEnquiryDoc.plan || 'Marketing Package',
+              brand: _mktEnquiryDoc.brand || '',
+              city: '',
+              date: '', time: '',
+              notes: 'Marketing enquiry booking. Brand: '+(_mktEnquiryDoc.brand||'')+'. Payment ID: '+response.razorpay_payment_id,
+              status: 'confirmed',
+              payAmount: _mktEnquiryDoc.payAmount,
+              paymentStatus: 'paid',
+              paymentId: response.razorpay_payment_id,
+              source: 'marketing_enquiry',
+              enquiryId: String(_mktEnquiryDoc.id),
+              createdAt: fbStore.serverTimestamp()
+            };
+            await fbStore.setDoc(fbStore.doc(db,'bookings',String(bookingId)), booking);
+            // Save to localStorage
+            var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            bks.push(Object.assign({}, booking, {createdAt: new Date().toLocaleString()}));
+            localStorage.setItem('hs_bookings', JSON.stringify(bks));
+            document.getElementById('mktPaymentBanner').style.display='none';
+            _mktEnquiryDoc = null;
+            alert('\u2705 Payment successful! Your marketing package booking is confirmed.\n\nPayment ID: '+response.razorpay_payment_id);
+          }catch(e){ alert('Payment recorded but booking failed: '+e.message); }
+        },
+        modal: { ondismiss: function(){ console.log('Payment dismissed'); } }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+
+    // ── MARKETING ENQUIRY PAYMENT ──────────────────────────────
+    var _mktEnquiryDoc = null;
+
+    async function checkMktEnquiryPayment(){
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var phone = localStorage.getItem('hs_customer_phone')||'';
+      if(!email && !phone) return;
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-mkt';})||fbMod.initializeApp(fbCfg,'cust-mkt');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDocs(fbStore.collection(db,'marketing_enquiries'));
+        var found   = null;
+        snap.forEach(function(d){
+          var data = d.data();
+          if(data.status==='accepted' && data.payAmount > 0 && !data.paid){
+            if((email && data.email && data.email.toLowerCase()===email)||
+               (phone && data.phone && data.phone.replace(/\D/g,'')===phone.replace(/\D/g,''))){
+              found = Object.assign({id:d.id}, data);
+            }
+          }
+        });
+        if(found){
+          _mktEnquiryDoc = found;
+          var banner  = document.getElementById('mktPaymentBanner');
+          var details = document.getElementById('mktPaymentDetails');
+          var btn     = document.getElementById('mktPayBtn');
+          if(banner) banner.style.display='block';
+          if(details) details.innerHTML =
+            '<div style="margin-bottom:0.4rem;"><strong style="color:#ce93d8;">Plan:</strong> '+(found.plan||'Marketing Package')+'</div>'
+            +'<div style="margin-bottom:0.4rem;"><strong style="color:#ce93d8;">Brand:</strong> '+(found.brand||found.name||'')+'</div>'
+            +'<div style="font-size:1.1rem;font-weight:900;color:#fff;margin-top:0.5rem;">Amount: <span style="color:#c9a84c;">&#8377;'+Number(found.payAmount).toLocaleString('en-IN')+'</span></div>';
+          if(btn) btn.innerHTML='<i class="fas fa-credit-card"></i> Pay &#8377;'+Number(found.payAmount).toLocaleString('en-IN')+' &amp; Confirm Booking';
+        }
+      }catch(e){ console.warn('mkt enquiry check:',e); }
+    }
+
+    async function payMktEnquiry(){
+      if(!_mktEnquiryDoc){ alert('No pending payment found.'); return; }
+      var rp = JSON.parse(localStorage.getItem('hs_razorpay')||'{}');
+      if(!rp.keyId){ alert('Payment gateway not configured. Please contact admin.'); return; }
+      var amount    = Number(_mktEnquiryDoc.payAmount)*100;
+      var custName  = localStorage.getItem('hs_customer_name')||_mktEnquiryDoc.name||'Customer';
+      var custEmail = localStorage.getItem('hs_user')||_mktEnquiryDoc.email||'';
+      var custPhone = localStorage.getItem('hs_customer_phone')||_mktEnquiryDoc.phone||'';
+      var options = {
+        key: rp.keyId,
+        amount: amount,
+        currency: rp.currency||'INR',
+        name: rp.businessName||'OG SHOOTS',
+        description: (_mktEnquiryDoc.plan||'Marketing Package')+' \u2014 '+(_mktEnquiryDoc.brand||''),
+        prefill: {name:custName, email:custEmail, contact:custPhone},
+        theme: {color: (rp && rp.themeColor) || '#c9a84c'},
+        handler: async function(response){
+          try{
+            var fbMod2   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+            var fbStore2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            var app2     = fbMod2.getApps().find(function(a){return a.name==='cust-mkt';})||fbMod2.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'cust-mkt');
+            var db2      = fbStore2.getFirestore(app2);
+            // Mark enquiry as paid
+            await fbStore2.setDoc(fbStore2.doc(db2,'marketing_enquiries',String(_mktEnquiryDoc.id)),{
+              paid:true, paidAt:new Date().toLocaleString(),
+              paymentId:response.razorpay_payment_id, status:'paid'
+            },{merge:true});
+            // Create booking automatically
+            var bookingId = Date.now();
+            var booking = {
+              id: bookingId, name:custName, phone:custPhone, email:custEmail,
+              service: _mktEnquiryDoc.plan||'Marketing Package',
+              plan: _mktEnquiryDoc.plan||'Marketing Package',
+              brand: _mktEnquiryDoc.brand||'',
+              city:'', date:'', time:'',
+              notes:'Marketing package booking. Brand: '+(_mktEnquiryDoc.brand||'')+'. Payment ID: '+response.razorpay_payment_id,
+              status:'confirmed', payAmount:_mktEnquiryDoc.payAmount,
+              paymentStatus:'paid', paymentId:response.razorpay_payment_id,
+              source:'marketing_enquiry', enquiryId:String(_mktEnquiryDoc.id),
+              createdAt: new Date().toLocaleString()
+            };
+            await fbStore2.setDoc(fbStore2.doc(db2,'bookings',String(bookingId)), booking);
+            var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+            bks.push(booking);
+            localStorage.setItem('hs_bookings', JSON.stringify(bks));
+            document.getElementById('mktPaymentBanner').style.display='none';
+            _mktEnquiryDoc = null;
+            alert('\u2705 Payment successful! Your marketing package booking is confirmed.\n\nPayment ID: '+response.razorpay_payment_id);
+          }catch(e){ alert('Payment recorded but booking failed: '+e.message); }
+        },
+        modal:{ondismiss:function(){console.log('Payment dismissed');}}
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+
+    // Sync customer data from Firestore on every load (cross-device support)
+    // Also check for accepted marketing enquiry payment
+    setTimeout(function(){ checkMktEnquiryPayment(); }, 2000);
+    (async function(){
+      try{
+        var email = (localStorage.getItem('hs_user')||localStorage.getItem('hs_customer_email')||'').toLowerCase().trim();
+        if(!email) return;
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-sync';})||fbMod.initializeApp(fbCfg,'cust-sync');
+        var db      = fbStore.getFirestore(app);
+        var key     = email.replace(/[.#$\[\]]/g,'_');
+        // Load customer profile
+        var profSnap = await fbStore.getDoc(fbStore.doc(db,'customers',key));
+        if(profSnap.exists()){
+          var d = profSnap.data();
+          if(d.name)  localStorage.setItem('hs_customer_name',  d.name);
+          if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
+          if(d.username) localStorage.setItem('hs_customer_username', d.username);
+        }
+        // Load bookings
+        var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email)));
+        if(!bSnap.empty){
+          var bList = [];
+          bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_bookings', JSON.stringify(bList));
+        }
+        // Update dashboard stats
+        var allBks = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){return (b.email||'').toLowerCase()===email;});
+        var stTotal = document.getElementById('statTotal'); if(stTotal) stTotal.textContent = allBks.length;
+        var stPend  = document.getElementById('statPending'); if(stPend) stPend.textContent = allBks.filter(function(b){return b.status==='pending';}).length;
+        var stComp  = document.getElementById('statDone'); if(stComp) stComp.textContent = allBks.filter(function(b){return b.status==='completed';}).length;
+      } catch(e){ console.warn('customer sync:', e); }
+    })();
+
     function showTab(name, btn){
       document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); s.style.display='none'; });
       document.querySelectorAll('.ctab').forEach(function(b){ b.classList.remove('active'); });
       var sec = document.getElementById('tab-' + name);
       if(sec){ sec.classList.add('active'); sec.style.display='block'; }
       if(btn) btn.classList.add('active');
+      if(name === 'premiumcard') renderPremiumCard();
       if(name === 'testimonials') renderTestiVideosCustomer();
+      if(name === 'book') checkMktEnquiryPayment();
     }
 
     var _pendingBookBtn = null;
     function openTerms(btn){
+      // Check login first
+      if(!localStorage.getItem('hs_user') && localStorage.getItem('hs_role') !== 'customer'){
+        alert('Please log in to book a shoot.');
+        window.location.href = 'login.html';
+        return;
+      }
       // Validate form first before showing plan preview
       var name = document.getElementById('name').value.trim();
       var phone = document.getElementById('phone').value.trim();
@@ -394,6 +857,29 @@
       document.getElementById('ppPrice').style.webkitTextFillColor = planPrice ? '' : '#888070';
       document.getElementById('ppPrice').style.fontSize = planPrice ? '' : '1.1rem';
       document.getElementById('ppDesc').textContent = planDesc || 'Our team will get in touch with you to confirm the details and pricing for this service.';
+      // Bill breakdown — add membership fee if customer doesn't have premium card yet
+      var email = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var hasPremiumCard = !!JSON.parse(localStorage.getItem('hs_premium_card_'+email)||'null');
+      var premiumSettings = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"enabled":false}');
+      var membershipFee = (!hasPremiumCard && premiumSettings.enabled) ? (premiumSettings.price || 129) : 0;
+      var shootPriceNum = planPrice ? parseInt(planPrice.replace(/[^0-9]/g,'')) || 0 : 0;
+      var breakdown = document.getElementById('ppBillBreakdown');
+      if(shootPriceNum > 0){
+        document.getElementById('ppBillShoot').textContent = planPrice;
+        var memberRow = document.getElementById('ppBillMemberRow');
+        var memberEl  = document.getElementById('ppBillMember');
+        var totalEl   = document.getElementById('ppBillTotal');
+        if(membershipFee > 0){
+          memberRow.style.display = 'flex';
+          memberEl.textContent = '\u20b9' + membershipFee.toLocaleString('en-IN');
+        } else {
+          memberRow.style.display = 'none';
+        }
+        totalEl.textContent = '\u20b9' + (shootPriceNum + membershipFee).toLocaleString('en-IN');
+        breakdown.style.display = 'block';
+      } else {
+        breakdown.style.display = 'none';
+      }
       document.getElementById('planPreviewOverlay').classList.add('open');
     }
 
@@ -591,18 +1077,45 @@
     (async function(){
       try {
         var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-        if(userEmail && window.loadCustWalletFromFirebase){
-          var bal = await loadCustWalletFromFirebase(userEmail);
-          var walletEl = document.getElementById('walletBal');
-          if(walletEl) walletEl.textContent = bal.toLocaleString('en-IN');
-        }
+        // wallet is now fetched below directly
       } catch(e){}
     })();
     const userEmail = localStorage.getItem('hs_user') || '';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
-    // Wallet
-    document.getElementById('walletBal').textContent = localStorage.getItem('hs_customer_wallet') || '0';
+    // Wallet — show localStorage first, then fetch live from Firebase and listen for updates
+    document.getElementById('walletBal').textContent = localStorage.getItem('hs_cw_'+(localStorage.getItem('hs_user')||'')) || localStorage.getItem('hs_customer_wallet') || '0';
+    (async function(){
+      try {
+        var userEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').trim().toLowerCase();
+        if(!userEmail) return;
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='cust-wallet';})||fbMod.initializeApp(fbCfg,'cust-wallet');
+        var db      = fbStore.getFirestore(app);
+        var key     = userEmail.replace(/[.#$\[\]]/g,'_');
+        // Initial fetch
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
+        if(snap.exists()){
+          var bal = snap.data().balance || 0;
+          localStorage.setItem('hs_cw_' + userEmail, String(bal));
+          localStorage.setItem('hs_customer_wallet', String(bal));
+          var walletEl = document.getElementById('walletBal');
+          if(walletEl) walletEl.textContent = Number(bal).toLocaleString('en-IN');
+        }
+        // Real-time listener on wallet_updates
+        fbStore.onSnapshot(fbStore.doc(db,'wallet_updates',key), function(d){
+          if(d.exists()){
+            var bal = d.data().balance || 0;
+            localStorage.setItem('hs_cw_' + userEmail, String(bal));
+            localStorage.setItem('hs_customer_wallet', String(bal));
+            var walletEl = document.getElementById('walletBal');
+            if(walletEl) walletEl.textContent = Number(bal).toLocaleString('en-IN');
+          }
+        });
+      } catch(e){ console.warn('wallet fetch:', e); }
+    })();
 
     // Load admin messages for this customer
     (async function loadAdminMessages(){
@@ -655,15 +1168,15 @@
     }
     loadProfile();
 
-    function uploadProfilePic(input){
-      var file = input.files[0];
-      if(!file) return;
+    var _pendingPic = null;
+
+    function previewProfilePic(input){
+      var file = input.files[0]; if(!file) return;
       var reader = new FileReader();
       reader.onload = function(e){
-        var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-        prof.pic = e.target.result;
-        localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
-        loadProfile();
+        _pendingPic = e.target.result;
+        var av = document.getElementById('profileAv');
+        av.innerHTML = '<img src="'+_pendingPic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>';
       };
       reader.readAsDataURL(file);
     }
@@ -675,17 +1188,23 @@
       var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
       prof.name = name;
       prof.phone = phone;
+      if(_pendingPic){ prof.pic = _pendingPic; _pendingPic = null; }
       localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
       localStorage.setItem('hs_customer_name', name);
       document.getElementById('profileName').textContent = name;
       document.getElementById('welcomeMsg').textContent = 'Welcome, ' + name;
+      loadProfile();
       var msg = document.getElementById('profileSaveMsg');
       msg.style.display = 'block';
       setTimeout(function(){ msg.style.display = 'none'; }, 3000);
     }
 
     function logout() {
-      ['hs_role','hs_user','hs_customer_email','hs_customer_name','hs_customer_phone','hs_bookings','hs_payments'].forEach(k=>localStorage.removeItem(k));
+      ['hs_role','hs_user','hs_customer_email','hs_customer_name','hs_customer_phone','hs_bookings','hs_payments','hs_customer_wallet','hs_is_premium'].forEach(function(k){ localStorage.removeItem(k); });
+      Object.keys(localStorage).forEach(function(k){
+        if(k.startsWith('hs_customer_enquiries_')||k.startsWith('hs_premium_card_')||k.startsWith('hs_cw_')) localStorage.removeItem(k);
+      });
+      sessionStorage.clear();
       window.location.href = 'login.html';
     }
 
@@ -708,18 +1227,18 @@
       const bkId = Date.now();
       var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
       var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
-      const bkEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-      bookings.push({ id: bkId, name, phone, email: bkEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
+      // Include membership fee in total if applicable
+      var email2 = (localStorage.getItem('hs_user')||'').toLowerCase();
+      var hasPremCard = !!JSON.parse(localStorage.getItem('hs_premium_card_'+email2)||'null');
+      var premSet2 = JSON.parse(localStorage.getItem('hs_premium_settings')||'{"price":129,"enabled":false}');
+      var memFee2 = (!hasPremCard && premSet2.enabled) ? (premSet2.price || 129) : 0;
+      var shootNum2 = selectedPrice ? parseInt(selectedPrice.replace(/[^0-9]/g,'')) || 0 : 0;
+      var totalBill = shootNum2 > 0 ? '\u20b9' + (shootNum2 + memFee2).toLocaleString('en-IN') : selectedPrice;
+      var membershipFeeAdded = memFee2 > 0;
+      bookings.push({ id: bkId, name, phone, service, plan: selectedPlan, price: selectedPrice, totalBill: totalBill, membershipFee: memFee2, city, date, time, notes, preferredCreatorId, preferredCreatorName, status: 'pending', createdAt: new Date().toLocaleString() });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-      if(window.fbSave) fbSave('bookings', {name:name,phone:phone,email:bkEmail,service:service,city:city,date:date,time:time,status:'pending'});
-      if(window.fbSave) fbSave('enquiries', {name:name,phone:phone,email:bkEmail,service:service,city:city,date:date,time:time,status:'pending'});
 
-      // Also save enquiry to localStorage
-      const enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
-      enquiries.push({ id: bkId, name, phone, email: localStorage.getItem('hs_user')||'', message: 'Service: '+service+' | City: '+city+' | Date: '+date+' at '+time, submittedAt: new Date().toLocaleString() });
-      localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
-
-      // Send to Firebase so admin sees it from any device
+      // Send to Firebase
       (async function(){
         try {
           var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -729,11 +1248,13 @@
           var fbApp = apps.find(function(a){ return a.name==='cust'; }) || fbMod.initializeApp(fbCfg,'cust');
           var fbDb = fbStore.getFirestore(fbApp);
           var userEmail = localStorage.getItem('hs_user')||'';
-          var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
-          var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
-          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
-          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
-          await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
+          var docId = 'bk_' + String(bkId);
+          var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, totalBill: totalBill, membershipFee: memFee2, city, date, time, notes, preferredCreatorId, preferredCreatorName, status:'pending', payAmount:0, paymentStatus:'', createdAt: fbStore.serverTimestamp() };
+          await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
+          // Update local id to match Firestore doc id
+          var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var li = bks.findIndex(function(b){ return String(b.id)===String(bkId); });
+          if(li>-1){ bks[li].id = docId; localStorage.setItem('hs_bookings', JSON.stringify(bks)); }
         } catch(e){ console.error('Firebase error:',e); }
       })();
 
@@ -769,14 +1290,15 @@
           var fbBookings = [];
           snap.forEach(function(d){
             var data = d.data();
-            // Strict email-only match to prevent cross-account contamination
-            if(userEmail && data.email === userEmail)
+            var bEmail = (data.email||'').toLowerCase().trim();
+            var bPhone = (data.phone||'').replace(/\D/g,'').slice(-10);
+            var uEmail = (userEmail||'').toLowerCase().trim();
+            var uPhone = (userPhone||'').replace(/\D/g,'').slice(-10);
+            var uName  = (userName||'').toLowerCase().trim();
+            var bName  = (data.name||'').toLowerCase().trim();
+            if((uEmail && bEmail===uEmail)||(uPhone && uPhone.length===10 && bPhone===uPhone)||(uName && uName.length>2 && bName===uName && bPhone===uPhone))
               fbBookings.push(Object.assign({id:d.id}, data));
           });
-          // Merge local bookings not yet in Firestore
-          var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var fbIds = fbBookings.map(b=>String(b.id));
-          local.forEach(function(b){ if(!fbIds.includes(String(b.id))) fbBookings.push(b); });
           if(fbBookings.length) localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
         } catch(e){ console.log('loadBookings Firestore error:',e); }
         _renderBookings();
@@ -785,13 +1307,18 @@
 
     function _renderBookings() {
       const allBookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      const custEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-      const custPhone = localStorage.getItem('hs_customer_phone') || '';
+      const custEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+      const custPhone = (localStorage.getItem('hs_customer_phone') || '').replace(/\D/g,'').slice(-10);
+      const custName  = (localStorage.getItem('hs_customer_name') || '').toLowerCase().trim();
       // SECURITY: Only show this customer's bookings
       const bookings = allBookings.filter(function(b){
         if(!custEmail && !custPhone) return false;
-        return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
-               (custPhone && b.phone === custPhone);
+        var bEmail = (b.email||'').toLowerCase().trim();
+        var bPhone = (b.phone||'').replace(/\D/g,'').slice(-10);
+        var bName  = (b.name||'').toLowerCase().trim();
+        return (custEmail && bEmail===custEmail) ||
+               (custPhone && custPhone.length===10 && bPhone===custPhone) ||
+               (custName && custName.length>2 && bName===custName && bPhone===custPhone);
       });
       const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
       const list = document.getElementById('bookingsList');
@@ -907,11 +1434,11 @@
         key: rp.keyId,
         amount: amount,
         currency: rp.currency || 'INR',
-        name: rp.businessName || 'OG Shoots',
+        name: rp.businessName || 'OG SHOOTS MEDIA',
         description: rp.description || (b.service + ' — ' + b.city),
         image: rp.logo || '',
         prefill: { name: b.name, contact: b.phone },
-        theme: { color: '#c9a84c' },
+        theme: { color: (rp && rp.themeColor) || '#c9a84c' },
         handler: function(response){
           // PAYMENT SUCCESS
           window._payAttempted = true;
@@ -971,30 +1498,27 @@
           var rpSnap = await fbStore.getDoc(fbStore.doc(fbDb,'razorpay_config','main'));
           if(rpSnap.exists()){ var cfg=rpSnap.data(); delete cfg.updatedAt; localStorage.setItem('hs_razorpay',JSON.stringify(cfg)); }
         }catch(e){}
-        // Listen for booking status changes in real-time (only this customer's bookings)
-        fbStore.onSnapshot(
-          fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')),
-          function(snap){
-            var fbBookings = [];
-            snap.forEach(function(d){
-              var data = d.data();
-              // Only include bookings belonging to this customer
-              if(userEmail && (data.email === userEmail || data.phone === userEmail)) fbBookings.push(Object.assign({id:d.id},data));
-              else if(userPhone && data.phone === userPhone) fbBookings.push(Object.assign({id:d.id},data));
-            });
-            var local = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-            // Filter local to only this customer's bookings
-            local = local.filter(function(b){
-              return (userEmail && (b.email===userEmail||b.phone===userEmail)) || (userPhone && b.phone===userPhone);
-            });
-            local = local.map(function(b){
-              var fb = fbBookings.find(function(f){ return String(f.id)===String(b.id); });
-              return fb ? Object.assign({},b,fb) : b;
-            });
-            fbBookings.forEach(function(b){ if(!local.find(function(l){return String(l.id)===String(b.id);})) local.push(b); });
-            if(local.length){ localStorage.setItem('hs_bookings', JSON.stringify(local)); _renderBookings(); }
-          }
-        );
+
+        function _mapBk(d){ var data=d.data(); return Object.assign({id:d.id},data,{createdAt:data.createdAt&&data.createdAt.seconds?new Date(data.createdAt.seconds*1000).toLocaleString():(data.createdAt||new Date().toLocaleString())}); }
+        function _mergeBk(docs){ var local=JSON.parse(localStorage.getItem('hs_bookings')||'[]'); docs.forEach(function(b){ var idx=local.findIndex(function(e){return String(e.id)===String(b.id);}); if(idx>-1) local[idx]=Object.assign(local[idx],b); else local.push(b); }); localStorage.setItem('hs_bookings',JSON.stringify(local)); _renderBookings(); }
+
+        // Listen by email
+        if(userEmail){
+          fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('email','==',userEmail)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+        }
+        // Listen by phone (with and without +91)
+        if(userPhone){
+          var _phones=[userPhone];
+          if(!userPhone.startsWith('+')) _phones.push('+91'+userPhone);
+          _phones.forEach(function(ph){
+            fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('phone','==',ph)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+          });
+        }
+        // Listen by name (fallback for enquiry-based bookings)
+        var _uName = localStorage.getItem('hs_customer_name')||'';
+        if(_uName){
+          fbStore.onSnapshot(fbStore.query(fbStore.collection(fbDb,'bookings'),fbStore.where('name','==',_uName)),function(snap){var docs=[];snap.forEach(function(d){docs.push(_mapBk(d));});_mergeBk(docs);});
+        }
         // Listen for customer notifications from admin
         if(userEmail || userPhone){
           fbStore.onSnapshot(
@@ -1037,6 +1561,78 @@
       });
     }
 
+    // ── APP FEEDBACK MODAL ─────────────────────────────────────
+    var _afStarVal = 0;
+    var _afType = 'Compliment';
+
+    function openAppFeedbackModal(){
+      _afStarVal = 0; _afType = 'Compliment';
+      document.getElementById('afForm').style.display = 'block';
+      document.getElementById('afDone').style.display = 'none';
+      document.getElementById('afName').value = '';
+      document.getElementById('afPage').value = '';
+      document.getElementById('afDesc').value = '';
+      document.querySelectorAll('.af-type-chip').forEach(function(c){ c.classList.toggle('active', c.dataset.type==='Compliment'); });
+      document.querySelectorAll('.af-star').forEach(function(s){ s.classList.remove('lit'); });
+      var modal = document.getElementById('appFeedbackModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      // bind stars
+      document.querySelectorAll('.af-star').forEach(function(s){
+        s.onmouseover = function(){
+          var v = parseInt(s.dataset.v);
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=v); });
+        };
+        s.onmouseleave = function(){
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=_afStarVal); });
+        };
+        s.onclick = function(){
+          _afStarVal = parseInt(s.dataset.v);
+          document.querySelectorAll('.af-star').forEach(function(x){ x.classList.toggle('lit', parseInt(x.dataset.v)<=_afStarVal); });
+        };
+      });
+    }
+
+    function closeAppFeedbackModal(){
+      document.getElementById('appFeedbackModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function afSelectType(btn){
+      _afType = btn.dataset.type;
+      document.querySelectorAll('.af-type-chip').forEach(function(c){ c.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    function submitAppFeedback(){
+      var desc = (document.getElementById('afDesc').value||'').trim();
+      if(!desc){ alert('Please describe the issue or suggestion.'); return; }
+      var user = JSON.parse(localStorage.getItem('hs_customer_session')||'{}');
+      var item = {
+        name: (document.getElementById('afName').value||'').trim() || user.name || 'Anonymous',
+        type: _afType,
+        rating: _afStarVal,
+        page: (document.getElementById('afPage').value||'').trim(),
+        text: desc,
+        ts: Date.now()
+      };
+      var list = JSON.parse(localStorage.getItem('hs_app_feedback')||'[]');
+      list.push(item);
+      localStorage.setItem('hs_app_feedback', JSON.stringify(list));
+      if(window.fbSave) fbSave('app_feedback', item);
+      document.getElementById('afForm').style.display = 'none';
+      document.getElementById('afDone').style.display = 'block';
+      setTimeout(closeAppFeedbackModal, 2200);
+    }
+
+    // close on backdrop click
+    document.getElementById('appFeedbackModal').addEventListener('click', function(e){ if(e.target===this) closeAppFeedbackModal(); });
+
+    function showAppFeedbackSection(){
+      var sec = document.getElementById('appFeedbackSection');
+      if(sec) sec.style.display = 'block';
+    }
+
     function renderShootFeedback(){
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var completed = bookings.filter(function(b){ return b.status === 'completed'; });
@@ -1076,7 +1672,7 @@
       }).join('');
     }
 
-    function submitShootFeedback(bookingId){
+    async function submitShootFeedback(bookingId){
       var rating = selectedStars[bookingId] || 0;
       if(!rating){ alert('Please select a star rating.'); return; }
       var el = document.getElementById('fbtext_' + bookingId);
@@ -1085,11 +1681,26 @@
       var description = descEl ? descEl.value.trim() : '';
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
       var b = bookings.find(function(x){ return x.id === bookingId; });
+
+      // Look up staffId from Firebase assigned_shoots
+      var staffId = null; var staffName = null;
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){ return a.name==='cust-fb'; }) || fbMod.initializeApp(fbCfg,'cust-fb');
+        var db      = fbStore.getFirestore(app);
+        var q       = fbStore.query(fbStore.collection(db,'assigned_shoots'), fbStore.where('bookingId','==', bookingId));
+        var snap    = await fbStore.getDocs(q);
+        if(!snap.empty){ var d = snap.docs[0].data(); staffId = d.staffId; staffName = d.staffName || null; }
+      } catch(e){ console.warn('Could not fetch staffId for feedback:', e); }
+
       var feedbacks = getFeedbacks();
       feedbacks.push({
         id: Date.now(), type: 'shoot', refId: bookingId,
         service: b ? b.service : '', city: b ? b.city : '',
         customerName: b ? b.name : '',
+        staffId: staffId, staffName: staffName,
         date: b ? b.date : '', rating: rating, comment: comment, description: description,
         submittedAt: new Date().toLocaleString()
       });
@@ -1202,28 +1813,20 @@
 
   <!-- Razorpay SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script>
-    // Tawk.to — loaded from admin config
-    (function(){
-      var cfg = JSON.parse(localStorage.getItem('hs_tawk_config') || '{}');
-      if(cfg.propertyId && cfg.widgetId){
-        var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/' + cfg.propertyId + '/' + cfg.widgetId;
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-      }
-    })();
+  <!-- Tawk.to Live Chat -->
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
   </script>
-  <script>
-    // Go to tawk.to > Administration > Chat Widget > copy embed script and paste here
-    // var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    // (function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    // s1.async=true;s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
-    // s1.charset='UTF-8';s1.setAttribute('crossorigin','*');
-    // s0.parentNode.insertBefore(s1,s0);})();
-  </script>
+  <!--End of Tawk.to Script-->
 
   <!-- COOKIE BANNER -->
   <div class="cookie-banner" id="cookieBanner">
@@ -1246,13 +1849,26 @@
         <div class="plan-preview-name" id="ppName"></div>
         <div class="plan-preview-price" id="ppPrice"></div>
         <div class="plan-preview-desc" id="ppDesc"></div>
+        <!-- BILL BREAKDOWN -->
+        <div id="ppBillBreakdown" style="display:none;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.85rem;">
+          <div style="font-size:0.68rem;font-weight:800;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;"><i class="fas fa-receipt"></i> Bill Breakdown</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;color:#d4c9a8;margin-bottom:0.35rem;">
+            <span>Shoot Price</span><span id="ppBillShoot"></span>
+          </div>
+          <div id="ppBillMemberRow" style="display:none;justify-content:space-between;font-size:0.82rem;color:#c9a84c;margin-bottom:0.35rem;">
+            <span><i class="fas fa-crown"></i> Membership Fee</span><span id="ppBillMember"></span>
+          </div>
+          <div style="border-top:1px solid rgba(201,168,76,0.15);margin-top:0.5rem;padding-top:0.5rem;display:flex;justify-content:space-between;font-size:0.92rem;font-weight:900;color:#fff;">
+            <span>Total</span><span id="ppBillTotal"></span>
+          </div>
+        </div>
         <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:#9a9080;line-height:1.6;">
           <i class="fas fa-info-circle" style="color:#c9a84c;margin-right:0.4rem;"></i>
-          Clicking <strong style="color:#fff;">Continue</strong> will submit your enquiry to our team. We'll confirm your booking shortly.
+          Clicking <strong style="color:#fff;">Continue</strong> will place your order with our team. We'll confirm your booking shortly.
         </div>
       </div>
       <div class="plan-preview-footer">
-        <button class="btn-plan-continue" onclick="confirmPlanAndProceed()"><i class="fas fa-arrow-right"></i> Continue &amp; Submit Enquiry</button>
+        <button class="btn-plan-continue" onclick="confirmPlanAndProceed()"><i class="fas fa-arrow-right"></i> Continue &amp; Place Order</button>
         <button class="btn-plan-back" onclick="closePlanPreview()"><i class="fas fa-arrow-left"></i> Go Back &amp; Edit</button>
       </div>
     </div>
@@ -1286,7 +1902,7 @@
           <input type="checkbox" id="termsCheck" onchange="toggleProceed(this)"/>
           I have read and agree to the Terms &amp; Conditions
         </label>
-        <button class="btn-terms-proceed" id="termsProceedBtn" onclick="proceedBooking()"><i class="fas fa-check"></i> Accept &amp; Submit Enquiry</button>
+        <button class="btn-terms-proceed" id="termsProceedBtn" onclick="proceedBooking()"><i class="fas fa-check"></i> Accept &amp; Place Order</button>
         <button class="btn-terms-cancel" onclick="closeTerms()">Cancel</button>
       </div>
     </div>
@@ -1383,5 +1999,29 @@
   </div>
 
 <script src="hs-feedback-widget.js"></script>
+
+  <script>
+  // Load promo banner from Firebase
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='promo-banner';})||fbMod.initializeApp(fbCfg,'promo-banner');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','promo_banner'));
+      var banner  = document.getElementById('promoBanner');
+      var textEl  = banner ? banner.querySelector('p') : null;
+      if(snap.exists()){
+        var cfg = snap.data();
+        if(!cfg.enabled){ if(banner) banner.style.display='none'; }
+        else {
+          if(banner) banner.style.display='block';
+          if(textEl && cfg.text) textEl.innerHTML = '<span style="color:#c9a84c;">&#127881; Special Offer:</span> '+cfg.text+' &nbsp;<a href="booking.html" style="color:#c9a84c;font-weight:800;text-decoration:underline;">Book Now &rarr;</a> &nbsp;<span style="color:#6a6050;font-size:0.7rem;">T&amp;C Apply</span>';
+        }
+      }
+    }catch(e){ console.warn('promo banner:',e); }
+  })();
+  </script>
 </body>
 </html>
