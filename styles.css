@@ -191,7 +191,7 @@ body {
   width: 90px; height: 26px; background: #000;
   border-radius: 0 0 18px 18px; z-index: 10;
 }
-.phone-screen { background: #0f0f0f; min-height: 560px; }
+.phone-screen { background: #0f0f0f; min-height: auto; max-height: 560px; overflow: hidden; }
 .phone-status {
   display: flex; justify-content: space-between; align-items: center;
   padding: 0.6rem 1.2rem 0.3rem; font-size: 0.7rem; color: #fff;
