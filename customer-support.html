@@ -55,15 +55,15 @@
         <div style="font-size:0.85rem;font-weight:700;">Call Us</div>
         <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">+91 63042 79351</div>
       </a>
-      <a href="https://wa.me/916304279351" target="_blank" style="flex:1;min-width:140px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
+      <a id="waLinkMain" href="https://wa.me/916304279351" target="_blank" style="flex:1;min-width:140px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
         <i class="fab fa-whatsapp" style="font-size:1.5rem;color:#25d366;display:block;margin-bottom:0.5rem;"></i>
         <div style="font-size:0.85rem;font-weight:700;">WhatsApp</div>
         <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">Chat with us</div>
       </a>
-      <a href="mailto:support@ogshoots.com" style="flex:1;min-width:140px;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
+      <a href="mailto:support.ogshootsmedia@gmail.com" style="flex:1;min-width:140px;background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);border-radius:12px;padding:1.25rem;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s;">
         <i class="fas fa-envelope" style="font-size:1.5rem;color:#2196f3;display:block;margin-bottom:0.5rem;"></i>
         <div style="font-size:0.85rem;font-weight:700;">Email</div>
-        <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">support@ogshoots.com</div>
+        <div style="font-size:0.75rem;color:#888070;margin-top:0.2rem;">support.ogshootsmedia@gmail.com</div>
       </a>
       <button onclick="openTawkChat()" style="flex:1;min-width:140px;background:rgba(103,58,183,0.08);border:1px solid rgba(103,58,183,0.2);border-radius:12px;padding:1.25rem;text-align:center;color:#fff;cursor:pointer;font-family:inherit;transition:all 0.2s;">
         <i class="fas fa-comments" style="font-size:1.5rem;color:#7c4dff;display:block;margin-bottom:0.5rem;"></i>
@@ -75,6 +75,20 @@
     <!-- Support form -->
     <div class="card">
       <div style="font-size:1rem;font-weight:800;margin-bottom:1.25rem;">Send a Message</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="custName" placeholder="e.g. Rahul Sharma"/>
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="custPhone" placeholder="e.g. +91 98765 43210"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="custEmail" placeholder="e.g. rahul@email.com"/>
+      </div>
       <div class="form-group">
         <label>Issue Type</label>
         <select id="issueType">
@@ -99,32 +113,21 @@
     </div>
   </div>
 
-  <script>
-    // ===== TAWK.TO — load config from Firebase first, fallback to localStorage =====
-    (async function(){
-      var cfg = JSON.parse(localStorage.getItem('hs_tawk_config') || '{}');
-      // Try Firebase for latest config
-      try {
-        var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app = fbMod.getApps().find(function(a){return a.name==='tawk-load';}) || fbMod.initializeApp(FB,'tawk-load');
-        var db  = fbStore.getFirestore(app);
-        var snap = await fbStore.getDoc(fbStore.doc(db,'settings','tawk_config'));
-        if(snap.exists()){ cfg = snap.data(); localStorage.setItem('hs_tawk_config', JSON.stringify(cfg)); }
-      } catch(e){ console.log('[Tawk] Firebase load failed, using localStorage'); }
-      if(cfg.propertyId && cfg.widgetId){
-        window.Tawk_API = window.Tawk_API || {};
-        window.Tawk_LoadStart = new Date();
-        var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/' + cfg.propertyId + '/' + cfg.widgetId;
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-      }
-    })();
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 
+  <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
     const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
@@ -133,24 +136,29 @@
       if(window.Tawk_API && window.Tawk_API.maximize){
         window.Tawk_API.maximize();
       } else {
-        var cfg = JSON.parse(localStorage.getItem('hs_tawk_config')||'{}');
-        if(!cfg.propertyId){
-          // Try to open WhatsApp as fallback
-          window.open('https://wa.me/916304279351','_blank');
-        } else {
-          alert('Live chat is loading, please wait a moment and try again.');
-        }
+        window.open('https://wa.me/'+(localStorage.getItem('hs_admin_wa_number')||'916304279351'),'_blank');
       }
     }
 
     function submitSupport(){
-      var type = document.getElementById('issueType').value;
-      var msg = document.getElementById('issueMsg').value.trim();
+      var name  = (document.getElementById('custName').value||'').trim();
+      var phone = (document.getElementById('custPhone').value||'').trim();
+      var email = (document.getElementById('custEmail').value||'').trim();
+      var type  = document.getElementById('issueType').value;
+      var msg   = document.getElementById('issueMsg').value.trim();
+      if(!name){ alert('Please enter your name.'); return; }
+      if(!phone){ alert('Please enter your phone number.'); return; }
+      if(!email){ alert('Please enter your email address.'); return; }
       if(!type || !msg){ alert('Please select an issue type and enter your message.'); return; }
       var tickets = JSON.parse(localStorage.getItem('hs_support_tickets') || '[]');
-      tickets.push({ id: Date.now(), user: user, type: type, msg: msg, submittedAt: new Date().toLocaleString(), status: 'open' });
+      var ticketId = 'tk_' + Date.now();
+      var ticket = { id: ticketId, customerName: name, customerPhone: phone, customerEmail: email, user: user, type: type, message: msg, msg: msg, submittedAt: new Date().toLocaleString(), status: 'open', createdAt: Date.now() };
+      tickets.push(ticket);
       localStorage.setItem('hs_support_tickets', JSON.stringify(tickets));
-      if(window.fbSave) fbSave('support_tickets', tickets[tickets.length-1]);
+      if(window.fbSave) fbSave('support_tickets', ticket);
+      document.getElementById('custName').value = '';
+      document.getElementById('custPhone').value = '';
+      document.getElementById('custEmail').value = '';
       document.getElementById('issueType').value = '';
       document.getElementById('issueMsg').value = '';
       var el = document.getElementById('supportMsg');
@@ -160,5 +168,28 @@
 
     function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
   </script>
+<script>
+(function(){
+  var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+  var el = document.getElementById('waLinkMain');
+  if(el) el.href = 'https://wa.me/' + num;
+  // Also fetch from Firebase
+  import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function(m){
+    return import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function(s){
+      var cfg={apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app=m.getApps().find(function(a){return a.name==='cs-wa';})||m.initializeApp(cfg,'cs-wa');
+      var db=s.getFirestore(app);
+      return s.getDoc(s.doc(db,'settings','admin_config'));
+    });
+  }).then(function(snap){
+    if(snap.exists&&snap.exists()&&snap.data().waNumber){
+      var n=snap.data().waNumber;
+      localStorage.setItem('hs_admin_wa_number',n);
+      var el=document.getElementById('waLinkMain');
+      if(el) el.href='https://wa.me/'+n;
+    }
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
