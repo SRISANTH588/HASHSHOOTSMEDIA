@@ -1742,9 +1742,7 @@
       document.getElementById('statReels').textContent  = hp.statReels  || '50,002+';
       document.getElementById('statRating').textContent = hp.statRating || '5.0/5';
       document.getElementById('statMakers').textContent = hp.statMakers || '200+';
-      if(hp.heroTag) document.querySelector('.hero-tag').textContent = hp.heroTag;
-      if(hp.heroSub) document.querySelector('.hero-sub').textContent = hp.heroSub;
-      if(hp.heroBig) { var hb = document.querySelector('.hero-big'); hb.innerHTML = hp.heroBig + '<span class="asterisk">*</span>'; }
+      // hero text managed in HTML directly — not overridden by admin
       if(hp.btnBook) { var bb = document.querySelector('.btn-book'); if(bb) bb.textContent = hp.btnBook; }
       if(hp.servicesHeading) { var sh = document.querySelector('.svc-h2'); if(sh) sh.innerHTML = hp.servicesHeading; }
       if(hp.servicesSub) { var ss = document.querySelector('.svc-sub'); if(ss) ss.textContent = hp.servicesSub; }
