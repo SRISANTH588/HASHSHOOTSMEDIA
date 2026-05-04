@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OG Shoots LUXE</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <title>OG Shoots LUXE – Book Reels in 10 Minutes | India's #1 On-Demand Content Studio</title>
+  <meta name="description" content="OG Shoots delivers professionally shot & edited reels in just 10 minutes. Book a certified content maker near you instantly. Starting ₹1,499. Available in Vijayawada & Eluru."/>
+  <meta name="keywords" content="reel shoot, content maker, on-demand photography, instant reels, OG Shoots, book reel creator, Vijayawada, Eluru, wedding photography"/>
+  <meta name="author" content="OG Shoots"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://ogshoots.in/"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://ogshoots.in/"/>
+  <meta property="og:title" content="OG Shoots LUXE – Book Reels in 10 Minutes"/>
+  <meta property="og:description" content="India's first on-demand reel creation service. We shoot, edit & deliver professional reels in 10 minutes. Starting ₹1,499."/>
+  <meta property="og:image" content="https://res.cloudinary.com/dqmjfw1qb/image/upload/v1777876892/ChatGPT_Image_Apr_28_2026_at_12_32_10_PM_maibrq.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="OG Shoots LUXE – Book Reels in 10 Minutes"/>
+  <meta name="twitter:description" content="India's first on-demand reel creation service. Starting ₹1,499."/>
+  <meta name="twitter:image" content="https://res.cloudinary.com/dqmjfw1qb/image/upload/v1777876892/ChatGPT_Image_Apr_28_2026_at_12_32_10_PM_maibrq.png"/>
+  <link rel="stylesheet" href="styles.css?v=41"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet"/>
@@ -13,7 +27,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="hs-firebase.js" type="module"></script>
   <script src="hs-fixes.js"></script>
-  <script src="nav.js"></script>
+  <script src="nav.js?v=2"></script>
+  <script>
+    // Prevent back navigation from home page
+    history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', function(){
+      history.pushState(null, '', window.location.href);
+    });
+  </script>
   <style>
     @keyframes hsCountPop{0%{transform:scale(0.4);opacity:0;}60%{transform:scale(1.25);}100%{transform:scale(1);opacity:1;}}
     @keyframes hsFadeUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
@@ -24,6 +45,7 @@
 </head>
 <body>
 
+  <!-- PROMO BANNER -->
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
@@ -38,7 +60,7 @@
       .vibe-cats::-webkit-scrollbar{display:none;}
       .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
       .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:transparent;}
-      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1400px;margin:0 auto;padding:0 1.5rem;}
       .vibe-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
       .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(201,168,76,0.2);}
       .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#0a0a0a;}
@@ -74,7 +96,7 @@
       <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
     </div>
     <div class="vibe-grid" id="vibeGrid"></div>
-    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
+    <div id="vibeTestiPanel" style="display:none;max-width:1400px;margin:0 auto;padding:0 1.5rem;"></div>
     <!-- Lightbox -->
     <div class="vibe-lightbox" id="vibeLightbox">
       <div class="vibe-lb-inner">
@@ -93,13 +115,12 @@
           var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
           var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
+          var app = fbMod.getApps().find(function(a){return a.name==='admin-app';}) || fbMod.initializeApp(fbCfg,'admin-app');
           var db  = fbStore.getFirestore(app);
-          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
-            _vibeItems = [];
-            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
-            renderVibe();
-          });
+          var snap = await fbStore.getDocs(fbStore.collection(db,'vibe_items'));
+          _vibeItems = [];
+          snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
+          renderVibe();
         } catch(e){ console.error('Vibe index load error:',e); }
       }
 
@@ -136,7 +157,13 @@
 
       function renderTestimonials(){
         var panel = document.getElementById('vibeTestiPanel');
+        // Clear any legacy hardcoded testimonials from localStorage
         var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
+        if(hp.testimonials && hp.testimonials.length){
+          var legacyNames=['Srikari Galigari','Lanka Pravallika','Abhiram Kukunuri','Rahul Verma','Ananya Reddy','Priya Sharma','Nikhil Kumar','Sneha Mehta','Vikram Rao'];
+          hp.testimonials = hp.testimonials.filter(function(t){ return !legacyNames.includes(t.name); });
+          localStorage.setItem('hs_homepage', JSON.stringify(hp));
+        }
         var textTestis = hp.testimonials || [];
         var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
 
@@ -192,7 +219,7 @@
         if(videoUrl){
           html = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
         } else if(item.thumbnail){
-          html = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
+          html = '<img class="vibe-lb-img" loading="lazy" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
         } else {
           html = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
         }
@@ -214,7 +241,7 @@
   <section class="hero" id="home">
     <div class="hero-content">
       <p class="hero-tag">The Future of Instant Content Creation</p>
-      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
+      <h1 class="hero-sub">We Capture • We Create • We Deliver Reels</h1>
       <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
 
       <div class="phone-mockup">
@@ -229,7 +256,7 @@
             <div class="phone-body">
               <div class="phone-header anim-slide-down">
                 <div>
-                  <p class="phone-city">Mumbai ▾</p>
+                  <p class="phone-city">Vijayawada ▾</p>
                   <p class="phone-greeting">Hey, there</p>
                   <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
                 </div>
@@ -247,10 +274,16 @@
                 <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
               </div>
               <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
-              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
+              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s;">
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#4a1942,#c94b8a)"><i class="fas fa-ring"></i><span>Wedding</span></div>
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#1a3a1a,#2d8a2d)"><i class="fas fa-birthday-cake"></i><span>Birthday</span></div>
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#3a2a00,#c9a84c)"><i class="fas fa-star"></i><span>Celebrates</span></div>
+                <div class="phone-grid-item" style="background:linear-gradient(135deg,#0a0a2e,#6a0dad)"><i class="fas fa-music"></i><span>Concerts</span></div>
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#002a1a,#00b36b)"><i class="fas fa-handshake"></i><span>Collabs</span></div>
+                <div class="phone-grid-item hide-mobile" style="background:linear-gradient(135deg,#1a0a00,#c9500a)"><i class="fas fa-briefcase"></i><span>Brand Shoots</span></div>
               </div>
               <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
                 <i class="fas fa-home active"></i>
@@ -279,11 +312,11 @@
           <a href="partner.html" class="btn btn-partner">Become a Partner</a>
         </div>
         <div class="hero-stats">
-          <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statReels">50,002+</span><span class="stat-label">Reels Delivered</span></div>
           <div class="stat-sep"></div>
           <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
           <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statMakers">0</span><span class="stat-label">Content Makers</span></div>
+          <div class="hero-stat"><span class="stat-num" id="statMakers">200+</span><span class="stat-label">Content Makers</span></div>
         </div>
       </div>
 
@@ -303,7 +336,7 @@
       .whyus-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;margin-bottom:0.75rem;line-height:1.15;white-space:nowrap;}
       .whyus-title span{color:#c9a84c;}
       .whyus-desc{color:#9a9080;font-size:0.95rem;line-height:1.8;}
-      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
+      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1400px;margin:0 auto;padding:0 2rem;}
       .whyus-card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);cursor:default;}
       .whyus-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.1);}
       .whyus-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
@@ -359,7 +392,7 @@
         </div>
         <div class="whyus-text">
           <h3>Unbelievable Pricing</h3>
-          <p>Each Reel starts ₹1,999/-. No hidden charges, no surprises. Pay only for what you need.</p>
+          <p>Each Reel starts ₹1,499/-. No hidden charges, no surprises. Pay only for what you need.</p>
         </div>
         <div class="whyus-number">03</div>
       </div>
@@ -406,18 +439,18 @@
   <!-- BESTSELLERS -->
   <section class="bs-section">
     <style>
-      .bs-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
+      .bs-section{background:#080808;padding:4rem 0;position:relative;overflow:hidden;}
       .bs-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
       .bs-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
-      .bs-header{text-align:center;margin-bottom:2.5rem;}
+      .bs-header{text-align:center;margin-bottom:1.5rem;}
       .bs-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
       .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;letter-spacing:-0.5px;}
       .bs-title span{color:#c9a84c;}
       .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
-      .bs-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
-      .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
-      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
-      .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
+      .bs-wrap{max-width:1400px;margin:0 auto;padding:0 2.5rem;}
+      .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;align-items:stretch;max-width:1400px;margin:0 auto;}
+      .bs-card{border-radius:24px;padding:1.75rem 1.75rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
       .bs-card:hover{transform:translateY(-8px);}
       .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
       .bs-card-1:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
@@ -462,7 +495,7 @@
       .bs-btn:hover::before{transform:translateX(100%);}
       .bs-anim{opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;}
       .bs-anim.visible{opacity:1;transform:translateY(0);}
-      @media(max-width:900px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
+      @media(max-width:1100px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
       @media(max-width:520px){.bs-grid-4{grid-template-columns:1fr;}}
     </style>
 
@@ -473,14 +506,8 @@
         <p class="bs-sub">Simple pricing. No hidden fees. Just great content.</p>
       </div>
 
-      <!-- PLAN TYPE TABS -->
-      <div class="bs-plan-tabs">
-        <button class="bs-plan-tab active" onclick="bsTab('general',this)"><i class="fas fa-camera"></i> General</button>
-        <button class="bs-plan-tab" onclick="bsTab('wedding',this)"><i class="fas fa-heart"></i> Wedding</button>
-      </div>
-
       <!-- GENERAL PLANS -->
-      <div class="bs-panel active" id="bsPanel_general">
+      <div id="bsPanel_general">
         <div class="bs-grid">
           <div class="bs-card bs-card-1 bs-anim">
             <div class="bs-glow"></div>
@@ -488,7 +515,7 @@
             <div class="bs-name" id="bs1_name">Hourly Plan</div>
             <div class="bs-tagline" id="bs1_tagline">Perfect for a single, fast, high-quality reel.</div>
             <div class="bs-price-wrap">
-              <div class="bs-price" id="bs1_price">&#8377;1,699</div>
+              <div class="bs-price" id="bs1_price">&#8377;1,499</div>
               <div class="bs-per" id="bs1_per">/ shoot</div>
             </div>
             <div class="bs-gst-note" id="bs1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
@@ -498,7 +525,7 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div><span style="white-space:nowrap;">Fast Delivery (10 mins post shoot)</span></li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>OG Shoots Branding Included</li>
             </ul>
@@ -511,7 +538,7 @@
             <div class="bs-name" id="bs2_name">Half-Day Plan</div>
             <div class="bs-tagline" id="bs2_tagline">Ideal for events &amp; creators who need more content.</div>
             <div class="bs-price-wrap">
-              <div class="bs-price" id="bs2_price">&#8377;3,999</div>
+              <div class="bs-price" id="bs2_price">&#8377;3,199</div>
               <div class="bs-per" id="bs2_per">/ session</div>
             </div>
             <div class="bs-gst-note" id="bs2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
@@ -521,7 +548,7 @@
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
+              <li><div class="bs-check"><i class="fas fa-check"></i></div><span style="white-space:nowrap;">Fast Delivery (10 mins post shoot)</span></li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
               <li><div class="bs-check"><i class="fas fa-check"></i></div>OG Shoots Branding Included</li>
             </ul>
@@ -531,112 +558,6 @@
       </div>
 
       <!-- WEDDING PLANS -->
-      <div class="bs-panel" id="bsPanel_wedding">
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
-
-          <!-- BASIC -->
-          <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">SINGLE EVENT</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-leaf" style="color:#c9a84c;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w1_name" style="font-size:1.5rem;">Basic</div>
-              <div class="bs-tagline" id="w1_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w1_price" style="font-size:2.4rem;">&#8377;14,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w1_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w1_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to one event</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 3 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Enquire Now</button>
-          </div>
-
-          <!-- SILVER -->
-          <div class="bs-card bs-card-silver bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.1s;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">THREE EVENTS</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-medal" style="color:#c0c0c0;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w2_name" style="font-size:1.5rem;">Silver</div>
-              <div class="bs-tagline" id="w2_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w2_price" style="font-size:2.4rem;background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;44,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w2_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w2_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to three events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 10 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.35);color:#c0c0c0;" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Enquire Now</button>
-          </div>
-
-          <!-- GOLD -->
-          <div class="bs-card bs-card-gold bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 30px 80px rgba(0,0,0,0.6);transition-delay:0.2s;">
-            <div class="bs-glow"></div>
-            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:900;padding:0.28rem 1.1rem;border-radius:0 0 10px 10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> MOST POPULAR</div>
-            <div style="text-align:center;margin-bottom:1.25rem;margin-top:0.5rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">FOUR EVENTS</div>
-              <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 20px rgba(201,168,76,0.2);"><i class="fas fa-trophy" style="color:#c9a84c;font-size:1.3rem;"></i></div>
-              <div class="bs-name" id="w3_name" style="font-size:1.5rem;">Gold</div>
-              <div class="bs-tagline" id="w3_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w3_price" style="font-size:2.4rem;">&#8377;59,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w3_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w3_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to four events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 15 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Enquire Now</button>
-          </div>
-
-          <!-- PLATINUM -->
-          <div class="bs-card bs-card-luxe bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.3s;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">COMPLETE WEDDING</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 16px rgba(201,168,76,0.15);"><i class="fas fa-gem" style="color:#e8c96a;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w4_name" style="font-size:1.5rem;">Platinum</div>
-              <div class="bs-tagline" id="w4_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">For couples who want it all — every moment captured with unmatched attention to detail.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w4_price" style="font-size:2.4rem;">&#8377;99,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w4_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w4_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers whole wedding events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 25 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Interaction videos + mobile portraits</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Enquire Now</button>
-          </div>
-
-        </div>
-      </div>
 
     </div>
   </section>
@@ -836,7 +757,7 @@
                   <div style="width:11px;height:11px;border:1.5px solid #c9a84c;border-radius:2px;flex-shrink:0;"></div>
                 </div>
                 <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#880e4f,#4a0030)">PR</div><div style="flex:1;"><div class="fmnm">Priya R</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Reels | 4+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,999</div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">AN</div><div style="flex:1;"><div class="fmnm">Ananya N</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 3+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,699</div></div>
+                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">AN</div><div style="flex:1;"><div class="fmnm">Ananya N</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 3+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,499</div></div>
                 <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#1565c0,#0d47a1)">SM</div><div style="flex:1;"><div class="fmnm">Sneha M</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Portrait | 5+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;2,199</div></div>
               </div>
             </div></div>
@@ -877,49 +798,48 @@
   <section class="svc-section">
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
-      .svc-section{background:#060606;padding:9rem 0;position:relative;overflow:hidden;}
-      .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none;}
-      .svc-inner{max-width:1200px;margin:0 auto;padding:0 3rem;position:relative;z-index:1;}
+      .svc-section{background:#080808;padding:2rem 0;position:relative;overflow:hidden;}
+      .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
+      .svc-inner{max-width:1400px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
       /* HEADER */
-      .svc-header{text-align:center;margin-bottom:5rem;padding-bottom:3rem;border-bottom:1px solid rgba(201,168,76,0.08);}
+      .svc-header{text-align:center;margin-bottom:1.25rem;}
       .svc-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;justify-content:center;}
       .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
       .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
       .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
-      .svc-h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
+      .svc-h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:0.75rem;}
       .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-      .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.8;max-width:900px;margin:0 auto;white-space:nowrap;}
-      .svc-header-cta{display:none;}
-      .svc-header-right{display:none;}
-      /* GRID */
-      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-      .svc-card{background:#0d0d0d;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:2.75rem 2.25rem;position:relative;display:flex;flex-direction:column;transition:transform 0.4s,border-color 0.4s,box-shadow 0.4s;overflow:hidden;}
-      .svc-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,#c9a84c,#e8c96a);transition:width 0.6s cubic-bezier(0.25,0.46,0.45,0.94);border-radius:16px 16px 0 0;}
-      .svc-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.3);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.08);}
-      .svc-card:hover::before,.svc-card.pop::before{width:100%;}
-      .svc-card.pop{background:#111;border-color:rgba(201,168,76,0.25);box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(201,168,76,0.06);}
-      /* number */
-      .svc-num{font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.2);letter-spacing:4px;margin-bottom:2.5rem;transition:color 0.4s;}
-      .svc-card:hover .svc-num,.svc-card.pop .svc-num{color:rgba(201,168,76,0.5);}
-      /* icon */
-      .svc-icon-wrap{width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:rgba(201,168,76,0.4);margin-bottom:1.75rem;transition:color 0.4s,transform 0.4s;}
-      .svc-card:hover .svc-icon-wrap,.svc-card.pop .svc-icon-wrap{color:#c9a84c;transform:translateY(-3px);}
-      /* badge */
-      .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.55rem;font-weight:700;padding:0.18rem 0.6rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
-      /* text */
-      .svc-name{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
-      .svc-desc{font-size:0.82rem;color:#5a5040;line-height:1.85;flex:1;margin-bottom:2.5rem;}
+      .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.7;}
+      /* BIG 2-COL GRID */
+      .svc-big-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+      .svc-big-card{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.75rem 2rem;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform 0.35s,box-shadow 0.35s,border-color 0.35s;}
+      .svc-big-card:hover{transform:translateY(-6px);box-shadow:0 30px 70px rgba(0,0,0,0.6);border-color:rgba(201,168,76,0.25);}
+      .svc-big-eyebrow{font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:4px;text-transform:uppercase;margin-bottom:1rem;}
+      .svc-big-title{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:1rem;}
+      .svc-big-desc{font-size:0.88rem;color:#9a9080;line-height:1.75;margin-bottom:1.25rem;flex:1;}
       /* price */
-      .svc-price-row{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.06);}
-      .svc-price{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a 0%,#c9a84c 50%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block;margin-bottom:0.2rem;}
-      .svc-price-label{font-size:0.65rem;color:#4a4030;letter-spacing:2px;text-transform:uppercase;}
-      /* cta */
-      .svc-btn{display:inline-flex;align-items:center;gap:0;color:rgba(201,168,76,0.5);font-size:0.65rem;font-weight:700;text-decoration:none;letter-spacing:3px;text-transform:uppercase;transition:all 0.4s;}
-      .svc-btn::after{content:'';display:inline-block;width:20px;height:1px;background:currentColor;margin-left:0.75rem;transition:width 0.4s;}
-      .svc-card:hover .svc-btn,.svc-card.pop .svc-btn{color:#c9a84c;}
-      .svc-card:hover .svc-btn::after,.svc-card.pop .svc-btn::after{width:36px;}
-      @media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-header{padding-bottom:2rem;margin-bottom:3rem;}}
-      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-inner{padding:0 1.5rem;}}
+      .svc-big-price-label{font-size:0.75rem;color:#9a9080;margin-bottom:0.3rem;}
+      .svc-big-price{font-size:clamp(2.2rem,4vw,3rem);font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.2rem;}
+      .svc-big-price-sub{font-size:0.78rem;color:#6a6050;margin-bottom:1.25rem;}
+      /* tier pills */
+      .svc-tiers{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+      .svc-tier{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.55rem 0.9rem;text-align:center;min-width:80px;}
+      .svc-tier-label{font-size:0.52rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.2rem;}
+      .svc-tier-name{font-size:0.95rem;font-weight:800;color:#fff;}
+      /* features 2-col */
+      .svc-feat-label{font-size:0.72rem;font-weight:800;color:#fff;margin-bottom:1rem;}
+      .svc-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;margin-bottom:2.5rem;}
+      .svc-feat-item{display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:#9a9080;line-height:1.5;}
+      .svc-feat-dot{width:6px;height:6px;border-radius:50%;background:#c9a84c;flex-shrink:0;margin-top:0.4rem;}
+      /* custom price */
+      .svc-custom-price{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.2rem;display:inline;}
+      .svc-custom-gst{font-size:0.9rem;color:#9a9080;font-weight:500;margin-left:0.4rem;}
+      /* CTA button */
+      .svc-big-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.9rem;font-weight:800;padding:1rem 2rem;border-radius:12px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;letter-spacing:0.5px;transition:all 0.3s;box-shadow:0 6px 20px rgba(201,168,76,0.25);width:100%;}
+      .svc-big-btn:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);box-shadow:0 12px 35px rgba(201,168,76,0.4);transform:translateY(-2px);}
+      .svc-big-btn-outline{background:transparent;border:1px solid rgba(201,168,76,0.4);color:#c9a84c;box-shadow:none;}
+      .svc-big-btn-outline:hover{background:rgba(201,168,76,0.08);border-color:#c9a84c;box-shadow:0 8px 25px rgba(201,168,76,0.15);}
+      @media(max-width:768px){.svc-big-grid{grid-template-columns:1fr;}.svc-feat-grid{grid-template-columns:1fr;}.svc-inner{padding:0 1.25rem;}}
     </style>
     <div class="svc-inner">
       <div class="svc-header">
@@ -927,156 +847,100 @@
         <h2 class="svc-h2">Services Built for <em>Every Shoot</em></h2>
         <p class="svc-sub">From portraits to grand weddings &mdash; crafted with precision, delivered with excellence.</p>
       </div>
-      <div class="svc-grid" id="svcGrid">
-        <div class="svc-card">
-          <div class="svc-num">01 &mdash; REEL SHOOTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
-          <div class="svc-name">Reel Shoots</div>
-          <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_reel">&#8377;999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Reel+Shoot" class="svc-btn">Book Now</a>
+
+      <div class="svc-big-grid" id="svcGrid">
+
+        <!-- LEFT CARD: Wedding -->
+        <div class="svc-big-card">
+          <div class="svc-big-eyebrow">For Your Special Day</div>
+          <div class="svc-big-title">Wedding Packages</div>
+          <div class="svc-big-desc">Refined coverage of your wedding celebrations, preserving every ritual and moment with a cinematic touch.</div>
+          <div class="svc-big-price-label">Starting from</div>
+          <div class="svc-big-price" id="svcPrice_wedding">&#8377;6,999</div>
+          <div class="svc-big-price-sub">/package &nbsp;&middot;&nbsp; + GST</div>
+          <div class="svc-tiers">
+            <div class="svc-tier"><div class="svc-tier-label">Single Event</div><div class="svc-tier-name">Basic</div></div>
+            <div class="svc-tier"><div class="svc-tier-label">Three Events</div><div class="svc-tier-name">Silver</div></div>
+            <div class="svc-tier"><div class="svc-tier-label">Four Events</div><div class="svc-tier-name">Gold</div></div>
+            <div class="svc-tier"><div class="svc-tier-label">Complete Wedding</div><div class="svc-tier-name">Platinum</div></div>
+          </div>
+          <a href="#" onclick="openWeddingPlans();return false;" class="svc-big-btn svc-big-btn-outline">Know More &nbsp;&rarr;</a>
         </div>
-        <div class="svc-card pop">
-          <div class="svc-num">02 &mdash; PORTRAITS</div>
-          <div class="svc-pop-badge"><i class="fas fa-star"></i>&nbsp; Most Popular</div>
-          <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
-          <div class="svc-name">Portrait Sessions</div>
-          <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_portrait">&#8377;1,499</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Portrait+Session" class="svc-btn">Book Now</a>
+
+        <!-- RIGHT CARD: Business & Brands -->
+        <div class="svc-big-card">
+          <div class="svc-big-eyebrow">For Business and Brands</div>
+          <div class="svc-big-title">Reels &amp; Content</div>
+          <div class="svc-big-desc">Professional coverage for your business events, creating refined content that reflects your brand and supports your marketing goals.</div>
+          <div style="margin-bottom:1.5rem;">
+            <span class="svc-custom-price">Customised Pricing</span><span class="svc-custom-gst">+GST</span>
+          </div>
+          <div class="svc-feat-label">Package Inclusions:</div>
+          <div class="svc-feat-grid">
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Cinematic visuals tailored for premium brands &amp; events</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Fast turnaround — Captured. Crafted. Delivered.</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Refined storytelling aligned with your brand identity</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Perfect for campaigns, launches &amp; brand showcases</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Expert-led production with a premium touch</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>High-quality visuals that elevate your brand presence</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Effortless booking &amp; smooth coordination</div>
+            <div class="svc-feat-item"><span class="svc-feat-dot"></span>Shot on latest iPhone &amp; pro gear</div>
+          </div>
+          <a href="contact.html" class="svc-big-btn"><i class="fas fa-paper-plane"></i> Send Enquiry &nbsp;&rarr;</a>
         </div>
-        <div class="svc-card">
-          <div class="svc-num">03 &mdash; WEDDINGS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
-          <div class="svc-name">Wedding Photography</div>
-          <div class="svc-desc">Capture every precious moment of your special day with timeless elegance.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_wedding">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="#" onclick="openWeddingPlans();return false;" class="svc-btn">View Plans</a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TOTAL BRAND SHOOTS SECTION -->
+  <section style="background:#080808;padding:4rem 2rem;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6),transparent);"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6),transparent);"></div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none;"></div>
+    <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+
+      <!-- LEFT: Info -->
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.3rem 0.9rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;"><i class="fas fa-star"></i> New Service</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:0.75rem;">Total Brand <span style="color:#c9a84c;">Shoots</span></h2>
+        <p style="color:#6a6050;font-size:0.9rem;line-height:1.7;margin-bottom:2rem;max-width:400px;">We handle everything for your brand — shoots, reels, Instagram management and marketing. One package, zero stress.</p>
+        <a href="total-brand-shoots.html" style="display:inline-flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.88rem;font-weight:800;padding:0.9rem 1.75rem;border-radius:12px;text-decoration:none;box-shadow:0 6px 20px rgba(201,168,76,0.25);">Know More <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- RIGHT: Plan Cards -->
+      <div style="display:flex;flex-direction:column;gap:0.85rem;">
+
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.2rem;">Starter</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Basic &nbsp;<span style="font-size:0.72rem;color:#6a6050;font-weight:400;">3 months &middot; +GST</span></div>
+          </div>
+          <div style="font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;9,999</div>
         </div>
-        <div class="svc-card">
-          <div class="svc-num">04 &mdash; PRODUCTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
-          <div class="svc-name">Product Shoots</div>
-          <div class="svc-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_product">&#8377;2,499</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Product+Shoot" class="svc-btn">Book Now</a>
+
+        <div style="background:linear-gradient(145deg,#141410,#0f0f0a);border:1px solid rgba(201,168,76,0.5);border-radius:14px;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:relative;box-shadow:0 0 20px rgba(201,168,76,0.08);">
+          <div style="position:absolute;top:-1px;right:1rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.52rem;font-weight:900;padding:0.18rem 0.7rem;border-radius:0 0 8px 8px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> Most Popular</div>
+          <div>
+            <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.2rem;margin-top:0.4rem;">Best Value</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Standard &nbsp;<span style="font-size:0.72rem;color:#6a6050;font-weight:400;">3 months &middot; +GST</span></div>
+          </div>
+          <div style="font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;16,999</div>
         </div>
-        <div class="svc-card">
-          <div class="svc-num">05 &mdash; EVENTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
-          <div class="svc-name">Event Coverage</div>
-          <div class="svc-desc">Corporate events, parties &amp; launches &mdash; every moment documented flawlessly.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_event">&#8377;5,999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Event+Coverage" class="svc-btn">Book Now</a>
+
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.2rem;">All Inclusive</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Premium &nbsp;<span style="font-size:0.72rem;color:#6a6050;font-weight:400;">3 months &middot; +GST</span></div>
+          </div>
+          <div style="font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;25,999</div>
         </div>
-        <div class="svc-card">
-          <div class="svc-num">06 &mdash; FOOD</div>
-          <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
-          <div class="svc-name">Food Photography</div>
-          <div class="svc-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_food">&#8377;1,999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Food+Photography" class="svc-btn">Book Now</a>
-        </div>
+
       </div>
     </div>
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="hiw-section" id="how-it-works">
-    <style>
-      .hiw-section{background:#080808;padding:8rem 0;position:relative;overflow:hidden;}
-      .hiw-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
-      .hiw-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
-      .hiw-bg-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
-      .hiw-inner{max-width:1100px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
-      .hiw-header{text-align:center;margin-bottom:5rem;}
-      .hiw-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .hiw-title{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;line-height:1.15;}
-      .hiw-title span{color:#c9a84c;}
-      .hiw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;}
-      /* connector line */
-      .hiw-grid::before{content:'';position:absolute;top:52px;left:calc(16.66% + 1rem);right:calc(16.66% + 1rem);height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.4),rgba(201,168,76,0.15),rgba(201,168,76,0.4));z-index:0;}
-      .hiw-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 2rem;position:relative;z-index:1;}
-      .hiw-step-top{display:flex;flex-direction:column;align-items:center;margin-bottom:2rem;}
-      .hiw-num-wrap{position:relative;margin-bottom:0;}
-      .hiw-num-ring{width:104px;height:104px;border-radius:50%;border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;background:#0d0d0d;transition:all 0.4s;position:relative;}
-      .hiw-step:hover .hiw-num-ring{border-color:rgba(201,168,76,0.5);box-shadow:0 0 40px rgba(201,168,76,0.12);background:#111;}
-      .hiw-num-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(201,168,76,0.08);transition:all 0.4s;}
-      .hiw-step:hover .hiw-num-ring::before{border-color:rgba(201,168,76,0.2);}
-      .hiw-icon{font-size:1.6rem;color:rgba(201,168,76,0.5);transition:color 0.4s,transform 0.4s;}
-      .hiw-step:hover .hiw-icon{color:#c9a84c;transform:scale(1.1);}
-      .hiw-step-num{position:absolute;top:-6px;right:-6px;width:26px;height:26px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:900;color:#000;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(201,168,76,0.3);}
-      .hiw-step-body{}
-      .hiw-step-title{font-size:1.05rem;font-weight:800;color:#f0ece0;margin-bottom:0.6rem;transition:color 0.3s;}
-      .hiw-step:hover .hiw-step-title{color:#c9a84c;}
-      .hiw-step-desc{font-size:0.83rem;color:#6a6050;line-height:1.8;max-width:220px;margin:0 auto;}
-      .hiw-step-tag{display:inline-flex;align-items:center;gap:0.3rem;margin-top:1.25rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);color:rgba(201,168,76,0.5);font-size:0.6rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.3s;}
-      .hiw-step:hover .hiw-step-tag{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);color:#c9a84c;}
-      .hiw-cta{text-align:center;margin-top:4.5rem;}
-      .hiw-cta-btn{display:inline-flex;align-items:center;gap:0.75rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.9rem;font-weight:800;padding:1rem 2.5rem;border-radius:12px;text-decoration:none;letter-spacing:0.5px;transition:all 0.3s;box-shadow:0 8px 25px rgba(201,168,76,0.2);}
-      .hiw-cta-btn:hover{background:linear-gradient(135deg,#e8c96a,#c9a84c);box-shadow:0 14px 40px rgba(201,168,76,0.35);transform:translateY(-2px);}
-      @media(max-width:768px){
-        .hiw-grid{grid-template-columns:1fr;gap:3rem;}
-        .hiw-grid::before{display:none;}
-        .hiw-step{padding:0;}
-      }
-    </style>
-    <div class="hiw-bg-glow"></div>
-    <div class="hiw-inner">
-      <div class="hiw-header">
-        <div class="hiw-eyebrow"><i class="fas fa-bolt"></i> Simple Process</div>
-        <h2 class="hiw-title">Book a Shoot in <span>3 Easy Steps</span></h2>
-      </div>
-      <div class="hiw-grid">
-
-        <div class="hiw-step">
-          <div class="hiw-step-top">
-            <div class="hiw-num-wrap">
-              <div class="hiw-num-ring"><i class="fas fa-search-location hiw-icon"></i></div>
-              <div class="hiw-step-num">01</div>
-            </div>
-          </div>
-          <div class="hiw-step-body">
-            <div class="hiw-step-title">Choose &amp; Book</div>
-            <p class="hiw-step-desc">Select your service, city, date &amp; time. Browse verified creator profiles.</p>
-            <span class="hiw-step-tag"><i class="fas fa-clock"></i> Under 2 mins</span>
-          </div>
-        </div>
-
-        <div class="hiw-step">
-          <div class="hiw-step-top">
-            <div class="hiw-num-wrap">
-              <div class="hiw-num-ring"><i class="fas fa-camera hiw-icon"></i></div>
-              <div class="hiw-step-num">02</div>
-            </div>
-          </div>
-          <div class="hiw-step-body">
-            <div class="hiw-step-title">Get Clicked</div>
-            <p class="hiw-step-desc">Your assigned creator arrives on time and captures stunning content.</p>
-            <span class="hiw-step-tag"><i class="fas fa-map-marker-alt"></i> Live tracked</span>
-          </div>
-        </div>
-
-        <div class="hiw-step">
-          <div class="hiw-step-top">
-            <div class="hiw-num-wrap">
-              <div class="hiw-num-ring"><i class="fas fa-cloud-download-alt hiw-icon"></i></div>
-              <div class="hiw-step-num">03</div>
-            </div>
-          </div>
-          <div class="hiw-step-body">
-            <div class="hiw-step-title">Receive &amp; Download</div>
-            <p class="hiw-step-desc">Edited reels delivered to your dashboard in just 10 minutes.</p>
-            <span class="hiw-step-tag"><i class="fas fa-bolt"></i> 10 min delivery</span>
-          </div>
-        </div>
-
-      </div>
-      <div class="hiw-cta">
-        <a href="booking.html" class="hiw-cta-btn"><i class="fas fa-camera"></i> Book Your Shoot Now</a>
-      </div>
-    </div>
-  </section>
 
 
 
@@ -1090,7 +954,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@1,900&family=Tenor+Sans&display=swap');
     #ogLaunch{
-      position:fixed;inset:0;z-index:999999;
+      position:fixed;inset:0;z-index:189999;
       background:transparent;
       flex-direction:column;align-items:center;justify-content:center;
       overflow:hidden;font-family:'Inter',sans-serif;
@@ -1327,12 +1191,11 @@
   </style>
   <script>
   (function(){
-    var cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');
-    if(cfg.enabled===false){document.body.style.overflow='';return;}
     var launch=document.getElementById('ogLaunch');
     if(!launch)return;
-    // Fetch latest opening config from Firebase, then init
+    // Always fetch from Firebase first — never trust localStorage for enabled state
     (async function(){
+      var cfg={};
       try{
         var fbMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -1341,12 +1204,14 @@
         var db=fbStore.getFirestore(app);
         var snap=await fbStore.getDoc(fbStore.doc(db,'settings','opening'));
         if(snap.exists()){cfg=snap.data();localStorage.setItem('hs_opening',JSON.stringify(cfg));}
-      }catch(e){}
-      if(cfg.enabled===false){launch.style.display='none';document.body.style.overflow='';return;}
+        else{cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');}
+      }catch(e){cfg=JSON.parse(localStorage.getItem('hs_opening')||'{}');}
+      // Only show if explicitly enabled — default OFF if no setting found
+      if(cfg.enabled!==true){launch.style.display='none';document.body.style.overflow='';return;}
       initLaunchScreen(cfg);
     })();
     function initLaunchScreen(cfg){
-    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:999999;background-image:url("venkateswara.jpg");background-size:110%;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;animation:ogKenBurns 18s ease-in-out infinite alternate;';
+    launch.style.cssText='display:flex;position:fixed;inset:0;z-index:189999;background-image:url("venkateswara.jpg");background-size:110%;background-position:center;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:Inter,sans-serif;animation:ogKenBurns 18s ease-in-out infinite alternate;';
     document.body.style.overflow='hidden';
     var bgImg=cfg.bgPhoto||'venkateswara.jpg';
     var f1Photo=cfg.founder1Photo||'srisanth.jpeg';
@@ -1359,15 +1224,25 @@
     var dateText=cfg.dateText||'';
     var timeText=cfg.timeText||'';
     function ini(n){return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
-    function fcard(ph,nm,rl){
-      return '<div style="position:relative;width:200px;height:280px;border-radius:24px;overflow:hidden;border:2px solid rgba(201,168,76,0.6);box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 40px rgba(201,168,76,0.2);">'
-        +'<img src="'+ph+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" />'
-        +'<div style="width:100%;height:100%;background:linear-gradient(135deg,#c9a84c,#5a3a00);display:none;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:#fff;">'+ini(nm)+'</div>'
-        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.3) 50%,transparent 100%);"></div>'
-        +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>'
-        +'<div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1rem 1.1rem;text-align:center;">'
-          +'<div style="font-size:1.05rem;font-weight:900;color:#fff;margin-bottom:0.4rem;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">'+nm+'</div>'
-          +'<div style="font-size:0.62rem;color:#c9a84c;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.4);padding:0.25rem 0.7rem;border-radius:50px;display:inline-block;">'+rl+'</div>'
+    function fcard(ph,nm,rl,tagline,isFounder){
+      var accentColor = isFounder ? '#c9a84c' : '#e8c96a';
+      var glowColor   = isFounder ? 'rgba(201,168,76,0.35)' : 'rgba(232,201,106,0.25)';
+      var cardW       = isFounder ? '210px' : '195px';
+      var cardH       = isFounder ? '295px' : '275px';
+      var crownBadge  = isFounder
+        ? '<div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:50px;padding:0.18rem 0.65rem;font-size:0.52rem;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 12px rgba(201,168,76,0.5);">&#9733; FOUNDER</div>'
+        : '<div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(232,201,106,0.15);border:1px solid rgba(232,201,106,0.5);border-radius:50px;padding:0.18rem 0.65rem;font-size:0.52rem;font-weight:900;color:#e8c96a;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">MD</div>';
+      return '<div style="position:relative;width:'+cardW+';height:'+cardH+';border-radius:24px;overflow:hidden;border:2px solid '+accentColor+';box-shadow:0 30px 80px rgba(0,0,0,0.85),0 0 50px '+glowColor+',inset 0 1px 0 rgba(255,255,255,0.08);">'
+        +'<img src="'+ph+'" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" />'
+        +'<div style="width:100%;height:100%;background:linear-gradient(135deg,'+accentColor+',#5a3a00);display:none;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:#fff;">'+ini(nm)+'</div>'
+        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.25) 55%,transparent 100%);"></div>'
+        +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,'+accentColor+',transparent);"></div>'
+        +(isFounder ? '<div style="position:absolute;top:0;right:0;width:2px;height:40%;background:linear-gradient(to bottom,'+accentColor+',transparent);"></div>' : '')
+        + crownBadge
+        +'<div style="position:absolute;bottom:0;left:0;right:0;padding:0.85rem 0.9rem 1rem;text-align:center;">'
+          +'<div style="font-size:'+(isFounder?'1.05':'0.95')+'rem;font-weight:900;color:#fff;margin-bottom:0.3rem;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.9);">'+nm+'</div>'
+          +'<div style="font-size:0.6rem;color:'+accentColor+';font-weight:800;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,0.6);border:1px solid '+accentColor+'66;padding:0.22rem 0.65rem;border-radius:50px;display:inline-block;margin-bottom:'+(tagline?'0.4rem':'0')+';">'+rl+'</div>'
+          +(tagline ? '<div style="font-size:0.58rem;color:rgba(255,255,255,0.6);line-height:1.5;margin-top:0.2rem;font-style:italic;">'+tagline+'</div>' : '')
         +'</div>'
         +'</div>';
     }
@@ -1461,7 +1336,7 @@
           /* gold rule */
           +'<div id="ogCgRule" style="width:0;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.2rem auto;transition:width 0.9s cubic-bezier(0.25,1,0.5,1);"></div>'
           /* founder cards */
-          +'<div id="ogFounders" style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity 0.7s ease,transform 0.7s ease;">'+fcard(f1Photo,f1Name,f1Role)+fcard(f2Photo,f2Name,f2Role)+'</div>'
+          +'<div id="ogFounders" style="display:flex;gap:1.5rem;justify-content:center;align-items:flex-end;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity 0.7s ease,transform 0.7s ease;">'+fcard(f1Photo,f1Name,f1Role,'Main pillar — onboarding, quality & vision',true)+fcard(f2Photo,f2Name,f2Role,'Executes the vision & drives operations',false)+'</div>'
           /* launch details card */
           +(pdText?'<div id="ogCgPlace" style="opacity:0;transform:translateY(8px);transition:opacity 0.5s ease,transform 0.5s ease;width:100%;">'+pdText+'</div>':'')
           /* app live line */
@@ -1731,959 +1606,8 @@
   <!-- NAVBAR -->
 
   <!-- DISCOVER WITH VIBE -->
-  <section class="vibe-section" id="vibe" style="display:none;">
-    <style>
-      .vibe-section{background:#0a0a0a;padding:5rem 0 4rem;}
-      .vibe-header{text-align:center;margin-bottom:2rem;}
-      .vibe-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:#fff;margin-bottom:0.4rem;}
-      .vibe-title span{color:#c9a84c;}
-      .vibe-subtitle{color:#706050;font-size:0.95rem;}
-      .vibe-cats{display:flex;gap:0.6rem;justify-content:flex-start;flex-wrap:nowrap;padding:0 1.5rem;margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
-      .vibe-cats::-webkit-scrollbar{display:none;}
-      .vibe-cat{padding:0.45rem 1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888070;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
-      .vibe-cat.active,.vibe-cat:hover{background:#c9a84c;color:#fff;border-color:transparent;}
-      .vibe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1200px;margin:0 auto;padding:0 1.5rem;}
-      .vibe-card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;}
-      .vibe-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(201,168,76,0.2);}
-      .vibe-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#0a0a0a;}
-      .vibe-thumb-placeholder{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,#181818,#0a0a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#3a1a1a;}
-      .vibe-thumb-placeholder i{font-size:2.5rem;}
-      .vibe-thumb-placeholder span{font-size:0.75rem;}
-      .vibe-info{padding:0.85rem 1rem;}
-      .vibe-info-title{font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .vibe-info-cat{font-size:0.72rem;color:#c9a84c;font-weight:600;}
-      .vibe-empty{text-align:center;padding:4rem 1.5rem;color:#484030;grid-column:1/-1;}
-      .vibe-empty i{font-size:2.5rem;display:block;margin-bottom:0.75rem;opacity:0.4;}
-      /* Lightbox */
-      .vibe-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;}
-      .vibe-lightbox.open{display:flex;}
-      .vibe-lb-inner{position:relative;max-width:400px;width:90%;}
-      .vibe-lb-video{width:100%;border-radius:16px;max-height:80vh;}
-      .vibe-lb-img{width:100%;border-radius:16px;max-height:80vh;object-fit:contain;}
-      .vibe-lb-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;background:#c9a84c;border:none;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-    </style>
-    <div class="vibe-header">
-      <h2 class="vibe-title">Discover with <span>Vibe</span></h2>
-      <p class="vibe-subtitle">Explore trending reels from our creators</p>
-    </div>
-    <div class="vibe-cats">
-      <button class="vibe-cat active" data-cat="all">All</button>
-      <button class="vibe-cat" data-cat="Testimonials"><i class="fas fa-star"></i> Testimonials</button>
-      <button class="vibe-cat" data-cat="Events & Weddings">Events &amp; Weddings</button>
-      <button class="vibe-cat" data-cat="Car Delivery">Car Delivery</button>
-      <button class="vibe-cat" data-cat="Celebrities">Celebrities</button>
-      <button class="vibe-cat" data-cat="Outfit Shoots">Outfit Shoots</button>
-      <button class="vibe-cat" data-cat="Concerts">Concerts</button>
-      <button class="vibe-cat" data-cat="Collaborations">Collaborations</button>
-      <button class="vibe-cat" data-cat="Decor & Interiors">Decor &amp; Interiors</button>
-    </div>
-    <div class="vibe-grid" id="vibeGrid"></div>
-    <div id="vibeTestiPanel" style="display:none;max-width:1200px;margin:0 auto;padding:0 1.5rem;"></div>
-    <!-- Lightbox -->
-    <div class="vibe-lightbox" id="vibeLightbox">
-      <div class="vibe-lb-inner">
-        <button class="vibe-lb-close" id="vibeLbClose"><i class="fas fa-times"></i></button>
-        <div id="vibeLbContent"></div>
-      </div>
-    </div>
-  </section>
-  <script>
-    (function(){
-      var currentCat = 'all';
-      var _vibeItems = [];
+  
 
-      async function loadVibeFromFirestore(){
-        try {
-          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var app = fbMod.getApps().find(function(a){return a.name==='vibe-index';}) || fbMod.initializeApp(fbCfg,'vibe-index');
-          var db  = fbStore.getFirestore(app);
-          fbStore.onSnapshot(fbStore.collection(db,'vibe_items'), function(snap){
-            _vibeItems = [];
-            snap.forEach(function(d){ _vibeItems.push(Object.assign({id:d.id},d.data())); });
-            renderVibe();
-          });
-        } catch(e){ console.error('Vibe index load error:',e); }
-      }
-
-      function renderVibe(){
-        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
-        var grid = document.getElementById('vibeGrid');
-        if(!filtered.length){
-          grid.innerHTML='<div class="vibe-empty"><i class="fas fa-photo-video"></i>No content yet. Check back soon!</div>';
-          return;
-        }
-        grid.innerHTML = filtered.map(function(item,idx){
-          var thumb = item.thumbnail
-            ? '<img class="vibe-thumb" src="'+item.thumbnail+'" alt="'+item.title+'" loading="lazy"/>'
-            : '<div class="vibe-thumb-placeholder"><i class="fas fa-play-circle"></i><span>'+item.category+'</span></div>';
-          return '<div class="vibe-card" onclick="openVibeLb(\''+idx+'\')">' + thumb + '<div class="vibe-info"><div class="vibe-info-title">'+item.title+'</div><div class="vibe-info-cat">'+item.category+'</div></div></div>';
-        }).join('');
-      }
-      document.querySelectorAll('.vibe-cat').forEach(function(btn){
-        btn.addEventListener('click',function(){
-          document.querySelectorAll('.vibe-cat').forEach(function(b){b.classList.remove('active');});
-          btn.classList.add('active');
-          currentCat = btn.dataset.cat;
-          if(currentCat === 'Testimonials'){
-            document.getElementById('vibeGrid').style.display = 'none';
-            document.getElementById('vibeTestiPanel').style.display = 'block';
-            renderTestimonials();
-          } else {
-            document.getElementById('vibeGrid').style.display = 'grid';
-            document.getElementById('vibeTestiPanel').style.display = 'none';
-            renderVibe();
-          }
-        });
-      });
-
-      function renderTestimonials(){
-        var panel = document.getElementById('vibeTestiPanel');
-        var hp = JSON.parse(localStorage.getItem('hs_homepage')||'{}');
-        var textTestis = hp.testimonials || [];
-        var videoMeta  = JSON.parse(localStorage.getItem('hs_testi_videos')||'[]').slice().reverse();
-
-        if(!textTestis.length && !videoMeta.length){
-          panel.innerHTML = '<div class="vibe-empty"><i class="fas fa-star"></i>No testimonials yet. Check back soon!</div>';
-          return;
-        }
-
-        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">';
-
-        // Text testimonials from admin Home Page editor
-        textTestis.forEach(function(t){
-          var initials = (t.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-          html += '<div class="vibe-card" style="padding:1.5rem;cursor:default;">'
-            +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">'
-            +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#a07830);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;color:#fff;flex-shrink:0;">'+initials+'</div>'
-            +'<div><div style="font-size:0.92rem;font-weight:700;color:#fff;">'+t.name+'</div>'
-            +'<div style="color:#f5a623;font-size:0.8rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>'
-            +'<div style="font-size:0.85rem;color:#d0b0b0;line-height:1.7;font-style:italic;">&ldquo;'+t.text+'&rdquo;</div>'
-            +'</div>';
-        });
-
-        // Video testimonials from admin Testimonial Videos tab
-        videoMeta.forEach(function(v){
-          html += '<div class="vibe-card" id="vtpc_'+v.id+'">'
-            +'<div id="vtpi_'+v.id+'" style="width:100%;aspect-ratio:9/16;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:2.5rem;"><i class="fas fa-spinner fa-spin"></i></div>'
-            +'<div class="vibe-info"><div class="vibe-info-title">'+(v.clientName||v.title||'Testimonial')+'</div>'+(v.caption?'<div class="vibe-info-cat">'+v.caption+'</div>':'')+'</div>'
-            +'</div>';
-        });
-
-        html += '</div>';
-        panel.innerHTML = html;
-
-        // Load testimonial videos using Cloudinary URLs
-        videoMeta.forEach(function(v){
-          var videoUrl = v.cloudUrl || v.url || '';
-          var ph = document.getElementById('vtpi_'+v.id);
-          if(!ph) return;
-          if(videoUrl){
-            var vid = document.createElement('video');
-            vid.src = videoUrl; vid.controls = true; vid.preload = 'metadata';
-            vid.style.cssText = 'width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#000;border-radius:12px 12px 0 0;';
-            ph.replaceWith(vid);
-          }
-        });
-      }
-
-      window.openVibeLb = function(idx){
-        var filtered = currentCat==='all' ? _vibeItems : _vibeItems.filter(function(i){return i.category===currentCat;});
-        var item = filtered[idx];
-        var videoUrl = item.url || item.cloudUrl || '';
-        var html = '';
-        if(videoUrl){
-          html = '<video class="vibe-lb-video" src="'+videoUrl+'" controls autoplay playsinline></video>';
-        } else if(item.thumbnail){
-          html = '<img class="vibe-lb-img" src="'+item.thumbnail+'" alt="'+item.title+'"/>';
-        } else {
-          html = '<div style="color:#fff;text-align:center;padding:2rem;"><i class="fas fa-photo-video" style="font-size:3rem;color:#c9a84c;"></i><p style="margin-top:1rem;">'+item.title+'</p></div>';
-        }
-        document.getElementById('vibeLbContent').innerHTML = html;
-        document.getElementById('vibeLightbox').classList.add('open');
-      };
-      document.getElementById('vibeLbClose').addEventListener('click',function(){
-        document.getElementById('vibeLightbox').classList.remove('open');
-        document.getElementById('vibeLbContent').innerHTML='';
-      });
-      document.getElementById('vibeLightbox').addEventListener('click',function(e){
-        if(e.target===this){this.classList.remove('open');document.getElementById('vibeLbContent').innerHTML='';}
-      });
-      loadVibeFromFirestore();
-    })();
-  </script>
-
-  <!-- HERO -->
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <p class="hero-tag">The Future of Instant Content Creation</p>
-      <h1 class="hero-sub">We Shoot • Edit • Deliver Reels</h1>
-      <h2 class="hero-big">10 Minutes<span class="asterisk">*</span></h2>
-
-      <div class="phone-mockup">
-        <div class="phone-glow"></div>
-        <div class="phone-frame" id="phoneFrame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span>9:41</span>
-              <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-            </div>
-            <div class="phone-body">
-              <div class="phone-header anim-slide-down">
-                <div>
-                  <p class="phone-city">Mumbai ▾</p>
-                  <p class="phone-greeting">Hey, there</p>
-                  <p class="phone-msg">You are just in<br/><strong>the right place!</strong></p>
-                </div>
-                <div class="phone-bell"><i class="fas fa-bell"></i></div>
-              </div>
-              <div class="phone-actions anim-slide-up" style="animation-delay:0.2s">
-                <div class="phone-action"><div class="phone-action-icon red pulse-red"><i class="fas fa-plus"></i></div><span>Book Now</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-box"></i></div><span>Packages</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-wallet"></i></div><span>My Wallet</span></div>
-                <div class="phone-action"><div class="phone-action-icon"><i class="fas fa-cog spin-slow"></i></div><span>Settings</span></div>
-              </div>
-              <div class="phone-banner anim-fade-in" style="animation-delay:0.4s">
-                <div class="phone-banner-text">REELS CREATED<br/>AND DELIVERED<br/><strong>ON THE SPOT</strong></div>
-                <div class="phone-banner-img"><i class="fas fa-user-circle"></i></div>
-                <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
-              </div>
-              <p class="phone-discover anim-fade-in" style="animation-delay:0.5s">Discover with Vibe</p>
-              <div class="phone-grid anim-slide-up" style="animation-delay:0.6s">
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fas fa-car"></i><span>Car Delivery</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#2d1b69,#11998e)"><i class="fas fa-glass-cheers"></i><span>Party</span></div>
-                <div class="phone-grid-item" style="background:linear-gradient(135deg,#c94b4b,#4b134f)"><i class="fas fa-film"></i><span>Dream Reel</span></div>
-              </div>
-              <div class="phone-nav anim-fade-in" style="animation-delay:0.7s">
-                <i class="fas fa-home active"></i>
-                <i class="fas fa-th"></i>
-                <i class="fas fa-wallet"></i>
-                <i class="fas fa-user"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Floating badges -->
-        <div class="float-badge badge-top"><i class="fas fa-bolt"></i> 10 Min Delivery</div>
-        <div class="float-badge badge-bottom"><i class="fas fa-star"></i> 4.9 Rating</div>
-        <div class="float-badge badge-left"><i class="fas fa-camera"></i> Live Now</div>
-      </div>
-
-      <!-- Below Phone -->
-      <div class="below-phone">
-        <div class="hero-pills">
-          <div class="hero-pill"><i class="fab fa-apple"></i> Shot on iPhone</div>
-          <div class="hero-pill"><i class="fas fa-mobile-alt"></i> Shot on Samsung</div>
-          <div class="hero-pill">🎞️ Content Maker</div>
-        </div>
-        <div class="hero-btns">
-          <a href="booking.html" class="btn btn-book">Book Now</a>
-          <a href="partner.html" class="btn btn-partner">Become a Partner</a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat"><span class="stat-num" id="statReels">0</span><span class="stat-label">Reels Delivered</span></div>
-          <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statRating">5.0/5</span><span class="stat-label">Rating</span></div>
-          <div class="stat-sep"></div>
-          <div class="hero-stat"><span class="stat-num" id="statMakers">0</span><span class="stat-label">Content Makers</span></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Chat Widget -->
-  </section>
-
-  <!-- WHY US -->
-  <section class="whyus-section">
-    <style>
-      .whyus-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
-      .whyus-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
-      .whyus-section::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:800px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);}
-      .whyus-header{text-align:center;max-width:700px;margin:0 auto 4rem;padding:0 2rem;}
-      .whyus-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem;}
-      .whyus-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#f0ece0;margin-bottom:0.75rem;line-height:1.15;white-space:nowrap;}
-      .whyus-title span{color:#c9a84c;}
-      .whyus-desc{color:#9a9080;font-size:0.95rem;line-height:1.8;}
-      .whyus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1200px;margin:0 auto;padding:0 2rem;}
-      .whyus-card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);cursor:default;}
-      .whyus-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.1);}
-      .whyus-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
-      .whyus-icon-wrap{width:52px;height:52px;border-radius:14px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;transition:all 0.35s;flex-shrink:0;}
-      .whyus-card:hover .whyus-icon-wrap{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);box-shadow:0 0 20px rgba(201,168,76,0.15);}
-      .whyus-icon-wrap i{font-size:1.3rem;color:#c9a84c;}
-      .whyus-badge{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.58rem;font-weight:800;padding:0.2rem 0.6rem;border-radius:50px;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;}
-      .whyus-text h3{font-size:1rem;font-weight:800;color:#f0ece0;margin-bottom:0.5rem;line-height:1.3;}
-      .whyus-text p{color:#9a9080;font-size:0.82rem;line-height:1.7;}
-      .whyus-number{position:absolute;bottom:1rem;right:1.25rem;font-size:3.5rem;font-weight:900;color:rgba(201,168,76,0.05);line-height:1;pointer-events:none;transition:color 0.35s;}
-      .whyus-card:hover .whyus-number{color:rgba(201,168,76,0.1);}
-      .whyus-card.featured-card{border-color:rgba(201,168,76,0.25);background:#141414;}
-      @media(max-width:900px){.whyus-grid{grid-template-columns:1fr 1fr;}}
-      @media(max-width:580px){.whyus-grid{grid-template-columns:1fr;}}
-    </style>
-
-    <div class="whyus-header">
-      <div class="whyus-eyebrow"><i class="fas fa-star"></i> Why Choose Us</div>
-      <h2 class="whyus-title">Not Just Instant Delivery, <span>But..</span></h2>
-      <p class="whyus-desc">We go beyond just delivering reels — here's what makes us different from everyone else.</p>
-    </div>
-
-    <div class="whyus-grid">
-
-      <div class="whyus-card featured-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-certificate"></i></div>
-          <span class="whyus-badge">Verified</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Our Trained and Certified Reel Creators</h3>
-          <p>Every creator goes through a strict 6-step screening process to ensure top-tier quality.</p>
-        </div>
-        <div class="whyus-number">01</div>
-      </div>
-
-      <div class="whyus-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
-          <span class="whyus-badge">Simple</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Easy Booking</h3>
-          <p>Stop struggling with complex booking procedures. Book your shoot in under 2 minutes.</p>
-        </div>
-        <div class="whyus-number">02</div>
-      </div>
-
-      <div class="whyus-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-rupee-sign"></i></div>
-          <span class="whyus-badge">Affordable</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Unbelievable Pricing</h3>
-          <p>Each Reel starts ₹1,999/-. No hidden charges, no surprises. Pay only for what you need.</p>
-        </div>
-        <div class="whyus-number">03</div>
-      </div>
-
-      <div class="whyus-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-shield-alt"></i></div>
-          <span class="whyus-badge">Trusted</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Safe &amp; Secure</h3>
-          <p>You &amp; your data is safe and secured. End-to-end encrypted payments and verified profiles.</p>
-        </div>
-        <div class="whyus-number">04</div>
-      </div>
-
-      <div class="whyus-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-bolt"></i></div>
-          <span class="whyus-badge">Fast</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Instant Reels, Seamless Editing</h3>
-          <p>Transparent pricing, secure payments, and a smooth checkout — no surprises, ever.</p>
-        </div>
-        <div class="whyus-number">05</div>
-      </div>
-
-      <div class="whyus-card">
-        <div class="whyus-card-top">
-          <div class="whyus-icon-wrap"><i class="fas fa-female"></i></div>
-          <span class="whyus-badge">Safe</span>
-        </div>
-        <div class="whyus-text">
-          <h3>Women's Safety &amp; Comfort First</h3>
-          <p>Clients can choose a female reel creator for a more comfortable experience. Your safety and trust are always our priority.</p>
-        </div>
-        <div class="whyus-number">06</div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- BESTSELLERS -->
-  <section class="bs-section">
-    <style>
-      .bs-section{background:#080808;padding:7rem 0;position:relative;overflow:hidden;}
-      .bs-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
-      .bs-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
-      .bs-header{text-align:center;margin-bottom:2.5rem;}
-      .bs-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.25rem;}
-      .bs-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#f0ece0;margin-bottom:0.5rem;letter-spacing:-0.5px;}
-      .bs-title span{color:#c9a84c;}
-      .bs-sub{color:#9a9080;font-size:0.95rem;margin-bottom:3.5rem;}
-      .bs-wrap{max-width:1200px;margin:0 auto;padding:0 2rem;}
-      .bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
-      .bs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:end;max-width:1160px;margin:0 auto;}
-      .bs-card{border-radius:24px;padding:2.5rem 2.25rem;position:relative;overflow:hidden;transition:transform 0.4s,box-shadow 0.4s,border-color 0.4s;}
-      .bs-card:hover{transform:translateY(-8px);}
-      .bs-card-1{background:#111;border:1px solid rgba(201,168,76,0.15);}
-      .bs-card-1:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.3);}
-      .bs-card-2{background:#141414;border:1px solid rgba(201,168,76,0.35);box-shadow:0 0 0 1px rgba(201,168,76,0.08);}
-      .bs-card-2:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.12),0 0 0 1px rgba(201,168,76,0.4);border-color:rgba(201,168,76,0.5);}
-      .bs-card-silver{background:#111;border:1px solid rgba(192,192,192,0.25);}
-      .bs-card-silver:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(192,192,192,0.3);border-color:rgba(192,192,192,0.4);}
-      .bs-card-gold{background:#141410;border:1px solid rgba(201,168,76,0.4);}
-      .bs-card-gold:hover{box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.6);}
-      .bs-card-luxe{background:linear-gradient(145deg,#0f0f0f,#1a1408);border:1px solid rgba(201,168,76,0.6);box-shadow:0 0 30px rgba(201,168,76,0.08);}
-      .bs-card-luxe:hover{box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.8);}
-      .bs-plan-tabs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:2.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.1);border-radius:14px;padding:5px;max-width:360px;margin-left:auto;margin-right:auto;}
-      .bs-plan-tab{flex:1;padding:0.6rem 1rem;border-radius:10px;border:none;background:none;color:#5a5040;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.25s;}
-      .bs-plan-tab.active{background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(160,120,48,0.12));color:#c9a84c;border:1px solid rgba(201,168,76,0.3);}
-      .bs-panel{display:none;}
-      .bs-panel.active{display:block;}
-      .bs-glow{position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;pointer-events:none;}
-      .bs-card-1 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);}
-      .bs-card-2 .bs-glow{background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 70%);}
-      .bs-popular-pill{position:absolute;top:1.5rem;right:1.5rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.6rem;font-weight:800;padding:0.3rem 0.9rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 15px rgba(201,168,76,0.3);animation:pillFloat 2s ease-in-out infinite;}
-      @keyframes pillFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-      .bs-plan-tag{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:50px;margin-bottom:1.25rem;letter-spacing:0.5px;}
-      .bs-name{font-size:1.9rem;font-weight:900;color:#f0ece0;margin-bottom:0.25rem;letter-spacing:-0.5px;}
-      .bs-tagline{font-size:0.85rem;color:#9a9080;margin-bottom:2rem;}
-      .bs-price-wrap{display:flex;align-items:flex-end;gap:0.5rem;margin-bottom:0.3rem;}
-      .bs-price{font-size:3.5rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-      .bs-per{font-size:0.85rem;color:#9a9080;margin-bottom:0.5rem;}
-      .bs-gst-note{font-size:0.75rem;color:#6a6050;margin-bottom:2rem;}
-      .bs-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent);margin-bottom:1.75rem;}
-      .bs-features-label{font-size:0.62rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;opacity:0.8;}
-      .bs-features{list-style:none;margin-bottom:2rem;display:flex;flex-direction:column;gap:0.55rem;}
-      .bs-features li{display:flex;align-items:center;gap:0.85rem;font-size:0.88rem;color:#b8b0a0;transition:all 0.2s;padding:0.35rem 0.5rem;border-radius:8px;}
-      .bs-features li:hover{background:rgba(201,168,76,0.04);color:#f0ece0;padding-left:0.85rem;}
-      .bs-check{width:20px;height:20px;border-radius:6px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-      .bs-check i{font-size:0.6rem;color:#c9a84c;}
-      .bs-btn{width:100%;border:none;border-radius:12px;padding:1.1rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.75rem;transition:all 0.3s;position:relative;overflow:hidden;letter-spacing:0.5px;}
-      .bs-btn-1{background:rgba(201,168,76,0.08);color:#c9a84c;border:1px solid rgba(201,168,76,0.25);}
-      .bs-btn-1:hover{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);transform:translateY(-2px);box-shadow:0 8px 25px rgba(201,168,76,0.15);}
-      .bs-btn-2{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;box-shadow:0 8px 25px rgba(201,168,76,0.25);}
-      .bs-btn-2:hover{box-shadow:0 14px 40px rgba(201,168,76,0.4);transform:translateY(-2px);background:linear-gradient(135deg,#e8c96a,#c9a84c);}
-      .bs-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:translateX(-100%);transition:transform 0.5s;}
-      .bs-btn:hover::before{transform:translateX(100%);}
-      .bs-anim{opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;}
-      .bs-anim.visible{opacity:1;transform:translateY(0);}
-      @media(max-width:900px){.bs-grid{grid-template-columns:1fr;}.bs-grid-4{grid-template-columns:1fr 1fr;gap:1rem;}.bs-plan-tabs{max-width:100%;}}
-      @media(max-width:520px){.bs-grid-4{grid-template-columns:1fr;}}
-    </style>
-
-    <div class="bs-wrap">
-      <div class="bs-header">
-        <div class="bs-eyebrow"><i class="fas fa-fire"></i> Our Plans</div>
-        <h2 class="bs-title">Our <span>Bestsellers</span></h2>
-        <p class="bs-sub">Simple pricing. No hidden fees. Just great content.</p>
-      </div>
-
-      <!-- PLAN TYPE TABS -->
-      <div class="bs-plan-tabs">
-        <button class="bs-plan-tab active" onclick="bsTab('general',this)"><i class="fas fa-camera"></i> General</button>
-        <button class="bs-plan-tab" onclick="bsTab('wedding',this)"><i class="fas fa-heart"></i> Wedding</button>
-      </div>
-
-      <!-- GENERAL PLANS -->
-      <div class="bs-panel active" id="bsPanel_general">
-        <div class="bs-grid">
-          <div class="bs-card bs-card-1 bs-anim">
-            <div class="bs-glow"></div>
-            <div class="bs-plan-tag"><i class="fas fa-bolt"></i> <span id="bs1_tag">Starter</span></div>
-            <div class="bs-name" id="bs1_name">Hourly Plan</div>
-            <div class="bs-tagline" id="bs1_tagline">Perfect for a single, fast, high-quality reel.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="bs1_price">&#8377;1,699</div>
-              <div class="bs-per" id="bs1_per">/ shoot</div>
-            </div>
-            <div class="bs-gst-note" id="bs1_gstnote">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
-            <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="bs1_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Hour Shoot</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>1 Edited Reel Delivered</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
-            </ul>
-            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?plan=Hourly+Plan'"><i class="fas fa-camera"></i> Book Now &nbsp;&rarr;</button>
-          </div>
-          <div class="bs-card bs-card-2 bs-anim" style="transition-delay:0.15s;">
-            <div class="bs-glow"></div>
-            <div class="bs-popular-pill"><i class="fas fa-star"></i> Most Popular</div>
-            <div class="bs-plan-tag"><i class="fas fa-crown"></i> <span id="bs2_tag">Best Value</span></div>
-            <div class="bs-name" id="bs2_name">Half-Day Plan</div>
-            <div class="bs-tagline" id="bs2_tagline">Ideal for events &amp; creators who need more content.</div>
-            <div class="bs-price-wrap">
-              <div class="bs-price" id="bs2_price">&#8377;3,999</div>
-              <div class="bs-per" id="bs2_per">/ session</div>
-            </div>
-            <div class="bs-gst-note" id="bs2_gstnote">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
-            <div class="bs-divider"></div>
-            <div class="bs-features-label">What's Included</div>
-            <ul class="bs-features" id="bs2_features">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Up to 3 Hours Shoot</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>2 Edited Reels Delivered</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on Latest iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Fast Delivery (10 mins post shoot)</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Trained &amp; Certified Content Maker</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Branding Included</li>
-            </ul>
-            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?plan=Half-Day+Plan'"><i class="fas fa-crown"></i> Book Now &nbsp;&rarr;</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- WEDDING PLANS -->
-      <div class="bs-panel" id="bsPanel_wedding">
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
-
-          <!-- BASIC -->
-          <div class="bs-card bs-card-1 bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">SINGLE EVENT</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-leaf" style="color:#c9a84c;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w1_name" style="font-size:1.5rem;">Basic</div>
-              <div class="bs-tagline" id="w1_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w1_price" style="font-size:2.4rem;">&#8377;14,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w1_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w1_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to one event</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 3 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-1" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Basic'"><i class="fas fa-heart"></i> Enquire Now</button>
-          </div>
-
-          <!-- SILVER -->
-          <div class="bs-card bs-card-silver bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.1s;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#6a6050;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">THREE EVENTS</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-medal" style="color:#c0c0c0;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w2_name" style="font-size:1.5rem;">Silver</div>
-              <div class="bs-tagline" id="w2_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w2_price" style="font-size:2.4rem;background:linear-gradient(90deg,#c0c0c0,#e8e8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&#8377;44,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w2_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w2_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to three events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 10 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-1" style="border-color:rgba(192,192,192,0.35);color:#c0c0c0;" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Silver'"><i class="fas fa-heart"></i> Enquire Now</button>
-          </div>
-
-          <!-- GOLD -->
-          <div class="bs-card bs-card-gold bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 30px 80px rgba(0,0,0,0.6);transition-delay:0.2s;">
-            <div class="bs-glow"></div>
-            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.58rem;font-weight:900;padding:0.28rem 1.1rem;border-radius:0 0 10px 10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;"><i class="fas fa-star"></i> MOST POPULAR</div>
-            <div style="text-align:center;margin-bottom:1.25rem;margin-top:0.5rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">FOUR EVENTS</div>
-              <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 20px rgba(201,168,76,0.2);"><i class="fas fa-trophy" style="color:#c9a84c;font-size:1.3rem;"></i></div>
-              <div class="bs-name" id="w3_name" style="font-size:1.5rem;">Gold</div>
-              <div class="bs-tagline" id="w3_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w3_price" style="font-size:2.4rem;">&#8377;59,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w3_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w3_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers up to four events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 15 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Complementary Pictures</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-2" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Gold'"><i class="fas fa-trophy"></i> Enquire Now</button>
-          </div>
-
-          <!-- PLATINUM -->
-          <div class="bs-card bs-card-luxe bs-anim" style="border-radius:20px;padding:2rem 1.5rem;display:flex;flex-direction:column;transition-delay:0.3s;">
-            <div class="bs-glow"></div>
-            <div style="text-align:center;margin-bottom:1.25rem;">
-              <div style="font-size:0.58rem;font-weight:800;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;">COMPLETE WEDDING</div>
-              <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;box-shadow:0 0 16px rgba(201,168,76,0.15);"><i class="fas fa-gem" style="color:#e8c96a;font-size:1.1rem;"></i></div>
-              <div class="bs-name" id="w4_name" style="font-size:1.5rem;">Platinum</div>
-              <div class="bs-tagline" id="w4_tagline" style="font-size:0.78rem;margin-bottom:1rem;min-height:2.8rem;">For couples who want it all — every moment captured with unmatched attention to detail.</div>
-              <div style="margin-bottom:0.15rem;"><span class="bs-price" id="w4_price" style="font-size:2.4rem;">&#8377;99,999</span></div>
-              <div style="font-size:0.72rem;color:#6a6050;" id="w4_per">+ GST</div>
-            </div>
-            <div class="bs-divider"></div>
-            <div style="font-size:0.6rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Package Inclusions</div>
-            <ul class="bs-features" id="w4_features" style="margin-bottom:1.5rem;flex:1;">
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Covers whole wedding events</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Includes 25 Reels</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Shot on iPhone</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Instant reel delivery</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>Interaction videos + mobile portraits</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>SD card for raw content</li>
-              <li><div class="bs-check"><i class="fas fa-check"></i></div>OG SHOOTS Logo Mandatory</li>
-            </ul>
-            <button class="bs-btn bs-btn-2" style="background:linear-gradient(135deg,#e8c96a,#c9a84c,#a07830);" onclick="window.location.href='booking.html?service=Wedding+Photography&plan=Luxe'"><i class="fas fa-gem"></i> Enquire Now</button>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </section>
-  <script>
-    (function(){
-      var cards = document.querySelectorAll('.bs-anim');
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
-        });
-      },{threshold:0.15});
-      cards.forEach(function(c){ io.observe(c); });
-    })();
-
-    function bsTab(panel, btn){
-      document.querySelectorAll('.bs-plan-tab').forEach(function(b){ b.classList.remove('active'); });
-      document.querySelectorAll('.bs-panel').forEach(function(p){ p.classList.remove('active'); });
-      btn.classList.add('active');
-      var el = document.getElementById('bsPanel_'+panel);
-      el.classList.add('active');
-      el.querySelectorAll('.bs-anim').forEach(function(c){ c.classList.add('visible'); });
-    }
-  </script>
-
-  <!-- FEATURES SECTION -->
-  <section class="features-section">
-    <style>
-      .features-section{background:#0a0a0a;padding:5rem 0;overflow:hidden;}
-      .feat-tag-wrap{display:flex;justify-content:center;margin-bottom:1.5rem;}
-      .feat-tag-pill{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.78rem;font-weight:600;padding:0.45rem 1.2rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.5rem;}
-      .feat-heading{text-align:center;font-size:clamp(2rem,4.5vw,3rem);font-weight:900;color:#fff;margin-bottom:3rem;}
-      .feat-heading span{color:#c9a84c;}
-      .feat-slider-wrap{position:relative;max-width:1380px;margin:0 auto;padding:0 3.5rem;}
-      .feat-slider{display:flex;gap:1rem;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
-      .feat-c{background:#0f0f0f;border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.75rem 1.5rem 1.5rem;flex:0 0 calc(25% - 0.75rem);min-width:0;}
-      .feat-c-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:0.45rem;}
-      .feat-c-desc{font-size:0.82rem;color:#484030;line-height:1.7;margin-bottom:1.5rem;}
-      .feat-mockup{display:flex;justify-content:center;}
-      .feat-mock-frame{width:185px;background:#0a0a0a;border-radius:34px;border:2px solid rgba(255,255,255,0.09);overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,0.95);}
-      .feat-mock-top{height:22px;background:#000;display:flex;justify-content:center;align-items:flex-end;padding-bottom:3px;}
-      .feat-mock-pill{width:65px;height:5px;background:#1a1a1a;border-radius:3px;}
-      .feat-mock-screen{background:#111;padding:0.7rem;min-height:320px;}
-      .fms{display:flex;justify-content:space-between;font-size:0.5rem;color:#666;margin-bottom:0.45rem;}
-      .fmr{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-      .fmr:last-child{border-bottom:none;}
-      .fmav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:#fff;font-weight:700;flex-shrink:0;}
-      .fmnm{font-size:0.63rem;color:#fff;font-weight:600;}
-      .fmmt{font-size:0.5rem;color:#555;}
-      .fmst{color:#f5a623;font-size:0.5rem;}
-      .fmred{background:#a07830;border-radius:7px;padding:0.55rem;text-align:center;font-size:0.6rem;font-weight:800;color:#fff;line-height:1.5;margin-bottom:0.35rem;}
-      .fmbox{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:0.4rem 0.55rem;margin-bottom:0.35rem;}
-      .fmmap{background:#071207;border-radius:6px;height:58px;display:flex;align-items:center;justify-content:center;color:#4caf50;font-size:0.6rem;gap:0.3rem;margin-top:0.3rem;}
-      .fmdl{display:flex;align-items:center;gap:0.45rem;background:rgba(201,168,76,0.1);border-radius:7px;padding:0.45rem;margin-bottom:0.35rem;}
-      .fmdlic{width:22px;height:22px;background:#c9a84c;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;flex-shrink:0;}
-      .fmfr{display:flex;justify-content:space-between;padding:0.28rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.55rem;color:#666;}
-      .fmfr:last-child{border-bottom:none;}
-      .fmchat{width:100%;background:#c9a84c;border:none;border-radius:6px;padding:0.38rem;font-size:0.58rem;font-weight:700;color:#fff;text-align:center;margin-top:0.35rem;}
-      .fmg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:0.35rem;}
-      .fmg3i{background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:5px;padding:0.3rem;text-align:center;}
-      .feat-arr{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(8,0,0,0.95);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10;}
-      .feat-arr:hover{border-color:rgba(201,168,76,0.4);color:#c9a84c;}
-      .feat-arr-l{left:0;}
-      .feat-arr-r{right:0;}
-      @media(max-width:1024px){.feat-c{flex:0 0 calc(33.33% - 0.67rem);}}
-      @media(max-width:700px){.feat-c{flex:0 0 calc(50% - 0.5rem);}}
-      @media(max-width:480px){.feat-c{flex:0 0 85%;}}
-    </style>
-
-    <div class="feat-tag-wrap"><span class="feat-tag-pill"><i class="fas fa-bolt"></i> Get to know OG SHOOTS</span></div>
-    <h2 class="feat-heading">What Makes Us <span>Unique</span></h2>
-
-    <div class="feat-slider-wrap">
-      <button class="feat-arr feat-arr-l" id="fL"><i class="fas fa-chevron-left"></i></button>
-      <div style="overflow:hidden;">
-        <div class="feat-slider" id="fS">
-
-          <div class="feat-c">
-            <div class="feat-c-title">Pick a Partner</div>
-            <div class="feat-c-desc">Personalized Partner Selection for Every Shoot.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div style="font-size:0.55rem;color:#777;margin-bottom:0.2rem;">&larr; Starter Plan</div>
-                <div style="font-size:0.68rem;color:#fff;font-weight:700;margin-bottom:0.55rem;">Let's see we have<br/>got here for you!</div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#c9a84c,#a07830)">KM</div><div><div class="fmnm">Kiran Madireddy</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 5+ Years</div></div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#1565c0,#0d47a1)">TH</div><div><div class="fmnm">Thomas</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 7+ Years</div></div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">KK</div><div><div class="fmnm">Koushik K</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 7+ Years</div></div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#2e7d32,#1b5e20)">AR</div><div><div class="fmnm">Arjun R</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Reels | 3+ Years</div></div></div>
-              </div>
-            </div></div>
-          </div>
-
-          <div class="feat-c">
-            <div class="feat-c-title">Content Storage</div>
-            <div class="feat-c-desc">We securely store your content for up to 6 months, so you can download, revisit, or share it whenever you are ready no rush, no worries.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div class="fmdl"><div class="fmdlic"><i class="fas fa-cloud-download-alt"></i></div><div><div style="font-size:0.6rem;color:#fff;font-weight:600;">Download Content</div><div style="font-size:0.5rem;color:#555;">From OG SHOOTS Cloud</div></div><i class="fas fa-arrow-down" style="color:#c9a84c;font-size:0.55rem;margin-left:auto;"></i></div>
-                <div style="font-size:0.52rem;color:#555;margin-bottom:0.28rem;">Shoot Details</div>
-                <div class="fmfr"><span>Category</span><span style="color:#ccc;">Wedding Shoot</span></div>
-                <div class="fmfr"><span>Package</span><span style="color:#ccc;">Silver Package</span></div>
-                <div class="fmfr"><span>Price</span><span style="color:#c9a84c;">&#8377;20,499</span></div>
-                <div class="fmfr"><span>Shoot on</span><span style="color:#ccc;">Wed, Sep 4th</span></div>
-                <div class="fmfr"><span>Time</span><span style="color:#ccc;">9:00 am - 3:00 pm</span></div>
-                <div style="font-size:0.52rem;color:#555;margin-top:0.3rem;">Add On Details</div>
-              </div>
-            </div></div>
-          </div>
-
-          <div class="feat-c">
-            <div class="feat-c-title">Instant Booking</div>
-            <div class="feat-c-desc">No more waiting! Get immediate confirmation as soon as you book &mdash; fast, simple, and hassle-free.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div style="font-size:0.54rem;color:#777;">Hi, Shreyak</div>
-                <div style="font-size:0.65rem;color:#fff;font-weight:700;margin:0.18rem 0 0.38rem;">You are just in</div>
-                <div class="fmbox">
-                  <div style="font-size:0.6rem;color:#fff;font-weight:700;">&#128278; Your Booking Confirmed</div>
-                  <div style="font-size:0.5rem;color:#888;margin-top:0.1rem;">Kumar &nbsp;|&nbsp; 04:30 PM <span style="color:#c9a84c;float:right;">Edit</span></div>
-                </div>
-                <div class="fmred">REELS CREATED<br/>AND DELIVERED<br/>ON THE SPOT</div>
-                <div style="font-size:0.52rem;color:#777;margin-bottom:0.28rem;">Discover with Vibe</div>
-                <div class="fmg3">
-                  <div class="fmg3i"><div style="font-size:0.95rem;">&#128663;</div><div style="font-size:0.42rem;color:#888;">Car</div></div>
-                  <div class="fmg3i"><div style="font-size:0.95rem;">&#127867;</div><div style="font-size:0.42rem;color:#888;">Party</div></div>
-                  <div class="fmg3i"><div style="font-size:0.95rem;">&#127909;</div><div style="font-size:0.42rem;color:#888;">Reel</div></div>
-                </div>
-                <div style="display:flex;justify-content:space-around;padding:0.3rem 0;border-top:1px solid #1c1c1c;font-size:0.72rem;color:#444;margin-top:0.2rem;">
-                  <i class="fas fa-home"></i><i class="fas fa-th"></i><i class="fas fa-wallet"></i><i class="fas fa-user"></i>
-                </div>
-              </div>
-            </div></div>
-          </div>
-
-          <div class="feat-c">
-            <div class="feat-c-title">Live Tracking</div>
-            <div class="feat-c-desc">Know where your content maker is, in real-time. Stay updated from arrival to final wrap.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:0.52rem;margin-bottom:0.35rem;"><span style="color:#4caf50;">&#9679; Booking accepted</span><span style="color:#777;">Info</span></div>
-                <div style="display:flex;gap:0.4rem;margin-bottom:0.35rem;">
-                  <div style="flex:1;"><div style="font-size:0.63rem;color:#fff;font-weight:700;line-height:1.3;">Just be relax your partner</div><div style="font-size:0.5rem;color:#777;margin-top:0.12rem;">will reach you in next 45mins</div><div style="font-size:0.52rem;color:#c9a84c;margin-top:0.2rem;">Track Partner &rarr;</div></div>
-                  <div style="width:54px;height:54px;background:#071207;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">&#128506;</div>
-                </div>
-                <div style="background:#1a1a1a;border-radius:6px;padding:0.4rem;margin-bottom:0.3rem;">
-                  <div style="display:flex;justify-content:space-between;"><div style="font-size:0.6rem;color:#fff;font-weight:600;">Meet Arjun from OG SHOOTS</div><div style="font-size:0.48rem;color:#888;">24 Oct</div></div>
-                  <div style="font-size:0.5rem;color:#888;margin-top:0.08rem;">&#9679; 3:00 PM <span style="background:#c9a84c;color:#fff;border-radius:2px;padding:0 3px;font-size:0.44rem;">Cancel</span></div>
-                  <div style="font-size:0.48rem;color:#555;margin-top:0.18rem;line-height:1.4;">Meet Arjun, he is a well trained and professional content maker working closely with us since 2 years in content creation &amp; editing.</div>
-                </div>
-                <div class="fmmap"><i class="fas fa-map-marker-alt"></i> Live Location Active</div>
-              </div>
-            </div></div>
-          </div>
-
-          <div class="feat-c">
-            <div class="feat-c-title">Customer Support</div>
-            <div class="feat-c-desc">24/7 support to keep your day running smoothly. Anytime help, just a message or call away.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div style="font-size:0.54rem;color:#777;">&larr; &nbsp;Hi, Shreyak</div>
-                <div style="font-size:0.66rem;color:#fff;font-weight:700;margin:0.22rem 0 0.45rem;">We are here to help you!</div>
-                <div class="fmg3" style="margin-bottom:0.4rem;">
-                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Getting Started</div></div>
-                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Creating Articles</div></div>
-                  <div class="fmg3i"><div style="width:15px;height:15px;background:#c9a84c;border-radius:50%;margin:0 auto 2px;"></div><div style="font-size:0.42rem;color:#ccc;">Scale Ques</div></div>
-                </div>
-                <div style="font-size:0.52rem;color:#666;margin-bottom:0.25rem;">&#128100; Account &amp; Preferences</div>
-                <div class="fmfr">Is OG SHOOTS available globally? <span>+</span></div>
-                <div class="fmfr">How OG SHOOTS is so useful? <span>+</span></div>
-                <div class="fmfr">How to verify account? <span>+</span></div>
-                <div class="fmfr">Do I get discount if frequent? <span>+</span></div>
-                <div style="font-size:0.5rem;color:#555;text-align:center;margin-top:0.28rem;">Still not finding an answer?</div>
-                <div class="fmchat">Chat with Us</div>
-              </div>
-            </div></div>
-          </div>
-
-          <div class="feat-c">
-            <div class="feat-c-title">Female Content Maker</div>
-            <div class="feat-c-desc">Female users can now confidently get skilled female content makers for their shoots.</div>
-            <div class="feat-mockup"><div class="feat-mock-frame">
-              <div class="feat-mock-top"><div class="feat-mock-pill"></div></div>
-              <div class="feat-mock-screen">
-                <div class="fms"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-                <div style="font-size:0.52rem;color:#777;margin-bottom:0.3rem;">Based on your request</div>
-                <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);border-radius:6px;padding:0.38rem 0.5rem;margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center;">
-                  <div style="font-size:0.58rem;color:#fff;font-weight:600;">Opt for a Female Content Maker</div>
-                  <div style="width:11px;height:11px;border:1.5px solid #c9a84c;border-radius:2px;flex-shrink:0;"></div>
-                </div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#880e4f,#4a0030)">PR</div><div style="flex:1;"><div class="fmnm">Priya R</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Reels | 4+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,999</div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#6a1b9a,#4a148c)">AN</div><div style="flex:1;"><div class="fmnm">Ananya N</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Events | 3+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;1,699</div></div>
-                <div class="fmr"><div class="fmav" style="background:linear-gradient(135deg,#1565c0,#0d47a1)">SM</div><div style="flex:1;"><div class="fmnm">Sneha M</div><div class="fmst">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="fmmt">Portrait | 5+ Years</div></div><div style="font-size:0.52rem;color:#c9a84c;">&#8377;2,199</div></div>
-              </div>
-            </div></div>
-          </div>
-
-        </div>
-      </div>
-      <button class="feat-arr feat-arr-r" id="fR"><i class="fas fa-chevron-right"></i></button>
-    </div>
-  </section>
-  <script>
-    (function(){
-      var s=document.getElementById('fS');
-      var l=document.getElementById('fL');
-      var r=document.getElementById('fR');
-      var idx=0;
-      function vis(){return window.innerWidth<=480?1:window.innerWidth<=700?2:window.innerWidth<=1024?3:4;}
-      function tot(){return s.children.length;}
-      function go(){var gap=16;var w=s.children[0].offsetWidth+gap;s.style.transform='translateX(-'+(idx*w)+'px)';}
-      r.onclick=function(){if(idx<tot()-vis()){idx++;go();}};
-      l.onclick=function(){if(idx>0){idx--;go();}};
-      var sx,down=false;
-      s.addEventListener('mousedown',function(e){down=true;sx=e.pageX;});
-      document.addEventListener('mouseup',function(){down=false;});
-      document.addEventListener('mousemove',function(e){
-        if(!down)return;
-        if(Math.abs(e.pageX-sx)>60){
-          if(e.pageX<sx&&idx<tot()-vis())idx++;
-          else if(e.pageX>sx&&idx>0)idx--;
-          down=false;go();
-        }
-      });
-      setInterval(function(){if(idx<tot()-vis())idx++;else idx=0;go();},3000);
-    })();
-  </script>
-
-  <!-- SERVICES -->
-  <section class="svc-section">
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
-      .svc-section{background:#060606;padding:9rem 0;position:relative;overflow:hidden;}
-      .svc-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none;}
-      .svc-inner{max-width:1200px;margin:0 auto;padding:0 3rem;position:relative;z-index:1;}
-      /* HEADER */
-      .svc-header{text-align:center;margin-bottom:5rem;padding-bottom:3rem;border-bottom:1px solid rgba(201,168,76,0.08);}
-      .svc-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;justify-content:center;}
-      .svc-eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c);flex-shrink:0;}
-      .svc-eyebrow-line.right{background:linear-gradient(90deg,#c9a84c,transparent);}
-      .svc-eyebrow-text{font-size:0.62rem;font-weight:700;color:#c9a84c;letter-spacing:5px;text-transform:uppercase;}
-      .svc-h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:900;color:#f0ece0;line-height:1.1;margin-bottom:1.25rem;}
-      .svc-h2 em{font-style:italic;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-      .svc-sub{color:#6a6050;font-size:0.9rem;line-height:1.8;max-width:900px;margin:0 auto;white-space:nowrap;}
-      .svc-header-cta{display:none;}
-      .svc-header-right{display:none;}
-      /* GRID */
-      .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-      .svc-card{background:#0d0d0d;border:1px solid rgba(201,168,76,0.1);border-radius:16px;padding:2.75rem 2.25rem;position:relative;display:flex;flex-direction:column;transition:transform 0.4s,border-color 0.4s,box-shadow 0.4s;overflow:hidden;}
-      .svc-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,#c9a84c,#e8c96a);transition:width 0.6s cubic-bezier(0.25,0.46,0.45,0.94);border-radius:16px 16px 0 0;}
-      .svc-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.3);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(201,168,76,0.08);}
-      .svc-card:hover::before,.svc-card.pop::before{width:100%;}
-      .svc-card.pop{background:#111;border-color:rgba(201,168,76,0.25);box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(201,168,76,0.06);}
-      /* number */
-      .svc-num{font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.2);letter-spacing:4px;margin-bottom:2.5rem;transition:color 0.4s;}
-      .svc-card:hover .svc-num,.svc-card.pop .svc-num{color:rgba(201,168,76,0.5);}
-      /* icon */
-      .svc-icon-wrap{width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:rgba(201,168,76,0.4);margin-bottom:1.75rem;transition:color 0.4s,transform 0.4s;}
-      .svc-card:hover .svc-icon-wrap,.svc-card.pop .svc-icon-wrap{color:#c9a84c;transform:translateY(-3px);}
-      /* badge */
-      .svc-pop-badge{display:inline-flex;align-items:center;gap:0.3rem;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.55rem;font-weight:700;padding:0.18rem 0.6rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:0.75rem;width:fit-content;}
-      /* text */
-      .svc-name{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;color:#f0ece0;margin-bottom:0.75rem;line-height:1.2;}
-      .svc-desc{font-size:0.82rem;color:#5a5040;line-height:1.85;flex:1;margin-bottom:2.5rem;}
-      /* price */
-      .svc-price-row{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.06);}
-      .svc-price{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a 0%,#c9a84c 50%,#a07830 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block;margin-bottom:0.2rem;}
-      .svc-price-label{font-size:0.65rem;color:#4a4030;letter-spacing:2px;text-transform:uppercase;}
-      /* cta */
-      .svc-btn{display:inline-flex;align-items:center;gap:0;color:rgba(201,168,76,0.5);font-size:0.65rem;font-weight:700;text-decoration:none;letter-spacing:3px;text-transform:uppercase;transition:all 0.4s;}
-      .svc-btn::after{content:'';display:inline-block;width:20px;height:1px;background:currentColor;margin-left:0.75rem;transition:width 0.4s;}
-      .svc-card:hover .svc-btn,.svc-card.pop .svc-btn{color:#c9a84c;}
-      .svc-card:hover .svc-btn::after,.svc-card.pop .svc-btn::after{width:36px;}
-      @media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr);}.svc-header{padding-bottom:2rem;margin-bottom:3rem;}}
-      @media(max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-inner{padding:0 1.5rem;}}
-    </style>
-    <div class="svc-inner">
-      <div class="svc-header">
-        <div class="svc-eyebrow"><span class="svc-eyebrow-line"></span><span class="svc-eyebrow-text">What We Offer</span><span class="svc-eyebrow-line right"></span></div>
-        <h2 class="svc-h2">Services Built for <em>Every Shoot</em></h2>
-        <p class="svc-sub">From portraits to grand weddings &mdash; crafted with precision, delivered with excellence.</p>
-      </div>
-      <div class="svc-grid" id="svcGrid">
-        <div class="svc-card">
-          <div class="svc-num">01 &mdash; REEL SHOOTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-film"></i></div>
-          <div class="svc-name">Reel Shoots</div>
-          <div class="svc-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_reel">&#8377;999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Reel+Shoot" class="svc-btn">Book Now</a>
-        </div>
-        <div class="svc-card pop">
-          <div class="svc-num">02 &mdash; PORTRAITS</div>
-          <div class="svc-pop-badge"><i class="fas fa-star"></i>&nbsp; Most Popular</div>
-          <div class="svc-icon-wrap"><i class="fas fa-user-circle"></i></div>
-          <div class="svc-name">Portrait Sessions</div>
-          <div class="svc-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_portrait">&#8377;1,499</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Portrait+Session" class="svc-btn">Book Now</a>
-        </div>
-        <div class="svc-card">
-          <div class="svc-num">03 &mdash; WEDDINGS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-heart"></i></div>
-          <div class="svc-name">Wedding Photography</div>
-          <div class="svc-desc">Capture every precious moment of your special day with timeless elegance.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_wedding">&#8377;15,000</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="#" onclick="openWeddingPlans();return false;" class="svc-btn">View Plans</a>
-        </div>
-        <div class="svc-card">
-          <div class="svc-num">04 &mdash; PRODUCTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-box"></i></div>
-          <div class="svc-name">Product Shoots</div>
-          <div class="svc-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_product">&#8377;2,499</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Product+Shoot" class="svc-btn">Book Now</a>
-        </div>
-        <div class="svc-card">
-          <div class="svc-num">05 &mdash; EVENTS</div>
-          <div class="svc-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
-          <div class="svc-name">Event Coverage</div>
-          <div class="svc-desc">Corporate events, parties &amp; launches &mdash; every moment documented flawlessly.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_event">&#8377;5,999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Event+Coverage" class="svc-btn">Book Now</a>
-        </div>
-        <div class="svc-card">
-          <div class="svc-num">06 &mdash; FOOD</div>
-          <div class="svc-icon-wrap"><i class="fas fa-utensils"></i></div>
-          <div class="svc-name">Food Photography</div>
-          <div class="svc-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
-          <div class="svc-price-row"><span class="svc-price" id="svcPrice_food">&#8377;1,999</span><span class="svc-price-label">Starting Price</span></div>
-          <a href="booking.html?service=Food+Photography" class="svc-btn">Book Now</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
 
@@ -2695,7 +1619,7 @@
     <style>
       .app-cta-section{background:linear-gradient(135deg,#0a0a0a 0%,#111111 50%,#0a0a0a 100%);padding:5rem 0;position:relative;overflow:hidden;}
       .app-cta-section::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);pointer-events:none;}
-      .app-cta-inner{max-width:1000px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:4rem;}
+      .app-cta-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:4rem;}
       .app-cta-text{flex:1;}
       .app-cta-tag{color:#c9a84c;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;}
       .app-cta-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:1rem;}
@@ -2761,12 +1685,12 @@
           <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform. Book top shooters near you instantly.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @wearehashoot</div>
+            <div><i class="fas fa-envelope"></i> support.ogshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>
           <div class="social-links">
-            <a href="https://www.instagram.com/weareogshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/weareogshoots/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -2804,9 +1728,11 @@
       </div>
       <div class="footer-bottom">
         <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+        <p style="font-size:0.75rem;color:#4a4030;margin-top:0.3rem;">Developed by <strong style="color:rgba(201,168,76,0.6);">Srisanth Boddu</strong></p>
         <div class="footer-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
+          <a href="cancellation.html">Cancellation Policy</a>
           <a href="cookies.html">Cookies</a>
           <a href="verify-certificate.html">Verify Certificate</a>
         </div>
@@ -2819,12 +1745,10 @@
     function applyHomepage(hp){
       const completedCount = JSON.parse(localStorage.getItem('hs_bookings') || '[]').filter(function(b){ return b.status === 'completed'; }).length;
       const feedbacks = JSON.parse(localStorage.getItem('hs_feedbacks') || '[]');
-      document.getElementById('statReels').textContent  = hp.statReels  || '0';
+      document.getElementById('statReels').textContent  = hp.statReels  || '50,002+';
       document.getElementById('statRating').textContent = hp.statRating || '5.0/5';
-      document.getElementById('statMakers').textContent = hp.statMakers || '0';
-      if(hp.heroTag) document.querySelector('.hero-tag').textContent = hp.heroTag;
-      if(hp.heroSub) document.querySelector('.hero-sub').textContent = hp.heroSub;
-      if(hp.heroBig) { var hb = document.querySelector('.hero-big'); hb.innerHTML = hp.heroBig + '<span class="asterisk">*</span>'; }
+      document.getElementById('statMakers').textContent = hp.statMakers || '200+';
+      // hero text managed in HTML directly — not overridden by admin
       if(hp.btnBook) { var bb = document.querySelector('.btn-book'); if(bb) bb.textContent = hp.btnBook; }
       if(hp.servicesHeading) { var sh = document.querySelector('.svc-h2'); if(sh) sh.innerHTML = hp.servicesHeading; }
       if(hp.servicesSub) { var ss = document.querySelector('.svc-sub'); if(ss) ss.textContent = hp.servicesSub; }
@@ -2900,15 +1824,15 @@
   <!-- WEDDING PLANS OVERLAY -->
   <div id="weddingPlansOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;overflow-y:auto;padding:2rem 1rem;">
     <style>
-      .wp-wrap{max-width:1100px;margin:0 auto;}
+      .wp-wrap{max-width:1300px;margin:0 auto;}
       .wp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
       .wp-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#fff;}
       .wp-title span{color:#c9a84c;}
       .wp-sub{color:#9a9080;font-size:0.9rem;margin-bottom:2.5rem;}
       .wp-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
       .wp-close:hover{background:rgba(244,67,54,0.2);border-color:#f44336;color:#f44336;}
-      .wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
-      .wp-card{border-radius:20px;padding:2rem 1.75rem;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.3s,box-shadow 0.3s;}
+      .wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;align-items:stretch;}
+      .wp-card{border-radius:16px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.3s,box-shadow 0.3s;height:100%;}
       .wp-card:hover{transform:translateY(-6px);}
       .wp-card-basic{background:#111;border:1px solid rgba(201,168,76,0.15);}
       .wp-card-basic:hover{box-shadow:0 24px 60px rgba(0,0,0,0.6);border-color:rgba(201,168,76,0.3);}
@@ -2921,22 +1845,22 @@
       .wp-badge{position:absolute;top:-1px;right:1.25rem;font-size:0.6rem;font-weight:800;padding:0.2rem 0.75rem;border-radius:0 0 8px 8px;letter-spacing:1px;text-transform:uppercase;}
       .wp-badge-popular{background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;}
       .wp-badge-luxe{background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#000;}
-      .wp-tier{font-size:0.7rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;}
-      .wp-tier-basic{color:#9a9080;}
-      .wp-tier-silver{color:#c0c0c0;}
-      .wp-tier-gold{color:#c9a84c;}
-      .wp-tier-luxe{color:#e8c96a;}
-      .wp-name{font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:0.3rem;}
-      .wp-tagline{font-size:0.8rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.5;}
-      .wp-price{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.2rem;}
+      .wp-tier{font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.6rem;padding:0.25rem 0.75rem;border-radius:50px;display:inline-block;}
+      .wp-tier-basic{color:#9a9080;background:rgba(255,255,255,0.05);}
+      .wp-tier-silver{color:#c0c0c0;background:rgba(192,192,192,0.08);}
+      .wp-tier-gold{color:#c9a84c;background:rgba(201,168,76,0.08);}
+      .wp-tier-luxe{color:#e8c96a;background:rgba(201,168,76,0.12);}
+      .wp-name{font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:0.3rem;}
+      .wp-tagline{font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;line-height:1.6;}
+      .wp-price{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#e8c96a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.2rem;}
       .wp-price-silver{background:linear-gradient(135deg,#e0e0e0,#c0c0c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
       .wp-per{font-size:0.72rem;color:#6a6050;margin-bottom:0.25rem;}
       .wp-gst{font-size:0.65rem;color:#4a4030;margin-bottom:1.25rem;}
       .wp-divider{height:1px;background:rgba(201,168,76,0.08);margin-bottom:1.25rem;}
       .wp-features{list-style:none;display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.75rem;flex:1;}
-      .wp-features li{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:#b8b0a0;}
+      .wp-features li{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:#b8b0a0;}
       .wp-features li i{color:#c9a84c;font-size:0.6rem;flex-shrink:0;}
-      .wp-btn{display:block;text-align:center;padding:0.85rem;border-radius:12px;font-size:0.88rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;font-family:inherit;}
+      .wp-btn{display:block;text-align:center;padding:0.85rem;border-radius:10px;font-size:0.88rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;font-family:inherit;margin-top:auto;}
       .wp-btn-basic{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;}
       .wp-btn-basic:hover{background:#c9a84c;color:#000;}
       .wp-btn-silver{background:rgba(192,192,192,0.1);border:1px solid rgba(192,192,192,0.3);color:#c0c0c0;}
@@ -2963,7 +1887,7 @@
           <div class="wp-tier wp-tier-basic">SINGLE EVENT</div>
           <div class="wp-name" id="wp_w1_name">Basic</div>
           <div class="wp-tagline" id="wp_w1_tagline">Perfect for couples looking for a stunning, professionally crafted wedding shoot that won&#39;t break the bank.</div>
-          <div class="wp-price" id="wp_w1_price">&#8377;14,999</div>
+          <div class="wp-price" id="wp_w1_price">&#8377;6,999</div>
           <div class="wp-per" id="wp_w1_per">+ GST</div>
           <div class="wp-gst">No hidden charges</div>
           <div class="wp-divider"></div>
@@ -2976,7 +1900,7 @@
             <li><i class="fas fa-check"></i>SD card for raw content</li>
             <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Basic" class="wp-btn wp-btn-basic"><i class="fas fa-heart"></i> Enquire Now</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Basic" class="wp-btn wp-btn-basic"><i class="fas fa-heart"></i> Book Now</a>
         </div>
 
         <!-- SILVER -->
@@ -2984,20 +1908,20 @@
           <div class="wp-tier wp-tier-silver">THREE EVENTS</div>
           <div class="wp-name" id="wp_w2_name">Silver</div>
           <div class="wp-tagline" id="wp_w2_tagline">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-          <div class="wp-price wp-price-silver" id="wp_w2_price">&#8377;44,999</div>
+          <div class="wp-price wp-price-silver" id="wp_w2_price">&#8377;8,999</div>
           <div class="wp-per" id="wp_w2_per">+ GST</div>
           <div class="wp-gst">No hidden charges</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w2_features">
             <li><i class="fas fa-check"></i>Covers up to three events</li>
-            <li><i class="fas fa-check"></i>Includes 10 Reels</li>
+            <li><i class="fas fa-check"></i>Includes 8 Reels</li>
             <li><i class="fas fa-check"></i>Shot on iPhone</li>
             <li><i class="fas fa-check"></i>Instant reel delivery</li>
             <li><i class="fas fa-check"></i>Complementary Pictures</li>
             <li><i class="fas fa-check"></i>SD card for raw content</li>
             <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Silver" class="wp-btn wp-btn-silver"><i class="fas fa-heart"></i> Enquire Now</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Silver" class="wp-btn wp-btn-silver"><i class="fas fa-heart"></i> Book Now</a>
         </div>
 
         <!-- GOLD -->
@@ -3006,20 +1930,20 @@
           <div class="wp-tier wp-tier-gold">FOUR EVENTS</div>
           <div class="wp-name" id="wp_w3_name">Gold</div>
           <div class="wp-tagline" id="wp_w3_tagline">Perfect for those who want comprehensive coverage with an extra touch of elegance.</div>
-          <div class="wp-price" id="wp_w3_price">&#8377;59,999</div>
+          <div class="wp-price" id="wp_w3_price">&#8377;11,999</div>
           <div class="wp-per" id="wp_w3_per">+ GST</div>
           <div class="wp-gst">Best Value</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w3_features">
             <li><i class="fas fa-check"></i>Covers up to four events</li>
-            <li><i class="fas fa-check"></i>Includes 15 Reels</li>
+            <li><i class="fas fa-check"></i>Includes 12 Reels</li>
             <li><i class="fas fa-check"></i>Shot on iPhone</li>
             <li><i class="fas fa-check"></i>Instant reel delivery</li>
             <li><i class="fas fa-check"></i>Complementary Pictures</li>
             <li><i class="fas fa-check"></i>SD card for raw content</li>
             <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Gold" class="wp-btn wp-btn-gold"><i class="fas fa-trophy"></i> Enquire Now</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Gold" class="wp-btn wp-btn-gold"><i class="fas fa-trophy"></i> Book Now</a>
         </div>
 
         <!-- PLATINUM -->
@@ -3028,20 +1952,20 @@
           <div class="wp-tier wp-tier-luxe">COMPLETE WEDDING</div>
           <div class="wp-name" id="wp_w4_name">Platinum</div>
           <div class="wp-tagline" id="wp_w4_tagline">For couples who want it all &#8212; every moment captured with unmatched attention to detail.</div>
-          <div class="wp-price" id="wp_w4_price">&#8377;99,999</div>
+          <div class="wp-price" id="wp_w4_price">&#8377;18,999</div>
           <div class="wp-per" id="wp_w4_per">+ GST</div>
           <div class="wp-gst">All-Inclusive</div>
           <div class="wp-divider"></div>
           <ul class="wp-features" id="wp_w4_features">
             <li><i class="fas fa-check"></i>Covers whole wedding events</li>
-            <li><i class="fas fa-check"></i>Includes 25 Reels</li>
+            <li><i class="fas fa-check"></i>Includes 16 Reels</li>
             <li><i class="fas fa-check"></i>Shot on iPhone</li>
             <li><i class="fas fa-check"></i>Instant reel delivery</li>
             <li><i class="fas fa-check"></i>Interaction videos + mobile portraits</li>
             <li><i class="fas fa-check"></i>SD card for raw content</li>
             <li><i class="fas fa-check"></i>OG SHOOTS Logo Mandatory</li>
           </ul>
-          <a href="booking.html?service=Wedding+Photography&plan=Luxe" class="wp-btn wp-btn-luxe"><i class="fas fa-gem"></i> Enquire Now</a>
+          <a href="booking.html?service=Wedding+Photography&plan=Luxe" class="wp-btn wp-btn-luxe"><i class="fas fa-gem"></i> Book Now</a>
         </div>
 
       </div>
@@ -3084,5 +2008,42 @@
   </script>
 
 <script src="hs-feedback-widget.js"></script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+  <script>
+  // Load promo banner from Firebase
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='promo-banner';})||fbMod.initializeApp(fbCfg,'promo-banner');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','promo_banner'));
+      var banner  = document.getElementById('promoBanner');
+      var textEl  = banner ? banner.querySelector('p') : null;
+      if(snap.exists()){
+        var cfg = snap.data();
+        if(!cfg.enabled){ if(banner) banner.style.display='none'; }
+        else {
+          if(banner) banner.style.display='block';
+          if(textEl && cfg.text) textEl.innerHTML = '<span style="color:#c9a84c;">&#127881; Special Offer:</span> '+cfg.text+' &nbsp;<a href="booking.html" style="color:#c9a84c;font-weight:800;text-decoration:underline;">Book Now &rarr;</a> &nbsp;<span style="color:#6a6050;font-size:0.7rem;">T&amp;C Apply</span>';
+        }
+      }
+    }catch(e){ console.warn('promo banner:',e); }
+  })();
+  </script>
 </body>
 </html>
