@@ -134,20 +134,7 @@ body {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: radial-gradient(ellipse 120% 50% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
 }
-.hero-content { 
-  text-align: left; 
-  position: relative; 
-  z-index: 1; 
-  max-width: 1100px; 
-  margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  width: 100%;
-  padding-right: 0;
-}
+.hero-content { text-align: center; position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; }
 .hero-tag {
   color: var(--red); font-size: 1.3rem; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem;
@@ -159,8 +146,8 @@ body {
 }
 .hero-big {
   font-size: clamp(3rem, 8vw, 7rem); font-weight: 900;
-  color: var(--red); line-height: 1; margin-bottom: 1.5rem;
-  white-space: nowrap; text-align: left; width: 100%;
+  color: var(--red); line-height: 1; margin-bottom: 3rem;
+  white-space: nowrap; text-align: center; width: 100%;
   text-shadow: 0 0 80px rgba(201,168,76,0.25);
   letter-spacing: -3px; display: block;
 }
@@ -169,7 +156,7 @@ body {
 /* PHONE MOCKUP */
 .phone-mockup {
   display: flex; justify-content: center;
-  position: relative; flex-shrink: 0;
+  position: relative; margin-top: 1rem;
   animation: phoneFloat 4s ease-in-out infinite;
 }
 @keyframes phoneFloat {
@@ -306,13 +293,13 @@ body {
 
 /* Below phone */
 .below-phone {
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 1.5rem; margin-top: 2rem; flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.5rem; margin-top: 2.5rem;
 }
 
 /* Hero pills */
 .hero-pills {
-  display: flex; justify-content: flex-start; gap: 0.75rem;
+  display: flex; justify-content: center; gap: 0.75rem;
   flex-wrap: wrap; margin-bottom: 2rem;
 }
 .hero-pill {
@@ -326,7 +313,7 @@ body {
 
 /* Hero CTA buttons */
 .hero-btns {
-  display: flex; justify-content: flex-start; gap: 1rem;
+  display: flex; justify-content: center; gap: 1rem;
   flex-wrap: wrap; margin-bottom: 2.5rem;
 }
 .btn-book {
@@ -347,10 +334,10 @@ body {
 
 /* Hero stats */
 .hero-stats {
-  display: flex; justify-content: flex-start; align-items: center;
+  display: flex; justify-content: center; align-items: center;
   gap: 2.5rem; margin-bottom: 3rem; flex-wrap: wrap;
 }
-.hero-stat { text-align: left; }
+.hero-stat { text-align: center; }
 .stat-num {
   display: block; font-size: 2.2rem; font-weight: 900;
   color: var(--red); line-height: 1;
