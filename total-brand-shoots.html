@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Total Brand Shoots – OG Shoots</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="nav.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #080808; color: #f0ece0; }
+
+    /* HERO */
+    .tbs-hero {
+      padding: 8rem 2rem 5rem;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 65%);
+    }
+    .tbs-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+      color: #c9a84c; font-size: 0.72rem; font-weight: 700;
+      padding: 0.35rem 1rem; border-radius: 50px;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .tbs-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+      color: #fff; line-height: 1.1; margin-bottom: 1rem;
+    }
+    .tbs-hero h1 span { color: #c9a84c; }
+    .tbs-hero p {
+      font-size: 1rem; color: #9a9080; max-width: 550px;
+      margin: 0 auto 2.5rem; line-height: 1.8;
+    }
+    .tbs-hero-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, #c9a84c, #a07830);
+      color: #000; font-size: 0.95rem; font-weight: 800;
+      padding: 1rem 2.5rem; border-radius: 12px;
+      text-decoration: none; transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(201,168,76,0.3);
+    }
+    .tbs-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(201,168,76,0.4); }
+
+    /* WHAT WE DO */
+    .tbs-services {
+      padding: 5rem 2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .tbs-section-label {
+      text-align: center; margin-bottom: 3rem;
+    }
+    .tbs-section-label h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 900; color: #fff; margin-bottom: 0.5rem;
+    }
+    .tbs-section-label p { color: #9a9080; font-size: 0.9rem; }
+
+    .tbs-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;
+    }
+    .tbs-card {
+      background: #111; border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 16px; padding: 2rem 1.75rem;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .tbs-card:hover { transform: translateY(-5px); border-color: rgba(201,168,76,0.3); }
+    .tbs-card-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #c9a84c; margin-bottom: 1.25rem;
+    }
+    .tbs-card h3 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .tbs-card p { font-size: 0.83rem; color: #9a9080; line-height: 1.7; }
+
+    /* PLANS */
+    .tbs-package-section { padding: 5rem 2rem; background: #0d0d0d; }
+    .tbs-plans-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    }
+    .tbs-plan {
+      background: #111; border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 20px; padding: 2.25rem 2rem;
+      display: flex; flex-direction: column; position: relative; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .tbs-plan:hover { transform: translateY(-6px); border-color: rgba(201,168,76,0.35); }
+    .tbs-plan.featured {
+      border-color: rgba(201,168,76,0.5); background: #141410;
+      box-shadow: 0 0 50px rgba(201,168,76,0.08);
+    }
+    .tbs-plan.featured::before {
+      content: ''; position: absolute; top: 0; left: 10%; right: 10%;
+      height: 1px; background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+    }
+    .tbs-popular {
+      position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #c9a84c, #a07830);
+      color: #000; font-size: 0.58rem; font-weight: 900;
+      padding: 0.22rem 1rem; border-radius: 0 0 8px 8px;
+      letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+    }
+    .tbs-plan-tier {
+      font-size: 0.62rem; font-weight: 800; color: #c9a84c;
+      letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .tbs-plan-name { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 0.3rem; }
+    .tbs-plan-desc { font-size: 0.82rem; color: #9a9080; line-height: 1.6; margin-bottom: 1.5rem; }
+    .tbs-price {
+      font-size: 2.8rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, #e8c96a, #c9a84c, #a07830);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.2rem;
+    }
+    .tbs-price-note { font-size: 0.75rem; color: #6a6050; margin-bottom: 1.5rem; }
+    .tbs-divider { height: 1px; background: rgba(201,168,76,0.1); margin: 1.25rem 0; }
+    .tbs-features {
+      list-style: none; display: flex; flex-direction: column;
+      gap: 0.65rem; margin-bottom: 2rem; flex: 1;
+    }
+    .tbs-features li {
+      display: flex; align-items: center; gap: 0.65rem;
+      font-size: 0.84rem; color: #b8b0a0;
+    }
+    .tbs-features li i { font-size: 0.65rem; flex-shrink: 0; }
+    .tbs-features li .yes { color: #c9a84c; }
+    .tbs-features li .no { color: #3a3030; }
+    .tbs-features li.disabled { color: #3a3030; }
+    .tbs-package-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+      width: 100%; color: #000; font-size: 0.9rem; font-weight: 800;
+      padding: 1rem; border-radius: 12px; text-decoration: none;
+      border: none; cursor: pointer; font-family: inherit; transition: all 0.3s;
+    }
+    .tbs-package-btn.gold {
+      background: linear-gradient(135deg, #c9a84c, #a07830);
+      box-shadow: 0 8px 25px rgba(201,168,76,0.25);
+    }
+    .tbs-package-btn.gold:hover { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(201,168,76,0.4); }
+    .tbs-package-btn.outline {
+      background: transparent; border: 1px solid rgba(201,168,76,0.35); color: #c9a84c;
+    }
+    .tbs-package-btn.outline:hover { background: rgba(201,168,76,0.08); }
+    @media(max-width: 900px) { .tbs-plans-grid { grid-template-columns: 1fr; max-width: 420px; } }
+
+    /* ENQUIRY FORM */
+    .tbs-enquiry {
+      padding: 5rem 2rem;
+      max-width: 650px; margin: 0 auto;
+    }
+    .tbs-form {
+      background: #111; border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 20px; padding: 2.5rem;
+    }
+    .tbs-form h2 { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 0.4rem; }
+    .tbs-form p { font-size: 0.85rem; color: #9a9080; margin-bottom: 2rem; }
+    .tbs-input-group { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem; }
+    .tbs-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .tbs-input {
+      background: #0d0d0d; border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 10px; padding: 0.85rem 1rem;
+      color: #fff; font-size: 0.875rem; font-family: inherit;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .tbs-input:focus { border-color: #c9a84c; }
+    .tbs-input::placeholder { color: #4a4030; }
+    textarea.tbs-input { resize: vertical; min-height: 110px; }
+    .tbs-submit {
+      width: 100%; background: linear-gradient(135deg, #c9a84c, #a07830);
+      color: #000; font-size: 0.95rem; font-weight: 800;
+      padding: 1rem; border-radius: 12px; border: none;
+      cursor: pointer; font-family: inherit; transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(201,168,76,0.25);
+    }
+    .tbs-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(201,168,76,0.4); }
+
+    /* SUCCESS MSG */
+    .tbs-success {
+      display: none; text-align: center; padding: 2rem;
+    }
+    .tbs-success i { font-size: 2.5rem; color: #4caf50; margin-bottom: 1rem; display: block; }
+    .tbs-success h3 { font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+    .tbs-success p { font-size: 0.85rem; color: #9a9080; }
+
+    @media(max-width: 600px) {
+      .tbs-features { grid-template-columns: 1fr; }
+      .tbs-input-row { grid-template-columns: 1fr; }
+      .tbs-package-card { padding: 2rem 1.5rem; }
+      .tbs-form { padding: 1.75rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="tbs-hero">
+    <div class="tbs-tag"><i class="fas fa-star"></i> New Service</div>
+    <h1>Total Brand <span>Shoots</span></h1>
+    <p>We handle everything — brand shoots, reels, Instagram management & marketing. One package, zero stress.</p>
+    <a href="#enquiry" class="tbs-hero-btn"><i class="fas fa-arrow-down"></i> Get Started</a>
+  </section>
+
+  <!-- WHAT WE DO -->
+  <section class="tbs-services">
+    <div class="tbs-section-label">
+      <h2>What's Included</h2>
+      <p>Everything your brand needs to grow on social media</p>
+    </div>
+    <div class="tbs-grid">
+      <div class="tbs-card">
+        <div class="tbs-card-icon"><i class="fas fa-camera"></i></div>
+        <h3>Brand Shoots</h3>
+        <p>Professional photo & video shoots tailored to your brand identity and aesthetic.</p>
+      </div>
+      <div class="tbs-card">
+        <div class="tbs-card-icon"><i class="fas fa-film"></i></div>
+        <h3>Reels Creation</h3>
+        <p>2 high-quality reels every week — shot, edited and ready to post.</p>
+      </div>
+      <div class="tbs-card">
+        <div class="tbs-card-icon"><i class="fab fa-instagram"></i></div>
+        <h3>Instagram Management</h3>
+        <p>We handle your Instagram page — content, captions, posting & engagement.</p>
+      </div>
+      <div class="tbs-card">
+        <div class="tbs-card-icon"><i class="fas fa-bullhorn"></i></div>
+        <h3>Marketing</h3>
+        <p>Strategy, campaigns and promotions to grow your brand reach and audience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="tbs-package-section">
+    <div class="tbs-section-label" style="margin-bottom:2.5rem;">
+      <h2>Our Plans</h2>
+      <p>Simple pricing, no hidden fees</p>
+    </div>
+    <div class="tbs-plans-grid">
+
+      <!-- BASIC -->
+      <div class="tbs-plan">
+        <div class="tbs-plan-tier">Starter</div>
+        <div class="tbs-plan-name">Basic</div>
+        <div class="tbs-plan-desc">Perfect for small brands just getting started with content creation.</div>
+        <div class="tbs-price">₹14,000</div>
+        <div class="tbs-price-note">per month &nbsp;·&nbsp; 6 month contract &nbsp;·&nbsp; + GST</div>
+        <div class="tbs-divider"></div>
+        <ul class="tbs-features">
+          <li><i class="fas fa-check yes"></i> 1 Reel per month</li>
+          <li><i class="fas fa-check yes"></i> Brand Shoot</li>
+          <li><i class="fas fa-check yes"></i> Instagram Page Management</li>
+          <li><i class="fas fa-check yes"></i> Caption & Hashtag Writing</li>
+          <li><i class="fas fa-check yes"></i> Content Calendar</li>
+          <li class="disabled"><i class="fas fa-times no"></i> Marketing Campaigns</li>
+        </ul>
+        <a href="#enquiry" class="tbs-package-btn outline"><i class="fas fa-paper-plane"></i> Enquire Now</a>
+      </div>
+
+      <!-- STANDARD -->
+      <div class="tbs-plan featured">
+        <div class="tbs-popular"><i class="fas fa-star"></i> &nbsp;Most Popular</div>
+        <div class="tbs-plan-tier">Best Value</div>
+        <div class="tbs-plan-name">Standard</div>
+        <div class="tbs-plan-desc">Ideal for growing brands that need consistent content and page management.</div>
+        <div class="tbs-price">₹22,000</div>
+        <div class="tbs-price-note">per month &nbsp;·&nbsp; 6 month contract &nbsp;·&nbsp; + GST</div>
+        <div class="tbs-divider"></div>
+        <ul class="tbs-features">
+          <li><i class="fas fa-check yes"></i> 2 Reels per month</li>
+          <li><i class="fas fa-check yes"></i> Brand Shoot</li>
+          <li><i class="fas fa-check yes"></i> Instagram Page Management</li>
+          <li><i class="fas fa-check yes"></i> Caption & Hashtag Writing</li>
+          <li><i class="fas fa-check yes"></i> Content Calendar</li>
+          <li class="disabled"><i class="fas fa-times no"></i> Marketing Campaigns</li>
+        </ul>
+        <a href="#enquiry" class="tbs-package-btn gold"><i class="fas fa-paper-plane"></i> Enquire Now</a>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="tbs-plan">
+        <div class="tbs-plan-tier">All Inclusive</div>
+        <div class="tbs-plan-name">Premium</div>
+        <div class="tbs-plan-desc">Full-service package for brands that want maximum growth and visibility.</div>
+        <div class="tbs-price">₹40,000</div>
+        <div class="tbs-price-note">per month &nbsp;·&nbsp; 3 month contract &nbsp;·&nbsp; + GST</div>
+        <div class="tbs-divider"></div>
+        <ul class="tbs-features">
+          <li><i class="fas fa-check yes"></i> 3 Reels per month</li>
+          <li><i class="fas fa-check yes"></i> Brand Shoot</li>
+          <li><i class="fas fa-check yes"></i> Instagram Page Management</li>
+          <li><i class="fas fa-check yes"></i> Caption & Hashtag Writing</li>
+          <li><i class="fas fa-check yes"></i> Content Calendar</li>
+          <li><i class="fas fa-check yes"></i> Marketing Campaigns</li>
+        </ul>
+        <a href="#enquiry" class="tbs-package-btn outline"><i class="fas fa-paper-plane"></i> Enquire Now</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- T&C SECTION -->
+  <section style="padding:5rem 2rem;background:#0a0a0a;border-top:1px solid rgba(201,168,76,0.1);">
+    <div style="max-width:800px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.35rem 1rem;border-radius:50px;letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;"><i class="fas fa-file-contract"></i> Legal</div>
+        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:#fff;margin-bottom:0.5rem;">Terms & Conditions</h2>
+        <p style="font-size:0.85rem;color:#9a9080;">Please read carefully before enrolling in any Total Brand Shoots plan.</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+
+        <!-- Payment -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:1.25rem 1.5rem;cursor:pointer;" onclick="toggleTC(this)">
+            <div style="width:34px;height:34px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-rupee-sign" style="color:#c9a84c;font-size:0.85rem;"></i></div>
+            <div style="flex:1;font-size:0.92rem;font-weight:700;color:#fff;">Payment Terms</div>
+            <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;"></i>
+          </div>
+          <div style="display:none;padding:0 1.5rem 1.5rem;">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0.65rem;">
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>All plans require a <strong style="color:#f0ece0;">single one-time payment</strong> upfront before the service begins.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Basic Plan — <strong style="color:#f0ece0;">₹14,000</strong> one-time for 6 months of service.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Standard Plan — <strong style="color:#f0ece0;">₹22,000</strong> one-time for 6 months of service.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Premium Plan — <strong style="color:#f0ece0;">₹40,000</strong> one-time for 3 months of service.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>All prices are exclusive of GST. Applicable taxes will be added at checkout.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Service begins only after full payment confirmation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Contract Duration -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:1.25rem 1.5rem;cursor:pointer;" onclick="toggleTC(this)">
+            <div style="width:34px;height:34px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-calendar-alt" style="color:#c9a84c;font-size:0.85rem;"></i></div>
+            <div style="flex:1;font-size:0.92rem;font-weight:700;color:#fff;">Contract Duration</div>
+            <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;"></i>
+          </div>
+          <div style="display:none;padding:0 1.5rem 1.5rem;">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0.65rem;">
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Basic and Standard plans are valid for <strong style="color:#f0ece0;">6 months</strong> from the start date.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Premium plan is valid for <strong style="color:#f0ece0;">3 months</strong> from the start date.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>The contract start date will be confirmed within 48 hours of payment.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Unused months cannot be carried forward or transferred.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Cancellation -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:1.25rem 1.5rem;cursor:pointer;" onclick="toggleTC(this)">
+            <div style="width:34px;height:34px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-times-circle" style="color:#c9a84c;font-size:0.85rem;"></i></div>
+            <div style="flex:1;font-size:0.92rem;font-weight:700;color:#fff;">Cancellation Policy</div>
+            <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;"></i>
+          </div>
+          <div style="display:none;padding:0 1.5rem 1.5rem;">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0.65rem;">
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Cancellations are <strong style="color:#f0ece0;">not accepted</strong> once the service has started.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>If cancelled within <strong style="color:#f0ece0;">48 hours of payment</strong> and before service start, a full refund will be issued.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>No refunds will be provided after the service has commenced.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>OG Shoots reserves the right to terminate the contract if the client fails to cooperate or provide required brand materials.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Content Ownership -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:1.25rem 1.5rem;cursor:pointer;" onclick="toggleTC(this)">
+            <div style="width:34px;height:34px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-copyright" style="color:#c9a84c;font-size:0.85rem;"></i></div>
+            <div style="flex:1;font-size:0.92rem;font-weight:700;color:#fff;">Content Ownership</div>
+            <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;"></i>
+          </div>
+          <div style="display:none;padding:0 1.5rem 1.5rem;">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0.65rem;">
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>All content created by OG Shoots remains the <strong style="color:#f0ece0;">intellectual property of OG Shoots</strong> until full payment is received.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Upon full payment, the client receives full rights to use the content for their brand.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>OG Shoots reserves the right to use the content in its portfolio and promotional materials unless the client requests otherwise in writing.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Deliverables -->
+        <div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:1.25rem 1.5rem;cursor:pointer;" onclick="toggleTC(this)">
+            <div style="width:34px;height:34px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-box" style="color:#c9a84c;font-size:0.85rem;"></i></div>
+            <div style="flex:1;font-size:0.92rem;font-weight:700;color:#fff;">Deliverables & Timelines</div>
+            <i class="fas fa-chevron-down" style="color:#c9a84c;font-size:0.75rem;transition:transform 0.3s;"></i>
+          </div>
+          <div style="display:none;padding:0 1.5rem 1.5rem;">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0.65rem;">
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Reels will be delivered within <strong style="color:#f0ece0;">3–5 working days</strong> of the shoot date.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>The client must provide brand materials (logo, guidelines, references) within <strong style="color:#f0ece0;">5 days</strong> of contract start.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Delays caused by the client will not be compensated with additional deliverables.</li>
+              <li style="display:flex;gap:0.75rem;font-size:0.84rem;color:#9a9080;line-height:1.6;"><i class="fas fa-circle" style="color:#c9a84c;font-size:0.35rem;margin-top:0.5rem;flex-shrink:0;"></i>Each reel includes up to <strong style="color:#f0ece0;">2 revision rounds</strong>. Additional revisions will be charged separately.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <p style="text-align:center;font-size:0.78rem;color:#4a4030;margin-top:2rem;">By enquiring or making a payment, you agree to these terms. Last updated: 2025.</p>
+    </div>
+  </section>
+
+  <!-- ENQUIRY FORM -->
+  <section class="tbs-enquiry" id="enquiry">
+    <div class="tbs-form">
+      <h2>Let's Talk</h2>
+      <p>Fill in your details and we'll get back to you within 24 hours.</p>
+      <div id="tbsFormWrap">
+        <div class="tbs-input-group">
+          <div class="tbs-input-row">
+            <input class="tbs-input" type="text" id="tbs_name" placeholder="Your Name" />
+            <input class="tbs-input" type="tel" id="tbs_phone" placeholder="Phone Number" />
+          </div>
+          <input class="tbs-input" type="text" id="tbs_brand" placeholder="Brand / Business Name" />
+          <input class="tbs-input" type="text" id="tbs_instagram" placeholder="Instagram Handle (optional)" />
+          <textarea class="tbs-input" id="tbs_msg" placeholder="Tell us about your brand..."></textarea>
+        </div>
+        <button class="tbs-submit" onclick="submitTBS()"><i class="fas fa-paper-plane"></i> &nbsp;Send Enquiry</button>
+      </div>
+      <div class="tbs-success" id="tbsSuccess">
+        <i class="fas fa-check-circle"></i>
+        <h3>Enquiry Sent!</h3>
+        <p>We'll reach out to you within 24 hours. Thank you!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
+          <p>India's fastest growing on-demand photography & videography platform.</p>
+          <div class="contact-details">
+            <div><i class="fas fa-envelope"></i> support.ogshootsmedia@gmail.com</div>
+            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
+            <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/weareogshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="booking.html">Reel Shoots</a></li>
+              <li><a href="booking.html">Wedding Photography</a></li>
+              <li><a href="total-brand-shoots.html">Total Brand Shoots</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="career.html">Careers</a></li>
+              <li><a href="partner.html">Become a Partner</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="terms.html">Terms</a></li>
+              <li><a href="cancellation.html">Cancellation</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function toggleTC(header) {
+      var content = header.nextElementSibling;
+      var icon = header.querySelector('.fa-chevron-down');
+      var isOpen = content.style.display === 'block';
+      content.style.display = isOpen ? 'none' : 'block';
+      icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function submitTBS() {
+      var name    = document.getElementById('tbs_name').value.trim();
+      var phone   = document.getElementById('tbs_phone').value.trim();
+      var brand   = document.getElementById('tbs_brand').value.trim();
+      var insta   = document.getElementById('tbs_instagram').value.trim();
+      var msg     = document.getElementById('tbs_msg').value.trim();
+
+      if (!name || !phone || !brand) {
+        alert('Please fill in your name, phone and brand name.');
+        return;
+      }
+
+      // Save to localStorage
+      var enquiries = JSON.parse(localStorage.getItem('tbs_enquiries') || '[]');
+      enquiries.push({
+        name: name, phone: phone, brand: brand,
+        instagram: insta, message: msg,
+        date: new Date().toISOString()
+      });
+      localStorage.setItem('tbs_enquiries', JSON.stringify(enquiries));
+
+      // Show success
+      document.getElementById('tbsFormWrap').style.display = 'none';
+      document.getElementById('tbsSuccess').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
