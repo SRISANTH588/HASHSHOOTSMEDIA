@@ -28,7 +28,7 @@ body {
     radial-gradient(ellipse 50% 25% at 0% 60%, rgba(201,168,76,0.04) 0%, transparent 60%),
     radial-gradient(ellipse 50% 25% at 100% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
 }
-.container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 .red-text { color: var(--red); }
 .gold-text { color: var(--gold); }
 
@@ -44,7 +44,7 @@ body {
   padding: 0.75rem 0;
 }
 .nav-container {
-  max-width: 1400px; margin: 0 auto; padding: 0 2.5rem;
+  max-width: 1200px; margin: 0 auto; padding: 0 2rem;
   display: flex; align-items: center; gap: 2rem;
 }
 .logo {
@@ -134,7 +134,7 @@ body {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: radial-gradient(ellipse 120% 50% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
 }
-.hero-content { text-align: center; position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+.hero-content { text-align: center; position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
 .hero-tag {
   color: var(--red); font-size: 0.8rem; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem;
@@ -605,67 +605,4 @@ body {
   .phone-mockup { transform: scale(0.78); transform-origin: top center; }
   #ogLogoWrap { font-size: 2rem !important; letter-spacing: 3px !important; }
   #ogLaunchBtn { padding: 0.8rem 1.8rem !important; }
-}
-
-/* ── MOBILE IMPROVEMENTS ── */
-@media (max-width: 768px) {
-  .testi-wrap { padding: 0 1rem; }
-  .testi-arrows { gap: 0.5rem; }
-  .testi-arr { width: 38px; height: 38px; }
-  .whyus-grid { grid-template-columns: 1fr !important; padding: 0 1rem !important; }
-  .features-section { padding: 3rem 0; }
-  .feat-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; padding: 0 1rem !important; }
-  .bs-grid-4 { grid-template-columns: 1fr 1fr !important; }
-  section { overflow-x: hidden; }
-}
-@media (max-width: 480px) {
-  .testi-card { padding: 1rem !important; }
-  .feat-grid { grid-template-columns: 1fr !important; }
-  .testi-h1 { font-size: 1.6rem !important; }
-  .whyus-title { font-size: 1.4rem !important; }
-  .hero-stats { flex-wrap: wrap; gap: 1rem; justify-content: center; }
-  .stat-sep { display: none; }
-}
-
-/* ── MOBILE FIXES ── */
-* { box-sizing: border-box; }
-body { overflow-x: hidden; }
-
-@media (max-width: 768px) {
-  /* Prevent horizontal scroll */
-  section, .container, .whyus-grid, .bs-grid-4, .feat-grid { overflow-x: hidden; }
-
-  /* Hero */
-  .hero { padding: 5rem 1rem 2rem; }
-  .phone-mockup { transform: scale(0.82); transform-origin: top center; }
-  .below-phone { padding: 0 1rem; }
-  .hero-btns { flex-direction: column; align-items: center; gap: 0.75rem; }
-  .btn-book, .btn-partner { width: 100%; max-width: 300px; justify-content: center; }
-
-  /* Sections */
-  .whyus-grid { grid-template-columns: 1fr !important; padding: 0 1rem !important; }
-  .bs-grid-4 { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; padding: 0 1rem !important; }
-  .feat-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; padding: 0 1rem !important; }
-
-  /* Testimonials */
-  .testi-wrap { padding: 0 1rem; }
-  .testi-card { padding: 1rem !important; }
-
-  /* Tables */
-  table { font-size: 0.78rem; }
-  th, td { padding: 0.5rem 0.6rem !important; }
-
-  /* Forms */
-  .booking-form { grid-template-columns: 1fr !important; }
-  .form-row { flex-direction: column; }
-}
-
-@media (max-width: 480px) {
-  .testi-h1 { font-size: 1.5rem !important; }
-  .whyus-title { font-size: 1.4rem !important; }
-  .bs-grid-4 { grid-template-columns: 1fr !important; }
-  .feat-grid { grid-template-columns: 1fr !important; }
-  .hero-stats { flex-wrap: wrap; justify-content: center; gap: 1rem; }
-  .stat-sep { display: none; }
-  .phone-mockup { transform: scale(0.75); transform-origin: top center; }
 }

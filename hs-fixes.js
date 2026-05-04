@@ -326,13 +326,13 @@
 // ── SECURITY: XSS Sanitization ───────────────────────────────────────────────
 window.hsSanitize = function(str) {
   if (typeof str !== 'string') return '';
-  // Only encode characters that are dangerous in HTML context
-  // Do NOT encode ' or / as they break JS strings when used in innerHTML
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 };
 
 // Sanitize all text rendered into innerHTML across the site
