@@ -189,13 +189,13 @@ body {
   width: 90px; height: 26px; background: #000;
   border-radius: 0 0 18px 18px; z-index: 10;
 }
-.phone-screen { background: #0f0f0f; flex: 1; display: flex; flex-direction: column; }
+.phone-screen { background: #0f0f0f; display: flex; flex-direction: column; }
 .phone-status {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.8rem 1rem 0.3rem; font-size: 0.68rem; color: #fff; flex-shrink: 0;
 }
 .phone-status span:last-child { display: flex; gap: 4px; align-items: center; }
-.phone-body { padding: 0.3rem 0.85rem 0; flex: 1; display: flex; flex-direction: column; }
+.phone-body { padding: 0.3rem 0.85rem 0; display: flex; flex-direction: column; }
 
 /* Phone inner animations */
 .anim-slide-down { animation: slideDown 0.6s ease forwards; opacity: 0; }
@@ -245,12 +245,12 @@ body {
 .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
 .dot.active { background: #fff; width: 14px; border-radius: 3px; }
 .phone-discover { font-size: 0.75rem; color: #fff; font-weight: 600; margin-bottom: 0.35rem; flex-shrink: 0; }
-.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; height: 100%; min-height: 80px; }
+.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; margin-bottom: 0; }
 .phone-grid-item {
-  border-radius: 10px; display: flex;
+  border-radius: 10px; padding: 1rem 0.4rem; display: flex;
   flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem;
   font-size: 0.6rem; color: #fff; transition: transform 0.2s;
-  animation: gridPop 0.4s ease backwards; min-height: 80px;
+  animation: gridPop 0.4s ease backwards;
 }
 .phone-grid-item:nth-child(1) { animation-delay: 0.7s; }
 .phone-grid-item:nth-child(2) { animation-delay: 0.85s; }
