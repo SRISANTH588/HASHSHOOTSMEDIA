@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Video Sync Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0a0a0a; color: #fff; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .section { background: #1a1a1a; padding: 20px; margin: 20px 0; border-radius: 10px; }
+        button { background: #c9a84c; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #a07830; }
+        .video-list { display: grid; gap: 10px; margin-top: 10px; }
+        .video-item { background: #0f0f0f; padding: 10px; border-radius: 5px; border-left: 3px solid #c9a84c; }
+        .status { padding: 5px 10px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+        .status.success { background: #4caf50; }
+        .status.error { background: #f44336; }
+        .status.warning { background: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Staff Video Sync Test</h1>
+        
+        <div class="section">
+            <h2>Test Controls</h2>
+            <button onclick="addTestVideo()">Add Test Video</button>
+            <button onclick="clearAllVideos()">Clear All Videos</button>
+            <button onclick="runDiagnostics()">Run Diagnostics</button>
+            <button onclick="forceSync()">Force Firebase Sync</button>
+        </div>
+        
+        <div class="section">
+            <h2>Local Storage Videos</h2>
+            <div id="localVideos">Loading...</div>
+        </div>
+        
+        <div class="section">
+            <h2>System Status</h2>
+            <div id="systemStatus">Checking...</div>
+        </div>
+        
+        <div class="section">
+            <h2>Debug Log</h2>
+            <div id="debugLog" style="background: #000; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <script src="hs-firebase.js"></script>
+    <script src="fix-staff-videos.js"></script>
+    
+    <script>
+        let logCount = 0;
+        
+        function log(message, type = 'info') {
+            logCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            const logEl = document.getElementById('debugLog');
+            const color = type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : type === 'warning' ? '#ff9800' : '#c9a84c';
+            logEl.innerHTML += `<div style="color: ${color};">[${timestamp}] ${message}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[Test] ${message}`);
+        }
+        
+        function addTestVideo() {
+            const videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+            const testVideo = {
+                id: Date.now(),
+                title: `Test Video ${videos.length + 1}`,
+                category: 'Test Upload',
+                staffId: '12345',
+                staffName: 'Test Staff',
+                fileName: 'test-video.mp4',
+                sizeMB: '5.2',
+                uploadedAt: new Date().toLocaleString(),
+                cloudUrl: null,
+                thumbnail: null
+            };
+            
+            videos.push(testVideo);
+            localStorage.setItem('hs_staff_videos', JSON.stringify(videos));
+            
+            log(`Added test video: ${testVideo.title}`, 'success');
+            
+            // Try to sync to Firebase
+            if (window.fbSave) {
+                fbSave('staff_videos', testVideo).then(function(docId) {
+                    log(`Video synced to Firebase with ID: ${docId}`, 'success');
+                    testVideo._fbId = docId;
+                    const updatedVideos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+                    const index = updatedVideos.findIndex(v => v.id === testVideo.id);
+                    if (index !== -1) {
+                        updatedVideos[index]._fbId = docId;
+                        localStorage.setItem('hs_staff_videos', JSON.stringify(updatedVideos));
+                    }
+                    refreshDisplay();
+                }).catch(function(error) {
+                    log(`Firebase sync failed: ${error.message}`, 'error');
+                });
+            } else {
+                log('Firebase not available - video only saved locally', 'warning');
+            }
+            
+            refreshDisplay();
+        }
+        
+        function clearAllVideos() {
+            localStorage.removeItem('hs_staff_videos');
+            log('All videos cleared from local storage', 'warning');
+            refreshDisplay();
+        }
+        
+        function runDiagnostics() {
+            log('=== RUNNING DIAGNOSTICS ===', 'info');
+            
+            // Check localStorage
+            const videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+            log(`Local videos count: ${videos.length}`, 'info');
+            
+            // Check Firebase
+            log(`Firebase available: ${!!window.fbSave}`, window.fbSave ? 'success' : 'error');
+            
+            // Check fix script
+            log(`Fix script loaded: ${!!window.syncStaffVideoToFirebase}`, 'info');
+            
+            // Check for admin/staff page functions
+            log(`renderStaffVideosAdmin available: ${typeof window.renderStaffVideosAdmin === 'function'}`, 'info');
+            
+            log('=== DIAGNOSTICS COMPLETE ===', 'info');
+        }
+        
+        function forceSync() {
+            const videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+            const unsyncedVideos = videos.filter(v => !v._fbId);
+            
+            log(`Found ${unsyncedVideos.length} unsynced videos`, 'info');
+            
+            if (window.fbSave && unsyncedVideos.length > 0) {
+                unsyncedVideos.forEach(function(video) {
+                    fbSave('staff_videos', video).then(function(docId) {
+                        log(`Synced video "${video.title}" with ID: ${docId}`, 'success');
+                        video._fbId = docId;
+                        localStorage.setItem('hs_staff_videos', JSON.stringify(videos));
+                        refreshDisplay();
+                    }).catch(function(error) {
+                        log(`Failed to sync "${video.title}": ${error.message}`, 'error');
+                    });
+                });
+            } else if (!window.fbSave) {
+                log('Firebase not available for sync', 'error');
+            } else {
+                log('All videos already synced', 'success');
+            }
+        }
+        
+        function refreshDisplay() {
+            // Update local videos display
+            const videos = JSON.parse(localStorage.getItem('hs_staff_videos') || '[]');
+            const localEl = document.getElementById('localVideos');
+            
+            if (videos.length === 0) {
+                localEl.innerHTML = '<div style="color: #666;">No videos found</div>';
+            } else {
+                localEl.innerHTML = '<div class="video-list">' + videos.map(function(video) {
+                    const syncStatus = video._fbId ? 
+                        '<span class="status success">Synced</span>' : 
+                        '<span class="status warning">Local Only</span>';
+                    
+                    return `<div class="video-item">
+                        <strong>${video.title}</strong> - ${video.staffName} ${syncStatus}
+                        <br><small>ID: ${video.id} | Uploaded: ${video.uploadedAt}</small>
+                        ${video._fbId ? `<br><small>Firebase ID: ${video._fbId}</small>` : ''}
+                    </div>`;
+                }).join('') + '</div>';
+            }
+            
+            // Update system status
+            const statusEl = document.getElementById('systemStatus');
+            const firebaseStatus = window.fbSave ? 
+                '<span class="status success">Firebase Connected</span>' : 
+                '<span class="status error">Firebase Disconnected</span>';
+            
+            const fixStatus = window.syncStaffVideoToFirebase ? 
+                '<span class="status success">Fix Script Loaded</span>' : 
+                '<span class="status error">Fix Script Missing</span>';
+            
+            statusEl.innerHTML = `${firebaseStatus} ${fixStatus}`;
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Test page loaded', 'success');
+            refreshDisplay();
+            
+            // Auto-refresh every 5 seconds
+            setInterval(refreshDisplay, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Payment Flow Test — OG Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;padding:2rem;}
+    h1{font-size:1.4rem;font-weight:900;margin-bottom:0.3rem;}h1 span{color:#c9a84c;}
+    .sub{color:#888070;font-size:0.85rem;margin-bottom:2rem;}
+    .card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;}
+    .card h2{font-size:0.95rem;font-weight:800;color:#c9a84c;margin-bottom:1rem;}
+    .row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;align-items:center;}
+    label{font-size:0.75rem;color:#888070;font-weight:600;min-width:120px;}
+    input,select{background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;flex:1;min-width:160px;}
+    .btn{padding:0.6rem 1.4rem;border-radius:8px;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .btn-red{background:#c9a84c;color:#fff;}
+    .btn-green{background:#4caf50;color:#fff;}
+    .btn-blue{background:#1976d2;color:#fff;}
+    .btn-orange{background:#ff9800;color:#000;}
+    .btn-grey{background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.1);}
+    .status{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem 1.25rem;font-size:0.82rem;line-height:1.8;white-space:pre-wrap;font-family:monospace;color:#a0d0a0;margin-top:0.75rem;max-height:300px;overflow-y:auto;}
+    .step{display:flex;align-items:center;gap:0.75rem;background:#141414;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.5rem;}
+    .step-num{width:28px;height:28px;border-radius:50%;background:#c9a84c;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;flex-shrink:0;}
+    .step-text{font-size:0.82rem;color:#ccc;}
+    .step-text strong{color:#fff;}
+    .divider{border:none;border-top:1px solid rgba(255,255,255,0.06);margin:1.25rem 0;}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:50px;font-size:0.68rem;font-weight:700;}
+    .tag-orange{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
+    .tag-purple{background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);}
+    .tag-blue{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
+    .tag-green{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
+  </style>
+</head>
+<body>
+
+<h1>Payment Flow <span>Test Tool</span></h1>
+<p class="sub">Inject test data and simulate the full staff payment flow without going through booking/assign steps.</p>
+
+<!-- FLOW OVERVIEW -->
+<div class="card">
+  <h2>📋 Full Flow</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Inject Test Data</strong> — Creates a staff account, booking, and assigned shoot in localStorage</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Staff Page</strong> — Staff sees shoot, marks arrived, uploads video, clicks "Mark as Done"</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Admin Page</strong> — Admin sees <span class="tag tag-purple">Done</span> status, edits payment amount, clicks "Approve &amp; Pay"</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Staff Payout Tab</strong> — Staff sees <span class="tag tag-blue">₹X Released</span> with date in Payout tab and Wallet</div></div>
+</div>
+
+<!-- INJECT TEST DATA -->
+<div class="card">
+  <h2>⚡ Step 1 — Inject Test Data</h2>
+  <div class="row">
+    <label>Staff Name</label>
+    <input type="text" id="t_staffName" value="Test Creator"/>
+  </div>
+  <div class="row">
+    <label>Staff Username</label>
+    <input type="text" id="t_staffUser" value="testcreator"/>
+  </div>
+  <div class="row">
+    <label>Staff Password</label>
+    <input type="text" id="t_staffPass" value="test1234"/>
+  </div>
+  <div class="row">
+    <label>Service</label>
+    <input type="text" id="t_service" value="Reel Shoot"/>
+  </div>
+  <div class="row">
+    <label>Customer Name</label>
+    <input type="text" id="t_custName" value="Rahul Sharma"/>
+  </div>
+  <div class="row">
+    <label>Customer Phone</label>
+    <input type="text" id="t_custPhone" value="+91 9876543210"/>
+  </div>
+  <div class="row">
+    <label>Location</label>
+    <input type="text" id="t_location" value="MG Road, Vijayawada"/>
+  </div>
+  <div class="row">
+    <label>Payment (₹)</label>
+    <input type="number" id="t_credit" value="1500"/>
+  </div>
+  <hr class="divider"/>
+  <div class="row">
+    <button class="btn btn-red" onclick="injectTestData()">⚡ Inject Test Data</button>
+    <button class="btn btn-grey" onclick="clearTestData()">🗑 Clear Test Data</button>
+    <button class="btn btn-grey" onclick="showState()">👁 Show Current State</button>
+  </div>
+  <div id="injectStatus" class="status" style="display:none;"></div>
+</div>
+
+<!-- SIMULATE STAFF ACTIONS -->
+<div class="card">
+  <h2>👤 Step 2 — Simulate Staff Actions</h2>
+  <p style="font-size:0.8rem;color:#888070;margin-bottom:1rem;">These buttons simulate what staff does on staff.html — use them if you want to test without opening staff page.</p>
+  <div class="row">
+    <button class="btn btn-orange" onclick="simMarkArrived()">📍 Mark Arrived</button>
+    <button class="btn btn-green" onclick="simMarkDone()">✅ Mark as Done</button>
+  </div>
+  <div id="staffStatus" class="status" style="display:none;"></div>
+</div>
+
+<!-- SIMULATE ADMIN ACTIONS -->
+<div class="card">
+  <h2>🛡 Step 3 — Simulate Admin Actions</h2>
+  <div class="row">
+    <label>Payment Amount (₹)</label>
+    <input type="number" id="t_payAmount" value="1500"/>
+  </div>
+  <div class="row">
+    <button class="btn btn-blue" onclick="simApproveAndPay()">💸 Approve &amp; Pay</button>
+  </div>
+  <div id="adminStatus" class="status" style="display:none;"></div>
+</div>
+
+<!-- CHECK WALLET -->
+<div class="card">
+  <h2>💰 Step 4 — Check Staff Wallet</h2>
+  <div class="row">
+    <button class="btn btn-green" onclick="checkWallet()">💰 Check Wallet Balance</button>
+    <button class="btn btn-grey" onclick="openStaffPage()">→ Open Staff Page</button>
+    <button class="btn btn-grey" onclick="openAdminPage()">→ Open Admin Page</button>
+  </div>
+  <div id="walletStatus" class="status" style="display:none;"></div>
+</div>
+
+<script>
+  var testStaffId = null;
+  var testAssignId = null;
+  var testBookingId = null;
+
+  function log(elId, msg){
+    var el = document.getElementById(elId);
+    el.style.display = 'block';
+    el.textContent = msg;
+  }
+
+  function injectTestData(){
+    var staffName = document.getElementById('t_staffName').value.trim();
+    var staffUser = document.getElementById('t_staffUser').value.trim();
+    var staffPass = document.getElementById('t_staffPass').value.trim();
+    var service   = document.getElementById('t_service').value.trim();
+    var custName  = document.getElementById('t_custName').value.trim();
+    var custPhone = document.getElementById('t_custPhone').value.trim();
+    var location  = document.getElementById('t_location').value.trim();
+    var credit    = Number(document.getElementById('t_credit').value);
+
+    // Create staff
+    testStaffId = Date.now();
+    var staffList = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+    staffList = staffList.filter(function(s){ return s.username !== staffUser; });
+    staffList.push({ id: testStaffId, name: staffName, username: staffUser, password: staffPass, role: 'creator', access: ['all'], createdAt: new Date().toLocaleDateString() });
+    localStorage.setItem('hs_staff', JSON.stringify(staffList));
+
+    // Create booking
+    testBookingId = testStaffId + 1;
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+    bookings.push({ id: testBookingId, name: custName, phone: custPhone, email: 'test@test.com', service: service, city: 'Vijayawada', location: location, date: new Date().toISOString().split('T')[0], time: '10:00', notes: 'Test booking', status: 'confirmed', createdAt: new Date().toLocaleString() });
+    localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+
+    // Create assigned shoot
+    testAssignId = testStaffId + 2;
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    assigns.push({ id: testAssignId, bookingId: testBookingId, staffId: testStaffId, staffName: staffName, service: service, clientName: custName, clientPhone: custPhone, city: 'Vijayawada', location: location, date: new Date().toISOString().split('T')[0], time: '10:00', credit: credit, notes: 'Test assignment', status: 'assigned', assignedAt: new Date().toLocaleString() });
+    localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+
+    // Init wallet
+    var walletKey = 'hs_wallet_' + testStaffId;
+    localStorage.setItem(walletKey, JSON.stringify({ balance: 0, totalEarned: 0, withdrawn: 0, pending: credit, transactions: [{ type:'pending', amount: credit, label:'Shoot Assigned: '+service, note: custName, date: new Date().toLocaleString() }] }));
+
+    // Set login state for staff page testing
+    localStorage.setItem('hs_staff_id_test', String(testStaffId));
+
+    log('injectStatus',
+      '✅ Test data injected!\n\n' +
+      'Staff ID:     ' + testStaffId + '\n' +
+      'Staff:        ' + staffName + ' (@' + staffUser + ' / ' + staffPass + ')\n' +
+      'Booking ID:   ' + testBookingId + '\n' +
+      'Assign ID:    ' + testAssignId + '\n' +
+      'Service:      ' + service + '\n' +
+      'Customer:     ' + custName + ' · ' + custPhone + '\n' +
+      'Location:     ' + location + '\n' +
+      'Credit:       ₹' + credit + '\n\n' +
+      'Next: Log in as staff (' + staffUser + ' / ' + staffPass + ') on staff.html\n' +
+      'OR use the "Simulate Staff Actions" buttons below.'
+    );
+
+    document.getElementById('t_payAmount').value = credit;
+  }
+
+  function getTestIds(){
+    // Try from memory first, then scan localStorage
+    if(testAssignId) return { staffId: testStaffId, assignId: testAssignId };
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var last = assigns[assigns.length - 1];
+    if(last){ testAssignId = last.id; testStaffId = last.staffId; }
+    return { staffId: testStaffId, assignId: testAssignId };
+  }
+
+  function simMarkArrived(){
+    var ids = getTestIds();
+    if(!ids.assignId){ log('staffStatus','❌ No test assignment found. Inject test data first.'); return; }
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var a = assigns.find(function(x){ return x.id === ids.assignId; });
+    if(!a){ log('staffStatus','❌ Assignment not found.'); return; }
+    a.arrivedAt = new Date().toLocaleString();
+    localStorage.setItem('hs_arrived_' + ids.assignId, '1');
+    localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+    log('staffStatus', '✅ Marked Arrived at ' + a.arrivedAt + '\nStatus: ' + a.status);
+  }
+
+  function simMarkDone(){
+    var ids = getTestIds();
+    if(!ids.assignId){ log('staffStatus','❌ No test assignment found. Inject test data first.'); return; }
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var a = assigns.find(function(x){ return x.id === ids.assignId; });
+    if(!a){ log('staffStatus','❌ Assignment not found.'); return; }
+    a.status = 'done';
+    a.doneAt = new Date().toLocaleString();
+    localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+    log('staffStatus', '✅ Marked as Done at ' + a.doneAt + '\nStatus: done\n\nAdmin will now see this in Assign Shoots tab with "Approve & Pay" button.');
+  }
+
+  function simApproveAndPay(){
+    var ids = getTestIds();
+    if(!ids.assignId){ log('adminStatus','❌ No test assignment found. Inject test data first.'); return; }
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var a = assigns.find(function(x){ return x.id === ids.assignId; });
+    if(!a){ log('adminStatus','❌ Assignment not found.'); return; }
+    if(a.status !== 'done'){ log('adminStatus','⚠️ Status is "' + a.status + '". Staff must mark as done first.'); return; }
+
+    var payAmt = Number(document.getElementById('t_payAmount').value) || a.credit;
+    a.credit = payAmt;
+
+    var walletKey = 'hs_wallet_' + ids.staffId;
+    var wallet = JSON.parse(localStorage.getItem(walletKey) || '{"balance":0,"totalEarned":0,"withdrawn":0,"pending":0,"transactions":[]}');
+    wallet.pending = Math.max(0, (wallet.pending||0) - payAmt);
+    wallet.balance += payAmt;
+    wallet.totalEarned += payAmt;
+    wallet.transactions.push({ type:'credit', amount: payAmt, label:'Payment Released: '+a.service, note: a.clientName+' — '+a.location, date: new Date().toLocaleString() });
+    localStorage.setItem(walletKey, JSON.stringify(wallet));
+
+    a.status = 'paid';
+    a.paidAt = new Date().toLocaleString();
+    localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+
+    log('adminStatus',
+      '✅ Payment of ₹' + payAmt.toLocaleString('en-IN') + ' released to ' + a.staffName + '!\n\n' +
+      'Assignment status: paid\n' +
+      'Paid at: ' + a.paidAt + '\n\n' +
+      'Staff wallet updated:\n' +
+      '  Balance:      ₹' + wallet.balance.toLocaleString('en-IN') + '\n' +
+      '  Total Earned: ₹' + wallet.totalEarned.toLocaleString('en-IN') + '\n' +
+      '  Pending:      ₹' + wallet.pending.toLocaleString('en-IN') + '\n\n' +
+      'Check staff Payout tab and Wallet tab to verify.'
+    );
+  }
+
+  function checkWallet(){
+    var ids = getTestIds();
+    if(!ids.staffId){ log('walletStatus','❌ No test staff found. Inject test data first.'); return; }
+    var walletKey = 'hs_wallet_' + ids.staffId;
+    var wallet = JSON.parse(localStorage.getItem(walletKey) || 'null');
+    if(!wallet){ log('walletStatus','❌ No wallet found for staff ID ' + ids.staffId); return; }
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var a = assigns.find(function(x){ return x.id === ids.assignId; });
+    log('walletStatus',
+      '💰 Staff Wallet (ID: ' + ids.staffId + ')\n\n' +
+      'Balance:      ₹' + (wallet.balance||0).toLocaleString('en-IN') + '\n' +
+      'Total Earned: ₹' + (wallet.totalEarned||0).toLocaleString('en-IN') + '\n' +
+      'Pending:      ₹' + (wallet.pending||0).toLocaleString('en-IN') + '\n' +
+      'Withdrawn:    ₹' + (wallet.withdrawn||0).toLocaleString('en-IN') + '\n\n' +
+      'Assignment Status: ' + (a ? a.status : 'not found') + '\n' +
+      (a && a.paidAt ? 'Paid At: ' + a.paidAt + '\n' : '') +
+      '\nTransactions (' + (wallet.transactions||[]).length + '):\n' +
+      (wallet.transactions||[]).map(function(t,i){ return (i+1)+'. ['+t.type+'] ₹'+t.amount+' — '+t.label+' ('+t.date+')'; }).join('\n')
+    );
+  }
+
+  function showState(){
+    var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
+    var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+    var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+    log('injectStatus',
+      'hs_assigned_shoots (' + assigns.length + '):\n' +
+      assigns.map(function(a){ return '  ['+a.id+'] '+a.service+' — '+a.clientName+' | Staff: '+a.staffName+' | Status: '+a.status+' | ₹'+a.credit; }).join('\n') +
+      '\n\nhs_bookings (' + bookings.length + '):\n' +
+      bookings.slice(-3).map(function(b){ return '  ['+b.id+'] '+b.service+' — '+b.name+' | '+b.status; }).join('\n') +
+      '\n\nhs_staff (' + staff.length + '):\n' +
+      staff.map(function(s){ return '  ['+s.id+'] '+s.name+' (@'+s.username+')'; }).join('\n')
+    );
+  }
+
+  function clearTestData(){
+    var ids = getTestIds();
+    if(ids.assignId){
+      var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return a.id !== ids.assignId; });
+      localStorage.setItem('hs_assigned_shoots', JSON.stringify(assigns));
+    }
+    if(ids.staffId){
+      var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]').filter(function(s){ return s.id !== ids.staffId; });
+      localStorage.setItem('hs_staff', JSON.stringify(staff));
+      localStorage.removeItem('hs_wallet_' + ids.staffId);
+    }
+    if(testBookingId){
+      var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(function(b){ return b.id !== testBookingId; });
+      localStorage.setItem('hs_bookings', JSON.stringify(bookings));
+    }
+    testStaffId = null; testAssignId = null; testBookingId = null;
+    log('injectStatus', '🗑 Test data cleared.');
+  }
+
+  function openStaffPage(){
+    var ids = getTestIds();
+    if(ids.staffId){
+      localStorage.setItem('hs_role','staff');
+      localStorage.setItem('hs_staff_id', String(ids.staffId));
+      var staff = JSON.parse(localStorage.getItem('hs_staff')||'[]').find(function(s){ return s.id === ids.staffId; });
+      if(staff){
+        localStorage.setItem('hs_staff_name', staff.name);
+        localStorage.setItem('hs_staff_role', staff.role);
+        localStorage.setItem('hs_staff_access', JSON.stringify(staff.access||['all']));
+      }
+    }
+    window.open('staff.html','_blank');
+  }
+
+  function openAdminPage(){
+    localStorage.setItem('hs_role','admin');
+    localStorage.setItem('hs_admin_name','SRISANTH');
+    window.open('admin.html','_blank');
+  }
+</script>
+</body>
+</html>

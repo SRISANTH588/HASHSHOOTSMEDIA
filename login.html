@@ -171,10 +171,6 @@
           <i class="fas fa-arrow-right" id="loginArrow"></i>
         </button>
         <div class="divider">or</div>
-        <button onclick="googleSignIn()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.75rem;background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"/> Continue with Google
-        </button>
-        <div style="margin-top:0.75rem;"></div>
         <p style="text-align:center;font-size:0.82rem;color:#888;">New customer? <a href="#" onclick="switchSubTab('signup')" style="color:#c9a84c;font-weight:700;">Sign Up</a></p>
       </div>
 
@@ -235,7 +231,7 @@
           <div class="spinner" id="signupSpinner"></div>
           <i class="fas fa-arrow-right" id="signupArrow"></i>
         </button>
-        <div style="margin-top:0.75rem;"></div>
+        <div class="divider">or</div>
         <p style="text-align:center;font-size:0.82rem;color:#888;">Already have an account? <a href="#" onclick="switchSubTab('login')" style="color:#c9a84c;font-weight:700;">Login</a></p>
       </div>
     </div>
@@ -284,15 +280,6 @@
   </div>
 
   <script>
-    // Seed default customer account: sai / sai
-    (function(){
-      var customers = JSON.parse(localStorage.getItem('hs_customers')||'[]');
-      if(!customers.find(function(c){ return c.username==='sai'; })){
-        customers.push({name:'Sai',username:'sai',email:'sai@ogshoots.com',phone:'',password:'sai',joined:new Date().toISOString()});
-        localStorage.setItem('hs_customers',JSON.stringify(customers));
-      }
-    })();
-
     // Floating particles
     const container = document.getElementById('particles');
     for(let i=0;i<25;i++){
@@ -339,67 +326,6 @@
       card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
     }
 
-    async function googleSignIn(){
-      try{
-        const fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        const fbAuth  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-        const fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        const fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        const app     = fbMod.getApps().find(a=>a.name==='hs-google')||fbMod.initializeApp(fbCfg,'hs-google');
-        const auth    = fbAuth.getAuth(app);
-        const db      = fbStore.getFirestore(app);
-        const provider = new fbAuth.GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-        let result;
-        try {
-          result = await fbAuth.signInWithPopup(auth, provider);
-        } catch(popupErr) {
-          if(popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/popup-closed-by-user') {
-            await fbAuth.signInWithRedirect(auth, provider);
-            return;
-          }
-          throw popupErr;
-        }
-        const user  = result.user;
-        const email = user.email.toLowerCase();
-        const name  = user.displayName || email;
-        const photo = user.photoURL || '';
-        const uid   = user.uid;
-        // Check if customer already exists by Google UID
-        const snap  = await fbStore.getDoc(fbStore.doc(db,'customers_google', uid));
-        let custData;
-        if(snap.exists()){
-          // Returning user — load existing data
-          custData = snap.data();
-        } else {
-          // First time — auto-create account
-          const username = 'g_' + uid.slice(0,10);
-          custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
-          await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
-          // Also save in customers collection for admin visibility
-          await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
-        }
-        // Set session — clear previous customer's data first
-        localStorage.removeItem('hs_bookings');
-        localStorage.setItem('hs_role','customer');
-        // Fetch bookings from Firebase by email
-        try{
-          const bQuery = fbStore.query(fbStore.collection(db,'bookings'), fbStore.where('email','==',email));
-          const bSnap  = await fbStore.getDocs(bQuery);
-          if(!bSnap.empty){
-            const bList = [];
-            bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
-            localStorage.setItem('hs_bookings', JSON.stringify(bList));
-          }
-        }catch(be){ console.warn('bookings fetch:',be); }
-        window.location.href = 'index.html';
-      } catch(e){
-        if(e.code !== 'auth/popup-closed-by-user'){
-          alert('Google Sign-In failed: ' + (e.message||e.code));
-        }
-      }
-    }
-
     function unifiedLogin(){
       if(window.hsCheckRateLimit && !hsCheckRateLimit()) return;
       const id = document.getElementById('loginIdentifier').value.trim();
@@ -412,24 +338,10 @@
       document.getElementById('loginArrow').style.display='none';
 
       // 1. Admin check (instant)
-      // Try to get latest password from Firebase first
       const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
       if(id.toUpperCase()==='SRISANTH' && p===correctPass){
         localStorage.setItem('hs_role','admin');
         localStorage.setItem('hs_admin_name','SRISANTH');
-        window.location.href='admin.html'; return;
-      }
-      // Marketing team login
-      if(id.toLowerCase()==='marketing' && p==='ogmarketing2025'){
-        localStorage.setItem('hs_role','marketing');
-        localStorage.setItem('hs_marketing_name','Marketing Team');
-        window.location.href='marketing.html'; return;
-      }
-
-      // 2nd admin: SUMANTH
-      if(id.toUpperCase()==='SUMANTH' && p==='SUMANTH@2007'){
-        localStorage.setItem('hs_role','admin');
-        localStorage.setItem('hs_admin_name','SUMANTH');
         window.location.href='admin.html'; return;
       }
 
@@ -465,11 +377,10 @@
         const staff = staffList.find(s=>s.username&&s.username.toLowerCase()===id.toLowerCase()&&s.password===p);
         if(staff){
           localStorage.setItem('hs_role','staff');
-          localStorage.setItem('hs_staff_id', String(staff.id));
+          localStorage.setItem('hs_staff_id',staff.id);
           localStorage.setItem('hs_staff_name',staff.name);
           localStorage.setItem('hs_staff_role',staff.role);
           localStorage.setItem('hs_staff_access',JSON.stringify(staff.access||[]));
-          localStorage.setItem('hs_staff_phone',staff.phone||'');
           window.location.href='staff.html'; return;
         }
 
@@ -506,7 +417,6 @@
           cust = customers.find(c=>c.username===id.toLowerCase()||c.email===id.toLowerCase())||null;
         }
         if(cust&&cust.password===p){
-          localStorage.removeItem('hs_bookings');
           localStorage.setItem('hs_role','customer');
           localStorage.setItem('hs_user',cust.email);
           localStorage.setItem('hs_customer_email',cust.email);
@@ -716,80 +626,6 @@
         }
       }
     });
-
-  // Fetch admin password from Firebase on page load
-  (async function(){
-    try{
-      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-      var app     = fbMod.getApps().find(function(a){return a.name==='login-cfg';})||fbMod.initializeApp(fbCfg,'login-cfg');
-      var db      = fbStore.getFirestore(app);
-      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','admin_config'));
-      if(snap.exists() && snap.data().password){
-        localStorage.setItem('hs_admin_password', snap.data().password);
-      }
-    }catch(e){}
-  })();
-
-  // Handle Google redirect result on page load
-  (async function(){
-    try{
-      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      var fbAuth  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-      var app     = fbMod.getApps().find(function(a){return a.name==='hs-google';})||fbMod.initializeApp(fbCfg,'hs-google');
-      var auth    = fbAuth.getAuth(app);
-      var db      = fbStore.getFirestore(app);
-      var result  = await fbAuth.getRedirectResult(auth);
-      if(result && result.user){
-        var user  = result.user;
-        var email = user.email.toLowerCase();
-        var name  = user.displayName || email;
-        var photo = user.photoURL || '';
-        var uid   = user.uid;
-        var snap  = await fbStore.getDoc(fbStore.doc(db,'customers_google', uid));
-        var custData;
-        if(snap.exists()){
-          custData = snap.data();
-        } else {
-          var username = 'g_' + uid.slice(0,10);
-          custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
-          await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
-          await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
-        }
-        localStorage.removeItem('hs_bookings');
-        localStorage.setItem('hs_role','customer');
-        localStorage.setItem('hs_user', email);
-        localStorage.setItem('hs_customer_email', email);
-        localStorage.setItem('hs_customer_name', custData.name||name);
-        localStorage.setItem('hs_customer_phone', custData.phone||'');
-        localStorage.setItem('hs_customer_username', custData.username||email);
-        localStorage.setItem('hs_customer_photo', custData.photo||photo);
-        localStorage.setItem('hs_customer_uid', uid);
-        try{
-          const bQuery2=fbStore.query(fbStore.collection(db,'bookings'),fbStore.where('email','==',email));
-          const bSnap2=await fbStore.getDocs(bQuery2);
-          if(!bSnap2.empty){const bList2=[];bSnap2.forEach(function(d){bList2.push(Object.assign({id:d.id},d.data()));});localStorage.setItem('hs_bookings',JSON.stringify(bList2));}
-        }catch(be){}
-        window.location.href = 'index.html';
-      }
-    }catch(e){ console.log('Redirect result:', e); }
-  })();
   </script>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
 </body>
 </html>

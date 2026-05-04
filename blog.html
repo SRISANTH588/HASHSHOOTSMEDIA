@@ -3,21 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blog – OG Shoots | Content Creation Tips, Trends & Stories</title>
-  <meta name="description" content="Read the OG Shoots blog for content creation tips, reel trends, wedding photography insights, and behind-the-scenes stories from India's fastest on-demand reel studio."/>
-  <meta name="keywords" content="reel tips, content creation blog, Instagram trends 2025, wedding reel, OG Shoots blog, Vijayawada shoots"/>
-  <meta name="author" content="OG Shoots"/>
-  <meta name="robots" content="index, follow"/>
-  <link rel="canonical" href="https://ogshoots.in/blog.html"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://ogshoots.in/blog.html"/>
-  <meta property="og:title" content="OG Shoots Blog – Content Tips & Reel Trends"/>
-  <meta property="og:description" content="Tips, trends, and stories from India's fastest on-demand reel creation studio."/>
-  <meta property="og:image" content="https://ogshoots.in/srisanth.jpeg"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="OG Shoots Blog"/>
-  <meta name="twitter:description" content="Content creation tips, reel trends, and stories from OG Shoots."/>
-  <meta name="twitter:image" content="https://ogshoots.in/srisanth.jpeg"/>
+  <title>Blog – OG Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -385,75 +371,11 @@
       <div class="eyebrow"><i class="fas fa-envelope"></i> Stay Updated</div>
       <h2>Get Stories Delivered to<br/><span>Your Inbox</span></h2>
       <p>No spam. Just the best content tips, trends, and OG Shoots updates.</p>
-      <div class="nl-form" id="nlForm">
-        <input type="email" id="nlEmail" placeholder="your@email.com" required/>
-        <button class="nl-btn" id="nlBtn" onclick="subscribeNewsletter()">Subscribe</button>
+      <div class="nl-form">
+        <input type="email" placeholder="your@email.com"/>
+        <button class="nl-btn">Subscribe</button>
       </div>
-      <div id="nlSuccess" style="display:none;margin-top:1rem;color:#4caf50;font-size:0.9rem;font-weight:600;"><i class="fas fa-check-circle"></i> You're subscribed! Welcome to the OG Shoots community.</div>
-      <div id="nlError" style="display:none;margin-top:1rem;color:#f44336;font-size:0.85rem;"></div>
-      <div id="nlDuplicate" style="display:none;margin-top:1rem;color:#c9a84c;font-size:0.85rem;"><i class="fas fa-info-circle"></i> This email is already subscribed!</div>
     </div>
-
-    <script>
-    async function subscribeNewsletter() {
-      var email = document.getElementById('nlEmail').value.trim();
-      var btn   = document.getElementById('nlBtn');
-      var errEl = document.getElementById('nlError');
-      var sucEl = document.getElementById('nlSuccess');
-      var dupEl = document.getElementById('nlDuplicate');
-
-      errEl.style.display = 'none';
-      sucEl.style.display = 'none';
-      dupEl.style.display = 'none';
-
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errEl.textContent = 'Please enter a valid email address.';
-        errEl.style.display = 'block';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
-
-      try {
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='nl';}) || fbMod.initializeApp(fbCfg,'nl');
-        var db      = fbStore.getFirestore(app);
-
-        // Check for duplicate
-        var q = fbStore.query(fbStore.collection(db,'newsletter_subscribers'), fbStore.where('email','==',email));
-        var snap = await fbStore.getDocs(q);
-        if (!snap.empty) {
-          dupEl.style.display = 'block';
-          btn.disabled = false;
-          btn.innerHTML = 'Subscribe';
-          return;
-        }
-
-        // Save subscriber
-        await fbStore.addDoc(fbStore.collection(db,'newsletter_subscribers'), {
-          email: email,
-          source: 'blog',
-          subscribedAt: fbStore.serverTimestamp()
-        });
-
-        document.getElementById('nlForm').style.display = 'none';
-        sucEl.style.display = 'block';
-      } catch(e) {
-        errEl.textContent = 'Something went wrong. Please try again.';
-        errEl.style.display = 'block';
-        btn.disabled = false;
-        btn.innerHTML = 'Subscribe';
-      }
-    }
-
-    // Allow Enter key
-    document.getElementById('nlEmail').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') subscribeNewsletter();
-    });
-    </script>
 
   </div>
 
@@ -465,7 +387,7 @@
           <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;font-weight:900;">OG</span><span style="color:#ffffff;font-weight:900;"> SHOOTS</span><sup style="font-size:0.42em;font-weight:800;color:#c9a84c;letter-spacing:2px;vertical-align:super;margin-left:3px;opacity:0.9;">LUXE</sup></div>
           <p>India's fastest growing on-demand photography & videography platform.</p>
           <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> support.ogshootsmedia@gmail.com</div>
+            <div><i class="fas fa-envelope"></i> ogshootsmedia@gmail.com</div>
             <div><i class="fab fa-instagram"></i> @weareogshoots</div>
             <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
           </div>

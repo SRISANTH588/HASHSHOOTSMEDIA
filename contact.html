@@ -3,21 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Contact Us – OG Shoots | Get in Touch</title>
-  <meta name="description" content="Contact OG Shoots for bookings, partnerships, or support. Reach us at support.ogshootsmedia@gmail.com or call +91 6304279351. Based in Vijayawada, India. Open 9AM–9PM daily."/>
-  <meta name="keywords" content="contact OG Shoots, OG Shoots support, reel booking enquiry, Vijayawada photography contact"/>
-  <meta name="author" content="OG Shoots"/>
-  <meta name="robots" content="index, follow"/>
-  <link rel="canonical" href="https://ogshoots.in/contact.html"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://ogshoots.in/contact.html"/>
-  <meta property="og:title" content="Contact OG Shoots"/>
-  <meta property="og:description" content="Get in touch with OG Shoots. We're here to help with bookings, partnerships, and support."/>
-  <meta property="og:image" content="https://ogshoots.in/srisanth.jpeg"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="Contact OG Shoots"/>
-  <meta name="twitter:description" content="Reach us at support.ogshootsmedia@gmail.com or +91 6304279351."/>
-  <meta name="twitter:image" content="https://ogshoots.in/srisanth.jpeg"/>
+  <title>Contact Us — OG Shoots</title>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -102,7 +88,7 @@
         <div class="ct-info-icon"><i class="fas fa-envelope"></i></div>
         <div>
           <div class="ct-info-label">Email</div>
-          <div class="ct-info-val">support.ogshootsmedia@gmail.com</div>
+          <div class="ct-info-val">ogshootsmedia@gmail.com</div>
         </div>
       </div>
     </div>
@@ -112,11 +98,11 @@
       <form id="ctForm" onsubmit="submitContact(event)">
         <div class="ct-field">
           <label class="ct-label">Name</label>
-          <input class="ct-input" id="ct_name" type="text" placeholder="" required/>
+          <input class="ct-input" type="text" placeholder="" required/>
         </div>
         <div class="ct-field">
           <label class="ct-label">Email</label>
-          <input class="ct-input" id="ct_email" type="email" placeholder="" required/>
+          <input class="ct-input" type="email" placeholder="" required/>
         </div>
         <div class="ct-field">
           <label class="ct-label">Phone Number</label>
@@ -131,12 +117,12 @@
                 <option>+971</option>
               </select>
             </div>
-            <input class="ct-input phone-num" id="ct_phone" type="tel" placeholder="Enter phone number"/>
+            <input class="ct-input phone-num" type="tel" placeholder="Enter phone number"/>
           </div>
         </div>
         <div class="ct-field">
           <label class="ct-label">Message</label>
-          <textarea class="ct-textarea" id="ct_message" required></textarea>
+          <textarea class="ct-textarea" required></textarea>
         </div>
         <button type="submit" class="ct-submit">Send Message <i class="fas fa-arrow-right"></i></button>
       </form>
@@ -167,18 +153,12 @@
 
   window.submitContact = async function(e){
     e.preventDefault();
-    // Check login
-    if(!localStorage.getItem('hs_user') && localStorage.getItem('hs_role') !== 'customer'){
-      alert('Please log in to send an enquiry.');
-      window.location.href = 'login.html';
-      return;
-    }
-    var form    = document.getElementById('ctForm');
-    var name    = document.getElementById('ct_name').value.trim();
-    var email   = document.getElementById('ct_email').value.trim();
-    var phone   = document.getElementById('ct_phone').value.trim();
-    var message = document.getElementById('ct_message').value.trim();
-    var type    = new URLSearchParams(window.location.search).get('type') || 'general';
+    var form = document.getElementById('ctForm');
+    var inputs = form.querySelectorAll('input, textarea');
+    var name    = inputs[0].value.trim();
+    var email   = inputs[1].value.trim();
+    var phone   = form.querySelector('.phone-num').value.trim();
+    var message = form.querySelector('textarea').value.trim();
 
     // Save to Firebase Firestore
     try {
@@ -187,7 +167,6 @@
         email: email,
         phone: phone || 'N/A',
         message: message,
-        type: type,
         createdAt: serverTimestamp()
       });
     } catch(err) {
@@ -227,88 +206,7 @@
     document.getElementById('ctForm').style.display='none';
     document.getElementById('ctSuccess').style.display='block';
   }
-
-  // Pre-fill for business enquiry
-  if(new URLSearchParams(window.location.search).get('type')==='business'){
-    var ta=document.getElementById('ct_message');
-    if(ta&&!ta.value) ta.value='Hi, I am interested in your Reels & Content service for my business. Please share more details about pricing and packages.';
-  }
 </script>
-  <!-- FOOTER -->
-  <section class="contact" id="contact">
-    <div class="container">
-      <div class="contact-grid">
-        <div class="contact-info">
-          <div class="logo" style="font-size:1.6rem;margin-bottom:1rem"><span style="color:#c9a84c;">OG</span> SHOOTS <sup style="font-size:0.45em;font-weight:700;color:#c9a84c;letter-spacing:2px;vertical-align:super;">LUXE</sup></div>
-          <p>India's fastest growing on-demand photography &amp; videography platform. Book top shooters near you instantly.</p>
-          <div class="contact-details">
-            <div><i class="fas fa-envelope"></i> support.ogshootsmedia@gmail.com</div>
-            <div><i class="fab fa-instagram"></i> @weareogshoots</div>
-            <div><i class="fas fa-map-marker-alt"></i> Vijayawada, India</div>
-          </div>
-          <div class="social-links">
-            <a href="https://www.instagram.com/weareogshoots/" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-          </div>
-        </div>
-        <div class="footer-links">
-          <div class="footer-col">
-            <h4>Services</h4>
-            <ul>
-              <li><a href="booking.html">Reel Shoots</a></li>
-              <li><a href="booking.html">Portrait Sessions</a></li>
-              <li><a href="booking.html">Wedding Photography</a></li>
-              <li><a href="booking.html">Product Shoots</a></li>
-              <li><a href="booking.html">Event Coverage</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Company</h4>
-            <ul>
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="career.html">Careers</a></li>
-              <li><a href="blog.html">Blog</a></li>
-              <li><a href="press.html">Press</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Join Us</h4>
-            <ul>
-              <li><a href="partner.html">Become a Shooter</a></li>
-              <li><a href="partner.html">Partner with Us</a></li>
-              <li><a href="affiliate.html">Affiliate Program</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 OG SHOOTS. All rights reserved. Made with <i class="fas fa-heart" style="color:#c9a84c"></i> in India.</p>
-        <div class="footer-legal">
-          <a href="privacy.html">Privacy</a>
-          <a href="terms.html">Terms</a>
-          <a href="cancellation.html">Cancellation Policy</a>
-          <a href="cookies.html">Cookies</a>
-          <a href="verify-certificate.html">Verify Certificate</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
 <script src="hs-feedback-widget.js"></script>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
 </body>
 </html>
