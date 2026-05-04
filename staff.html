@@ -3265,40 +3265,54 @@
 
     function loadBankDetails(){
       var staffId = localStorage.getItem('hs_staff_id');
+      // Load from localStorage immediately
       var data = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
+      if(data) _applyBankToForm(data);
+      // Then fetch fresh from Firestore
+      (async function(){
+        try{
+          var fbMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots'};
+          var app = fbMod.getApps().find(function(a){return a.name==='staff-bank';})||fbMod.initializeApp(fbCfg,'staff-bank');
+          var db = fbStore.getFirestore(app);
+          var snap = await fbStore.getDoc(fbStore.doc(db,'staff_bank',String(staffId)));
+          if(snap.exists()){
+            var fbData = snap.data();
+            localStorage.setItem('hs_bank_' + staffId, JSON.stringify(fbData));
+            _applyBankToForm(fbData);
+          }
+        } catch(e){ console.error('Bank load error:', e); }
+      })();
+    }
+
+    function _applyBankToForm(data){
       if(!data) return;
-      // Only load if form is currently empty (don't overwrite user input)
-      var accNoEl = document.getElementById('bankAccNo');
-      if(accNoEl && accNoEl.value.trim()) return;
-      document.getElementById('bankName').value = data.name || '';
-      
-      // Handle bank selection
+      var nameEl = document.getElementById('bankName');
+      if(nameEl) nameEl.value = data.name || '';
       var bankSelect = document.getElementById('bankBankName');
       var otherInput = document.getElementById('otherBankInput');
       var otherNameInput = document.getElementById('bankOtherName');
-      
-      // Check if saved bank is in the dropdown
-      var bankFound = false;
-      for(var i = 0; i < bankSelect.options.length; i++){
-        if(bankSelect.options[i].value === data.bankName){
-          bankSelect.value = data.bankName;
-          bankFound = true;
-          break;
+      if(bankSelect){
+        var bankFound = false;
+        for(var i = 0; i < bankSelect.options.length; i++){
+          if(bankSelect.options[i].value === data.bankName){
+            bankSelect.value = data.bankName;
+            bankFound = true;
+            break;
+          }
+        }
+        if(!bankFound && data.bankName){
+          bankSelect.value = 'Other';
+          if(otherInput) otherInput.style.display = 'block';
+          if(otherNameInput){ otherNameInput.value = data.bankName; otherNameInput.required = true; }
         }
       }
-      
-      // If bank not found in dropdown, select "Other" and show custom input
-      if(!bankFound && data.bankName){
-        bankSelect.value = 'Other';
-        otherInput.style.display = 'block';
-        otherNameInput.value = data.bankName;
-        otherNameInput.required = true;
-      }
-      
-      document.getElementById('bankAccNo').value = data.accNo || '';
-      document.getElementById('bankIFSC').value = data.ifsc || '';
-      document.getElementById('bankUPI').value = data.upi || '';
-      document.getElementById('bankType').value = data.type || 'savings';
+      var set = function(id,val){ var el=document.getElementById(id); if(el) el.value=val||''; };
+      set('bankAccNo', data.accNo);
+      set('bankIFSC',  data.ifsc);
+      set('bankUPI',   data.upi);
+      set('bankType',  data.type||'savings');
       showBankSaved(data);
     }
 
