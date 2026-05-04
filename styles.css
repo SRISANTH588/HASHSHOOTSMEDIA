@@ -154,12 +154,12 @@ body {
 /* PHONE MOCKUP */
 .phone-mockup {
   display: flex; justify-content: center;
-  position: relative; margin-top: 1rem;
+  position: relative; margin-top: 1rem; margin-bottom: 1rem;
   animation: phoneFloat 4s ease-in-out infinite;
 }
 @keyframes phoneFloat {
-  0%,100% { transform: translateY(0px) rotate(-1deg); }
-  50% { transform: translateY(-18px) rotate(1deg); }
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 .phone-glow {
   position: absolute; width: 300px; height: 300px;
@@ -174,11 +174,10 @@ body {
   50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
 }
 .phone-frame {
-  width: 260px; height: 480px; background: #0d0d0d; border-radius: 40px;
+  width: 260px; height: 460px; background: #0d0d0d; border-radius: 40px;
   border: 1px solid rgba(201,168,76,0.2);
-  box-shadow: 0 40px 80px rgba(0,0,0,0.95), 0 0 80px rgba(201,168,76,0.12), 0 0 0 1px rgba(201,168,76,0.06), inset 0 1px 0 rgba(201,168,76,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 60px rgba(201,168,76,0.1);
   overflow: hidden; position: relative; z-index: 1;
-  animation: phoneTilt 6s ease-in-out infinite;
   display: flex; flex-direction: column;
 }
 @keyframes phoneTilt {
@@ -190,13 +189,13 @@ body {
   width: 90px; height: 26px; background: #000;
   border-radius: 0 0 18px 18px; z-index: 10;
 }
-.phone-screen { background: #0f0f0f; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.phone-screen { background: #0f0f0f; flex: 1; display: flex; flex-direction: column; }
 .phone-status {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 2rem 1.2rem 0.4rem; font-size: 0.7rem; color: #fff; flex-shrink: 0;
+  padding: 1.8rem 1rem 0.3rem; font-size: 0.68rem; color: #fff; flex-shrink: 0;
 }
 .phone-status span:last-child { display: flex; gap: 4px; align-items: center; }
-.phone-body { padding: 0.4rem 0.85rem 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.phone-body { padding: 0.3rem 0.85rem 0; flex: 1; display: flex; flex-direction: column; }
 
 /* Phone inner animations */
 .anim-slide-down { animation: slideDown 0.6s ease forwards; opacity: 0; }
@@ -206,13 +205,13 @@ body {
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-.phone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-shrink: 0; }
+.phone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem; flex-shrink: 0; }
 .phone-city { font-size: 0.65rem; color: var(--red); font-weight: 600; }
 .phone-greeting { font-size: 0.75rem; color: #888; }
 .phone-msg { font-size: 0.85rem; color: #fff; line-height: 1.4; margin-top: 0.2rem; }
 .phone-msg strong { color: #fff; }
 .phone-bell { color: #888; font-size: 1rem; }
-.phone-actions { display: flex; justify-content: space-between; margin-bottom: 0.5rem; flex-shrink: 0; }
+.phone-actions { display: flex; justify-content: space-between; margin-bottom: 0.4rem; flex-shrink: 0; }
 .phone-action { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
 .phone-action-icon {
   width: 40px; height: 40px; border-radius: 50%; background: #222;
@@ -246,10 +245,10 @@ body {
 .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
 .dot.active { background: #fff; width: 14px; border-radius: 3px; }
 .phone-discover { font-size: 0.75rem; color: #fff; font-weight: 600; margin-bottom: 0.35rem; flex-shrink: 0; }
-.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; margin-bottom: 0; flex-shrink: 0; }
+.phone-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.35rem; margin-bottom: 0; flex: 1; }
 .phone-grid-item {
-  border-radius: 10px; padding: 0.6rem 0.4rem; display: flex;
-  flex-direction: column; align-items: center; gap: 0.3rem;
+  border-radius: 10px; padding: 0; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem;
   font-size: 0.6rem; color: #fff; transition: transform 0.2s;
   animation: gridPop 0.4s ease backwards;
 }
@@ -260,9 +259,9 @@ body {
 .phone-grid-item:hover { transform: scale(1.08); }
 .phone-grid-item i { font-size: 1rem; }
 .phone-nav {
-  display: flex; justify-content: space-around; padding: 0.6rem 0;
+  display: flex; justify-content: space-around; padding: 0.75rem 0;
   border-top: 1px solid #222; font-size: 1rem; color: #555;
-  margin-top: auto; flex-shrink: 0;
+  flex-shrink: 0;
 }
 .phone-nav .active { color: var(--red); }
 
