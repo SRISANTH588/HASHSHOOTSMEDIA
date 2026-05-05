@@ -22,6 +22,7 @@
 
   /* ── CLEAN FLAT SIDEBAR ── */
   *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{max-width:100%;overflow-x:hidden;}
   body{display:flex;min-height:100vh;overflow-x:hidden;font-family:'Inter',sans-serif;background:#000;color:#fff;}
 
   #adminSidebar{
@@ -97,7 +98,9 @@
     background:#000;
     display:flex;flex-direction:column;
     overflow-y:auto;
+    overflow-x:hidden;
     height:100vh;
+    max-width:calc(100vw - var(--sidebar-w));
   }
 
   /* No topbar — Flashoot style has page title inside content */
@@ -140,7 +143,7 @@
   @media(max-width:900px){
     #adminSidebar{transform:translateX(-100%);}
     #adminSidebar.open{transform:translateX(0);}
-    #adminMain{margin-left:0;}
+    #adminMain{margin-left:0;max-width:100vw;overflow-x:hidden;}
     #sidebarToggle{display:flex;align-items:center;justify-content:center;}
     #sidebarOverlay.open{display:block;}
     #adminContent{padding:1rem 1.25rem;height:auto;overflow-y:visible;}
