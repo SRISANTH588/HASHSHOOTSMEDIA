@@ -295,3 +295,4 @@ function navigate(page){
   var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
   window.location.href = base + page;
 }
+
