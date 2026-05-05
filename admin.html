@@ -265,64 +265,115 @@
     .btn-add-team:hover{background:rgba(255,255,255,0.08);color:#fff;}
     .save-toast{display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);color:#4caf50;padding:0.55rem 1.1rem;border-radius:7px;font-size:0.82rem;font-weight:600;margin-top:1rem;}
 
-    /* ── ADMIN RESPONSIVE ── */
+    /* ── ADMIN MOBILE ── */
     @media(max-width:768px){
-      /* Sidebar toggle button visible */
-      #sidebarToggle{display:flex!important;}
 
-      /* Topbar */
-      #adminTopbar{padding:0.65rem 1rem!important;gap:0.5rem;}
-      #adminTopbar h1{font-size:1rem!important;}
+      /* Sidebar toggle */
+      #sidebarToggle{display:flex!important;width:38px;height:38px;padding:0;}
 
-      /* Content area */
-      #adminContent{padding:0.75rem 0.85rem 3rem!important;}
+      /* Sidebar full screen overlay on mobile */
+      #adminSidebar{
+        position:fixed!important;top:0;left:0;bottom:0;
+        width:82vw!important;min-width:0!important;max-width:320px;
+        z-index:200;transform:translateX(-100%);
+        transition:transform 0.25s ease;
+        overflow-y:auto;
+      }
+      #adminSidebar.open{transform:translateX(0)!important;}
+      #sidebarOverlay.open{display:block!important;z-index:199;}
 
-      /* Stats row — 2 cols on tablet, 2 cols on mobile */
-      .stats-row{grid-template-columns:1fr 1fr!important;gap:0.65rem!important;margin-bottom:1.5rem!important;}
-      .stat-card{padding:1rem!important;}
-      .stat-card .num{font-size:1.6rem!important;}
+      /* Main takes full width */
+      #adminMain{margin-left:0!important;width:100%;}
 
-      /* Tables — always scrollable */
-      .table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-      .table-scroll{overflow-x:auto!important;-webkit-overflow-scrolling:touch;min-width:0;}
-      table{min-width:600px;}
-      th,td{padding:0.6rem 0.75rem!important;font-size:0.75rem!important;white-space:nowrap;}
+      /* Topbar compact */
+      #adminTopbar{
+        padding:0.6rem 0.85rem!important;
+        position:sticky;top:0;z-index:50;
+      }
+      #adminTopbar h1{font-size:0.95rem!important;gap:0.5rem;}
+      #lastUpdated{display:none!important;}
 
-      /* Filters */
-      .filters{gap:0.4rem!important;}
-      .filter-btn{font-size:0.7rem!important;padding:0.35rem 0.65rem!important;}
-      .search-bar{width:100%!important;max-width:100%!important;}
+      /* Content */
+      #adminContent{padding:0.75rem 0.75rem 5rem!important;}
+
+      /* Stats — 2 cols */
+      .stats-row{
+        grid-template-columns:1fr 1fr!important;
+        gap:0.5rem!important;
+        margin-bottom:1.25rem!important;
+      }
+      .stat-card{padding:0.85rem 1rem!important;border-radius:10px!important;}
+      .stat-card .num{font-size:1.5rem!important;}
+      .stat-card .lbl{font-size:0.65rem!important;}
 
       /* Page header */
-      .page-header{flex-direction:column!important;align-items:flex-start!important;gap:0.75rem!important;}
+      .page-header{
+        flex-direction:column!important;
+        align-items:flex-start!important;
+        gap:0.65rem!important;
+        margin-bottom:1.25rem!important;
+      }
+      .page-header h1,.page-header h2{font-size:1.2rem!important;}
 
-      /* Team row grid collapse */
-      .team-row{grid-template-columns:1fr 1fr!important;}
+      /* Filters wrap */
+      .filters{gap:0.35rem!important;flex-wrap:wrap!important;}
+      .filter-btn{font-size:0.68rem!important;padding:0.32rem 0.6rem!important;}
+      .search-bar{width:100%!important;max-width:100%!important;font-size:0.82rem!important;}
 
-      /* Shoot reel cards */
+      /* Tables — horizontal scroll */
+      .table-wrap,.table-scroll{
+        overflow-x:auto!important;
+        -webkit-overflow-scrolling:touch;
+        border-radius:10px!important;
+      }
+      table{min-width:560px;font-size:0.75rem;}
+      th,td{padding:0.55rem 0.7rem!important;font-size:0.73rem!important;white-space:nowrap;}
+
+      /* Cards */
+      .about-form{padding:1rem!important;border-radius:12px!important;}
+      .booking-item{padding:0.85rem!important;border-radius:12px!important;}
+
+      /* Form inputs — prevent iOS zoom */
+      input,select,textarea{font-size:16px!important;}
+      .form-group{margin-bottom:0.85rem!important;}
+
+      /* Team row */
+      .team-row{grid-template-columns:1fr!important;gap:0.5rem!important;}
+
+      /* Shoot reel */
       .shoot-reel-assignment-grid{grid-template-columns:1fr!important;}
+      .shoot-reel-actions{flex-wrap:wrap!important;}
+      .shoot-reel-btn{flex:1 1 calc(50% - 0.25rem)!important;min-width:0!important;}
 
-      /* Modals full width */
-      .modal-overlay > div, [style*="max-width:420px"], [style*="max-width:440px"], [style*="max-width:480px"]{
-        width:95vw!important;max-width:95vw!important;
+      /* Modals */
+      .modal-overlay{padding:0.75rem!important;align-items:flex-end!important;}
+      .modal-overlay > div{
+        width:100%!important;max-width:100%!important;
+        border-radius:20px 20px 0 0!important;
+        max-height:90vh;overflow-y:auto;
       }
 
-      /* Forms */
-      .form-group input,.form-group select,.form-group textarea{
-        font-size:16px!important;
+      /* Toast */
+      .notif-toast{
+        left:0.75rem!important;right:0.75rem!important;
+        min-width:0!important;max-width:100%!important;
+        bottom:0.75rem!important;
       }
 
-      /* Notification toast */
-      .notif-toast{left:1rem!important;right:1rem!important;min-width:0!important;max-width:100%!important;bottom:1rem!important;}
+      /* Sidebar items bigger tap targets */
+      .sidebar-item{padding:0.85rem 1.5rem!important;font-size:0.88rem!important;}
+      .sidebar-section-label{padding:0.85rem 1.5rem 0.3rem!important;}
+
+      /* Action buttons in rows */
+      .action-row,.modal-btns{flex-direction:column!important;gap:0.5rem!important;}
+      .action-row button,.modal-btns button{width:100%!important;justify-content:center!important;}
     }
 
-    @media(max-width:480px){
+    @media(max-width:400px){
       .stats-row{grid-template-columns:1fr 1fr!important;}
-      .stat-card .num{font-size:1.4rem!important;}
-      #adminTopbar h1{font-size:0.9rem!important;}
-      .team-row{grid-template-columns:1fr!important;}
-      .shoot-reel-actions{flex-direction:column!important;}
-      .shoot-reel-btn{min-width:0!important;width:100%!important;}
+      .stat-card .num{font-size:1.25rem!important;}
+      #adminTopbar h1{font-size:0.85rem!important;}
+      .filter-btn{font-size:0.65rem!important;padding:0.28rem 0.5rem!important;}
     }
   </style>
 <script type="module" src="hs-firebase.js"></script>
