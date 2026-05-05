@@ -219,7 +219,6 @@
           </div>
         </div>
         <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-          <button onclick="showTab('book',document.querySelectorAll('.ctab')[1])" style="background:#c9a84c;color:#fff;border:none;border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-camera"></i> Book a Shoot</button>
           <a href="customer-orders.html" style="background:rgba(201,168,76,0.06);color:#fff;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:0.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><i class="fas fa-list"></i> My Orders</a>
         </div>
         <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
@@ -990,6 +989,31 @@
       new Razorpay(options).open();
     }
     loadBookings();
+    // Dedicated Firebase stats fetch for home tab
+    (async function loadHomeStats(){
+      try {
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var fbApp   = fbMod.getApps().find(function(a){return a.name==='cust';}) || fbMod.initializeApp(fbCfg,'cust');
+        var fbDb    = fbStore.getFirestore(fbApp);
+        var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+        var userPhone = localStorage.getItem('hs_customer_phone') || '';
+        var snap = await fbStore.getDocs(fbStore.collection(fbDb,'bookings'));
+        var bookings = [];
+        snap.forEach(function(d){
+          var data = d.data();
+          if(userEmail && data.email === userEmail) bookings.push(data);
+          else if(userPhone && data.phone === userPhone) bookings.push(data);
+        });
+        var statTotal   = document.getElementById('statTotal');
+        var statPending = document.getElementById('statPending');
+        var statDone    = document.getElementById('statDone');
+        if(statTotal)   statTotal.textContent   = bookings.length;
+        if(statPending) statPending.textContent = bookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }).length;
+        if(statDone)    statDone.textContent    = bookings.filter(function(b){ return b.status==='completed'; }).length;
+      } catch(e){ console.log('loadHomeStats error:',e); }
+    })();
     // Real-time listener — update booking status instantly when admin confirms
     (async function(){
       try{
