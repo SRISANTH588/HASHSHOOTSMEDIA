@@ -2247,7 +2247,7 @@ Priority Support</textarea></div>
     </div><!-- end tab-withdraw -->
 
     <!-- CERTIFICATES TAB -->
-    <div class="tab-panel" id="tab-certificates" style="display:none;">
+    <div class="tab-panel" id="tab-certificates">
       <div class="section-header"><h2><i class="fas fa-certificate" style="color:#c9a84c;"></i> Certificate Manager</h2></div>
 
       <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
@@ -9838,6 +9838,8 @@ Priority Support</textarea></div>
     if(titleEl) titleEl.textContent = title;
     // Close sidebar on mobile
     if(window.innerWidth <= 900) closeSidebar();
+    // Init certificates tab
+    if(name==='certificates') setTimeout(initCertTab, 200);
     // Load tab data
     currentTab = name;
     if(name==='demo') lastSubmittedCount = getDemos().filter(function(d){return d.status==='submitted';}).length;
@@ -10168,8 +10170,8 @@ Priority Support</textarea></div>
   // Init cert tab when switched
   var _origSwitchTab = window.switchTab;
   window.switchTab = function(tab, btn){
-    if(_origSwitchTab) _origSwitchTab(tab, btn);
-    if(tab==='certificates') setTimeout(initCertTab, 100);
+    if(typeof _origSwitchTab === 'function') _origSwitchTab(tab, btn);
+    if(tab==='certificates') setTimeout(initCertTab, 200);
   };
   </script>
 
