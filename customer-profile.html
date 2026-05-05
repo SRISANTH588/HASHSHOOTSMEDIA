@@ -59,12 +59,13 @@
           <label for="profilePicInput" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #1a1a1a;">
             <i class="fas fa-camera" style="font-size:0.65rem;color:#fff;"></i>
           </label>
-          <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(this)"/>
+          <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="previewProfilePic(this)"/>
         </div>
         <div>
           <div id="profileName" style="font-size:1.15rem;font-weight:800;color:#fff;"></div>
           <div style="font-size:0.78rem;color:#c9a84c;font-weight:600;margin-top:0.2rem;">Customer Account</div>
-          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Tap camera icon to change photo</div>
+          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">Tap camera icon to change photo, then save</div>
+          <div id="picHint" style="display:none;font-size:0.72rem;color:#c9a84c;margin-top:0.2rem;font-weight:600;">&#9888; Photo selected — click Save Profile to apply</div>
         </div>
       </div>
 
@@ -90,56 +91,184 @@
         <i class="fas fa-check-circle"></i> Profile saved!
       </div>
     </div>
+
+    <!-- PREMIUM CARD SECTION -->
+    <div id="premiumCardSection" style="margin-top:1.5rem;display:none;">
+      <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:1.75rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.1),transparent 70%);pointer-events:none;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;position:relative;">
+          <div>
+            <div style="font-size:0.58rem;font-weight:800;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.3rem;">LIFETIME MEMBERSHIP</div>
+            <div style="font-size:1.3rem;font-weight:900;color:#fff;">OG SHOOTS <span style="color:#c9a84c;">LUXE</span></div>
+            <div style="font-size:0.62rem;font-weight:700;color:#9a9080;letter-spacing:2px;text-transform:uppercase;">Premium Member</div>
+          </div>
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#c9a84c,#a07830);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">⚡</div>
+        </div>
+        <div style="margin-bottom:1.25rem;position:relative;">
+          <div style="font-size:1rem;font-weight:900;color:#f0ece0;letter-spacing:2px;" id="pcName"></div>
+          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;letter-spacing:2px;" id="pcNumber"></div>
+          <div style="font-size:0.65rem;color:#6a6050;margin-top:0.15rem;" id="pcSince"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:1.25rem;position:relative;">
+          <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;">
+            <div style="font-size:0.58rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;">Wallet Balance</div>
+            <div style="font-size:1rem;color:#4caf50;font-weight:900;">&#8377;<span id="pcWallet">0</span></div>
+          </div>
+          <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;">
+            <div style="font-size:0.58rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;">Status</div>
+            <div style="font-size:0.78rem;color:#4caf50;font-weight:800;"><i class="fas fa-check-circle"></i> Active Lifetime</div>
+          </div>
+          <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;">
+            <div style="font-size:0.58rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;">Priority Booking</div>
+            <div style="font-size:0.75rem;color:#f0ece0;font-weight:700;">Skip the Queue ✓</div>
+          </div>
+          <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.75rem;">
+            <div style="font-size:0.58rem;color:#c9a84c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem;">Exclusive Offers</div>
+            <div style="font-size:0.75rem;color:#f0ece0;font-weight:700;">Members Only ✓</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;position:relative;border-top:1px solid rgba(201,168,76,0.1);padding-top:0.85rem;">
+          <div style="font-size:0.6rem;color:#6a6050;font-weight:600;letter-spacing:1px;">OG SHOOTS MEDIA &nbsp;&middot;&nbsp; LUXE &nbsp;&middot;&nbsp; LIFETIME</div>
+          <div style="display:flex;"><div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,0.3);"></div><div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,0.6);margin-left:-8px;"></div></div>
+        </div>
+      </div>
   </div>
 
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
-    const user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
-    const userEmail = localStorage.getItem('hs_user') || '';
+    var user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
+    var userEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
-    function loadProfile(){
+    var FB_CFG = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+    var _fbDb = null, _fbStore = null;
+    async function getDb(){
+      if(_fbDb) return _fbDb;
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      _fbStore    = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var app     = fbMod.getApps().find(function(a){return a.name==='cust-profile';}) || fbMod.initializeApp(FB_CFG,'cust-profile');
+      _fbDb       = _fbStore.getFirestore(app);
+      return _fbDb;
+    }
+
+    // Load profile from Firebase first, fallback to localStorage
+    async function loadProfile(){
       var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-      var name = prof.name || user;
-      document.getElementById('editName').value = name;
-      document.getElementById('editPhone').value = prof.phone || '';
-      document.getElementById('profileEmail').value = userEmail || '—';
-      document.getElementById('profileName').textContent = name;
-      var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-      var av = document.getElementById('profileAv');
-      if(prof.pic){ av.innerHTML = '<img src="'+prof.pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'; }
+      // Try to fetch fresh from Firebase
+      try{
+        var db   = await getDb();
+        var key  = 'cust_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
+        var snap = await _fbStore.getDoc(_fbStore.doc(db,'customer_profiles',key));
+        if(snap.exists()) prof = Object.assign(prof, snap.data());
+      }catch(e){ console.warn('profile load:',e); }
+      var name  = prof.name  || localStorage.getItem('hs_customer_name')  || user || '';
+      var phone = prof.phone || localStorage.getItem('hs_customer_phone') || '';
+      var email = prof.email || userEmail || '';
+      document.getElementById('editName').value     = name;
+      document.getElementById('editPhone').value    = phone;
+      document.getElementById('profileEmail').value = email || '—';
+      document.getElementById('profileName').textContent = name || 'Customer';
+      var initials = (name||'C').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+      var av  = document.getElementById('profileAv');
+      var pic = prof.pic || localStorage.getItem('hs_customer_photo') || '';
+      if(pic){ av.innerHTML = '<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'; }
       else { av.textContent = initials; }
     }
     loadProfile();
 
-    function uploadProfilePic(input){
+    var _pendingPic = null;
+    function previewProfilePic(input){
       var file = input.files[0]; if(!file) return;
       var reader = new FileReader();
       reader.onload = function(e){
-        var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-        prof.pic = e.target.result;
-        localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
-        loadProfile();
+        _pendingPic = e.target.result;
+        var av = document.getElementById('profileAv');
+        av.innerHTML = '<img src="'+_pendingPic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>';
+        var hint = document.getElementById('picHint');
+        if(hint) hint.style.display = 'block';
       };
       reader.readAsDataURL(file);
     }
 
-    function saveProfile(){
-      var name = document.getElementById('editName').value.trim();
-      var phone = document.getElementById('editPhone').value.trim();
+    async function saveProfile(){
+      var name  = document.getElementById('editName').value.trim();
+      var phone = document.getElementById('editPhone').value.trim().replace(/\s/g,'');
       if(!name){ alert('Please enter your name.'); return; }
-      var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-      prof.name = name; prof.phone = phone;
-      localStorage.setItem('hs_customer_profile', JSON.stringify(prof));
-      localStorage.setItem('hs_customer_name', name);
-      document.getElementById('profileName').textContent = name;
-      document.getElementById('welcomeMsg').textContent = 'Welcome, ' + name;
-      var msg = document.getElementById('saveMsg');
-      msg.style.display = 'block';
-      setTimeout(function(){ msg.style.display = 'none'; }, 3000);
+      if(!phone){ alert('Please enter your phone number.'); return; }
+
+      var btn = document.querySelector('[onclick="saveProfile()"]');
+      if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+      try{
+        var db = await getDb();
+        // Check if phone is already used by another customer
+        var phoneSnap = await _fbStore.getDocs(
+          _fbStore.query(_fbStore.collection(db,'customer_profiles'), _fbStore.where('phone','==',phone))
+        );
+        var phoneTaken = false;
+        phoneSnap.forEach(function(d){
+          var data = d.data();
+          if((data.email||'').toLowerCase().trim() !== userEmail) phoneTaken = true;
+        });
+        if(phoneTaken){
+          alert('\u26A0\uFE0F This phone number is already linked to another account. Please use a different number.');
+          if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> Save Profile'; }
+          return;
+        }
+
+        // Save to Firestore
+        var key  = 'cust_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
+        var prof = { name:name, phone:phone, email:userEmail, updatedAt: _fbStore.serverTimestamp() };
+        if(_pendingPic) prof.pic = _pendingPic;
+        await _fbStore.setDoc(_fbStore.doc(db,'customer_profiles',key), prof, {merge:true});
+
+        // Update localStorage
+        var local = JSON.parse(localStorage.getItem('hs_customer_profile')||'{}');
+        Object.assign(local, {name:name, phone:phone, email:userEmail});
+        if(_pendingPic) local.pic = _pendingPic;
+        localStorage.setItem('hs_customer_profile', JSON.stringify(local));
+        localStorage.setItem('hs_customer_name', name);
+        localStorage.setItem('hs_customer_phone', phone);
+
+        // Also update the customer_accounts collection so admin sees updated info
+        var acctSnap = await _fbStore.getDocs(
+          _fbStore.query(_fbStore.collection(db,'customer_accounts'), _fbStore.where('email','==',userEmail))
+        );
+        acctSnap.forEach(async function(d){
+          await _fbStore.setDoc(_fbStore.doc(db,'customer_accounts',d.id), {name:name, phone:phone}, {merge:true});
+        });
+
+        _pendingPic = null;
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('welcomeMsg').textContent  = 'Welcome, ' + name;
+        var hint = document.getElementById('picHint');
+        if(hint) hint.style.display = 'none';
+        var msg = document.getElementById('saveMsg');
+        msg.style.display = 'block';
+        setTimeout(function(){ msg.style.display='none'; }, 3000);
+      }catch(e){
+        alert('Failed to save profile: ' + e.message);
+      }
+      if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> Save Profile'; }
     }
 
-    function logout(){ localStorage.removeItem('hs_role'); window.location.href = 'login.html'; }
+    function logout(){
+      ['hs_role','hs_user','hs_customer_email','hs_customer_name','hs_customer_phone','hs_customer_profile','hs_bookings'].forEach(function(k){ localStorage.removeItem(k); });
+      window.location.href = 'login.html';
+    }
   </script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

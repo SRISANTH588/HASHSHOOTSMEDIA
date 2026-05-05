@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book a Shoot – OG Shoots</title>
+  <title>Book a Shoot – OG Shoots | Instant Reel Creation Starting ₹1,499</title>
+  <meta name="description" content="Book a certified content maker near you. Professional reels delivered in 10 minutes. Choose from Hourly Plan (₹1,499), Half-Day Plan (₹3,199), or Wedding Packages. Available in Vijayawada & Eluru."/>
+  <meta name="keywords" content="book reel shoot, hire content maker, reel booking, wedding photography, event coverage, OG Shoots booking"/>
+  <meta name="author" content="OG Shoots"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://ogshoots.in/booking.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://ogshoots.in/booking.html"/>
+  <meta property="og:title" content="Book a Shoot – OG Shoots | Starting ₹1,499"/>
+  <meta property="og:description" content="Book a certified content maker. Professional reels in 10 minutes. Starting ₹1,499."/>
+  <meta property="og:image" content="https://ogshoots.in/srisanth.jpeg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Book a Shoot – OG Shoots"/>
+  <meta name="twitter:description" content="Professional reels in 10 minutes. Starting ₹1,499."/>
+  <meta name="twitter:image" content="https://ogshoots.in/srisanth.jpeg"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -44,9 +58,24 @@
     .form-group{margin-bottom:1.25rem;}
     .form-label{font-size:0.8rem;font-weight:600;color:#888070;margin-bottom:0.5rem;display:block;}
     .form-label span{color:#c9a84c;}
-    .form-input{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 1rem;font-size:0.9rem;color:#fff;font-family:inherit;outline:none;transition:border-color 0.2s;}
+    .form-input{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 1rem;font-size:0.9rem;color:#fff;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
     .form-input:focus{border-color:rgba(201,168,76,0.5);}
     .form-input::placeholder{color:#302820;}
+    input[type="date"].form-input,input[type="time"].form-input{color-scheme:dark;font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:500;letter-spacing:0.3px;}
+    input[type="date"].form-input::-webkit-datetime-edit{font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:500;color:#fff;}
+    input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper{font-family:'Inter',sans-serif;}
+    input[type="date"].form-input::-webkit-datetime-edit-text{color:rgba(201,168,76,0.6);padding:0 2px;}
+    input[type="date"].form-input::-webkit-datetime-edit-month-field,
+    input[type="date"].form-input::-webkit-datetime-edit-day-field,
+    input[type="date"].form-input::-webkit-datetime-edit-year-field{font-family:'Inter',sans-serif;font-weight:600;color:#fff;}
+    input[type="date"].form-input::-webkit-calendar-picker-indicator{filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg);opacity:0.6;cursor:pointer;}
+    input[type="time"].form-input::-webkit-datetime-edit{font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:500;color:#fff;}
+    input[type="time"].form-input::-webkit-datetime-edit-fields-wrapper{font-family:'Inter',sans-serif;}
+    input[type="time"].form-input::-webkit-datetime-edit-text{color:rgba(201,168,76,0.6);padding:0 2px;}
+    input[type="time"].form-input::-webkit-datetime-edit-hour-field,
+    input[type="time"].form-input::-webkit-datetime-edit-minute-field,
+    input[type="time"].form-input::-webkit-datetime-edit-ampm-field{font-family:'Inter',sans-serif;font-weight:600;color:#fff;}
+    input[type="time"].form-input::-webkit-calendar-picker-indicator{filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg);opacity:0.6;cursor:pointer;}
     .phone-row{display:flex;gap:0.5rem;}
     .phone-code{width:110px;flex-shrink:0;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 0.75rem;font-size:0.88rem;color:#fff;font-family:inherit;outline:none;cursor:pointer;}
     .form-select{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.9rem 1rem;font-size:0.9rem;color:#fff;font-family:inherit;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;transition:border-color 0.2s;}
@@ -97,23 +126,84 @@
     .confirm-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
     @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}.checks{gap:1rem;}}
-    .plan-card{background:#111 !important;border:2px solid rgba(201,168,76,0.2) !important;border-radius:16px !important;padding:1.5rem !important;cursor:pointer !important;transition:all 0.25s !important;position:relative !important;list-style:none !important;}
-    .plan-card:hover{border-color:rgba(201,168,76,0.5) !important;transform:translateY(-4px) !important;box-shadow:0 20px 50px rgba(0,0,0,0.6),0 0 30px rgba(201,168,76,0.1) !important;}
-    .plan-card.selected{border-color:#c9a84c !important;background:rgba(201,168,76,0.07) !important;box-shadow:0 0 0 1px #c9a84c,0 20px 50px rgba(0,0,0,0.5) !important;}
-    .plan-card-badge{position:absolute;top:-10px;right:1rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.6rem;font-weight:800;padding:0.2rem 0.75rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;}
-    .plan-card-name{font-size:1rem !important;font-weight:800 !important;color:#fff !important;margin-bottom:0.25rem !important;}
-    .plan-card-price{font-size:1.6rem !important;font-weight:900 !important;color:#c9a84c !important;margin-bottom:0.5rem !important;line-height:1.2 !important;}
+    .plan-card{
+      background:linear-gradient(145deg,#141008,#0d0d0d) !important;
+      border:1.5px solid rgba(201,168,76,0.25) !important;
+      border-radius:20px !important;
+      padding:1.75rem !important;
+      cursor:pointer !important;
+      transition:all 0.3s cubic-bezier(0.25,0.46,0.45,0.94) !important;
+      position:relative !important;
+      list-style:none !important;
+      box-shadow:0 4px 24px rgba(0,0,0,0.4),inset 0 1px 0 rgba(201,168,76,0.08) !important;
+      overflow:hidden !important;
+    }
+    .plan-card::before{
+      content:'' !important;
+      position:absolute !important;
+      top:0;left:0;right:0 !important;
+      height:2px !important;
+      background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6),transparent) !important;
+      opacity:0 !important;
+      transition:opacity 0.3s !important;
+    }
+    .plan-card:hover::before{opacity:1 !important;}
+    .plan-card:hover{
+      border-color:rgba(201,168,76,0.55) !important;
+      transform:translateY(-6px) !important;
+      box-shadow:0 24px 60px rgba(0,0,0,0.6),0 0 40px rgba(201,168,76,0.12),inset 0 1px 0 rgba(201,168,76,0.15) !important;
+      background:linear-gradient(145deg,#1a1408,#0f0f0f) !important;
+    }
+    .plan-card.selected{
+      border-color:#c9a84c !important;
+      background:linear-gradient(145deg,#1e1608,#111) !important;
+      box-shadow:0 0 0 1px rgba(201,168,76,0.4),0 24px 60px rgba(0,0,0,0.5),0 0 40px rgba(201,168,76,0.15) !important;
+    }
+    .plan-card.selected::before{opacity:1 !important;}
+    .plan-card-badge{
+      position:absolute;top:-1px;right:1.25rem;
+      background:linear-gradient(135deg,#c9a84c,#a07830);
+      color:#000;font-size:0.58rem;font-weight:800;
+      padding:0.22rem 0.85rem;border-radius:0 0 8px 8px;
+      letter-spacing:1px;text-transform:uppercase;
+      box-shadow:0 4px 12px rgba(201,168,76,0.4);
+    }
+    .plan-card-name{font-size:1.05rem !important;font-weight:800 !important;color:#fff !important;margin-bottom:0.25rem !important;letter-spacing:-0.3px !important;}
+    .plan-card-price{font-size:1.7rem !important;font-weight:900 !important;color:#c9a84c !important;margin-bottom:0.5rem !important;line-height:1.2 !important;}
     .plan-card-price span{font-size:0.75rem !important;color:#706050 !important;font-weight:400 !important;}
     .plan-card-desc{font-size:0.75rem !important;color:#706050 !important;line-height:1.6 !important;margin-bottom:0.75rem !important;}
-    .plan-card-features{list-style:none !important;display:flex !important;flex-direction:column !important;gap:0.35rem !important;margin-top:0.75rem !important;padding:0 !important;}
+    .plan-card-features{list-style:none !important;display:flex !important;flex-direction:column !important;gap:0.4rem !important;margin-top:0.85rem !important;padding:0 !important;border-top:1px solid rgba(201,168,76,0.08) !important;padding-top:0.85rem !important;}
     .plan-card-features li{font-size:0.78rem !important;color:#9a9080 !important;display:flex !important;align-items:center !important;gap:0.5rem !important;list-style:none !important;}
-    .plan-card-features li i{color:#c9a84c !important;font-size:0.6rem !important;flex-shrink:0 !important;}
+    .plan-card-features li i{color:#c9a84c !important;font-size:0.55rem !important;flex-shrink:0 !important;}
     @media(max-width:580px){#planStep>div:nth-child(3){grid-template-columns:1fr!important;}}
+  
+  @media(max-width:600px){
+    .container{padding:0 0.75rem 2rem!important;}
+    h1{font-size:1.4rem!important;}
+    .stat-card .num{font-size:1.4rem!important;}
+    table{font-size:0.75rem!important;}
+    th,td{padding:0.5rem 0.6rem!important;}
+    .about-form{padding:1rem!important;}
+    .form-row{grid-template-columns:1fr!important;}
+    .stats-row{grid-template-columns:1fr 1fr!important;}
+    .filters{gap:0.35rem!important;}
+    .filter-btn{font-size:0.7rem!important;padding:0.35rem 0.65rem!important;}
+    .tab-btn{font-size:0.72rem!important;padding:0.4rem 0.75rem!important;}
+    .page-header{flex-direction:column!important;}
+    .nav-right{gap:0.5rem!important;}
+    .search-bar{max-width:100%!important;width:100%!important;}
+  }
+  @media(max-width:900px){
+    .stats-row{grid-template-columns:repeat(2,1fr)!important;}
+    .container{padding:0 1rem 2rem!important;}
+  }
   </style>
   <script src="nav.js"></script>
 <script type="module" src="hs-firebase.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
+<div id="promoBanner" style="background:linear-gradient(90deg,#000 0%,#0f0900 30%,#1a1100 50%,#0f0900 70%,#000 100%);border-bottom:1px solid rgba(201,168,76,0.4);padding:0.75rem 3rem;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(201,168,76,0.07) 50%,transparent 65%);animation:promoShimmer 3s infinite;"></div><div style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div><div style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(270deg,rgba(201,168,76,0.08),transparent);pointer-events:none;"></div><style>@keyframes promoShimmer{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}@keyframes promoBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4);}50%{box-shadow:0 0 0 6px rgba(201,168,76,0);}}</style><div style="display:flex;align-items:center;justify-content:center;gap:0.85rem;flex-wrap:wrap;position:relative;"><span style="display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.62rem;font-weight:900;padding:0.22rem 0.75rem;border-radius:50px;letter-spacing:1.5px;text-transform:uppercase;animation:promoBadgePulse 2s infinite;flex-shrink:0;">&#9733; EXCLUSIVE</span><span style="font-size:0.85rem;font-weight:700;color:#f0ece0;">Get a chance to win a <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">FREE Shoot</strong> or an exclusive <strong style="background:linear-gradient(90deg,#c9a84c,#e8c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Coupon Code</strong> on every booking!</span><a href="booking.html" style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-size:0.75rem;font-weight:900;padding:0.35rem 1rem;border-radius:50px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(201,168,76,0.3);flex-shrink:0;">Book Now &#8594;</a><span style="font-size:0.65rem;color:rgba(201,168,76,0.4);font-weight:600;">T&amp;C Apply</span></div><button onclick="document.getElementById(&apos;promoBanner&apos;).style.display=&apos;none&apos;" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:rgba(201,168,76,0.5);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:0.75rem;">&times;</button></div>
 
   <!-- NAVBAR -->
 
@@ -151,15 +241,15 @@
   <!-- PLAN SELECTION -->
   <div id="planStep" style="max-width:1100px;margin:0 auto;padding:0 2rem 3rem;">
     <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
-    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;" id="servicePlanGrid">
+    <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;" id="planStepSubtitle">Select a plan and click Book to continue</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:700px;margin:0 auto;" id="servicePlanGrid">
 
       <!-- HOURLY -->
-      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')" style="display:flex;flex-direction:column;">
+      <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly');bookSelectedPlan();" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">STARTER</div>
         <div class="plan-card-name">Hourly Plan</div>
         <div class="plan-card-desc">Perfect for a single, fast, high-quality reel.</div>
-        <div class="plan-card-price" id="price_hourly">&#8377;1,699 <span>/ shoot</span></div>
+        <div class="plan-card-price" id="price_hourly">&#8377;1,499 <span>/ shoot</span></div>
         <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; No hidden charges</div>
         <ul class="plan-card-features" style="flex:1;">
           <li><i class="fas fa-check"></i>1 Hour Shoot</li>
@@ -172,12 +262,12 @@
       </div>
 
       <!-- HALF-DAY -->
-      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday')" style="display:flex;flex-direction:column;">
+      <div class="plan-card" id="pc_halfday" onclick="pickPlan('halfday');bookSelectedPlan();" style="display:flex;flex-direction:column;">
         <div class="plan-card-badge"><i class="fas fa-star"></i> Most Popular</div>
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">BEST VALUE</div>
         <div class="plan-card-name">Half-Day Plan</div>
         <div class="plan-card-desc">Ideal for events &amp; creators who need more content.</div>
-        <div class="plan-card-price" id="price_halfday">&#8377;3,999 <span>/ session</span></div>
+        <div class="plan-card-price" id="price_halfday">&#8377;3,199 <span>/ session</span></div>
         <div style="font-size:0.68rem;color:#4a4030;margin-bottom:0.75rem;">+ GST &nbsp;&middot;&nbsp; Save vs hourly</div>
         <ul class="plan-card-features" style="flex:1;">
           <li><i class="fas fa-check"></i>Up to 3 Hours Shoot</li>
@@ -189,103 +279,105 @@
         </ul>
       </div>
 
-      <!-- 01 REEL SHOOTS -->
-      <div class="plan-card" id="pc_reel" onclick="pickPlan('reel')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">01 — REEL SHOOTS</div>
-        <div class="plan-card-name">Reel Shoots</div>
-        <div class="plan-card-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
-        <div class="plan-card-price" id="price_reel">&#8377;999 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
-      </div>
-
-      <!-- 02 PORTRAITS -->
-      <div class="plan-card" id="pc_portrait" onclick="pickPlan('portrait')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">02 — PORTRAITS</div>
-        <div class="plan-card-name">Portrait Sessions</div>
-        <div class="plan-card-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
-        <div class="plan-card-price" id="price_portrait">&#8377;1,499 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
-      </div>
-
-      <!-- 03 WEDDINGS -->
-      <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">03 — WEDDINGS</div>
-        <div class="plan-card-name">Wedding Photography</div>
-        <div class="plan-card-desc">Capture every precious moment of your special day with timeless elegance.</div>
-        <div class="plan-card-price" id="price_wedding">&#8377;14,999 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>Same Day Delivery</li><li><i class="fas fa-check"></i>Dedicated Creator</li></ul>
-      </div>
-
-      <!-- 04 PRODUCTS -->
-      <div class="plan-card" id="pc_product" onclick="pickPlan('product')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">04 — PRODUCTS</div>
-        <div class="plan-card-name">Product Shoots</div>
-        <div class="plan-card-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
-        <div class="plan-card-price" id="price_product">&#8377;2,499 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
-      </div>
-
-      <!-- 05 EVENTS -->
-      <div class="plan-card" id="pc_event" onclick="pickPlan('event')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">05 — EVENTS</div>
-        <div class="plan-card-name">Event Coverage</div>
-        <div class="plan-card-desc">Corporate events, parties &amp; launches — every moment documented flawlessly.</div>
-        <div class="plan-card-price" id="price_event">&#8377;5,999 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
-      </div>
-
-      <!-- 06 FOOD -->
-      <div class="plan-card" id="pc_food" onclick="pickPlan('food')" style="display:flex;flex-direction:column;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">06 — FOOD</div>
-        <div class="plan-card-name">Food Photography</div>
-        <div class="plan-card-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
-        <div class="plan-card-price" id="price_food">&#8377;1,999 <span>starting price</span></div>
-        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
-      </div>
-
     </div>
+
+    <!-- WEDDING PACKAGES -->
+    <div style="margin-top:2.5rem;">
+      <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.3rem 0.85rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;"><i class="fas fa-ring"></i> FOR YOUR SPECIAL DAY</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:0.35rem;">Wedding Packages</div>
+      <div style="font-size:0.85rem;color:#706050;margin-bottom:0.5rem;max-width:600px;">Professional coverage for your wedding celebrations, specializing in traditional and modern Indian ceremonies with elegant, timeless captures.</div>
+      <div style="font-size:0.78rem;color:#9a9080;margin-bottom:1.25rem;">Starting from <span style="color:#c9a84c;font-weight:800;font-size:1rem;">&#8377;6,999</span> <span style="color:#4a4030;">/package &nbsp;&middot;&nbsp; + GST</span></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1rem;">
+        <div class="plan-card" id="pc_wedding_basic" onclick="pickPlan('wedding_basic');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">SINGLE EVENT</div>
+          <div class="plan-card-name">Basic</div>
+          <div class="plan-card-price">&#8377;6,999 <span>+ GST</span></div>
+          <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">1 Event Coverage</div>
+        </div>
+        <div class="plan-card" id="pc_wedding_silver" onclick="pickPlan('wedding_silver');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">THREE EVENTS</div>
+          <div class="plan-card-name">Silver</div>
+          <div class="plan-card-price">&#8377;8,999 <span>+ GST</span></div>
+          <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">3 Events Coverage</div>
+        </div>
+        <div class="plan-card" id="pc_wedding_gold" onclick="pickPlan('wedding_gold');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
+          <div class="plan-card-badge" style="font-size:0.55rem;"><i class="fas fa-star"></i> Popular</div>
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">FOUR EVENTS</div>
+          <div class="plan-card-name">Gold</div>
+          <div class="plan-card-price">&#8377;11,999 <span>+ GST</span></div>
+          <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">4 Events Coverage</div>
+        </div>
+        <div class="plan-card" id="pc_wedding_platinum" onclick="pickPlan('wedding_platinum');bookSelectedPlan();" style="display:flex;flex-direction:column;text-align:center;">
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(201,168,76,0.5);letter-spacing:2px;margin-bottom:0.4rem;">COMPLETE WEDDING</div>
+          <div class="plan-card-name">Platinum</div>
+          <div class="plan-card-price">&#8377;18,999 <span>+ GST</span></div>
+          <div style="font-size:0.72rem;color:#706050;margin-top:0.25rem;">Full Wedding Coverage</div>
+        </div>
+      </div>
+      <a href="contact.html" style="display:inline-flex;align-items:center;gap:0.5rem;color:#c9a84c;font-size:0.85rem;font-weight:700;text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:0.5rem 1.25rem;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background=''">Know More &nbsp;&rarr;</a>
+    </div>
+
+    <!-- REELS & CONTENT -->
+    <div style="margin-top:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(0,0,0,0));border:1px solid rgba(201,168,76,0.15);border-radius:20px;padding:2rem;">
+      <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.68rem;font-weight:700;padding:0.3rem 0.85rem;border-radius:50px;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;"><i class="fas fa-briefcase"></i> FOR BUSINESS AND BRANDS</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:0.35rem;">Reels &amp; Content</div>
+      <div style="font-size:0.85rem;color:#706050;margin-bottom:0.75rem;max-width:600px;">Professional coverage for your business events, delivering polished content that aligns with your brand identity and marketing goals.</div>
+      <div style="font-size:1rem;font-weight:800;color:#c9a84c;margin-bottom:0.25rem;">Customised Pricing <span style="color:#4a4030;font-size:0.75rem;font-weight:400;">+ GST</span></div>
+      <div style="font-size:0.75rem;font-weight:700;color:#9a9080;margin:1rem 0 0.6rem;">Package Inclusions:</div>
+      <ul style="list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 1.5rem;">
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Cinematic visuals for premium brands &amp; events</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Quick turnaround — Cut. Polish. Launch.</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Refined, brand-aligned storytelling</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Ideal for campaigns, launches &amp; brand showcases</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Professional production with expert direction</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Elevate your brand with polished visual storytelling</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Hassle-free booking &amp; coordination</li>
+        <li style="font-size:0.82rem;color:#b8b0a0;display:flex;align-items:flex-start;gap:0.5rem;"><i class="fas fa-check" style="color:#c9a84c;font-size:0.6rem;margin-top:0.3rem;flex-shrink:0;"></i>Shot on latest iPhone &amp; pro gear</li>
+      </ul>
+      <div style="margin-top:1.5rem;">
+        <button onclick="pickPlan('reels_content');bookSelectedPlan();" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 2.5rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);display:inline-flex;align-items:center;gap:0.6rem;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 35px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)'"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>
+      </div>
+    </div>
+
     <div style="margin-top:1.25rem;text-align:center;">
-      <button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right"></i> &nbsp;Book Selected Plan</button>
+      <button id="bottomBookBtn" onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 25px rgba(201,168,76,0.4);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><i class="fas fa-arrow-right"></i> &nbsp;Book This Package</button>
       <div id="planErr" style="display:none;color:#f44336;font-size:0.8rem;margin-top:0.6rem;">Please select a plan first.</div>
     </div>
   </div>
 
-  <style>@media(max-width:900px){#servicePlanGrid{grid-template-columns:1fr 1fr!important;}}@media(max-width:480px){#servicePlanGrid{grid-template-columns:1fr!important;}}</style>
+  <style>@media(max-width:900px){#servicePlanGrid{grid-template-columns:1fr 1fr!important;}}@media(max-width:480px){#servicePlanGrid{grid-template-columns:1fr!important;}.wedding-grid{grid-template-columns:1fr 1fr!important;}.brand-inclusions{grid-template-columns:1fr!important;}}</style>
 
   <script>
   // Load prices from localStorage (set by admin) then sync from Firebase
-  (function(){
-    function applyPrices(hp){
-      var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
-      Object.keys(map).forEach(function(k){
-        var val = hp['price_'+k];
-        if(val){
-          var el = document.getElementById(map[k]);
-          if(el) el.innerHTML = val + ' <span>starting price</span>';
-        }
-      });
-      // Also sync into planData
+  // Deferred so planData is available when applyPrices runs
+  window._applyPrices = function(hp){
+    var map = {reel:'price_reel',portrait:'price_portrait',wedding:'price_wedding',product:'price_product',event:'price_event',food:'price_food'};
+    Object.keys(map).forEach(function(k){
+      var val = hp['price_'+k];
+      if(val){ var el = document.getElementById(map[k]); if(el) el.innerHTML = val + ' <span>starting price</span>'; }
+    });
+    if(window.planData){
       if(hp.bs1_price){ planData.hourly.price = hp.bs1_price; var e=document.getElementById('price_hourly'); if(e) e.innerHTML=hp.bs1_price+' <span>/ shoot</span>'; }
       if(hp.bs2_price){ planData.halfday.price = hp.bs2_price; var e=document.getElementById('price_halfday'); if(e) e.innerHTML=hp.bs2_price+' <span>/ session</span>'; }
     }
-    // 1. Apply from localStorage immediately
-    try{ applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
-    // 2. Fetch from Firebase and re-apply
-    (async function(){
-      try{
-        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-        var app     = fbMod.getApps().find(function(a){return a.name==='bk-hp';})||fbMod.initializeApp(fbCfg,'bk-hp');
-        var db      = fbStore.getFirestore(app);
-        var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','homepage'));
-        if(snap.exists()){
-          var hp = snap.data();
-          localStorage.setItem('hs_homepage', JSON.stringify(hp));
-          applyPrices(hp);
-        }
-      }catch(e){}
-    })();
+  };
+  // Apply from localStorage immediately (planData may not exist yet, guarded above)
+  try{ window._applyPrices(JSON.parse(localStorage.getItem('hs_homepage')||'{}')); }catch(e){}
+  // Fetch from Firebase and re-apply after page loads
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='bk-hp';})||fbMod.initializeApp(fbCfg,'bk-hp');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','homepage'));
+      if(snap.exists()){
+        var hp = snap.data();
+        localStorage.setItem('hs_homepage', JSON.stringify(hp));
+        window._applyPrices(hp);
+      }
+    }catch(e){}
   })();
   </script>
 
@@ -341,26 +433,49 @@
           <select id="bk_city" class="form-select" required>
             <option value="" disabled selected>Select city</option>
             <option>Vijayawada</option>
-            <option>Hyderabad</option>
-            <option>Bangalore</option>
-            <option>Mumbai</option>
-            <option>Delhi</option>
-            <option>Chennai</option>
-            <option>Pune</option>
+            <option>Eluru</option>
           </select>
         </div>
 
         <div class="form-group">
           <label class="form-label">Date <span>*</span></label>
-          <div class="date-wrap">
-            <i class="fas fa-calendar-alt"></i>
-            <input type="date" id="bk_date" class="form-input" required/>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+            <select id="bk_day" class="form-input form-select" required>
+              <option value="">Day</option>
+            </select>
+            <select id="bk_month" class="form-input form-select" required>
+              <option value="">Month</option>
+              <option>January</option><option>February</option><option>March</option>
+              <option>April</option><option>May</option><option>June</option>
+              <option>July</option><option>August</option><option>September</option>
+              <option>October</option><option>November</option><option>December</option>
+            </select>
+            <select id="bk_year" class="form-input form-select" required>
+              <option value="">Year</option>
+            </select>
           </div>
+          <input type="hidden" id="bk_date" required/>
         </div>
 
         <div class="form-group">
           <label class="form-label">Time <span>*</span></label>
-          <input type="time" id="bk_time" class="form-input" required/>
+          <select id="bk_time" class="form-input form-select" required>
+            <option value="">Select Time</option>
+            <option>7:00 AM</option><option>7:30 AM</option>
+            <option>8:00 AM</option><option>8:30 AM</option>
+            <option>9:00 AM</option><option>9:30 AM</option>
+            <option>10:00 AM</option><option>10:30 AM</option>
+            <option>11:00 AM</option><option>11:30 AM</option>
+            <option>12:00 PM</option><option>12:30 PM</option>
+            <option>1:00 PM</option><option>1:30 PM</option>
+            <option>2:00 PM</option><option>2:30 PM</option>
+            <option>3:00 PM</option><option>3:30 PM</option>
+            <option>4:00 PM</option><option>4:30 PM</option>
+            <option>5:00 PM</option><option>5:30 PM</option>
+            <option>6:00 PM</option><option>6:30 PM</option>
+            <option>7:00 PM</option><option>7:30 PM</option>
+            <option>8:00 PM</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -369,7 +484,7 @@
         </div>
 
         <div id="bk_success" style="display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#4caf50;font-weight:600;font-size:0.9rem;">
-          <i class="fas fa-check-circle"></i> Enquiry submitted! Our team will contact you shortly.
+          <i class="fas fa-check-circle"></i> ✅ Order placed! Check <a href="customer-orders.html" style="color:#4caf50;font-weight:700;">My Orders</a> to track your booking.
         </div>
 
         <button type="submit" id="bk_btn" class="submit-btn"><i class="fas fa-eye"></i> Review & Book</button>
@@ -381,8 +496,6 @@
   <div class="modal-overlay" id="reviewModal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeReview()"><i class="fas fa-times"></i></button>
-      <div class="modal-eyebrow"><i class="fas fa-receipt"></i> Review Your Booking</div>
-      <div class="modal-title">Confirm & Submit Enquiry</div>
 
       <!-- Booking details -->
       <div class="summary-box">
@@ -399,6 +512,17 @@
         <ul id="planFeatures" class="plan-box-features"></ul>
       </div>
 
+      <!-- COUPON CODE -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.78rem;font-weight:700;color:#9a9080;margin-bottom:0.5rem;"><i class="fas fa-tag" style="color:#c9a84c;"></i> Have a coupon code?</div>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" id="couponInput" placeholder="Enter coupon code" style="flex:1;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.65rem 1rem;color:#fff;font-family:inherit;font-size:0.88rem;outline:none;text-transform:uppercase;"/>
+          <button onclick="applyCoupon()" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:10px;padding:0.65rem 1.25rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Apply</button>
+        </div>
+        <div id="couponMsg" style="display:none;margin-top:0.5rem;font-size:0.8rem;font-weight:600;border-radius:8px;padding:0.4rem 0.85rem;"></div>
+      </div>
+
+      <!-- PREMIUM CARD UPSELL -->
       <!-- T&C -->
       <div class="tnc-box">
         <label class="tnc-check">
@@ -408,22 +532,53 @@
       </div>
 
       <button class="confirm-btn" id="confirmBtn" onclick="confirmSubmit()" disabled>
-        <i class="fas fa-check-circle"></i> Submit Enquiry
+        <i class="fas fa-check-circle"></i> Place Order
       </button>
     </div>
   </div>
 
   <script>
-    document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0];
+    document.querySelector('input[type="date"]') && (document.querySelector('input[type="date"]').min = new Date().toISOString().split('T')[0]);
+
+    // Populate day dropdown
+    var dayEl = document.getElementById('bk_day');
+    for(var d=1;d<=31;d++){ var o=document.createElement('option'); o.value=o.textContent=d; dayEl.appendChild(o); }
+
+    // Populate year dropdown (current year + 2 years ahead)
+    var yearEl = document.getElementById('bk_year');
+    var curYear = new Date().getFullYear();
+    for(var y=curYear;y<=curYear+2;y++){ var o=document.createElement('option'); o.value=o.textContent=y; yearEl.appendChild(o); }
+
+    // Set default to today
+    var today = new Date();
+    dayEl.value = today.getDate();
+    document.getElementById('bk_month').value = ['January','February','March','April','May','June','July','August','September','October','November','December'][today.getMonth()];
+    yearEl.value = today.getFullYear();
+
+    // Sync hidden date field whenever any dropdown changes
+    function syncDate(){
+      var d = document.getElementById('bk_day').value;
+      var m = document.getElementById('bk_month').value;
+      var y = document.getElementById('bk_year').value;
+      document.getElementById('bk_date').value = d && m && y ? d+' '+m+' '+y : '';
+    }
+    syncDate();
+    document.getElementById('bk_day').addEventListener('change', syncDate);
+    document.getElementById('bk_month').addEventListener('change', syncDate);
+    document.getElementById('bk_year').addEventListener('change', syncDate);
 
     var planData = {
-      hourly:         { service:'Reel Shoot',         name:'Hourly Plan',      price:'\u20b91,699',  per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      halfday:        { service:'Event Coverage',      name:'Half-Day Plan',    price:'\u20b93,999',  per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      wedding:        { service:'Wedding Photography', name:'Wedding Plan',     price:'\u20b915,000', per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      wedding_basic:  { service:'Wedding Photography', name:'Wedding — Basic',  price:'\u20b915,000', per:'/ event',   features:['4 Hours Coverage','1 Photographer','100 Edited Photos','1 Highlight Reel'] },
-      wedding_silver: { service:'Wedding Photography', name:'Wedding — Silver', price:'\u20b925,000', per:'/ event',   features:['8 Hours Coverage','2 Photographers','300 Edited Photos','2 Highlight Reels','Same Day Delivery'] },
-      wedding_gold:   { service:'Wedding Photography', name:'Wedding — Gold',   price:'\u20b945,000', per:'/ event',   features:['Full Day Coverage','3 Photographers','500+ Edited Photos','Cinematic Film','Pre-shoot Consultation','Same Day Delivery'] },
-      wedding_luxe:   { service:'Wedding Photography', name:'Wedding — Luxe',   price:'\u20b980,000', per:'/ event',   features:['Multi-Day Coverage','Dedicated Team','Unlimited Edited Photos','Cinematic Film + Drone','Album Design Included','Priority Support'] },
+      hourly:         { service:'Reel Shoot',         name:'Hourly Plan',      price:'\u20b91,499',  per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      halfday:        { service:'Event Coverage',      name:'Half-Day Plan',    price:'\u20b93,199',  per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      wedding:        { service:'Wedding Photography', name:'Wedding Plan',     price:'\u20b96,999', per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      wedding_basic:  { service:'Wedding Photography', name:'Wedding — Basic',   price:'\u20b96,999', per:'+ GST', features:['Covers 1 Event','3 Reels Included','Shot on iPhone','Instant Reel Delivery','Complementary Pictures','SD Card for Raw Content'] },
+      wedding_silver: { service:'Wedding Photography', name:'Wedding — Silver',  price:'\u20b98,999', per:'+ GST', features:['Covers 3 Events','8 Reels Included','Shot on iPhone','Instant Reel Delivery','Complementary Pictures','SD Card for Raw Content'] },
+      wedding_gold:   { service:'Wedding Photography', name:'Wedding — Gold',    price:'\u20b911,999', per:'+ GST', features:['Covers 4 Events','12 Reels Included','Shot on iPhone','Instant Reel Delivery','Complementary Pictures','SD Card for Raw Content'] },
+      wedding_platinum:{ service:'Wedding Photography', name:'Wedding — Platinum',price:'\u20b918,999', per:'+ GST', features:['Complete Wedding Coverage','16 Reels Included','Shot on iPhone','Instant Reel Delivery','Interaction Videos + Portraits','SD Card for Raw Content'] },
+      tbs_basic:      { service:'Total Brand Shoots',   name:'Total Brand — Basic',    price:'\u20b914,000', per:'+ GST', features:['1 Reel/month','Instagram Management','Monthly Brand Shoot','Content Calendar','6 Months Contract'] },
+      tbs_standard:   { service:'Total Brand Shoots',   name:'Total Brand — Standard',  price:'\u20b922,000', per:'+ GST', features:['2 Reels/month','Instagram Management','Monthly Brand Shoot','Content Calendar','6 Months Contract'] },
+      tbs_premium:    { service:'Total Brand Shoots',   name:'Total Brand — Premium',   price:'\u20b940,000', per:'+ GST', features:['3 Reels/month','Instagram Management','Monthly Brand Shoot','Content Calendar','Marketing & Campaigns','Dedicated Support','3 Months Contract'] },
+      reels_content:  { service:'Reels & Content',      name:'Reels & Content',  price:'Custom',       per:'',            features:['Cinematic visuals for premium brands','Quick turnaround — Cut. Polish. Launch.','Brand-aligned storytelling','Shot on latest iPhone & pro gear','Hassle-free booking & coordination'] },
       reel:           { service:'Reel Shoot',         name:'Reel Shoot',       price:'\u20b9999',    per:'starting',  features:['Quick 60-sec Reel','Shot on Latest iPhone','10 Min Delivery','Trained Content Maker'] },
       portrait:       { service:'Portrait Session',   name:'Portrait Session', price:'\u20b91,499',  per:'starting',  features:['Professional Headshots','Personal Branding','Lifestyle Portraits','Edited Delivery'] },
       product:        { service:'Product Shoot',      name:'Product Shoot',    price:'\u20b92,499',  per:'starting',  features:['E-commerce Photography','Brand Product Shoots','Edited Delivery'] },
@@ -446,6 +601,10 @@
         var raw = priceEl.textContent.replace('starting price','').trim();
         if(raw) planData[key].price = raw;
       }
+      // Update bottom button label
+      var bottomBtn = document.getElementById('bottomBookBtn');
+      if(bottomBtn && planData[key]) bottomBtn.innerHTML = '<i class="fas fa-arrow-right"></i> &nbsp;Book This Package — ' + planData[key].name;
+      document.querySelectorAll('.plan-book-btn').forEach(function(b){ b.remove(); });
     }
 
     // Auto-select plan/service from URL params
@@ -454,35 +613,68 @@
       var planParam = params.get('plan');
       var serviceParam = params.get('service');
 
+      function hideOtherCards(selectedKey) {
+        var p = planData[selectedKey];
+        if (!p) return;
+        var planStep = document.getElementById('planStep');
+        if (!planStep) return;
+        // Replace entire plan step content with just the selected plan card
+        planStep.innerHTML =
+          '<div style="max-width:420px;margin:0 auto;padding:0 0 2rem;">'
+          + '<div style="text-align:center;font-size:0.78rem;color:#c9a84c;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem;">&#10022; Your Selected Plan &#10022;</div>'
+          + '<div class="plan-card selected" style="display:flex;flex-direction:column;">'
+          + '<div class="plan-card-badge"><i class="fas fa-check"></i> Selected</div>'
+          + '<div class="plan-card-name" style="font-size:1.3rem;margin-top:0.5rem;">' + p.name + '</div>'
+          + '<div class="plan-card-price">' + p.price + ' <span>' + p.per + '</span></div>'
+          + '<ul class="plan-card-features" style="flex:1;">'
+          + p.features.map(function(f){ return '<li><i class="fas fa-check"></i>' + f + '</li>'; }).join('')
+          + '</ul>'
+          + '</div>'
+          + '<div style="margin-top:1.25rem;text-align:center;">'
+          + '<button onclick="bookSelectedPlan()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:1rem 3rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-arrow-right"></i> &nbsp;Book This Plan</button>'
+          + '</div>'
+          + '<div id="planErr" style="display:none;color:#f44336;font-size:0.8rem;margin-top:0.6rem;text-align:center;">Please select a plan first.</div>'
+          + '</div>';
+        // Re-select the plan key since DOM was replaced
+        selectedPlanKey = selectedKey;
+        var subtitle = document.getElementById('planStepSubtitle');
+        if (subtitle) subtitle.textContent = 'Your selected plan — click Book to continue';
+      }
+
+      var planHandled = false;
+
       if(planParam){
         var map = {
           'Hourly Plan':'hourly', 'Half-Day Plan':'halfday',
           'Wedding':'wedding', 'Custom':'custom',
           'Basic':'wedding_basic', 'Silver':'wedding_silver',
-          'Gold':'wedding_gold',   'Luxe':'wedding_luxe',
+          'Gold':'wedding_gold', 'Luxe':'wedding_platinum', 'Platinum':'wedding_platinum',
           'Reel Shoot':'reel', 'Portrait Session':'portrait',
           'Product Shoot':'product', 'Event Coverage':'event',
-          'Food Photography':'food'
+          'Food Photography':'food',
+          'Total Brand Basic':'tbs_basic', 'Total Brand Standard':'tbs_standard', 'Total Brand Premium':'tbs_premium'
         };
         var key = map[planParam] || null;
         if(key){
+          planHandled = true;
           setTimeout(function(){
             pickPlan(key);
-            bookSelectedPlan();
+            hideOtherCards(key);
           }, 100);
         }
       }
 
-      if(serviceParam){
+      if(!planHandled && serviceParam){
         var svcPlanMap = {
-          'Reel Shoot':'hourly', 'Portrait Session':'hourly', 'Food Photography':'hourly',
+          'Reel Shoot':'reel', 'Portrait Session':'portrait', 'Food Photography':'food',
           'Wedding Photography':'wedding',
-          'Product Shoot':'halfday', 'Event Coverage':'halfday'
+          'Total Brand Shoots':'tbs_basic',
+          'Product Shoot':'product', 'Event Coverage':'event'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
           pickPlan(planKey);
-          bookSelectedPlan();
+          hideOtherCards(planKey);
           // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');
           if(sel){
@@ -497,19 +689,22 @@
     })();
 
     function bookSelectedPlan() {
-      if (!selectedPlanKey) { document.getElementById('planErr').style.display = 'block'; return; }
+      if (!selectedPlanKey) { var pe=document.getElementById('planErr'); if(pe) pe.style.display = 'block'; return; }
       var p = planData[selectedPlanKey];
+      if(!p) return;
       // Show form, hide plan step
-      document.getElementById('planStep').style.display = 'none';
-      document.getElementById('formStep').style.display = 'block';
+      var planStep = document.getElementById('planStep');
+      var formStep = document.getElementById('formStep');
+      if(planStep) planStep.style.display = 'none';
+      if(formStep) formStep.style.display = 'block';
       // Update plan bar
-      document.getElementById('formPlanName').textContent = p.name;
-      document.getElementById('formPlanPrice').textContent = p.price + (p.per ? ' ' + p.per : '');
-      // Pre-fill service dropdown only if no specific service was requested via URL
+      var fpn = document.getElementById('formPlanName'); if(fpn) fpn.textContent = p.name;
+      var fpp = document.getElementById('formPlanPrice'); if(fpp) fpp.textContent = p.price + (p.per ? ' ' + p.per : '');
+      // Pre-fill service dropdown
       var _urlService = new URLSearchParams(window.location.search).get('service');
       var sel = document.getElementById('bk_service');
       if (sel && p.service && !_urlService) Array.from(sel.options).forEach(function(o){ if(o.value === p.service || o.text === p.service) o.selected = true; });
-      window.scrollTo({ top: document.getElementById('formStep').offsetTop - 80, behavior: 'smooth' });
+      if(formStep) window.scrollTo({ top: formStep.offsetTop - 80, behavior: 'smooth' });
     }
 
     function changePlan() {
@@ -519,12 +714,12 @@
     }
 
     var plans = {
-      'Reel Shoot':          { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Portrait Session':    { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Wedding Photography': { name:'Wedding Plan',  price:'₹15,000',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
-      'Product Shoot':       { name:'Half-Day Plan', price:'₹3,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Event Coverage':      { name:'Half-Day Plan', price:'₹3,999', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
-      'Food Photography':    { name:'Hourly Plan',   price:'₹1,699', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] }
+      'Reel Shoot':          { name:'Hourly Plan',   price:'₹1,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Portrait Session':    { name:'Hourly Plan',   price:'₹1,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Wedding Photography': { name:'Wedding Plan',  price:'₹6,999',per:'/ event',   features:['Full Day Coverage','5+ Edited Reels','Shot on Latest iPhone','Same Day Delivery','Dedicated Content Maker','Pre-shoot Consultation'] },
+      'Product Shoot':       { name:'Half-Day Plan', price:'₹3,199', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Event Coverage':      { name:'Half-Day Plan', price:'₹3,199', per:'/ session', features:['Up to 3 Hours Shoot','2 Edited Reels Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] },
+      'Food Photography':    { name:'Hourly Plan',   price:'₹1,499', per:'/ shoot',   features:['1 Hour Shoot','1 Edited Reel Delivered','Shot on Latest iPhone','10 Min Delivery','Trained & Certified Content Maker'] }
     };
 
     var pendingData = null;
@@ -569,25 +764,95 @@
       document.getElementById('confirmBtn').disabled = !document.getElementById('tncCheck').checked;
     }
 
+    var _appliedCoupon = null;
+
+    // Load premium price
+    async function applyCoupon(){
+      var code = (document.getElementById('couponInput').value||'').trim().toUpperCase();
+      var msgEl = document.getElementById('couponMsg');
+      if(!code){ showCouponMsg('Please enter a coupon code.','#f44336'); return; }
+      // Fetch coupons from Firebase
+      try{
+        var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        var app     = fbMod.getApps().find(function(a){return a.name==='coupon';})||fbMod.initializeApp(fbCfg,'coupon');
+        var db      = fbStore.getFirestore(app);
+        var snap    = await fbStore.getDoc(fbStore.doc(db,'coupons',code));
+        if(!snap.exists()){ _appliedCoupon=null; showCouponMsg('Invalid coupon code.','#f44336'); return; }
+        var c = snap.data();
+        if(!c.active){ _appliedCoupon=null; showCouponMsg('This coupon is no longer active.','#f44336'); return; }
+        if(c.expiryDate && new Date(c.expiryDate) < new Date()){ _appliedCoupon=null; showCouponMsg('This coupon has expired.','#f44336'); return; }
+        if(c.usageLimit && (c.usedCount||0) >= c.usageLimit){ _appliedCoupon=null; showCouponMsg('This coupon has reached its usage limit.','#f44336'); return; }
+        _appliedCoupon = Object.assign({code:code}, c);
+        var discText = c.type==='percent' ? c.value+'% OFF' : '\u20b9'+Number(c.value).toLocaleString('en-IN')+' OFF';
+        showCouponMsg('\u2705 Coupon applied! You get '+discText, '#4caf50');
+        updatePriceWithCoupon();
+      }catch(e){ showCouponMsg('Error applying coupon. Try again.','#f44336'); }
+    }
+
+    function showCouponMsg(msg, color){
+      var el = document.getElementById('couponMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.style.color = color;
+      el.style.background = color==='#4caf50' ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)';
+      el.style.border = '1px solid '+(color==='#4caf50'?'rgba(76,175,80,0.3)':'rgba(244,67,54,0.3)');
+    }
+
+    function updatePriceWithCoupon(){
+      if(!_appliedCoupon) return;
+      var priceEl = document.getElementById('planPrice');
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      if(!plan) return;
+      var rawPrice = parseInt((plan.price||'').replace(/[^0-9]/g,''));
+      if(!rawPrice) return;
+      var discount = _appliedCoupon.type==='percent' ? Math.round(rawPrice*_appliedCoupon.value/100) : _appliedCoupon.value;
+      var finalPrice = Math.max(0, rawPrice - discount);
+      priceEl.innerHTML = '<span style="text-decoration:line-through;color:#6a6050;font-size:0.8em;">\u20b9'+rawPrice.toLocaleString('en-IN')+'</span> \u20b9'+finalPrice.toLocaleString('en-IN')+(plan.per?' <span>'+plan.per+'</span>':'');
+    }
+
+    function removeCoupon(){
+      _appliedCoupon = null;
+      document.getElementById('couponInput').value = '';
+      document.getElementById('couponMsg').style.display = 'none';
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      if(plan){
+        var priceEl = document.getElementById('planPrice');
+        priceEl.innerHTML = plan.price + (plan.per ? ' <span>'+plan.per+'</span>' : '');
+      }
+    }
+
     function closeReview() {
       document.getElementById('reviewModal').classList.remove('open');
     }
 
     function confirmSubmit() {
       if (!pendingData || !document.getElementById('tncCheck').checked) return;
+      // Just save booking as pending — payment happens after admin confirms
+      var plan = selectedPlanKey && planData[selectedPlanKey];
+      var rawPrice = plan ? parseInt((plan.price||'').replace(/[^0-9]/g,'')) : 0;
+      var discount = _appliedCoupon ? (_appliedCoupon.type==='percent' ? Math.round(rawPrice*_appliedCoupon.value/100) : _appliedCoupon.value) : 0;
+      var finalPrice = Math.max(0, rawPrice - discount);
+      _saveBooking(finalPrice, '', 'pending');
+    }
+
+    function _saveBooking(finalPrice, paymentId, paymentStatus) {
       var now = new Date().toLocaleString();
       var id  = Date.now();
       var d   = pendingData;
       var planInfo = (selectedPlanKey && planData[selectedPlanKey]) ? planData[selectedPlanKey].name + ' ' + planData[selectedPlanKey].price : d.service;
+      var couponCode = _appliedCoupon ? _appliedCoupon.code : '';
+      var couponDiscount = _appliedCoupon ? _appliedCoupon.value+(_appliedCoupon.type==='percent'?'%':'') : '';
+      var addPremium = document.getElementById('addPremiumCard') && document.getElementById('addPremiumCard').checked;
 
-      // Save locally (for same-device admin)
+      // Auto-generate Order ID: OGS-YYYY-XXXXXX
+      var orderId = 'OGS-' + new Date().getFullYear() + '-' + String(id).slice(-6);
+
+      // Save locally
       var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-      bookings.push({ id:id, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', status:'pending', createdAt:now });
+      bookings.push({ id:id, orderId:orderId, name:d.name, phone:d.phone, email:d.email, service:d.service, city:d.city, location:d.location, date:d.date, time:d.time, notes:'', plan:planInfo, coupon:couponCode, discount:couponDiscount, status:'pending', payAmount:finalPrice, paymentId:paymentId, paymentStatus:paymentStatus, createdAt:now });
       localStorage.setItem('hs_bookings', JSON.stringify(bookings));
-
-      var enquiries = JSON.parse(localStorage.getItem('hs_enquiries') || '[]');
-      enquiries.push({ id:id, name:d.name, phone:d.phone, email:d.email, message:'Service: '+d.service+' | City: '+d.city+' | Location: '+d.location+' | Date: '+d.date+' at '+d.time+' | Plan: '+planInfo, submittedAt:now });
-      localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
 
       // Send to Firebase (works from ANY device worldwide)
       (async function(){
@@ -609,10 +874,15 @@
             name:d.name, phone:d.phone, email:d.email,
             service:d.service, plan:planInfo, city:d.city,
             location:d.location, date:d.date, time:d.time,
-            status:'pending', createdAt:fbStore.serverTimestamp()
+            orderId:orderId,
+            status:'pending', payAmount:finalPrice, paymentId:paymentId, paymentStatus:paymentStatus, createdAt:fbStore.serverTimestamp()
           };
-          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
-          await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
+          var docId = 'bk_' + String(id);
+          await fbStore.setDoc(fbStore.doc(fbDb,'bookings', docId), data);
+          // Update local booking id to match Firestore doc id
+          var bks = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+          var li = bks.findIndex(function(b){ return String(b.id)===String(id); });
+          if(li>-1){ bks[li].id = docId; localStorage.setItem('hs_bookings', JSON.stringify(bks)); }
           console.log('Firebase: saved OK');
         } catch(e){ console.error('Firebase error:',e); }
       })();
@@ -639,10 +909,29 @@
       }).catch(function(){});
 
       closeReview();
+      // Store booking email+phone so My Orders can match it on any device
+      if(d.email) localStorage.setItem('hs_user', d.email);
+      if(d.email) localStorage.setItem('hs_customer_email', d.email);
+      if(d.phone) localStorage.setItem('hs_customer_phone', d.phone);
+      // Only save name to hs_customer_name if actually logged in — prevents guest booking name showing as logged-in user
+      if(d.name && localStorage.getItem('hs_role') === 'customer') localStorage.setItem('hs_customer_name', d.name);
+
+      var addPremium = false; // Premium card removed
+
       document.getElementById('bk_success').style.display = 'block';
       document.getElementById('bk_btn').style.display = 'none';
       document.querySelector('form').querySelectorAll('input,select').forEach(function(el){ el.disabled = true; });
+
+      // WhatsApp: Order Confirmed
+      (function(){
+        var settings = JSON.parse(localStorage.getItem('hs_wa_settings')||'{}');
+        if(settings['wa_trigger_1'] === false) return;
+        var waNum = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+      })();
+
       pendingData = null;
+      // Redirect to My Orders after 2.5 seconds
+      setTimeout(function(){ window.location.href = 'customer-orders.html'; }, 2500);
     }
   
     // Load cities from Firestore/localStorage
@@ -650,15 +939,66 @@
       var cities = [];
       try{ if(window.loadCitiesFromFirebase) cities = await loadCitiesFromFirebase(); }catch(e){}
       if(!cities.length) cities = JSON.parse(localStorage.getItem('hs_cities')||'[]');
-      if(cities.length){
-        var sel = document.getElementById('bk_city');
-        if(sel){
-          sel.innerHTML = '<option value="" disabled selected>Select city</option>' +
-            cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
-        }
+      // Default to Vijayawada and Eluru if no cities configured
+      if(!cities.length) cities = ['Vijayawada','Eluru'];
+      var sel = document.getElementById('bk_city');
+      if(sel){
+        sel.innerHTML = '<option value="" disabled selected>Select city</option>' +
+          cities.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+      }
+    })();
+
+    // Pre-fill form with logged-in customer details
+    (function(){
+      var n = localStorage.getItem('hs_customer_name') || '';
+      var p = localStorage.getItem('hs_customer_phone') || '';
+      var e = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      if(n){ var el=document.getElementById('bk_name'); if(el) el.value=n; }
+      if(e){ var el=document.getElementById('bk_email'); if(el) el.value=e; }
+      if(p){
+        var raw = p.replace(/\D/g,'');
+        var el = document.getElementById('bk_phone');
+        if(el) el.value = raw.slice(-10);
       }
     })();
     </script>
 <script src="hs-feedback-widget.js"></script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69c676c632b9fc1c3eedcd7d/1jknjvv5o';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+  <script>
+  // Load promo banner from Firebase
+  (async function(){
+    try{
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='promo-banner';})||fbMod.initializeApp(fbCfg,'promo-banner');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDoc(fbStore.doc(db,'settings','promo_banner'));
+      var banner  = document.getElementById('promoBanner');
+      var textEl  = banner ? banner.querySelector('p') : null;
+      if(snap.exists()){
+        var cfg = snap.data();
+        if(!cfg.enabled){ if(banner) banner.style.display='none'; }
+        else {
+          if(banner) banner.style.display='block';
+          if(textEl && cfg.text) textEl.innerHTML = '<span style="color:#c9a84c;">&#127881; Special Offer:</span> '+cfg.text+' &nbsp;<a href="booking.html" style="color:#c9a84c;font-weight:800;text-decoration:underline;">Book Now &rarr;</a> &nbsp;<span style="color:#6a6050;font-size:0.7rem;">T&amp;C Apply</span>';
+        }
+      }
+    }catch(e){ console.warn('promo banner:',e); }
+  })();
+  </script>
 </body>
 </html>
