@@ -791,10 +791,12 @@
           // Fetch bookings
           var snap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')));
           var fbBookings = [];
+          var userEmailLower = userEmail.toLowerCase().trim();
           snap.forEach(function(d){
             var data = d.data();
-            // Strict email-only match to prevent cross-account contamination
-            if(userEmail && data.email === userEmail)
+            var dataEmail = (data.email||'').toLowerCase().trim();
+            var dataPhone = (data.phone||'').trim();
+            if((userEmailLower && dataEmail === userEmailLower) || (userPhone && dataPhone === userPhone))
               fbBookings.push(Object.assign({id:d.id}, data));
           });
           // Merge local bookings not yet in Firestore
