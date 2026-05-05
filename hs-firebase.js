@@ -327,6 +327,17 @@ window.loadWithdrawFromFirebase = async function() {
   } catch(e) { console.error('loadWithdrawFromFirebase:', e); return JSON.parse(localStorage.getItem('hs_payout_requests') || '[]'); }
 };
 
+window.saveWithdrawToFirebase = async function(request) {
+  try {
+    const db = await getDB();
+    const ref = await _fbStore.addDoc(_fbStore.collection(db, 'payout_requests'), { ...request, createdAt: _fbStore.serverTimestamp() });
+    const list = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]');
+    list.unshift({ id: ref.id, ...request });
+    localStorage.setItem('hs_payout_requests', JSON.stringify(list));
+    return ref.id;
+  } catch(e) { console.error('saveWithdrawToFirebase:', e); return null; }
+};
+
 window.listenPayoutRequests = async function(callback) {
   try {
     const db = await getDB();

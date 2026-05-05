@@ -5501,7 +5501,23 @@ Priority Support</textarea></div>
 
     // ── DEMO SESSIONS ─────────────────────────────────────────────────
     function getDemos(){ return JSON.parse(localStorage.getItem('hs_demos')||'[]'); }
-    function saveDemos(list){ localStorage.setItem('hs_demos', JSON.stringify(list)); }
+    function saveDemos(list){
+      localStorage.setItem('hs_demos', JSON.stringify(list));
+      // Sync to Firebase
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          // Delete removed demos from Firestore
+          var existing = JSON.parse(localStorage.getItem('hs_demos')||'[]');
+          var ids = list.map(function(d){ return String(d.id); });
+          existing.forEach(async function(d){
+            if(ids.indexOf(String(d.id))===-1 && d.id){
+              try{ await f.s.deleteDoc(f.s.doc(f.db,'demos',String(d.id))); }catch(e){}
+            }
+          });
+        }catch(e){}
+      })();
+    }
 
     // Populate day dropdown
     (function(){
@@ -5706,6 +5722,14 @@ Priority Support</textarea></div>
       localStorage.setItem('hs_feedbacks', JSON.stringify(getFeedbacks().filter(function(f){
         return String(f.id)!==String(id) && String(f._fbId)!==String(id);
       })));
+      // Sync delete to Firebase
+      (async function(){
+        try{
+          var f = await _fbAdmin(); if(!f) return;
+          try{ await f.s.deleteDoc(f.s.doc(f.db,'feedbacks',String(id))); }catch(e){}
+          try{ await f.s.deleteDoc(f.s.doc(f.db,'shoot_feedback',String(id))); }catch(e){}
+        }catch(e){}
+      })();
       renderFeedbackAdmin();
     }
 
@@ -5869,10 +5893,13 @@ Priority Support</textarea></div>
       var list = getAssignedShoots().filter(function(a){ return String(a.id)!==String(id); });
       saveAssignedShoots(list);
       renderAssignedList();
-      // Delete from Firestore
+      // Delete from Firestore + sync deleted list
       (async function(){
         try{
           var f = await _fbAdmin(); if(!f){ alert('Firebase not available'); return; }
+          await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
+          // Sync deleted IDs list to Firebase
+          await f.s.setDoc(f.s.doc(f.db,'settings','deleted_assigns'), {ids:deleted}, {merge:true});
           await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
           console.log('[Admin] Deleted from Firestore:', id);
         }catch(e){
@@ -6518,6 +6545,8 @@ Priority Support</textarea></div>
         try{
           var f = await _fbAdmin();
           if(!f) return;
+          await f.s.deleteDoc(f.s.doc(f.db,'assigned_shoots',String(id)));
+          await f.s.setDoc(f.s.doc(f.db,'settings','deleted_assigns'), {ids:deleted}, {merge:true});
           await f.s.deleteDoc(f.s.doc(f.db, 'assigned_shoots', String(id)));
         }catch(e){ console.error('deletePayoutCard Firebase error:', e); }
       })();
@@ -9437,6 +9466,15 @@ Priority Support</textarea></div>
 
 
         // Real-time assigned_shoots listener
+        // First load deleted_assigns from Firebase
+        getDoc(doc(fbDb,'settings','deleted_assigns')).then(function(snap){
+          if(snap.exists() && snap.data().ids){
+            var merged = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
+            snap.data().ids.forEach(function(id){ if(merged.indexOf(String(id))===-1) merged.push(String(id)); });
+            localStorage.setItem('hs_deleted_assigns', JSON.stringify(merged));
+          }
+        }).catch(function(){});
+
         onSnapshot(collection(fbDb,'assigned_shoots'), function(snap){
           var deleted = JSON.parse(localStorage.getItem('hs_deleted_assigns')||'[]');
           var list = [];
