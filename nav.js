@@ -178,7 +178,9 @@
 
     // Show logged-in state if customer is logged in
     var role = localStorage.getItem('hs_role');
-    var custName = localStorage.getItem('hs_customer_name');
+    var custName = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+    // Use email prefix as display name if no name saved
+    if(custName && custName.indexOf('@') !== -1) custName = custName.split('@')[0];
     if(role === 'customer' && custName){
       var navRight = document.getElementById('hsNavRight');
       var loginBtn = document.getElementById('hsLoginBtn');

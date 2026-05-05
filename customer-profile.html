@@ -136,8 +136,8 @@
 
   <script>
     if(localStorage.getItem('hs_role') !== 'customer') window.location.href = 'login.html';
-    var user = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_user') || 'Customer';
     var userEmail = (localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '').toLowerCase().trim();
+    var user = localStorage.getItem('hs_customer_name') || (userEmail ? userEmail.split('@')[0] : 'Customer');
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + user;
 
     var FB_CFG = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};

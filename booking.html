@@ -952,10 +952,22 @@
     })();
 
     // Pre-fill form with logged-in customer details
-    (function(){
+    (async function(){
       var n = localStorage.getItem('hs_customer_name') || '';
       var p = localStorage.getItem('hs_customer_phone') || '';
       var e = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
+      // If name missing, try loading from Firebase profile
+      if(!n && e){
+        try{
+          var m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var s = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var FB = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots'};
+          var app = m.getApps().find(function(a){return a.name==='bk-pf';})||m.initializeApp(FB,'bk-pf');
+          var snap = await s.getDoc(s.doc(s.getFirestore(app),'customer_profiles',e));
+          if(snap.exists() && snap.data().name){ n = snap.data().name; localStorage.setItem('hs_customer_name', n); }
+          if(snap.exists() && snap.data().phone && !p){ p = snap.data().phone; localStorage.setItem('hs_customer_phone', p); }
+        }catch(err){}
+      }
       if(n){ var el=document.getElementById('bk_name'); if(el) el.value=n; }
       if(e){ var el=document.getElementById('bk_email'); if(el) el.value=e; }
       if(p){
