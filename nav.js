@@ -5,6 +5,7 @@
     var links = [
       { href:'index.html',   icon:'fa-house',       title:'Home' },
       { href:'vibe.html',    icon:'fa-compass',     title:'Discover the Vibe' },
+      { href:'contest.html', icon:'fa-trophy',      title:'Contest' },
       { href:'partner.html', icon:'fa-star',        title:'Become a Partner' },
       { href:'about.html',   icon:'fa-clock-rotate-left', title:'About Us' },
     ];
@@ -295,4 +296,3 @@ function navigate(page){
   var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
   window.location.href = base + page;
 }
-

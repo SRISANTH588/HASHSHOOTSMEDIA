@@ -152,7 +152,7 @@
   <div id="planStep" style="max-width:1100px;margin:0 auto;padding:0 2rem 3rem;">
     <div style="text-align:center;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">Choose Your Plan</div>
     <div style="text-align:center;font-size:0.82rem;color:#706050;margin-bottom:1.75rem;">Select a plan and click Book to continue</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;" id="servicePlanGrid">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;" id="servicePlanGrid">
 
       <!-- HOURLY -->
       <div class="plan-card" id="pc_hourly" onclick="pickPlan('hourly')" style="display:flex;flex-direction:column;">
@@ -189,6 +189,24 @@
         </ul>
       </div>
 
+      <!-- 01 REEL SHOOTS -->
+      <div class="plan-card" id="pc_reel" onclick="pickPlan('reel')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">01 — REEL SHOOTS</div>
+        <div class="plan-card-name">Reel Shoots</div>
+        <div class="plan-card-desc">Trendy, fast-paced reels for Instagram &amp; YouTube. Delivered in 10 minutes.</div>
+        <div class="plan-card-price" id="price_reel">&#8377;999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
+      <!-- 02 PORTRAITS -->
+      <div class="plan-card" id="pc_portrait" onclick="pickPlan('portrait')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">02 — PORTRAITS</div>
+        <div class="plan-card-name">Portrait Sessions</div>
+        <div class="plan-card-desc">Professional headshots, personal branding &amp; lifestyle portraits that define you.</div>
+        <div class="plan-card-price" id="price_portrait">&#8377;1,499 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
       <!-- 03 WEDDINGS -->
       <div class="plan-card" id="pc_wedding" onclick="pickPlan('wedding')" style="display:flex;flex-direction:column;">
         <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">03 — WEDDINGS</div>
@@ -196,6 +214,33 @@
         <div class="plan-card-desc">Capture every precious moment of your special day with timeless elegance.</div>
         <div class="plan-card-price" id="price_wedding">&#8377;14,999 <span>starting price</span></div>
         <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Full Day Coverage</li><li><i class="fas fa-check"></i>Same Day Delivery</li><li><i class="fas fa-check"></i>Dedicated Creator</li></ul>
+      </div>
+
+      <!-- 04 PRODUCTS -->
+      <div class="plan-card" id="pc_product" onclick="pickPlan('product')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">04 — PRODUCTS</div>
+        <div class="plan-card-name">Product Shoots</div>
+        <div class="plan-card-desc">E-commerce &amp; brand product photography crafted to convert and captivate.</div>
+        <div class="plan-card-price" id="price_product">&#8377;2,499 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
+      <!-- 05 EVENTS -->
+      <div class="plan-card" id="pc_event" onclick="pickPlan('event')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">05 — EVENTS</div>
+        <div class="plan-card-name">Event Coverage</div>
+        <div class="plan-card-desc">Corporate events, parties &amp; launches — every moment documented flawlessly.</div>
+        <div class="plan-card-price" id="price_event">&#8377;5,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Up to 3 Hours</li><li><i class="fas fa-check"></i>2 Edited Reels</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
+      </div>
+
+      <!-- 06 FOOD -->
+      <div class="plan-card" id="pc_food" onclick="pickPlan('food')" style="display:flex;flex-direction:column;">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(201,168,76,0.6);letter-spacing:3px;margin-bottom:0.5rem;">06 — FOOD</div>
+        <div class="plan-card-name">Food Photography</div>
+        <div class="plan-card-desc">Mouth-watering visuals for restaurants, menus &amp; delivery platforms.</div>
+        <div class="plan-card-price" id="price_food">&#8377;1,999 <span>starting price</span></div>
+        <ul class="plan-card-features" style="flex:1;"><li><i class="fas fa-check"></i>Shot on Latest iPhone</li><li><i class="fas fa-check"></i>10 Min Delivery</li><li><i class="fas fa-check"></i>Certified Creator</li></ul>
       </div>
 
     </div>
@@ -392,23 +437,14 @@
     function pickPlan(key) {
       selectedPlanKey = key;
       document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
-      var cardId = key.startsWith('wedding_') ? 'pc_wedding' : 'pc_' + key;
-      var card = document.getElementById(cardId);
+      var card = document.getElementById('pc_' + key);
       if(card) card.classList.add('selected');
       document.getElementById('planErr').style.display = 'none';
+      // Sync price from displayed element into planData
       var priceEl = document.getElementById('price_' + key);
       if(priceEl && planData[key]){
         var raw = priceEl.textContent.replace('starting price','').trim();
         if(raw) planData[key].price = raw;
-      }
-      // If came from URL param, hide other plans and show only selected
-      if(window._fromUrl){
-        document.querySelectorAll('.plan-card').forEach(function(c){
-          c.style.display = (c.id === cardId) ? 'flex' : 'none';
-        });
-        document.getElementById('servicePlanGrid').style.gridTemplateColumns = '1fr';
-        document.getElementById('servicePlanGrid').style.maxWidth = '400px';
-        document.getElementById('servicePlanGrid').style.margin = '0 auto';
       }
     }
 
@@ -430,10 +466,9 @@
         };
         var key = map[planParam] || null;
         if(key){
-          window._fromUrl = true;
           setTimeout(function(){
             pickPlan(key);
-            document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            bookSelectedPlan();
           }, 100);
         }
       }
@@ -445,10 +480,9 @@
           'Product Shoot':'halfday', 'Event Coverage':'halfday'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
-        window._fromUrl = true;
         setTimeout(function(){
           pickPlan(planKey);
-          document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          bookSelectedPlan();
           // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');
           if(sel){
