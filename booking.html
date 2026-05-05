@@ -744,7 +744,7 @@
       var code     = document.getElementById('bk_code').value;
       var codeNum  = code.replace(/[^+0-9]/g,'');
       var phone    = codeNum + document.getElementById('bk_phone').value.trim();
-      var email    = document.getElementById('bk_email').value.trim();
+      var email    = document.getElementById('bk_email').value.trim().toLowerCase();
       var service  = document.getElementById('bk_service').value;
       var city     = document.getElementById('bk_city').value;
       var date     = document.getElementById('bk_date').value;

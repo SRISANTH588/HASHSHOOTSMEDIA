@@ -399,7 +399,7 @@
         // Set session — clear previous customer's data first
         localStorage.removeItem('hs_bookings');
         localStorage.setItem('hs_role',           'customer');
-        localStorage.setItem('hs_user',            email);
+        localStorage.setItem('hs_user', email.toLowerCase());
         localStorage.setItem('hs_customer_email',  email);
         localStorage.setItem('hs_customer_name',   custData.name  || name);
         localStorage.setItem('hs_customer_phone',  custData.phone || '');
@@ -532,7 +532,7 @@
         if(cust&&cust.password===p){
           localStorage.removeItem('hs_bookings');
           localStorage.setItem('hs_role','customer');
-          localStorage.setItem('hs_user',cust.email);
+          localStorage.setItem('hs_user', (cust.email||'').toLowerCase());
           localStorage.setItem('hs_customer_email',cust.email);
           localStorage.setItem('hs_customer_name',cust.name);
           localStorage.setItem('hs_customer_phone',cust.phone||'');
@@ -581,7 +581,7 @@
           await fbStore.setDoc(fbStore.doc(fbDb,'customers_by_email',email), {username});
         }catch(e){ console.log('signup Firestore error:',e); }
         localStorage.setItem('hs_role','customer');
-        localStorage.setItem('hs_user',email);
+        localStorage.setItem('hs_user', email.toLowerCase());
         localStorage.setItem('hs_customer_email',email);
         localStorage.setItem('hs_customer_username',username);
         localStorage.setItem('hs_customer_name',name);
@@ -785,7 +785,7 @@
         }
         localStorage.removeItem('hs_bookings');
         localStorage.setItem('hs_role','customer');
-        localStorage.setItem('hs_user', email);
+        localStorage.setItem('hs_user', email.toLowerCase());
         localStorage.setItem('hs_customer_email', email);
         localStorage.setItem('hs_customer_name', custData.name||name);
         localStorage.setItem('hs_customer_phone', custData.phone||'');
