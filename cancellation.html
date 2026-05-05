@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cancellation & Refund Policy – OG Shoots LUXE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden;}
+    .page-bg{min-height:100vh;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 60%),linear-gradient(180deg,#0a0a0a 0%,#080808 100%);}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(10,10,10,0.92);border-bottom:1px solid rgba(201,168,76,0.08);backdrop-filter:blur(12px);}
+    .logo{font-size:1.4rem;font-weight:900;color:#fff;text-decoration:none;letter-spacing:-0.5px;}
+    .logo span{color:#c9a84c;}
+    .nav-links{display:flex;gap:0.75rem;align-items:center;}
+    .nav-links a{padding:0.5rem 1rem;border-radius:8px;font-weight:600;font-size:0.82rem;color:#9a9080;text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover{color:#fff;}
+    .nav-btn{padding:0.55rem 1.25rem;border-radius:8px;font-weight:700;font-size:0.82rem;background:#c9a84c;color:#000;text-decoration:none;transition:background 0.2s;}
+    .nav-btn:hover{background:#e0b85a;}
+
+    /* HERO */
+    .hero{padding:9rem 1.5rem 3.5rem;text-align:center;max-width:760px;margin:0 auto;}
+    .badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.78rem;font-weight:700;padding:0.4rem 1rem;border-radius:50px;margin-bottom:1.25rem;text-transform:uppercase;letter-spacing:0.5px;}
+    .hero h1{font-size:clamp(2.2rem,5vw,3.2rem);font-weight:900;line-height:1.1;margin-bottom:0.75rem;}
+    .hero h1 span{color:#c9a84c;}
+    .hero .meta{color:#6a5a40;font-size:0.85rem;margin-top:0.5rem;}
+
+    /* CONTENT */
+    .content{max-width:860px;margin:0 auto;padding:0 1.5rem 6rem;}
+
+    .intro-box{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:2.5rem;}
+    .intro-box p{color:#b09060;font-size:0.88rem;line-height:1.75;}
+    .intro-box strong{color:#c9a84c;}
+
+    /* TOC */
+    .toc{background:rgba(20,18,14,0.8);border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.75rem 2rem;margin-bottom:3rem;}
+    .toc-title{font-size:0.75rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1rem;}
+    .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.4rem 1.5rem;}
+    .toc-grid a{color:#7a6a50;font-size:0.83rem;text-decoration:none;padding:0.25rem 0;transition:color 0.2s;display:flex;align-items:center;gap:0.4rem;}
+    .toc-grid a:hover{color:#c9a84c;}
+    .toc-grid a::before{content:'→';font-size:0.7rem;color:#c9a84c;opacity:0.6;}
+
+    /* SECTION */
+    .section{margin-bottom:3rem;scroll-margin-top:90px;}
+    .section-head{display:flex;align-items:center;gap:0.85rem;margin-bottom:1.25rem;padding-bottom:0.85rem;border-bottom:1px solid rgba(201,168,76,0.1);}
+    .sec-num{width:34px;height:34px;border-radius:9px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:800;color:#c9a84c;flex-shrink:0;}
+    .section-head h2{font-size:1.1rem;font-weight:800;color:#fff;}
+
+    .sec-text{color:#8a7a60;font-size:0.88rem;line-height:1.85;margin-bottom:1rem;}
+    .sec-text strong{color:#d4b870;}
+    .sec-text a{color:#c9a84c;}
+
+    .sec-list{list-style:none;display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1rem;}
+    .sec-list li{display:flex;align-items:flex-start;gap:0.75rem;color:#8a7a60;font-size:0.87rem;line-height:1.7;}
+    .sec-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:#c9a84c;flex-shrink:0;margin-top:0.6rem;}
+
+    /* TIMELINE TABLE */
+    .cancel-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;}
+    .cancel-table th{background:rgba(201,168,76,0.1);color:#c9a84c;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:0.75rem 1rem;text-align:left;border:1px solid rgba(201,168,76,0.12);}
+    .cancel-table td{padding:0.75rem 1rem;font-size:0.85rem;color:#8a7a60;border:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+    .cancel-table tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+    .tag-full{display:inline-block;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .tag-partial{display:inline-block;background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);color:#ff9800;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .tag-none{display:inline-block;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);color:#f44336;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+
+    .card{background:rgba(20,18,14,0.7);border:1px solid rgba(201,168,76,0.1);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:0.85rem;}
+    .card h4{font-size:0.88rem;font-weight:700;color:#d4b870;margin-bottom:0.35rem;display:flex;align-items:center;gap:0.5rem;}
+    .card p{font-size:0.84rem;color:#7a6a50;line-height:1.7;}
+
+    /* HIGHLIGHT BOX */
+    .highlight{background:rgba(201,168,76,0.06);border-left:3px solid #c9a84c;border-radius:0 10px 10px 0;padding:1rem 1.25rem;margin-bottom:1rem;}
+    .highlight p{font-size:0.85rem;color:#b09060;line-height:1.7;}
+    .highlight strong{color:#c9a84c;}
+
+    .divider{height:1px;background:rgba(201,168,76,0.07);margin:2.5rem 0;}
+
+    /* CONTACT CARD */
+    .contact-card{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.2);border-radius:18px;padding:2.5rem;text-align:center;margin-top:2rem;}
+    .contact-card .icon{font-size:2rem;color:#c9a84c;margin-bottom:1rem;}
+    .contact-card h3{font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:0.5rem;}
+    .contact-card p{color:#7a6a50;font-size:0.87rem;margin-bottom:1.5rem;line-height:1.6;}
+    .contact-card a{display:inline-flex;align-items:center;gap:0.5rem;background:#c9a84c;color:#000;text-decoration:none;padding:0.8rem 2rem;border-radius:10px;font-weight:800;font-size:0.88rem;transition:background 0.2s;}
+    .contact-card a:hover{background:#e0b85a;}
+
+    /* FOOTER */
+    .footer{border-top:1px solid rgba(201,168,76,0.08);padding:2rem 1.5rem;text-align:center;color:#4a3a28;font-size:0.8rem;}
+    .footer a{color:#6a5a40;text-decoration:none;margin:0 0.5rem;}
+    .footer a:hover{color:#c9a84c;}
+
+    @media(max-width:600px){
+      .navbar{padding:0.85rem 1rem;}
+      .nav-links a{display:none;}
+      .hero{padding:7rem 1rem 2.5rem;}
+      .content{padding:0 1rem 4rem;}
+      .toc-grid{grid-template-columns:1fr;}
+      .cancel-table{font-size:0.78rem;}
+    }
+  </style>
+</head>
+<body>
+<div class="page-bg">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="logo"><span>OG</span> SHOOTS</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="booking.html" class="nav-btn">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge"><i class="fas fa-undo-alt"></i> Policy</div>
+    <h1>Cancellation &amp; <span>Refund Policy</span></h1>
+    <p class="meta">Last updated: June 2025 &nbsp;·&nbsp; Effective immediately</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="intro-box">
+      <p>At <strong>OG Shoots</strong>, we understand that plans can change. This policy outlines the terms under which cancellations and refunds are processed. We aim to be fair to both our customers and our content creators. Please read this carefully before booking.</p>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title"><i class="fas fa-list" style="margin-right:0.4rem;"></i> Contents</div>
+      <div class="toc-grid">
+        <a href="#cancellation-window">Cancellation Window</a>
+        <a href="#refund-schedule">Refund Schedule</a>
+        <a href="#how-to-cancel">How to Cancel</a>
+        <a href="#refund-process">Refund Process</a>
+        <a href="#no-show">No-Show Policy</a>
+        <a href="#rescheduling">Rescheduling</a>
+        <a href="#wedding">Wedding Packages</a>
+        <a href="#exceptions">Exceptions</a>
+        <a href="#contact">Contact Us</a>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <div class="section" id="cancellation-window">
+      <div class="section-head"><div class="sec-num">1</div><h2>Cancellation Window</h2></div>
+      <p class="sec-text">You may cancel your booking at any time before the shoot begins. The refund amount depends on how far in advance you cancel.</p>
+      <div class="highlight">
+        <p><strong>Important:</strong> Once a content creator has arrived at your location and the shoot has commenced, no cancellation or refund will be processed.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 2 -->
+    <div class="section" id="refund-schedule">
+      <div class="section-head"><div class="sec-num">2</div><h2>Refund Schedule</h2></div>
+      <p class="sec-text">The following table outlines the refund you are eligible for based on when you cancel:</p>
+      <table class="cancel-table">
+        <thead>
+          <tr>
+            <th>Cancellation Time</th>
+            <th>Refund</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>More than 24 hours before shoot</td>
+            <td><span class="tag-full">100% Refund</span></td>
+            <td>Full refund to original payment method</td>
+          </tr>
+          <tr>
+            <td>12–24 hours before shoot</td>
+            <td><span class="tag-partial">50% Refund</span></td>
+            <td>50% credited to OG Shoots wallet</td>
+          </tr>
+          <tr>
+            <td>Less than 12 hours before shoot</td>
+            <td><span class="tag-none">No Refund</span></td>
+            <td>Creator has already been assigned &amp; prepared</td>
+          </tr>
+          <tr>
+            <td>After shoot has started</td>
+            <td><span class="tag-none">No Refund</span></td>
+            <td>Service is considered rendered</td>
+          </tr>
+          <tr>
+            <td>Cancelled by OG Shoots</td>
+            <td><span class="tag-full">100% Refund</span></td>
+            <td>Full refund within 3–5 business days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 3 -->
+    <div class="section" id="how-to-cancel">
+      <div class="section-head"><div class="sec-num">3</div><h2>How to Cancel</h2></div>
+      <p class="sec-text">You can cancel your booking through any of the following methods:</p>
+      <ul class="sec-list">
+        <li>Log in to your OG Shoots account → My Orders → Select booking → Cancel</li>
+        <li>WhatsApp us at <strong>+91 63042 79351</strong> with your booking ID</li>
+        <li>Email us at <strong>support.info.ogshoots@gmail.com</strong> with subject "Cancellation Request – [Booking ID]"</li>
+        <li>Call our support team during business hours (10 AM – 8 PM IST)</li>
+      </ul>
+      <p class="sec-text">Please have your <strong>Booking ID</strong> and <strong>registered phone number</strong> ready when requesting a cancellation.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 4 -->
+    <div class="section" id="refund-process">
+      <div class="section-head"><div class="sec-num">4</div><h2>Refund Process</h2></div>
+      <div class="card">
+        <h4><i class="fas fa-clock"></i> Processing Time</h4>
+        <p>Refunds are typically processed within <strong>5–7 business days</strong> after the cancellation is confirmed. The time to reflect in your account depends on your bank or payment provider.</p>
+      </div>
+      <div class="card">
+        <h4><i class="fas fa-credit-card"></i> Refund Method</h4>
+        <p>Refunds are credited back to the original payment method used at the time of booking (UPI, card, net banking). Wallet credits are non-transferable and non-encashable.</p>
+      </div>
+      <div class="card">
+        <h4><i class="fas fa-wallet"></i> OG Shoots Wallet</h4>
+        <p>In some cases (e.g., 12–24 hour cancellations), refunds may be issued as OG Shoots Wallet credits, which can be used for future bookings. Wallet credits are valid for <strong>6 months</strong> from the date of issue.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 5 -->
+    <div class="section" id="no-show">
+      <div class="section-head"><div class="sec-num">5</div><h2>No-Show Policy</h2></div>
+      <p class="sec-text">If you are not present at the agreed location at the scheduled time and do not notify us in advance:</p>
+      <ul class="sec-list">
+        <li>The booking will be marked as a <strong>No-Show</strong> after a 15-minute grace period</li>
+        <li>No refund will be issued for no-shows</li>
+        <li>The content creator's time and travel costs are non-refundable</li>
+        <li>You may rebook at the standard rate for a new session</li>
+      </ul>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 6 -->
+    <div class="section" id="rescheduling">
+      <div class="section-head"><div class="sec-num">6</div><h2>Rescheduling</h2></div>
+      <p class="sec-text">We understand that schedules change. You may reschedule your booking <strong>once for free</strong> if you notify us at least <strong>12 hours before</strong> the original shoot time.</p>
+      <ul class="sec-list">
+        <li>Free rescheduling: up to 1 time, with 12+ hours notice</li>
+        <li>Second reschedule: ₹199 rescheduling fee applies</li>
+        <li>Rescheduling within 12 hours of shoot: treated as a cancellation (see refund schedule)</li>
+        <li>Rescheduled shoots must be completed within <strong>30 days</strong> of the original booking date</li>
+      </ul>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 7 -->
+    <div class="section" id="wedding">
+      <div class="section-head"><div class="sec-num">7</div><h2>Wedding Packages</h2></div>
+      <p class="sec-text">Wedding packages have a separate cancellation policy due to the advance planning and resource allocation involved:</p>
+      <table class="cancel-table">
+        <thead>
+          <tr>
+            <th>Cancellation Time</th>
+            <th>Refund</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>More than 30 days before event</td>
+            <td><span class="tag-full">75% Refund</span></td>
+          </tr>
+          <tr>
+            <td>15–30 days before event</td>
+            <td><span class="tag-partial">50% Refund</span></td>
+          </tr>
+          <tr>
+            <td>7–14 days before event</td>
+            <td><span class="tag-partial">25% Refund</span></td>
+          </tr>
+          <tr>
+            <td>Less than 7 days before event</td>
+            <td><span class="tag-none">No Refund</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sec-text">Advance booking deposits for wedding packages are <strong>non-refundable</strong> in all cases.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 8 -->
+    <div class="section" id="exceptions">
+      <div class="section-head"><div class="sec-num">8</div><h2>Exceptions &amp; Special Cases</h2></div>
+      <p class="sec-text">Full refunds will be issued without penalty in the following exceptional circumstances:</p>
+      <ul class="sec-list">
+        <li>OG Shoots cancels the booking due to unavailability of a creator</li>
+        <li>Natural disasters, government-declared emergencies, or force majeure events</li>
+        <li>Verified medical emergencies (documentation may be required)</li>
+        <li>Technical failure on OG Shoots' platform preventing booking completion</li>
+      </ul>
+      <div class="highlight">
+        <p><strong>Note:</strong> All exception requests must be submitted within <strong>48 hours</strong> of the scheduled shoot time with supporting documentation.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 9 -->
+    <div class="section" id="contact">
+      <div class="section-head"><div class="sec-num">9</div><h2>Contact Us</h2></div>
+      <p class="sec-text">For cancellation requests, refund status, or any related queries, reach out to us:</p>
+      <div class="contact-card">
+        <div class="icon"><i class="fas fa-headset"></i></div>
+        <h3>OG Shoots – Support Team</h3>
+        <p>We're available 10 AM – 8 PM IST, 7 days a week. For urgent cancellations, WhatsApp is the fastest way to reach us.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="mailto:support.info.ogshoots@gmail.com"><i class="fas fa-envelope"></i> Email Us</a>
+          <a id="waLinkCancel" href="https://wa.me/916304279351" target="_blank" style="background:#25d366;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>© 2025 OG Shoots Media. All rights reserved.</p>
+    <p style="margin-top:0.5rem;">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="cancellation.html">Cancellation Policy</a>
+      <a href="cookies.html">Cookie Policy</a>
+      <a href="contact.html">Contact</a>
+    </p>
+  </div>
+
+</div>
+<script>
+(function(){
+  var num = localStorage.getItem('hs_admin_wa_number') || '916304279351';
+  var el = document.getElementById('waLinkCancel');
+  if(el) el.href = 'https://wa.me/' + num;
+})();
+</script>
+</body>
+</html>
