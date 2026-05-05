@@ -372,12 +372,22 @@
           // Returning user — load existing data
           custData = snap.data();
         } else {
-          // First time — auto-create account
-          const username = 'g_' + uid.slice(0,10);
-          custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
-          await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
-          // Also save in customers collection for admin visibility
-          await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
+          // Check if email already registered via normal signup
+          const emailSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(db,'customers'), fbStore.where('email','==',email)));
+          if(!emailSnap.empty){
+            // Existing customer — link Google account
+            custData = emailSnap.docs[0].data();
+            custData.uid = uid;
+            custData.photo = custData.photo || photo;
+            custData.loginMethod = 'google';
+            await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
+          } else {
+            // First time — auto-create account
+            const username = 'g_' + uid.slice(0,10);
+            custData = {name, email, username, phone:'', photo, uid, joined: new Date().toISOString(), loginMethod:'google'};
+            await fbStore.setDoc(fbStore.doc(db,'customers_google', uid), custData);
+            await fbStore.setDoc(fbStore.doc(db,'customers', username), custData);
+          }
         }
         // Set session — clear previous customer's data first
         localStorage.removeItem('hs_bookings');
