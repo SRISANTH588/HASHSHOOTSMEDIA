@@ -819,16 +819,17 @@
         return (custEmail && (b.email === custEmail || b.phone === custEmail)) ||
                (custPhone && b.phone === custPhone);
       });
-      const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
-      const list = document.getElementById('bookingsList');
-      if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
-      // Update stats
+      // Always update stats regardless of booking count
       var statTotal = document.getElementById('statTotal');
       var statPending = document.getElementById('statPending');
       var statDone = document.getElementById('statDone');
       if(statTotal) statTotal.textContent = bookings.length;
       if(statPending) statPending.textContent = bookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }).length;
       if(statDone) statDone.textContent = bookings.filter(function(b){ return b.status==='completed'; }).length;
+      const rp = JSON.parse(localStorage.getItem('hs_razorpay') || '{}');
+      const list = document.getElementById('bookingsList');
+      if(!list) return;
+      if(!bookings.length) { list.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
       list.innerHTML = bookings.slice().reverse().map(b => {
         const payments = JSON.parse(localStorage.getItem('hs_payments') || '[]');
         const paid = payments.find(function(p){ return String(p.bookingId) === String(b.id); });
