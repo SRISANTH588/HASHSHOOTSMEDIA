@@ -990,7 +990,7 @@
       new Razorpay(options).open();
     }
     loadBookings();
-    // Dedicated Firebase stats fetch for home tab
+    // Dedicated real-time Firebase stats for home tab
     (async function loadHomeStats(){
       try {
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
@@ -999,20 +999,24 @@
         var fbApp   = fbMod.getApps().find(function(a){return a.name==='cust';}) || fbMod.initializeApp(fbCfg,'cust');
         var fbDb    = fbStore.getFirestore(fbApp);
         var userEmail = localStorage.getItem('hs_user') || localStorage.getItem('hs_customer_email') || '';
-        var userPhone = localStorage.getItem('hs_customer_phone') || '';
-        var snap = await fbStore.getDocs(fbStore.collection(fbDb,'bookings'));
-        var bookings = [];
-        snap.forEach(function(d){
-          var data = d.data();
-          if(userEmail && data.email === userEmail) bookings.push(data);
-          else if(userPhone && data.phone === userPhone) bookings.push(data);
-        });
-        var statTotal   = document.getElementById('statTotal');
-        var statPending = document.getElementById('statPending');
-        var statDone    = document.getElementById('statDone');
-        if(statTotal)   statTotal.textContent   = bookings.length;
-        if(statPending) statPending.textContent = bookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }).length;
-        if(statDone)    statDone.textContent    = bookings.filter(function(b){ return b.status==='completed'; }).length;
+        if(!userEmail) return;
+        function updateStats(bookings){
+          var statTotal   = document.getElementById('statTotal');
+          var statPending = document.getElementById('statPending');
+          var statDone    = document.getElementById('statDone');
+          if(statTotal)   statTotal.textContent   = bookings.length;
+          if(statPending) statPending.textContent = bookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'; }).length;
+          if(statDone)    statDone.textContent    = bookings.filter(function(b){ return b.status==='completed'; }).length;
+        }
+        fbStore.onSnapshot(
+          fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.where('email','==',userEmail)),
+          function(snap){
+            var bookings = [];
+            snap.forEach(function(d){ bookings.push(d.data()); });
+            updateStats(bookings);
+          },
+          function(err){ console.log('loadHomeStats error:',err); }
+        );
       } catch(e){ console.log('loadHomeStats error:',e); }
     })();
     // Real-time listener — update booking status instantly when admin confirms
