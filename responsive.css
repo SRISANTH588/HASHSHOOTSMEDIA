@@ -1,0 +1,58 @@
+/* OG Shoots — Global Responsive Styles */
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+img, video { max-width: 100%; height: auto; }
+table { width: 100%; border-collapse: collapse; }
+
+/* ── Prevent horizontal scroll on all pages ── */
+html, body { overflow-x: hidden; max-width: 100vw; }
+
+/* ── Tablet (≤ 900px) ── */
+@media (max-width: 900px) {
+  .container, .content-wrap, .page-wrap {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  .grid-3 { grid-template-columns: 1fr 1fr !important; }
+  .grid-4 { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── Mobile (≤ 600px) ── */
+@media (max-width: 600px) {
+  .container, .content-wrap, .page-wrap {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+
+  /* Nav */
+  nav { padding: 0.75rem 1rem !important; }
+  .nav-right span { display: none !important; }
+
+  /* Typography scale */
+  h1 { font-size: clamp(1.5rem, 6vw, 2.2rem) !important; }
+  h2 { font-size: clamp(1.2rem, 5vw, 1.8rem) !important; }
+
+  /* Buttons full width in stacked layouts */
+  .btn-stack { width: 100% !important; text-align: center !important; justify-content: center !important; }
+
+  /* Cards */
+  .card, .booking-item { padding: 1rem !important; border-radius: 14px !important; }
+
+  /* Tables — horizontal scroll */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Modals */
+  .modal-box { margin: 0.5rem !important; padding: 1.25rem !important; border-radius: 16px !important; }
+
+  /* Forms */
+  input, select, textarea { font-size: 16px !important; } /* prevents iOS zoom */
+}
+
+/* ── Small mobile (≤ 380px) ── */
+@media (max-width: 380px) {
+  h1 { font-size: 1.3rem !important; }
+  .logo { font-size: 1.1rem !important; }
+  .hs-btn { padding: 0.4rem 0.75rem !important; font-size: 0.75rem !important; }
+}

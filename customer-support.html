@@ -30,8 +30,17 @@
     .form-group{margin-bottom:1rem;}
     textarea{resize:vertical;min-height:100px;}
     select option{background:#141414;}
+    @media(max-width:768px){
+      nav{padding:0.75rem 1rem;}
+      .nav-right span{display:none;}
+      .container{padding:0 1rem 2rem;margin:1.5rem auto;}
+      .page-title{font-size:1.4rem;}
+      .card{padding:1.25rem;}
+      div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+    }
   </style>
 <script type="module" src="hs-firebase.js"></script>
+  <link rel="stylesheet" href="responsive.css"/>
 </head>
 <body>
   <nav>

@@ -164,9 +164,25 @@
     .btn-terms-proceed.enabled{opacity:1;pointer-events:all;}
     .btn-terms-cancel{background:transparent;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:center;}
     @keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+    @media(max-width:768px){
+      .hero-section{padding:2rem 1rem 1.5rem!important;}
+      .hero-section h1{font-size:1.6rem!important;}
+      .section{padding:1.5rem 1rem!important;}
+      .booking-section{padding:1.5rem 1rem!important;}
+      .form-grid{grid-template-columns:1fr;}
+      .booking-item{padding:1rem!important;}
+      .tab-bar{padding:0 0.5rem;}
+      .ctab{padding:0.7rem 0.85rem;font-size:0.78rem;}
+    }
+    @media(max-width:480px){
+      .hero-section h1{font-size:1.3rem!important;}
+      .plan-card{padding:1.25rem!important;}
+      .plan-price{font-size:1.6rem!important;}
+    }
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-fixes.js"></script>
+  <link rel="stylesheet" href="responsive.css"/>
 </head>
 <body>
   <nav>

@@ -109,10 +109,17 @@
       .commission-banner { flex-direction: column; }
       .comm-sep { width: 50px; height: 1px; }
     }
+    @media(max-width:768px){
+      .hero-section{padding:3rem 1rem!important;}
+      .hero-section h1{font-size:clamp(1.6rem,5vw,2.2rem)!important;}
+      .section-title{font-size:1.4rem!important;}
+      .cta-section{padding:3rem 1rem;}
+    }
   </style>
 
   <script src="nav.js"></script>
 <script type="module" src="hs-firebase.js"></script>
+  <link rel="stylesheet" href="responsive.css"/>
 </head>
 <body>
 <div class="page-bg">
