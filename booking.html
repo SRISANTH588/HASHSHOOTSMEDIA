@@ -437,7 +437,9 @@
     function pickPlan(key) {
       selectedPlanKey = key;
       document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
-      var card = document.getElementById('pc_' + key);
+      // For wedding sub-plans, highlight the main wedding card
+      var cardId = key.startsWith('wedding_') ? 'pc_wedding' : 'pc_' + key;
+      var card = document.getElementById(cardId);
       if(card) card.classList.add('selected');
       document.getElementById('planErr').style.display = 'none';
       // Sync price from displayed element into planData
@@ -468,7 +470,7 @@
         if(key){
           setTimeout(function(){
             pickPlan(key);
-            bookSelectedPlan();
+            document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
           }, 100);
         }
       }
@@ -482,7 +484,7 @@
         var planKey = svcPlanMap[serviceParam] || 'hourly';
         setTimeout(function(){
           pickPlan(planKey);
-          bookSelectedPlan();
+          document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
           // Force-set the service dropdown to the actual clicked service
           var sel = document.getElementById('bk_service');
           if(sel){
