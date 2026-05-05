@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marketing Portal — OG Shoots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#080808;color:#f0ece0;min-height:100vh;}
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+    .login-card{background:#111;border:1px solid rgba(201,168,76,0.25);border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:0 30px 80px rgba(0,0,0,0.6);}
+    .login-logo{text-align:center;margin-bottom:2rem;}
+    .login-logo h1{font-size:1.6rem;font-weight:900;color:#fff;}
+    .login-logo h1 span{color:#c9a84c;}
+    .login-logo p{font-size:0.82rem;color:#9a9080;margin-top:0.3rem;}
+    .form-group{margin-bottom:1rem;}
+    .form-group label{font-size:0.78rem;font-weight:700;color:#9a9080;display:block;margin-bottom:0.4rem;}
+    .form-group input{width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:0.8rem 1rem;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+    .form-group input:focus{border-color:#c9a84c;}
+    .btn-login{width:100%;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:12px;padding:0.9rem;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:0.5rem;}
+    .err{display:none;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;margin-bottom:1rem;}
+    /* PORTAL */
+    .portal{display:none;}
+    .login-wrap{display:flex;}
+    nav{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(201,168,76,0.15);padding:0.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .nav-logo{font-size:1.2rem;font-weight:900;color:#fff;}.nav-logo span{color:#c9a84c;}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .nav-badge{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.85rem;border-radius:50px;}
+    .btn-logout{background:transparent;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;border-radius:8px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .tab-nav{background:#0f0f0f;border-bottom:1px solid rgba(201,168,76,0.06);padding:0 2rem;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+    .tab-nav::-webkit-scrollbar{display:none;}
+    .tab-btn{padding:0.85rem 1.25rem;background:none;border:none;border-bottom:2px solid transparent;color:#9a9080;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;}
+    .tab-btn.active{color:#c9a84c;border-bottom-color:#c9a84c;}
+    .tab-btn .badge{background:#c9a84c;color:#000;font-size:0.55rem;font-weight:900;padding:0.1rem 0.4rem;border-radius:50px;}
+    .page{max-width:1100px;margin:2rem auto;padding:0 1.5rem;}
+    .panel{display:none;}.panel.active{display:block;}
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat{background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;text-align:center;}
+    .stat .num{font-size:2rem;font-weight:900;color:#c9a84c;}
+    .stat .lbl{font-size:0.72rem;color:#9a9080;margin-top:0.2rem;}
+    /* CARDS */
+    .card{background:#111;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:0.85rem;}
+    .card-title{font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+    .card-meta{font-size:0.72rem;color:#9a9080;}
+    .card-msg{background:#0a0a0a;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#c8a0a0;line-height:1.7;border-left:3px solid rgba(201,168,76,0.3);margin:0.75rem 0;}
+    .btn-accept{background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .btn-done{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;}
+    .badge-accepted{background:rgba(33,150,243,0.12);border:1px solid rgba(33,150,243,0.3);color:#2196f3;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .badge-done{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;font-size:0.65rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:50px;}
+    .badge-type{font-size:0.6rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase;}
+    .sec-title{font-size:1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;}
+    .sec-title i{color:#c9a84c;}
+    .empty{text-align:center;padding:2.5rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;}
+    .empty i{font-size:2rem;opacity:0.2;display:block;margin-bottom:0.75rem;}
+    .booking-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
+    .status-badge{font-size:0.65rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;}
+    .s-pending{background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid rgba(255,152,0,0.3);}
+    .s-confirmed{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3);}
+    .s-completed{background:rgba(33,150,243,0.15);color:#2196f3;border:1px solid rgba(33,150,243,0.3);}
+    @media(max-width:600px){.tab-btn{padding:0.75rem 0.85rem;font-size:0.75rem;}.stats{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <h1><span>OG</span> SHOOTS</h1>
+      <p>Marketing Team Portal</p>
+    </div>
+    <div class="err" id="loginErr">Invalid credentials.</div>
+    <div class="form-group">
+      <label><i class="fas fa-user"></i> Username</label>
+      <input type="text" id="mktUser" placeholder="Enter username" onkeydown="if(event.key==='Enter') mktLogin()"/>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-lock"></i> Password</label>
+      <input type="password" id="mktPass" placeholder="Enter password" onkeydown="if(event.key==='Enter') mktLogin()"/>
+    </div>
+    <button class="btn-login" onclick="mktLogin()"><i class="fas fa-sign-in-alt"></i> &nbsp;Login</button>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div class="portal" id="portal">
+  <nav>
+    <div class="nav-logo"><span>OG</span> SHOOTS <sup style="font-size:0.4em;color:#c9a84c;letter-spacing:2px;">MARKETING</sup></div>
+    <div class="nav-right">
+      <span class="nav-badge"><i class="fas fa-bullhorn"></i> Marketing Team</span>
+      <button class="btn-logout" onclick="mktLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchMktTab('dashboard',this)"><i class="fas fa-chart-bar"></i> Dashboard</button>
+    <button class="tab-btn" onclick="switchMktTab('service',this)"><i class="fas fa-concierge-bell"></i> Service Enquiries <span class="badge" id="svcBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('marketing',this)"><i class="fas fa-bullhorn"></i> Marketing Enquiries <span class="badge" id="mktBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('business',this)"><i class="fas fa-briefcase"></i> Business Enquiries <span class="badge" id="bizBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('leads',this)"><i class="fas fa-user-plus"></i> Leads <span class="badge" id="leadsBadge" style="display:none;">0</span></button>
+    <button class="tab-btn" onclick="switchMktTab('meetings',this)"><i class="fas fa-calendar-alt"></i> Meetings</button>
+    <button class="tab-btn" onclick="switchMktTab('invitations',this)"><i class="fas fa-envelope-open-text"></i> Invitations</button>
+    <button class="tab-btn" onclick="switchMktTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
+    <button class="tab-btn" onclick="switchMktTab('bank',this)"><i class="fas fa-university"></i> Bank Account</button>
+  </div>
+
+  <div class="page">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats" id="statsRow"></div>
+      <div class="sec-title"><i class="fas fa-clock"></i> Recent Enquiries</div>
+      <div id="recentList"></div>
+    </div>
+
+    <!-- SERVICE ENQUIRIES -->
+    <div class="panel" id="panel-service">
+      <div class="sec-title"><i class="fas fa-concierge-bell"></i> Service Enquiries</div>
+      <div id="svcList"></div>
+    </div>
+
+    <!-- MARKETING ENQUIRIES -->
+    <div class="panel" id="panel-marketing">
+      <div class="sec-title"><i class="fas fa-bullhorn"></i> Marketing Enquiries</div>
+      <div id="mktList"></div>
+    </div>
+
+    <!-- BUSINESS ENQUIRIES -->
+    <div class="panel" id="panel-business">
+      <div class="sec-title"><i class="fas fa-briefcase"></i> Business Enquiries</div>
+      <div id="bizList"></div>
+    </div>
+
+    <!-- LEADS -->
+    <div class="panel" id="panel-leads">
+      <div class="sec-title"><i class="fas fa-user-plus"></i> Lead Management</div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.75rem;margin-bottom:1.5rem;" id="leadStatsRow"></div>
+
+      <!-- Add Lead Form -->
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-plus-circle" style="color:#c9a84c;"></i> Add New Lead</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Name *</label><input type="text" id="lead_name" placeholder="e.g. Rahul Verma" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Phone</label><input type="tel" id="lead_phone" placeholder="+91 XXXXXXXXXX" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Email</label><input type="email" id="lead_email" placeholder="email@example.com" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Source</label>
+            <select id="lead_source" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;">
+              <option value="">Select source</option>
+              <option>Instagram</option><option>WhatsApp</option><option>Referral</option><option>Walk-in</option><option>Website</option><option>Facebook</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Interested Service</label>
+            <select id="lead_service" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;">
+              <option value="">Select service</option>
+              <option>Reels Shoot</option><option>Wedding Photography</option><option>Portrait Session</option><option>Product Shoot</option><option>Event Coverage</option><option>Brand Shoot</option><option>Other</option>
+            </select>
+          </div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Budget (₹)</label><input type="number" id="lead_budget" placeholder="e.g. 5000" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="margin-bottom:0.75rem;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Notes</label><textarea id="lead_notes" placeholder="Any additional notes..." style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;min-height:60px;"></textarea></div>
+        <button onclick="addLead()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.7rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-plus"></i> Add Lead</button>
+        <div id="leadToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Lead added!</div>
+      </div>
+
+      <!-- Filter -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <button onclick="filterLeads('all',this)" class="lead-filter active" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:#c9a84c;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">All</button>
+        <button onclick="filterLeads('new',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">New</button>
+        <button onclick="filterLeads('contacted',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Contacted</button>
+        <button onclick="filterLeads('interested',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Interested</button>
+        <button onclick="filterLeads('closed',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Closed</button>
+        <button onclick="filterLeads('lost',this)" class="lead-filter" style="background:#0a0a0a;border:1px solid #333;color:#9a9080;padding:0.3rem 0.85rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Lost</button>
+      </div>
+
+      <div id="leadsList"></div>
+    </div>
+
+    <!-- MEETINGS -->
+    <div class="panel" id="panel-meetings">
+      <div class="sec-title"><i class="fas fa-calendar-alt"></i> Meetings from Admin</div>
+      <div id="meetingsList"></div>
+    </div>
+
+    <!-- INVITATIONS -->
+    <div class="panel" id="panel-invitations">
+      <div class="sec-title"><i class="fas fa-envelope-open-text"></i> Invitations from Admin</div>
+      <div id="invitationsList"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="panel" id="panel-profile">
+      <div class="sec-title"><i class="fas fa-user"></i> My Profile</div>
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;max-width:500px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Full Name *</label><input type="text" id="mkt_pName" placeholder="Your name" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Phone *</label><input type="tel" id="mkt_pPhone" placeholder="+91 XXXXXXXXXX" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="margin-bottom:0.75rem;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Email</label><input type="email" id="mkt_pEmail" placeholder="you@email.com" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        <div style="margin-bottom:1rem;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Role / Designation</label><input type="text" id="mkt_pRole" placeholder="e.g. Marketing Executive" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        <button onclick="saveMktProfile()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Profile</button>
+        <div id="profileToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Profile saved!</div>
+      </div>
+    </div>
+
+    <!-- BANK ACCOUNT -->
+    <div class="panel" id="panel-bank">
+      <div class="sec-title"><i class="fas fa-university"></i> Bank Account</div>
+      <div style="background:#111;border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem;max-width:500px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Account Holder Name *</label><input type="text" id="mkt_bName" placeholder="Full name as per bank" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Bank Name *</label><input type="text" id="mkt_bBank" placeholder="e.g. HDFC Bank" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Account Number *</label><input type="text" id="mkt_bAccNo" placeholder="Account number" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+          <div><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">IFSC Code *</label><input type="text" id="mkt_bIFSC" placeholder="e.g. HDFC0001234" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;text-transform:uppercase;"/></div>
+        </div>
+        <div style="margin-bottom:1rem;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">UPI ID (Optional)</label><input type="text" id="mkt_bUPI" placeholder="name@upi" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.65rem 0.9rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>
+        <button onclick="saveMktBank()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-save"></i> Save Bank Details</button>
+        <div id="bankToast" style="display:none;margin-top:0.75rem;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;"><i class="fas fa-check-circle"></i> Bank details saved!</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Auth guard — allow if logged in via main login page
+  if(localStorage.getItem('hs_role') !== 'marketing' && !sessionStorage.getItem('mkt_logged_in')){
+    // Check if coming from main login
+    if(localStorage.getItem('hs_role') !== 'marketing'){
+      // Will be handled by internal login form below
+    }
+  }
+  // ── CREDENTIALS ──────────────────────────────────────────────
+  var MKT_USERS = [
+    { username: 'marketing', password: 'ogmarketing2025' },
+    { username: 'marketing', password: 'mkt@2025' },
+    { username: 'mktteam',   password: 'ogshoots@mkt' }
+  ];
+
+  var FB_CFG = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+
+  // ── AUTH ─────────────────────────────────────────────────────
+  function mktLogin(){
+    var u = document.getElementById('mktUser').value.trim().toLowerCase();
+    var p = document.getElementById('mktPass').value.trim();
+    var errEl = document.getElementById('loginErr');
+    if(!u || !p){ errEl.style.display='block'; errEl.textContent='Please enter username and password.'; return; }
+    var match = MKT_USERS.find(function(x){ return x.username === u && x.password === p; });
+    if(!match){ errEl.style.display='block'; errEl.textContent='Invalid credentials. Try: marketing / ogmarketing2025'; return; }
+    errEl.style.display='none';
+    localStorage.setItem('hs_mkt_logged','1');
+    localStorage.setItem('hs_mkt_user', u);
+    localStorage.setItem('hs_role','marketing');
+    showPortal();
+  }
+
+  function mktLogout(){
+    localStorage.removeItem('hs_mkt_logged');
+    document.getElementById('portal').style.display='none';
+    document.getElementById('loginWrap').style.display='flex';
+  }
+
+  function showPortal(){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('portal').style.display='block';
+    loadAll();
+    loadLocalTabs();
+  }
+
+  // Check if already logged in (own login or via main login page)
+  document.addEventListener('DOMContentLoaded', function(){
+    if(localStorage.getItem('hs_mkt_logged')==='1' || localStorage.getItem('hs_role')==='marketing'){
+      localStorage.setItem('hs_mkt_logged','1');
+      document.getElementById('loginWrap').style.display='none';
+      document.getElementById('portal').style.display='block';
+      loadAll();
+      loadLocalTabs();
+    } else {
+      document.getElementById('loginWrap').style.display='flex';
+      document.getElementById('portal').style.display='none';
+    }
+  });
+
+  // ── TAB SWITCH ───────────────────────────────────────────────
+  function switchMktTab(name, btn){
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('panel-'+name).classList.add('active');
+    if(btn) btn.classList.add('active');
+    if(name==='leads') renderLeads();
+    if(name==='meetings') renderMeetings();
+    if(name==='invitations') renderInvitations();
+    if(name==='profile') loadMktProfile();
+    if(name==='bank') loadMktBank();
+  }
+
+  // ── FIREBASE ─────────────────────────────────────────────────
+  var _fbApp = null, _fbDb = null, _fbStore = null;
+  async function getFirebase(){
+    if(_fbDb) return {db:_fbDb, s:_fbStore};
+    var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    _fbApp   = fbMod.getApps().find(function(a){return a.name==='mkt-portal';})||fbMod.initializeApp(FB_CFG,'mkt-portal');
+    _fbDb    = fbStore.getFirestore(_fbApp);
+    _fbStore = fbStore;
+    return {db:_fbDb, s:_fbStore};
+  }
+
+  // ── LOAD ALL DATA ────────────────────────────────────────────
+  async function loadAll(){
+    var f = await getFirebase();
+    var s = f.s;
+    s.onSnapshot(s.collection(f.db,'enquiries'), function(snap){
+      _svc = []; _biz = [];
+      snap.forEach(function(d){
+        var data = d.data(); var t = (data.type||'general').toLowerCase();
+        if(t==='business') _biz.push(Object.assign({id:d.id},data));
+        else if(t==='general'||!data.type) _svc.push(Object.assign({id:d.id},data));
+      });
+      _svc.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      _biz.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderServiceEnquiries(); renderBizEnquiries(); renderDashboard();
+    });
+    s.onSnapshot(s.collection(f.db,'marketing_enquiries'), function(snap){
+      _mkt = [];
+      snap.forEach(function(d){ _mkt.push(Object.assign({id:d.id},d.data())); });
+      _mkt.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
+      renderMktEnquiries(); renderDashboard();
+    });
+  }
+
+  var _svc=[], _mkt=[], _biz=[];
+
+  async function loadServiceEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+      _svc = [];
+      snap.forEach(function(d){
+        var data = d.data();
+        var t = (data.type||'general').toLowerCase();
+        if(t==='general'||t==='business'||!data.type) _svc.push(Object.assign({id:d.id},data));
+      });
+      _svc.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderServiceEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadMktEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'marketing_enquiries'));
+      _mkt = [];
+      snap.forEach(function(d){ _mkt.push(Object.assign({id:d.id},d.data())); });
+      _mkt.sort(function(a,b){ return (b.submittedAt&&b.submittedAt.seconds||0)-(a.submittedAt&&a.submittedAt.seconds||0); });
+      renderMktEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadBizEnquiries(){
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'enquiries'));
+      _biz = [];
+      snap.forEach(function(d){
+        var data = d.data();
+        if((data.type||'').toLowerCase()==='business') _biz.push(Object.assign({id:d.id},data));
+      });
+      _biz.sort(function(a,b){ return (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0); });
+      renderBizEnquiries();
+    }catch(e){ console.warn(e); }
+  }
+
+  // ── RENDER DASHBOARD ─────────────────────────────────────────
+  function renderDashboard(){
+    var statsEl = document.getElementById('statsRow');
+    statsEl.innerHTML =
+      stat(_svc.length, 'Service Enquiries', '#c9a84c') +
+      stat(_mkt.length, 'Marketing Enquiries', '#2196f3') +
+      stat(_biz.length, 'Business Enquiries', '#9c27b0') +
+      stat([..._svc,..._mkt,..._biz].filter(function(e){ return e.status==='done'; }).length, 'Closed Leads', '#f44336');
+
+    // Recent 5 from all enquiries
+    var all = [].concat(
+      _svc.map(function(e){ return Object.assign({_src:'Service'},e); }),
+      _mkt.map(function(e){ return Object.assign({_src:'Marketing'},e); }),
+      _biz.map(function(e){ return Object.assign({_src:'Business'},e); })
+    ).slice(0,8);
+
+    var recentEl = document.getElementById('recentList');
+    if(!all.length){ recentEl.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i>No enquiries yet.</div>'; return; }
+    recentEl.innerHTML = all.map(function(e){
+      var srcColor = e._src==='Marketing'?'#2196f3':e._src==='Business'?'#9c27b0':'#c9a84c';
+      return '<div class="card" style="border-left:3px solid '+srcColor+';">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'+
+        '<div><div class="card-title">'+(e.name||'—')+'</div>'+
+        '<div class="card-meta">'+(e.phone||e.email||'')+'</div></div>'+
+        '<span class="badge-type" style="background:'+srcColor+'22;border:1px solid '+srcColor+'44;color:'+srcColor+';">'+e._src+'</span>'+
+        '</div>'+
+        (e.message?'<div class="card-msg">'+e.message+'</div>':'')+
+        '<div style="font-size:0.65rem;color:#777;">'+formatTs(e.createdAt||e.submittedAt)+'</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  function stat(num, lbl, color){
+    return '<div class="stat"><div class="num" style="color:'+color+';">'+num+'</div><div class="lbl">'+lbl+'</div></div>';
+  }
+
+  // ── RENDER SERVICE ENQUIRIES ──────────────────────────────────
+  function renderServiceEnquiries(){
+    var el = document.getElementById('svcList');
+    var badge = document.getElementById('svcBadge');
+    var open = _svc.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_svc.length){ el.innerHTML='<div class="empty"><i class="fas fa-concierge-bell"></i>No service enquiries yet.</div>'; return; }
+    el.innerHTML = _svc.map(function(e){ return enquiryCard(e,'enquiries'); }).join('');
+  }
+
+  // ── RENDER MARKETING ENQUIRIES ────────────────────────────────
+  function renderMktEnquiries(){
+    var el = document.getElementById('mktList');
+    var badge = document.getElementById('mktBadge');
+    var open = _mkt.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_mkt.length){ el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i>No marketing enquiries yet.</div>'; return; }
+    el.innerHTML = _mkt.map(function(e){ return enquiryCard(e,'marketing_enquiries'); }).join('');
+  }
+
+  // ── RENDER BUSINESS ENQUIRIES ─────────────────────────────────
+  function renderBizEnquiries(){
+    var el = document.getElementById('bizList');
+    var badge = document.getElementById('bizBadge');
+    var open = _biz.filter(function(e){ return e.status!=='done'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    if(!_biz.length){ el.innerHTML='<div class="empty"><i class="fas fa-briefcase"></i>No business enquiries yet.</div>'; return; }
+    el.innerHTML = _biz.map(function(e){ return enquiryCard(e,'enquiries'); }).join('');
+  }
+
+  function enquiryCard(e, collection){
+    var isDone = e.status==='done';
+    var isAccepted = e.accepted || e.status==='accepted';
+    var actions = isDone
+      ? '<span class="badge-done"><i class="fas fa-check-double"></i> Done</span>'
+      : (isAccepted
+        ? '<span class="badge-accepted"><i class="fas fa-check"></i> Accepted</span> <button class="btn-done" onclick="markDone(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check-double"></i> Mark Done</button>'
+        : '<button class="btn-accept" onclick="acceptEnq(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check"></i> Accept</button> <button class="btn-done" onclick="markDone(\''+e.id+'\',\''+collection+'\')"><i class="fas fa-check-double"></i> Mark Done</button>');
+    return '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;">'+
+      '<div><div class="card-title">'+(e.name||'—')+'</div>'+
+      '<div class="card-meta">'+(e.phone||'')+(e.email?' · '+e.email:'')+(e.brand?' · '+e.brand:'')+'</div></div>'+
+      '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">'+actions+'</div>'+
+      '</div>'+
+      (e.plan&&e.plan!=='Not selected'?'<div style="margin-bottom:0.5rem;"><span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.65rem;font-weight:800;padding:0.15rem 0.55rem;border-radius:50px;">'+e.plan+' Plan</span></div>':'')+
+      (e.message?'<div class="card-msg">'+e.message+'</div>':'')+
+      '<div style="font-size:0.65rem;color:#777;">'+formatTs(e.createdAt||e.submittedAt)+'</div>'+
+      '</div>';
+  }
+
+  // ── RENDER BOOKINGS ───────────────────────────────────────────
+  // ── ACTIONS ───────────────────────────────────────────────────
+  async function acceptEnq(id, collection){
+    try{
+      var f = await getFirebase();
+      await f.s.setDoc(f.s.doc(f.db,collection,String(id)),{accepted:true,status:'accepted'},{merge:true});
+      await loadAll();
+    }catch(e){ alert('Error: '+e.message); }
+  }
+
+  async function markDone(id, collection){
+    try{
+      var f = await getFirebase();
+      await f.s.setDoc(f.s.doc(f.db,collection,String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
+      await loadAll();
+    }catch(e){ alert('Error: '+e.message); }
+  }
+
+  // ── LEADS ───────────────────────────────────────────────────
+  var _leadFilter = 'all';
+
+  function filterLeads(status, btn){
+    _leadFilter = status;
+    document.querySelectorAll('.lead-filter').forEach(function(b){
+      b.style.background='#0a0a0a'; b.style.borderColor='#333'; b.style.color='#9a9080';
+    });
+    if(btn){ btn.style.background='rgba(201,168,76,0.15)'; btn.style.borderColor='rgba(201,168,76,0.4)'; btn.style.color='#c9a84c'; }
+    renderLeads();
+  }
+
+  function renderLeads(){
+    var el = document.getElementById('leadsList');
+    var all = JSON.parse(localStorage.getItem('mkt_leads')||'[]').slice().reverse();
+    var statusColors = {new:'#c9a84c',contacted:'#2196f3',interested:'#ff9800',closed:'#4caf50',lost:'#f44336'};
+    var statsEl = document.getElementById('leadStatsRow');
+    if(statsEl){
+      statsEl.innerHTML = Object.keys(statusColors).map(function(s){
+        var count = all.filter(function(l){ return l.status===s; }).length;
+        return '<div class="stat"><div class="num" style="color:'+statusColors[s]+';font-size:1.6rem;">'+count+'</div><div class="lbl">'+s.charAt(0).toUpperCase()+s.slice(1)+'</div></div>';
+      }).join('');
+    }
+    var badge = document.getElementById('leadsBadge');
+    var open = all.filter(function(l){ return l.status!=='closed'&&l.status!=='lost'; }).length;
+    if(badge){ badge.textContent=open; badge.style.display=open>0?'inline':'none'; }
+    var leads = _leadFilter==='all' ? all : all.filter(function(l){ return l.status===_leadFilter; });
+    if(!leads.length){ el.innerHTML='<div class="empty"><i class="fas fa-user-plus"></i>No leads'+((_leadFilter!=='all')?' with status "'+_leadFilter+'"':'')+'. Add one above.</div>'; return; }
+    el.innerHTML = leads.map(function(l){
+      var sc = statusColors[l.status]||'#c9a84c';
+      var waLink = l.phone ? '<a href="https://wa.me/91'+l.phone.replace(/[^0-9]/g,'')+'" target="_blank" style="background:#25d366;color:#fff;border:none;border-radius:6px;padding:0.25rem 0.5rem;font-size:0.72rem;font-weight:700;text-decoration:none;"><i class="fab fa-whatsapp"></i></a>' : '';
+      return '<div class="card" style="border-left:3px solid '+sc+';">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;">'+
+        '<div>'+
+        '<div class="card-title">'+l.name+'</div>'+
+        '<div class="card-meta">'+(l.phone?'<i class="fas fa-phone" style="color:#c9a84c;margin-right:3px;"></i>'+l.phone+' &nbsp;':'')+(l.email?'<i class="fas fa-envelope" style="color:#c9a84c;margin-right:3px;"></i>'+l.email:'')+'</div>'+
+        '<div class="card-meta" style="margin-top:0.2rem;">'+
+        (l.source?'<span style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;margin-right:0.3rem;">'+l.source+'</span>':'')+
+        (l.service?'<span style="background:rgba(33,150,243,0.08);border:1px solid rgba(33,150,243,0.2);color:#2196f3;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;margin-right:0.3rem;">'+l.service+'</span>':'')+
+        (l.budget?'<span style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);color:#4caf50;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:50px;">₹'+Number(l.budget).toLocaleString('en-IN')+'</span>':'')+
+        '</div></div>'+
+        '<div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">'+
+        '<select onchange="updateLeadStatus(\''+l.id+'\',this.value)" style="background:#0a0a0a;border:1px solid '+sc+'44;border-radius:6px;padding:0.25rem 0.5rem;color:'+sc+';font-size:0.72rem;font-family:inherit;outline:none;font-weight:700;">'+
+        ['new','contacted','interested','closed','lost'].map(function(s){ return '<option value="'+s+'"'+(l.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>'; }).join('')+
+        '</select>'+
+        waLink+
+        '<button onclick="deleteLead(\''+l.id+'\')" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:6px;padding:0.25rem 0.5rem;font-size:0.72rem;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i></button>'+
+        '</div></div>'+
+        (l.notes?'<div class="card-msg">'+l.notes+'</div>':'')+
+        '<div style="font-size:0.65rem;color:#777;margin-top:0.3rem;">Added: '+l.addedAt+'</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  function addLead(){
+    var name = document.getElementById('lead_name').value.trim();
+    if(!name){ alert('Name is required.'); return; }
+    var lead = {
+      id:'lead_'+Date.now(), name:name,
+      phone:document.getElementById('lead_phone').value.trim(),
+      email:document.getElementById('lead_email').value.trim(),
+      source:document.getElementById('lead_source').value,
+      service:document.getElementById('lead_service').value,
+      budget:document.getElementById('lead_budget').value,
+      notes:document.getElementById('lead_notes').value.trim(),
+      status:'new', addedAt:new Date().toLocaleString()
+    };
+    var leads = JSON.parse(localStorage.getItem('mkt_leads')||'[]');
+    leads.push(lead);
+    localStorage.setItem('mkt_leads', JSON.stringify(leads));
+    saveMktLeadToFirebase(lead);
+    ['lead_name','lead_phone','lead_email','lead_budget','lead_notes'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('lead_source').value='';
+    document.getElementById('lead_service').value='';
+    var t=document.getElementById('leadToast'); t.style.display='block'; setTimeout(function(){ t.style.display='none'; },2500);
+    renderLeads();
+  }
+
+  function updateLeadStatus(id, status){
+    var leads = JSON.parse(localStorage.getItem('mkt_leads')||'[]');
+    leads = leads.map(function(l){ return l.id===id ? Object.assign({},l,{status:status}) : l; });
+    localStorage.setItem('mkt_leads', JSON.stringify(leads));
+    saveMktLeadToFirebase(leads.find(function(l){ return l.id===id; }));
+    renderLeads();
+  }
+
+  function deleteLead(id){
+    if(!confirm('Delete this lead?')) return;
+    var leads = JSON.parse(localStorage.getItem('mkt_leads')||'[]').filter(function(l){ return l.id!==id; });
+    localStorage.setItem('mkt_leads', JSON.stringify(leads));
+    renderLeads();
+  }
+
+  async function saveMktLeadToFirebase(lead){
+    try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_leads',lead.id),lead,{merge:true}); }catch(e){}
+  }
+
+  // ── MEETINGS (from admin) ─────────────────────────────────────────
+  async function renderMeetings(){
+    var el = document.getElementById('meetingsList');
+    if(!el) return;
+    el.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'meetings'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      // Filter: show if toMarketing is true or staffId is 'all'
+      docs = docs.filter(function(d){ return d.toMarketing || d.staffId==='all' || !d.staffId; });
+      docs.sort(function(a,b){ return (a.date||'')>(b.date||'')?1:-1; });
+      if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-calendar-alt"></i>No meetings scheduled yet.</div>'; return; }
+      var now = new Date();
+      el.innerHTML = docs.map(function(m){
+        var isPast = new Date((m.date||'')+' '+(m.time||'00:00')) < now;
+        var bc = isPast?'#4a4030':'#2196f3';
+        return '<div class="card" style="border-left:3px solid '+bc+';'+(isPast?'opacity:0.7;':'')+'">'
+          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          +'<div><div class="card-title">'+m.title+'</div>'
+          +'<div class="card-meta" style="color:#2196f3;"><i class="fas fa-calendar-alt"></i> '+(m.date||'')+(m.time?' at '+m.time:'')+(m.venue?' · '+m.venue:'')+'</div></div>'
+          +(isPast?'<span style="font-size:0.62rem;color:#6a6050;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:0.18rem 0.55rem;border-radius:50px;">Past</span>':'<span style="font-size:0.62rem;color:#2196f3;background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);padding:0.18rem 0.55rem;border-radius:50px;">Upcoming</span>')
+          +'</div>'
+          +(m.description?'<div class="card-msg">'+m.description+'</div>':'')
+          +(m.link?'<a href="'+m.link+'" target="_blank" style="font-size:0.75rem;color:#2196f3;font-weight:700;"><i class="fas fa-video"></i> Join Meeting</a>':'')
+          +'</div>';
+      }).join('');
+    }catch(e){ el.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i>Error: '+e.message+'</div>'; }
+  }
+
+  // ── INVITATIONS (from admin) ─────────────────────────────────────────
+  async function renderInvitations(){
+    var el = document.getElementById('invitationsList');
+    if(!el) return;
+    el.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    try{
+      var f = await getFirebase();
+      var snap = await f.s.getDocs(f.s.collection(f.db,'invitations'));
+      var docs = [];
+      snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+      // Filter: show if toMarketing is true or staffId is 'all'
+      docs = docs.filter(function(d){ return d.toMarketing || d.staffId==='all' || !d.staffId; });
+      docs.sort(function(a,b){ return (b.createdAt||'')>(a.createdAt||'')?1:-1; });
+      if(!docs.length){ el.innerHTML='<div class="empty"><i class="fas fa-envelope-open-text"></i>No invitations yet.</div>'; return; }
+      el.innerHTML = docs.map(function(inv){
+        var mktResp = inv.responses&&inv.responses['marketing'];
+        var sc = mktResp==='accepted'?'#4caf50':mktResp==='declined'?'#f44336':'#ff9800';
+        var sl = mktResp==='accepted'?'Accepted':mktResp==='declined'?'Declined':'Pending';
+        return '<div class="card" style="border-left:3px solid '+sc+';">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">'
+          +'<div><div class="card-title">'+(inv.title||'Invitation')+'</div>'
+          +'<div class="card-meta">'+(inv.date||'')+(inv.time?' at '+inv.time:'')+(inv.venue?' · '+inv.venue:'')+'</div></div>'
+          +'<span style="font-size:0.65rem;font-weight:800;color:'+sc+';background:'+sc+'18;border:1px solid '+sc+'44;padding:0.2rem 0.65rem;border-radius:50px;">'+sl+'</span>'
+          +'</div>'
+          +(inv.description?'<div class="card-msg">'+inv.description+'</div>':'')
+          +(!mktResp?'<div style="display:flex;gap:0.5rem;margin-top:0.5rem;">'
+            +'<button onclick="respondMktInvitation(\''+inv.id+'\',\'accepted\')" style="flex:1;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;padding:0.55rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-check"></i> Accept</button>'
+            +'<button onclick="respondMktInvitation(\''+inv.id+'\',\'declined\')" style="flex:1;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;padding:0.55rem;border-radius:9px;font-size:0.82rem;font-weight:800;cursor:pointer;font-family:inherit;"><i class="fas fa-times"></i> Decline</button>'
+            +'</div>':'')
+          +'</div>';
+      }).join('');
+    }catch(e){ el.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i>Error: '+e.message+'</div>'; }
+  }
+
+  async function respondMktInvitation(invId, response){
+    try{
+      var f = await getFirebase();
+      var update = {};
+      update['responses.marketing'] = response;
+      update['responses.marketing_name'] = 'Marketing Team';
+      update['responses.marketing_at'] = new Date().toLocaleString();
+      await f.s.setDoc(f.s.doc(f.db,'invitations',invId), update, {merge:true});
+      renderInvitations();
+    }catch(e){ alert('Error: '+e.message); }
+  }
+  // ── PROFILE ───────────────────────────────────────────────────
+  async function saveMktProfile(){
+    var data = { name:document.getElementById('mkt_pName').value.trim(), phone:document.getElementById('mkt_pPhone').value.trim(), email:document.getElementById('mkt_pEmail').value.trim(), role:document.getElementById('mkt_pRole').value.trim() };
+    if(!data.name){ alert('Name is required.'); return; }
+    localStorage.setItem('mkt_profile', JSON.stringify(data));
+    try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_profiles','marketing'),Object.assign({updatedAt:new Date().toLocaleString()},data),{merge:true}); }catch(e){}
+    var t=document.getElementById('profileToast'); t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000);
+  }
+
+  function loadMktProfile(){
+    var d = JSON.parse(localStorage.getItem('mkt_profile')||'{}');
+    if(d.name) document.getElementById('mkt_pName').value=d.name;
+    if(d.phone) document.getElementById('mkt_pPhone').value=d.phone;
+    if(d.email) document.getElementById('mkt_pEmail').value=d.email;
+    if(d.role) document.getElementById('mkt_pRole').value=d.role;
+    // Fetch from Firebase
+    (async function(){ try{ var f=await getFirebase(); var snap=await f.s.getDoc(f.s.doc(f.db,'mkt_profiles','marketing')); if(snap.exists()){ var d2=snap.data(); localStorage.setItem('mkt_profile',JSON.stringify(d2)); if(d2.name) document.getElementById('mkt_pName').value=d2.name; if(d2.phone) document.getElementById('mkt_pPhone').value=d2.phone; if(d2.email) document.getElementById('mkt_pEmail').value=d2.email; if(d2.role) document.getElementById('mkt_pRole').value=d2.role; } }catch(e){} })();
+  }
+
+  // ── BANK ───────────────────────────────────────────────────
+  async function saveMktBank(){
+    var data = { name:document.getElementById('mkt_bName').value.trim(), bank:document.getElementById('mkt_bBank').value.trim(), accNo:document.getElementById('mkt_bAccNo').value.trim(), ifsc:document.getElementById('mkt_bIFSC').value.trim().toUpperCase(), upi:document.getElementById('mkt_bUPI').value.trim() };
+    if(!data.name||!data.bank||!data.accNo||!data.ifsc){ alert('Please fill all required fields.'); return; }
+    localStorage.setItem('mkt_bank', JSON.stringify(data));
+    try{ var f=await getFirebase(); await f.s.setDoc(f.s.doc(f.db,'mkt_bank','marketing'),Object.assign({updatedAt:new Date().toLocaleString()},data),{merge:true}); }catch(e){}
+    var t=document.getElementById('bankToast'); t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000);
+  }
+
+  function loadMktBank(){
+    var d = JSON.parse(localStorage.getItem('mkt_bank')||'{}');
+    if(d.name) document.getElementById('mkt_bName').value=d.name;
+    if(d.bank) document.getElementById('mkt_bBank').value=d.bank;
+    if(d.accNo) document.getElementById('mkt_bAccNo').value=d.accNo;
+    if(d.ifsc) document.getElementById('mkt_bIFSC').value=d.ifsc;
+    if(d.upi) document.getElementById('mkt_bUPI').value=d.upi;
+    (async function(){ try{ var f=await getFirebase(); var snap=await f.s.getDoc(f.s.doc(f.db,'mkt_bank','marketing')); if(snap.exists()){ var d2=snap.data(); localStorage.setItem('mkt_bank',JSON.stringify(d2)); if(d2.name) document.getElementById('mkt_bName').value=d2.name; if(d2.bank) document.getElementById('mkt_bBank').value=d2.bank; if(d2.accNo) document.getElementById('mkt_bAccNo').value=d2.accNo; if(d2.ifsc) document.getElementById('mkt_bIFSC').value=d2.ifsc; if(d2.upi) document.getElementById('mkt_bUPI').value=d2.upi; } }catch(e){} })();
+  }
+
+  // Load leads/meetings/invitations from Firebase on start
+  async function loadLocalTabs(){
+    try{
+      var f = await getFirebase();
+      // Leads
+      var lSnap = await f.s.getDocs(f.s.collection(f.db,'mkt_leads'));
+      var leads=[]; lSnap.forEach(function(d){ leads.push(d.data()); });
+      if(leads.length) localStorage.setItem('mkt_leads',JSON.stringify(leads));
+      // Meetings
+      var mSnap = await f.s.getDocs(f.s.collection(f.db,'mkt_meetings'));
+      var meetings=[]; mSnap.forEach(function(d){ meetings.push(d.data()); });
+      if(meetings.length) localStorage.setItem('mkt_meetings',JSON.stringify(meetings));
+      // Invitations
+      var iSnap = await f.s.getDocs(f.s.collection(f.db,'mkt_invitations'));
+      var invites=[]; iSnap.forEach(function(d){ invites.push(d.data()); });
+      if(invites.length) localStorage.setItem('mkt_invitations',JSON.stringify(invites));
+    }catch(e){}
+    renderLeads(); renderMeetings(); renderInvitations();
+  }
+
+  // ── HELPERS ───────────────────────────────────────────────────
+  function formatTs(ts){
+    if(!ts) return '';
+    if(ts && ts.seconds) return new Date(ts.seconds*1000).toLocaleString();
+    return String(ts);
+  }
+</script>
+
+</body>
+</html>
