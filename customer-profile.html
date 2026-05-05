@@ -154,12 +154,25 @@
     // Load profile from Firebase first, fallback to localStorage
     async function loadProfile(){
       var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
-      // Try to fetch fresh from Firebase
       try{
-        var db   = await getDb();
-        var key  = 'cust_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
+        var db  = await getDb();
+        var key = 'cust_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
         var snap = await _fbStore.getDoc(_fbStore.doc(db,'customer_profiles',key));
-        if(snap.exists()) prof = Object.assign(prof, snap.data());
+        if(snap.exists()){
+          prof = Object.assign(prof, snap.data());
+        } else {
+          // Google login users: check customers_google by uid
+          var uid = localStorage.getItem('hs_customer_uid');
+          if(uid){
+            var gSnap = await _fbStore.getDoc(_fbStore.doc(db,'customers_google',uid));
+            if(gSnap.exists()) prof = Object.assign(prof, gSnap.data());
+          }
+          // Also try customers collection by email
+          if(!prof.name && userEmail){
+            var eSnap = await _fbStore.getDocs(_fbStore.query(_fbStore.collection(db,'customers'), _fbStore.where('email','==',userEmail)));
+            if(!eSnap.empty) prof = Object.assign(prof, eSnap.docs[0].data());
+          }
+        }
       }catch(e){ console.warn('profile load:',e); }
       var name  = prof.name  || localStorage.getItem('hs_customer_name')  || user || '';
       var phone = prof.phone || localStorage.getItem('hs_customer_phone') || '';
@@ -237,6 +250,18 @@
         acctSnap.forEach(async function(d){
           await _fbStore.setDoc(_fbStore.doc(db,'customer_accounts',d.id), {name:name, phone:phone}, {merge:true});
         });
+        // Also update customers_google if this is a Google login user
+        var uid = localStorage.getItem('hs_customer_uid');
+        if(uid){
+          await _fbStore.setDoc(_fbStore.doc(db,'customers_google',uid), {name:name, phone:phone}, {merge:true});
+        }
+        // Also update customers collection by email
+        if(userEmail){
+          var eSnap2 = await _fbStore.getDocs(_fbStore.query(_fbStore.collection(db,'customers'), _fbStore.where('email','==',userEmail)));
+          eSnap2.forEach(async function(d){
+            await _fbStore.setDoc(_fbStore.doc(db,'customers',d.id), {name:name, phone:phone}, {merge:true});
+          });
+        }
 
         _pendingPic = null;
         document.getElementById('profileName').textContent = name;

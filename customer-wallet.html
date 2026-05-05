@@ -75,7 +75,6 @@
 
     async function loadWalletBalance(){
       var bal = 0;
-      // Try Firebase first
       try {
         var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -84,20 +83,21 @@
         var db      = fbStore.getFirestore(app);
         var key     = 'cw_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
         var snap    = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',key));
-        if(snap.exists()) bal = snap.data().balance || 0;
-        else {
-          // Fallback: check by phone
-          var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-          var myBooking = bookings.find(function(b){ return b.email===userEmail || b.name===user; });
-          var phone = myBooking ? myBooking.phone : '';
-          if(phone) bal = parseInt(localStorage.getItem('hs_cw_'+phone)||'0');
+        if(snap.exists()){
+          bal = snap.data().balance || 0;
+        } else {
+          // Try by phone from bookings
+          var custPhone = localStorage.getItem('hs_customer_phone') || '';
+          if(custPhone){
+            var pKey = 'cw_' + custPhone.replace(/[^a-zA-Z0-9]/g,'_');
+            var pSnap = await fbStore.getDoc(fbStore.doc(db,'customer_wallets',pKey));
+            if(pSnap.exists()) bal = pSnap.data().balance || 0;
+          }
         }
         localStorage.setItem('hs_cw_'+userEmail, String(bal));
+        localStorage.setItem('hs_customer_wallet', String(bal));
       } catch(e){
-        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
-        var myBooking = bookings.find(function(b){ return b.name===user; });
-        var phone = myBooking ? myBooking.phone : '';
-        bal = parseInt(localStorage.getItem('hs_cw_'+(userEmail||phone))||'0');
+        bal = parseInt(localStorage.getItem('hs_customer_wallet') || localStorage.getItem('hs_cw_'+userEmail) || '0');
       }
       document.getElementById('walletBal').textContent = bal.toLocaleString('en-IN');
     }

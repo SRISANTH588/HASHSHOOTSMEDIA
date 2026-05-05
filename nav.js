@@ -178,7 +178,7 @@
 
     // Show logged-in state if customer is logged in
     var role = localStorage.getItem('hs_role');
-    var custName = localStorage.getItem('hs_customer_name');
+    var custName = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_customer_email');
     if(role === 'customer' && custName){
       var navRight = document.getElementById('hsNavRight');
       var loginBtn = document.getElementById('hsLoginBtn');
@@ -225,7 +225,10 @@
 
       navRight.insertBefore(profileWrap, loginBtn);
 
-      var initials = custName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+      var initials = custName.includes('@')
+        ? custName.slice(0,2).toUpperCase()
+        : custName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+      var displayFirst = custName.includes('@') ? custName.split('@')[0] : custName.split(' ')[0];
       var prof = JSON.parse(localStorage.getItem('hs_customer_profile') || '{}');
       var avEl = document.getElementById('hsProfileAv');
       if(prof.pic){
@@ -233,8 +236,8 @@
       } else {
         avEl.textContent = initials;
       }
-      document.getElementById('hsProfileName').textContent = custName.split(' ')[0];
-      document.getElementById('hsDdName').textContent = custName;
+      document.getElementById('hsProfileName').textContent = displayFirst;
+      document.getElementById('hsDdName').textContent = custName.includes('@') ? custName : custName;
 
       document.getElementById('hsProfileBtn').onclick = function(e){
         e.stopPropagation();
@@ -245,16 +248,21 @@
         if(dd) dd.classList.remove('open');
       });
       document.getElementById('hsDdLogout').onclick = function(){
-        localStorage.removeItem('hs_role');
-        localStorage.removeItem('hs_user');
-        localStorage.removeItem('hs_customer_name');
+        ['hs_role','hs_user','hs_customer_name','hs_customer_email','hs_customer_phone',
+         'hs_customer_username','hs_customer_photo','hs_customer_uid','hs_customer_profile',
+         'hs_customer_wallet','hs_bookings','hs_payments','hs_assigned_shoots'].forEach(function(k){
+          localStorage.removeItem(k);
+        });
+        Object.keys(localStorage).forEach(function(k){
+          if(k.startsWith('hs_cw_')||k.startsWith('hs_customer_enquiries_')||k.startsWith('hs_fb_done_')||k.startsWith('hs_premium_card_')) localStorage.removeItem(k);
+        });
         window.location.href = 'index.html';
       };
 
       // Mobile
       var mobileLoginBtn = document.getElementById('hsMobileLoginBtn');
       if(mobileLoginBtn){
-        mobileLoginBtn.innerHTML = '<i class="fas fa-user"></i> ' + custName;
+        mobileLoginBtn.innerHTML = '<i class="fas fa-user"></i> ' + displayFirst;
         mobileLoginBtn.href = 'customer.html';
       }
       var mobileBtns = document.getElementById('hsMobileBtns');
@@ -263,9 +271,14 @@
         mLogout.style.cssText = 'background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:#ff6b6b;text-align:center;padding:0.8rem;border-radius:10px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;display:block;width:100%;';
         mLogout.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
         mLogout.onclick = function(){
-          localStorage.removeItem('hs_role');
-          localStorage.removeItem('hs_user');
-          localStorage.removeItem('hs_customer_name');
+          ['hs_role','hs_user','hs_customer_name','hs_customer_email','hs_customer_phone',
+           'hs_customer_username','hs_customer_photo','hs_customer_uid','hs_customer_profile',
+           'hs_customer_wallet','hs_bookings','hs_payments','hs_assigned_shoots'].forEach(function(k){
+            localStorage.removeItem(k);
+          });
+          Object.keys(localStorage).forEach(function(k){
+            if(k.startsWith('hs_cw_')||k.startsWith('hs_customer_enquiries_')||k.startsWith('hs_fb_done_')||k.startsWith('hs_premium_card_')) localStorage.removeItem(k);
+          });
           window.location.href = 'index.html';
         };
         mobileBtns.appendChild(mLogout);
@@ -273,10 +286,28 @@
     }
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initNav);
-  } else {
+  function checkAndInitNav(){
     initNav();
+    // Re-check after short delay in case localStorage was set async (e.g. after redirect)
+    setTimeout(function(){
+      var role = localStorage.getItem('hs_role');
+      var custName = localStorage.getItem('hs_customer_name') || localStorage.getItem('hs_customer_email');
+      var loginBtn = document.getElementById('hsLoginBtn');
+      if(role === 'customer' && custName && loginBtn && loginBtn.style.display !== 'none'){
+        // Nav was rendered without auth — re-render
+        var nav = document.getElementById('hsNav');
+        var mob = document.getElementById('hsMobileMenu');
+        if(nav) nav.remove();
+        if(mob) mob.remove();
+        initNav();
+      }
+    }, 300);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', checkAndInitNav);
+  } else {
+    checkAndInitNav();
   }
 })();
 

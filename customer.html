@@ -732,8 +732,18 @@
           var selectedPlan = document.getElementById('ppName') ? document.getElementById('ppName').textContent : '';
           var selectedPrice = document.getElementById('ppPrice') ? document.getElementById('ppPrice').textContent : '';
           var data = { name, phone, email: userEmail, service, plan: selectedPlan, price: selectedPrice, city, date, time, notes, status:'pending', createdAt: fbStore.serverTimestamp() };
-          await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
+          var bookingRef = await fbStore.addDoc(fbStore.collection(fbDb,'bookings'), data);
           await fbStore.addDoc(fbStore.collection(fbDb,'enquiries'), data);
+          // Upsert customer_accounts so admin can see Google login users
+          if(userEmail){
+            var acctKey = 'acct_' + userEmail.replace(/[^a-zA-Z0-9]/g,'_');
+            await fbStore.setDoc(fbStore.doc(fbDb,'customer_accounts',acctKey), {
+              name, phone, email: userEmail,
+              uid: localStorage.getItem('hs_customer_uid')||'',
+              loginMethod: localStorage.getItem('hs_customer_uid') ? 'google' : 'email',
+              updatedAt: fbStore.serverTimestamp()
+            }, {merge:true});
+          }
         } catch(e){ console.error('Firebase error:',e); }
       })();
 
