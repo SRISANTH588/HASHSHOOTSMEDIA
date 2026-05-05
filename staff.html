@@ -1113,6 +1113,13 @@
             fresh.push(data);
           }
         });
+        // Also fetch bookings from Firebase so customer details are available
+        try{
+          var bSnap = await fbStore.getDocs(fbStore.collection(db,'bookings'));
+          var fbBookings = [];
+          bSnap.forEach(function(d){ fbBookings.push(Object.assign({id:d.id},d.data())); });
+          if(fbBookings.length) localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
+        }catch(be){ console.warn('bookings fetch error:',be); }
         var local = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]');
         var others = local.filter(function(x){ return String(x.staffId)!==myId && Number(x.staffId)!==myIdNum; });
         var merged = fresh.map(function(fb){
