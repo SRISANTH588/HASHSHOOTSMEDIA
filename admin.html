@@ -264,10 +264,71 @@
     .btn-add-team{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#ccc;padding:0.45rem 1rem;border-radius:7px;cursor:pointer;font-family:inherit;font-size:0.8rem;font-weight:600;margin-bottom:1rem;transition:all 0.15s;}
     .btn-add-team:hover{background:rgba(255,255,255,0.08);color:#fff;}
     .save-toast{display:none;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.25);color:#4caf50;padding:0.55rem 1.1rem;border-radius:7px;font-size:0.82rem;font-weight:600;margin-top:1rem;}
+
+    /* ── ADMIN RESPONSIVE ── */
+    @media(max-width:768px){
+      /* Sidebar toggle button visible */
+      #sidebarToggle{display:flex!important;}
+
+      /* Topbar */
+      #adminTopbar{padding:0.65rem 1rem!important;gap:0.5rem;}
+      #adminTopbar h1{font-size:1rem!important;}
+
+      /* Content area */
+      #adminContent{padding:0.75rem 0.85rem 3rem!important;}
+
+      /* Stats row — 2 cols on tablet, 2 cols on mobile */
+      .stats-row{grid-template-columns:1fr 1fr!important;gap:0.65rem!important;margin-bottom:1.5rem!important;}
+      .stat-card{padding:1rem!important;}
+      .stat-card .num{font-size:1.6rem!important;}
+
+      /* Tables — always scrollable */
+      .table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+      .table-scroll{overflow-x:auto!important;-webkit-overflow-scrolling:touch;min-width:0;}
+      table{min-width:600px;}
+      th,td{padding:0.6rem 0.75rem!important;font-size:0.75rem!important;white-space:nowrap;}
+
+      /* Filters */
+      .filters{gap:0.4rem!important;}
+      .filter-btn{font-size:0.7rem!important;padding:0.35rem 0.65rem!important;}
+      .search-bar{width:100%!important;max-width:100%!important;}
+
+      /* Page header */
+      .page-header{flex-direction:column!important;align-items:flex-start!important;gap:0.75rem!important;}
+
+      /* Team row grid collapse */
+      .team-row{grid-template-columns:1fr 1fr!important;}
+
+      /* Shoot reel cards */
+      .shoot-reel-assignment-grid{grid-template-columns:1fr!important;}
+
+      /* Modals full width */
+      .modal-overlay > div, [style*="max-width:420px"], [style*="max-width:440px"], [style*="max-width:480px"]{
+        width:95vw!important;max-width:95vw!important;
+      }
+
+      /* Forms */
+      .form-group input,.form-group select,.form-group textarea{
+        font-size:16px!important;
+      }
+
+      /* Notification toast */
+      .notif-toast{left:1rem!important;right:1rem!important;min-width:0!important;max-width:100%!important;bottom:1rem!important;}
+    }
+
+    @media(max-width:480px){
+      .stats-row{grid-template-columns:1fr 1fr!important;}
+      .stat-card .num{font-size:1.4rem!important;}
+      #adminTopbar h1{font-size:0.9rem!important;}
+      .team-row{grid-template-columns:1fr!important;}
+      .shoot-reel-actions{flex-direction:column!important;}
+      .shoot-reel-btn{min-width:0!important;width:100%!important;}
+    }
   </style>
 <script type="module" src="hs-firebase.js"></script>
 <script src="hs-cloudinary.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="responsive.css"/>
 </head>
 <body>
 
