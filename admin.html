@@ -2263,6 +2263,8 @@ Priority Support</textarea></div>
           <div>
             <label style="font-size:0.75rem;color:#9a9080;font-weight:700;display:block;margin-bottom:0.4rem;">Certification Level</label>
             <select id="cert_level" style="width:100%;background:#0a0a0a;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:0.6rem;color:#fff;font-family:inherit;font-size:0.85rem;">
+              <option>Certificate of Completion – Content Creation Training</option>
+              <option>Professional Certificate in Reel Making &amp; Client Communication</option>
               <option>OG Shoots Certified Creator</option>
               <option>OG Shoots Senior Creator</option>
               <option>OG Shoots Elite Creator</option>
@@ -10005,22 +10007,31 @@ Priority Support</textarea></div>
 
   <script>
   // ── CERTIFICATES ──
-  function initCertTab(){
-    // Populate staff dropdown
+  async function initCertTab(){
     var sel = document.getElementById('cert_staff');
     if(!sel) return;
-    var staff = getStaff();
     sel.innerHTML = '<option value="">-- Select Staff Member --</option>';
-    staff.forEach(function(s){
-      sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+( s.role||'Creator')+')</option>';
-    });
-    // Set today as default date
+    try{
+      var f = await _fbAdmin();
+      if(f){
+        var snap = await f.s.getDocs(f.s.collection(f.db,'staff'));
+        snap.forEach(function(d){
+          var s = d.data();
+          if(!s._deleted) sel.innerHTML += '<option value="'+d.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>';
+        });
+      } else {
+        getStaff().forEach(function(s){ sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>'; });
+      }
+    }catch(e){
+      getStaff().forEach(function(s){ sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>'; });
+    }
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('cert_date').value = today;
-    // Set expiry 1 year from now
-    var expiry = new Date(); expiry.setFullYear(expiry.getFullYear()+1);
-    document.getElementById('cert_expiry').value = expiry.toISOString().split('T')[0];
+    var exp = new Date(); exp.setFullYear(exp.getFullYear()+1);
+    document.getElementById('cert_expiry').value = exp.toISOString().split('T')[0];
     loadCertList();
+  }
+
   }
 
   async function generateCertificate(){
