@@ -437,16 +437,23 @@
     function pickPlan(key) {
       selectedPlanKey = key;
       document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
-      // For wedding sub-plans, highlight the main wedding card
       var cardId = key.startsWith('wedding_') ? 'pc_wedding' : 'pc_' + key;
       var card = document.getElementById(cardId);
       if(card) card.classList.add('selected');
       document.getElementById('planErr').style.display = 'none';
-      // Sync price from displayed element into planData
       var priceEl = document.getElementById('price_' + key);
       if(priceEl && planData[key]){
         var raw = priceEl.textContent.replace('starting price','').trim();
         if(raw) planData[key].price = raw;
+      }
+      // If came from URL param, hide other plans and show only selected
+      if(window._fromUrl){
+        document.querySelectorAll('.plan-card').forEach(function(c){
+          c.style.display = (c.id === cardId) ? 'flex' : 'none';
+        });
+        document.getElementById('servicePlanGrid').style.gridTemplateColumns = '1fr';
+        document.getElementById('servicePlanGrid').style.maxWidth = '400px';
+        document.getElementById('servicePlanGrid').style.margin = '0 auto';
       }
     }
 
@@ -468,6 +475,7 @@
         };
         var key = map[planParam] || null;
         if(key){
+          window._fromUrl = true;
           setTimeout(function(){
             pickPlan(key);
             document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -482,6 +490,7 @@
           'Product Shoot':'halfday', 'Event Coverage':'halfday'
         };
         var planKey = svcPlanMap[serviceParam] || 'hourly';
+        window._fromUrl = true;
         setTimeout(function(){
           pickPlan(planKey);
           document.getElementById('planStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
