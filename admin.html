@@ -10010,20 +10010,23 @@ Priority Support</textarea></div>
   async function initCertTab(){
     var sel = document.getElementById('cert_staff');
     if(!sel) return;
-    sel.innerHTML = '<option value="">-- Select Staff Member --</option>';
+    sel.innerHTML = '<option value="">-- Loading staff... --</option>';
     try{
-      var f = await _fbAdmin();
-      if(f){
-        var snap = await f.s.getDocs(f.s.collection(f.db,'staff'));
-        snap.forEach(function(d){
-          var s = d.data();
-          if(!s._deleted) sel.innerHTML += '<option value="'+d.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>';
-        });
-      } else {
-        getStaff().forEach(function(s){ sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>'; });
-      }
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='cert-admin';})||fbMod.initializeApp(fbCfg,'cert-admin');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDocs(fbStore.collection(db,'staff'));
+      sel.innerHTML = '<option value="">-- Select Staff Member --</option>';
+      snap.forEach(function(d){
+        var s = d.data();
+        if(!s._deleted) sel.innerHTML += '<option value="'+d.id+'|'+s.name+'|'+(s.role||'Creator')+'|'+(s.city||'')+'">'+s.name+' ('+(s.role||'Creator')+')</option>';
+      });
+      if(sel.options.length===1) sel.innerHTML = '<option value="">No staff found</option>';
     }catch(e){
-      getStaff().forEach(function(s){ sel.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+(s.role||'Creator')+')</option>'; });
+      sel.innerHTML = '<option value="">Error loading staff</option>';
+      console.error('cert staff load:',e);
     }
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('cert_date').value = today;
@@ -10035,35 +10038,25 @@ Priority Support</textarea></div>
   }
 
   async function generateCertificate(){
-    var staffId = document.getElementById('cert_staff').value;
-    var level   = document.getElementById('cert_level').value;
-    var date    = document.getElementById('cert_date').value;
-    var expiry  = document.getElementById('cert_expiry').value;
-    var msg     = document.getElementById('cert_msg');
-    if(!staffId){ msg.innerHTML='<span style="color:#f44336;">Please select a staff member.</span>'; return; }
-    var staff   = getStaff().find(function(s){ return String(s.id)===String(staffId); });
-    if(!staff){ msg.innerHTML='<span style="color:#f44336;">Staff not found.</span>'; return; }
-    // Generate unique cert ID
-    var certId  = 'OGS-'+new Date().getFullYear()+'-'+String(Date.now()).slice(-6);
-    var certData = {
-      certId: certId,
-      staffId: String(staffId),
-      name: staff.name,
-      role: staff.role || 'Content Creator',
-      city: staff.city || staff.location || '',
-      certLevel: level,
-      issuedAt: date,
-      expiresAt: expiry,
-      status: 'Active',
-      issuedBy: 'OG Shoots LUXE'
-    };
+    var sel    = document.getElementById('cert_staff');
+    var staffVal = sel.value;
+    var level  = document.getElementById('cert_level').value;
+    var date   = document.getElementById('cert_date').value;
+    var expiry = document.getElementById('cert_expiry').value;
+    var msg    = document.getElementById('cert_msg');
+    if(!staffVal){ msg.innerHTML='<span style="color:#f44336;">Please select a staff member.</span>'; return; }
+    // Parse staff data from option value (id|name|role|city)
+    var parts  = staffVal.split('|');
+    var staffId = parts[0], staffName = parts[1]||'', staffRole = parts[2]||'Content Creator', staffCity = parts[3]||'';
+    var certId = 'OGS-'+new Date().getFullYear()+'-'+String(Date.now()).slice(-6);
+    var certData = { certId:certId, staffId:staffId, name:staffName, role:staffRole, city:staffCity, certLevel:level, issuedAt:date, expiresAt:expiry, status:'Active', issuedBy:'OG Shoots LUXE' };
     try{
-      var f = await _fbAdmin();
-      if(f) await f.s.setDoc(f.s.doc(f.db,'certificates',certId), certData);
-      // Also save locally
-      var certs = JSON.parse(localStorage.getItem('hs_certificates')||'[]');
-      certs.push(certData);
-      localStorage.setItem('hs_certificates', JSON.stringify(certs));
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='cert-admin';})||fbMod.initializeApp(fbCfg,'cert-admin');
+      var db      = fbStore.getFirestore(app);
+      await fbStore.setDoc(fbStore.doc(db,'certificates',certId), certData);
       msg.innerHTML='<span style="color:#4caf50;"><i class="fas fa-check-circle"></i> Certificate generated! ID: <strong>'+certId+'</strong></span>';
       loadCertList();
     }catch(e){
@@ -10072,15 +10065,15 @@ Priority Support</textarea></div>
   }
 
   function previewCertificate(){
-    var staffId = document.getElementById('cert_staff').value;
-    var level   = document.getElementById('cert_level').value;
-    var date    = document.getElementById('cert_date').value;
-    var expiry  = document.getElementById('cert_expiry').value;
-    if(!staffId){ alert('Please select a staff member first.'); return; }
-    var staff = getStaff().find(function(s){ return String(s.id)===String(staffId); });
-    if(!staff) return;
+    var sel    = document.getElementById('cert_staff');
+    var staffVal = sel.value;
+    var level  = document.getElementById('cert_level').value;
+    var date   = document.getElementById('cert_date').value;
+    var expiry = document.getElementById('cert_expiry').value;
+    if(!staffVal){ alert('Please select a staff member first.'); return; }
+    var parts  = staffVal.split('|');
     var certId = 'OGS-PREVIEW-'+String(Date.now()).slice(-6);
-    openCertPreview({ certId:certId, name:staff.name, role:staff.role||'Content Creator', certLevel:level, issuedAt:date, expiresAt:expiry, city:staff.city||'', status:'Active' });
+    openCertPreview({ certId:certId, name:parts[1]||'', role:parts[2]||'Content Creator', certLevel:level, issuedAt:date, expiresAt:expiry, city:parts[3]||'', status:'Active' });
   }
 
   function openCertPreview(cert){
@@ -10152,29 +10145,37 @@ Priority Support</textarea></div>
     var list = document.getElementById('cert_list');
     if(!list) return;
     try{
-      var f = await _fbAdmin();
-      if(!f){ list.innerHTML='<div style="color:#555;">Firebase not available.</div>'; return; }
-      var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'certificates'), f.s.orderBy('issuedAt','desc')));
-      var certs = [];
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='cert-admin';})||fbMod.initializeApp(fbCfg,'cert-admin');
+      var db      = fbStore.getFirestore(app);
+      var snap    = await fbStore.getDocs(fbStore.collection(db,'certificates'));
+      var certs   = [];
       snap.forEach(function(d){ certs.push(d.data()); });
+      certs.sort(function(a,b){ return (b.issuedAt||'').localeCompare(a.issuedAt||''); });
       if(!certs.length){ list.innerHTML='<div style="color:#555;font-size:0.85rem;">No certificates issued yet.</div>'; return; }
       list.innerHTML = certs.map(function(c){
         return '<div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">'
           +'<div><div style="font-size:0.88rem;font-weight:700;color:#fff;">'+c.name+'</div>'
           +'<div style="font-size:0.72rem;color:#9a9080;margin-top:0.15rem;">'+c.certLevel+' &nbsp;·&nbsp; '+c.certId+'</div></div>'
           +'<div style="display:flex;gap:0.5rem;">'
-          +'<button onclick="openCertPreview('+JSON.stringify(c).replace(/"/g,\'&quot;\')+'" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>'
+          +'<button onclick="openCertPreview('+JSON.stringify(c).replace(/"/g,"'")+')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:#c9a84c;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> View</button>'
           +'<button onclick="revokeCert(\''+c.certId+'\')" style="background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);color:#f44336;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fas fa-ban"></i> Revoke</button>'
           +'</div></div>';
       }).join('');
-    }catch(e){ list.innerHTML='<div style="color:#f44336;">Error loading: '+e.message+'</div>'; }
+    }catch(e){ list.innerHTML='<div style="color:#f44336;">Error: '+e.message+'</div>'; }
   }
 
   async function revokeCert(certId){
     if(!confirm('Revoke certificate '+certId+'?')) return;
     try{
-      var f = await _fbAdmin();
-      if(f) await f.s.setDoc(f.s.doc(f.db,'certificates',certId),{status:'Revoked'},{merge:true});
+      var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+      var app     = fbMod.getApps().find(function(a){return a.name==='cert-admin';})||fbMod.initializeApp(fbCfg,'cert-admin');
+      var db      = fbStore.getFirestore(app);
+      await fbStore.setDoc(fbStore.doc(db,'certificates',certId),{status:'Revoked'},{merge:true});
       loadCertList();
     }catch(e){ alert('Error: '+e.message); }
   }
