@@ -297,3 +297,4 @@ function navigate(page){
   if(allowed.indexOf(page) === -1) return;
   window.location.href = page;
 }
+ 
