@@ -559,7 +559,8 @@ body {
 
   /* Hero */
   .hero { padding: 5rem 1rem 2rem; }
-  .hero-big { font-size: 5rem; letter-spacing: -2px; }
+  .hero-big { font-size: 5.5rem; letter-spacing: -2px; }
+  .hero-sub { font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hero-tag { font-size: 0.7rem; }
   .phone-mockup { transform: scale(0.88); transform-origin: top center; }
   .badge-top, .badge-bottom, .badge-left { display: none; }
@@ -607,7 +608,7 @@ body {
 
 /* Small mobile — up to 360px */
 @media (max-width: 360px) {
-  .hero-big { font-size: 4rem; }
+  .hero-big { font-size: 4.5rem; }
   .phone-mockup { transform: scale(0.78); transform-origin: top center; }
   #ogLogoWrap { font-size: 2rem !important; letter-spacing: 3px !important; }
   #ogLaunchBtn { padding: 0.8rem 1.8rem !important; }
