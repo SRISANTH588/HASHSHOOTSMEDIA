@@ -10133,8 +10133,12 @@ Priority Support</textarea></div>
       .cert-id{text-align:center;}
       .cert-id label{font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:0.2rem;}
       .cert-id span{font-size:0.75rem;color:rgba(201,168,76,0.7);font-family:monospace;}
-      .print-btn{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 1.5rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;}
-      @media print{.print-btn{display:none;}body{background:#fff;}}
+      .print-btn{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;border:none;border-radius:10px;padding:0.75rem 1.5rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 15px rgba(201,168,76,0.4);}
+      @media print{
+        .print-btn{display:none;}
+        body{background:#0a0800 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+        .cert{box-shadow:none;}
+      }
     </style></head><body>
     <div class="cert">
       <div class="cert-corner tl"></div><div class="cert-corner tr"></div>
