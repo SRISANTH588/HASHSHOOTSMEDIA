@@ -8849,6 +8849,148 @@ Priority Support</textarea></div>
     // ── PAYMENTS TAB ──────────────────────────────────────────────
     var _pmActiveTab = 'customer';
 
+    async function fetchSettingsDoc(docId, lsKey){
+      try{
+        var f = await _fbAdmin(); if(!f) return;
+        var snap = await f.s.getDoc(f.s.doc(f.db,'settings',docId));
+        if(snap.exists()) localStorage.setItem(lsKey, JSON.stringify(snap.data()));
+      }catch(e){ console.warn('fetchSettingsDoc '+docId+':', e); }
+    }
+
+    async function fetchAndLoadHomePage(){
+      await fetchSettingsDoc('homepage','hs_homepage');
+      loadHomePage();
+    }
+    async function fetchAndLoadWeddingPlans(){
+      await fetchSettingsDoc('homepage','hs_homepage');
+      loadWeddingPlans();
+    }
+    async function fetchAndLoadHeroStats(){
+      await fetchSettingsDoc('homepage','hs_homepage');
+      loadHeroStatsTab();
+    }
+    async function fetchAndLoadAbout(){
+      await fetchSettingsDoc('about','hs_about');
+      loadAboutForm();
+    }
+    async function fetchAndLoadOpening(){
+      await fetchSettingsDoc('opening','hs_opening');
+      loadOpening();
+    }
+    async function fetchAndLoadTawk(){
+      await fetchSettingsDoc('tawk_config','hs_tawk_config');
+      loadTawkConfig();
+    }
+    async function fetchAndLoadStoreRazorpay(){
+      try{
+        var f = await _fbAdmin(); if(!f){ loadStoreRazorpay(); return; }
+        var snap = await f.s.getDoc(f.s.doc(f.db,'settings','store_razorpay'));
+        if(snap.exists()) localStorage.setItem('hs_store_razorpay', JSON.stringify(snap.data()));
+      }catch(e){ console.warn('fetchAndLoadStoreRazorpay:', e); }
+      loadStoreRazorpay();
+    }
+    async function fetchAndLoadStore(){
+      try{
+        var f = await _fbAdmin(); if(!f){ loadStoreAdmin(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'products'));
+        if(!snap.empty){
+          var items = []; snap.forEach(function(d){ items.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_products', JSON.stringify(items));
+          localStorage.setItem('hs_tshirts', JSON.stringify(items));
+        }
+        var idcSnap = await f.s.getDoc(f.s.doc(f.db,'settings','idcard'));
+        if(idcSnap.exists()) localStorage.setItem('hs_idcard', JSON.stringify(idcSnap.data()));
+        var ssSnap = await f.s.getDoc(f.s.doc(f.db,'settings','store_settings'));
+        if(ssSnap.exists()) localStorage.setItem('hs_store_settings', JSON.stringify(ssSnap.data()));
+      }catch(e){ console.warn('fetchAndLoadStore:', e); }
+      loadStoreAdmin();
+    }
+    async function fetchAndRenderStaffWallets(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderStaffWallets(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'staff_wallets'));
+        snap.forEach(function(d){
+          var data = d.data();
+          if(data.staffId) localStorage.setItem('hs_wallet_'+data.staffId, JSON.stringify(data));
+        });
+      }catch(e){ console.warn('fetchAndRenderStaffWallets:', e); }
+      renderStaffWallets();
+    }
+    async function fetchAndRenderStaffVideos(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderStaffVideosAdmin(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'staff_videos'), f.s.orderBy('createdAt','desc')));
+        if(!snap.empty){
+          var list = []; snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_staff_videos', JSON.stringify(list));
+        }
+      }catch(e){ console.warn('fetchAndRenderStaffVideos:', e); }
+      renderStaffVideosAdmin();
+    }
+    async function fetchAndRenderShootReels(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderShootReelsAdmin(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'staff_videos'), f.s.orderBy('createdAt','desc')));
+        if(!snap.empty){
+          var list = []; snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_staff_videos', JSON.stringify(list));
+        }
+      }catch(e){ console.warn('fetchAndRenderShootReels:', e); }
+      renderShootReelsAdmin();
+    }
+    async function fetchAndRenderTestiVideos(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderTestiVideos(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'testimonial_videos'));
+        if(!snap.empty){
+          var list = []; snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_testi_videos', JSON.stringify(list));
+        }
+      }catch(e){ console.warn('fetchAndRenderTestiVideos:', e); }
+      renderTestiVideos();
+    }
+    async function fetchAndRenderBlog(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderBlogList(); return; }
+        var snap = await f.s.getDoc(f.s.doc(f.db,'settings','blogs'));
+        if(snap.exists() && snap.data().items) localStorage.setItem('hs_blogs', JSON.stringify(snap.data().items));
+      }catch(e){ console.warn('fetchAndRenderBlog:', e); }
+      renderBlogList();
+    }
+    async function fetchAndRenderPress(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderPressList(); loadPressStats(); return; }
+        var snap = await f.s.getDoc(f.s.doc(f.db,'settings','press'));
+        if(snap.exists() && snap.data().items) localStorage.setItem('hs_press', JSON.stringify(snap.data().items));
+        var statsSnap = await f.s.getDoc(f.s.doc(f.db,'settings','press_stats'));
+        if(statsSnap.exists()) localStorage.setItem('hs_press_stats', JSON.stringify(statsSnap.data()));
+      }catch(e){ console.warn('fetchAndRenderPress:', e); }
+      renderPressList();
+      loadPressStats();
+    }
+    async function fetchAndRenderNotifications(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderNotifications(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'admin_notifications'), f.s.orderBy('createdAt','desc')));
+        if(!snap.empty){
+          var list = []; snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_admin_notifs', JSON.stringify(list));
+        }
+      }catch(e){ console.warn('fetchAndRenderNotifications:', e); }
+      renderNotifications();
+    }
+    async function fetchAndRenderSupportTickets(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderSupportTickets(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'support_tickets'));
+        if(!snap.empty){
+          var list = []; snap.forEach(function(d){ list.push(Object.assign({id:d.id},d.data())); });
+          localStorage.setItem('hs_support_tickets', JSON.stringify(list));
+        }
+      }catch(e){ console.warn('fetchAndRenderSupportTickets:', e); }
+      renderSupportTickets();
+    }
+
     async function fetchAndRenderWithdraw(){
       try{
         var f = await _fbAdmin(); if(!f){ loadWithdrawTab(); return; }
@@ -9954,19 +10096,19 @@ Priority Support</textarea></div>
     currentTab = name;
     if(name==='demo') lastSubmittedCount = getDemos().filter(function(d){return d.status==='submitted';}).length;
     if(name==='feedback') lastFeedbackCount = getFeedbacks().length;
-    if(name==='wedding-plans') loadWeddingPlans();
+    if(name==='wedding-plans') fetchAndLoadWeddingPlans();
     if(name==='app-feedback') fetchAndRenderAppFeedback();
     if(name==='withdraw') fetchAndRenderWithdraw();
-    if(name==='staffwallets') renderStaffWallets();
+    if(name==='staffwallets') fetchAndRenderStaffWallets();
     if(name==='staffbank') renderStaffBankAccounts();
     if(name==='staffaddress') renderStaffAddresses();
-    if(name==='testimonial-videos') renderTestiVideos();
-    if(name==='tawk') loadTawkConfig();
-    if(name==='store') loadStoreAdmin();
-    if(name==='opening') loadOpening();
+    if(name==='testimonial-videos') fetchAndRenderTestiVideos();
+    if(name==='tawk') fetchAndLoadTawk();
+    if(name==='store') fetchAndLoadStore();
+    if(name==='opening') fetchAndLoadOpening();
     if(name==='razorpay') loadRazorpayTab();
     if(name==='team') loadTeamTab();
-    if(name==='about') loadAboutForm();
+    if(name==='about') fetchAndLoadAbout();
     if(name==='vibe') renderVibeAdmin();
     if(name==='customer'){loadCustomerForm();renderCustomerAccounts();}
     if(name==='staff') fetchAndRenderStaff();
@@ -9975,30 +10117,30 @@ Priority Support</textarea></div>
     if(name==='bookings'){loadAll();renderDressPhotos();}
     if(name==='enquiries') fetchFirebaseEnquiries();
     if(name==='order-enquiries') fetchOrderEnquiries();
-    if(name==='notifications') renderNotifications();
+    if(name==='notifications') fetchAndRenderNotifications();
     if(name==='order-edits') loadOrderEdits();
-    if(name==='blog') renderBlogList();
+    if(name==='blog') fetchAndRenderBlog();
     if(name==='feedback-writer') loadFeedbackWriter();
-    if(name==='press'){renderPressList();loadPressStats();}
+    if(name==='press') fetchAndRenderPress();
     if(name==='careers') fetchAndRenderCareers();
     if(name==='affiliates') fetchAndRenderAffiliates();
-    if(name==='store-razorpay') loadStoreRazorpay();
+    if(name==='store-razorpay') fetchAndLoadStoreRazorpay();
     if(name==='mkt-enquiries') renderMktEnquiries();
     if(name==='invitations-admin') { loadAdminInvitations(); _setMinDates(['inv_datetime']); }
     if(name==='meetings-admin') { loadAdminMeetings(); _setMinDates(['meet_datetime']); }
     if(name==='wa-control') loadWaSettings();
     if(name==='biz-enquiries') fetchBizEnquiries();
-    if(name==='support-tickets') renderSupportTickets();
+    if(name==='support-tickets') fetchAndRenderSupportTickets();
     if(name==='settings') loadSettingsTab();
     if(name==='coupons') loadCoupons();
-    if(name==='hero-stats') loadHeroStatsTab();
+    if(name==='hero-stats') fetchAndLoadHeroStats();
     if(name==='txn-payments') loadPaymentsFromFirebase();
     if(name==='storeorders') renderStoreOrders();
     if(name==='demo'){populateDemoStaffSelect();fetchAndRenderDemos();}
     if(name==='feedback'){fetchAndRenderFeedback();renderEventFeedbackAdmin();}
-    if(name==='videos') renderStaffVideosAdmin();
-    if(name==='shoot-reels') renderShootReelsAdmin();
-    if(name==='homepage') loadHomePage();
+    if(name==='videos') fetchAndRenderStaffVideos();
+    if(name==='shoot-reels') fetchAndRenderShootReels();
+    if(name==='homepage') fetchAndLoadHomePage();
     if(name==='assign'){
       populateAssignSelects();renderAssignedList();
       (async function(){
