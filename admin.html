@@ -8849,6 +8849,46 @@ Priority Support</textarea></div>
     // ── PAYMENTS TAB ──────────────────────────────────────────────
     var _pmActiveTab = 'customer';
 
+    async function loadPaymentsFromFirebase(){
+      try {
+        var f = await _fbAdmin(); if(!f){ renderPaymentsTab(); return; }
+        var s = f.s, db = f.db;
+        // Fetch payments
+        var pmSnap = await s.getDocs(s.collection(db,'payments'));
+        var bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]');
+        var mapped = [];
+        pmSnap.forEach(function(d){
+          var p = Object.assign({ _fbId: d.id }, d.data());
+          var rid = p.paymentId||p.razorpayId||p.razorpay_payment_id||'';
+          var bid = String(p.bookingId||'');
+          var b = bookings.find(function(bk){ return String(bk.id)===bid||String(bk.id)==='bk_'+bid||'bk_'+String(bk.id)===bid; })
+               || bookings.find(function(bk){ return rid&&(String(bk.razorpayId)===rid||String(bk.paymentId)===rid); })
+               || {};
+          mapped.push({
+            id: p._fbId, bookingId: p.bookingId, paymentId: rid,
+            customerName: p.customerName||p.name||b.name||'',
+            service: p.service||b.service||'', phone: p.phone||b.phone||'',
+            city: p.city||b.city||'', amount: p.amount||0, status: p.status||'paid',
+            paidAt: p.paidAt ? (p.paidAt.seconds ? new Date(p.paidAt.seconds*1000).toLocaleString() : p.paidAt)
+                             : (p.createdAt ? (p.createdAt.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString() : p.createdAt) : '')
+          });
+        });
+        mapped.sort(function(a,b){ return new Date(b.paidAt||0) - new Date(a.paidAt||0); });
+        localStorage.setItem('hs_payments', JSON.stringify(mapped));
+        // Fetch store_payments
+        var spSnap = await s.getDocs(s.collection(db,'store_payments'));
+        var storeList = [];
+        spSnap.forEach(function(d){ storeList.push(Object.assign({ id: d.id }, d.data())); });
+        localStorage.setItem('hs_store_payments', JSON.stringify(storeList));
+        // Fetch store_orders
+        var soSnap = await s.getDocs(s.collection(db,'store_orders'));
+        var orderList = [];
+        soSnap.forEach(function(d){ orderList.push(Object.assign({ id: d.id }, d.data())); });
+        localStorage.setItem('hs_store_orders', JSON.stringify(orderList));
+      } catch(e){ console.warn('loadPaymentsFromFirebase:', e); }
+      renderPaymentsTab();
+    }
+
     function switchPmTab(name, btn){
       _pmActiveTab = name;
       document.getElementById('pmpanel-customer').style.display = name === 'customer' ? 'block' : 'none';
@@ -9884,7 +9924,7 @@ Priority Support</textarea></div>
     if(name==='settings') loadSettingsTab();
     if(name==='coupons') loadCoupons();
     if(name==='hero-stats') loadHeroStatsTab();
-    if(name==='txn-payments') renderPaymentsTab();
+    if(name==='txn-payments') loadPaymentsFromFirebase();
     if(name==='storeorders') renderStoreOrders();
     if(name==='demo'){populateDemoStaffSelect();renderDemoAdminList();}
     if(name==='feedback'){renderFeedbackAdmin();renderEventFeedbackAdmin();}
