@@ -10105,30 +10105,30 @@ Priority Support</textarea></div>
 
   function buildCertHTML(cert){
     return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Certificate - ${cert.name}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
     <style>
       *{margin:0;padding:0;box-sizing:border-box;}
-      body{background:#0a0a0a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',sans-serif;}
-      .cert{width:820px;min-height:580px;background:linear-gradient(135deg,#0a0800 0%,#0f0c00 40%,#0a0800 100%);border:2px solid #c9a84c;border-radius:16px;padding:3rem 3.5rem;position:relative;overflow:hidden;box-shadow:0 0 80px rgba(201,168,76,0.2);}
+      body{background:#0a0800;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',sans-serif;}
+      .cert{width:820px;min-height:580px;background:linear-gradient(135deg,#0a0800 0%,#0f0c00 40%,#0a0800 100%);border:2px solid #c9a84c;border-radius:16px;padding:2.5rem 3.5rem;position:relative;overflow:hidden;box-shadow:0 0 80px rgba(201,168,76,0.2);}
       .cert::before{content:'';position:absolute;inset:8px;border:1px solid rgba(201,168,76,0.2);border-radius:10px;pointer-events:none;}
       .cert-corner{position:absolute;width:40px;height:40px;border-color:#c9a84c;border-style:solid;}
       .tl{top:16px;left:16px;border-width:2px 0 0 2px;}
       .tr{top:16px;right:16px;border-width:2px 2px 0 0;}
       .bl{bottom:16px;left:16px;border-width:0 0 2px 2px;}
       .br{bottom:16px;right:16px;border-width:0 2px 2px 0;}
-      .logo{text-align:center;margin-bottom:1.5rem;}
-      .logo-text{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:#c9a84c;letter-spacing:4px;}
-      .logo-sub{font-size:0.65rem;color:rgba(201,168,76,0.5);letter-spacing:6px;text-transform:uppercase;margin-top:0.2rem;}
-      .divider{width:200px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:1rem auto;}
-      .cert-title{text-align:center;font-size:0.75rem;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.5rem;}
-      .cert-heading{text-align:center;font-family:'Cinzel',serif;font-size:1.4rem;color:#fff;font-weight:700;margin-bottom:1.5rem;}
-      .cert-body{text-align:center;margin-bottom:1.5rem;}
-      .cert-body p{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;}
-      .cert-name{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;color:#c9a84c;margin:0.5rem 0;text-shadow:0 0 30px rgba(201,168,76,0.3);}
-      .cert-role{font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;}
-      .cert-level{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.8rem;font-weight:700;padding:0.35rem 1.25rem;border-radius:50px;letter-spacing:1px;margin-bottom:1.5rem;}
-      .cert-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.15);}
-      .cert-field label{font-size:0.65rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:0.2rem;}
+      .logo{text-align:center;margin-bottom:0.6rem;}
+      .logo img{height:64px;object-fit:contain;}
+      .logo-sub{font-size:0.6rem;color:rgba(201,168,76,0.55);letter-spacing:5px;text-transform:uppercase;margin-top:0.35rem;}
+      .divider{width:200px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0.85rem auto;}
+      .cert-title{text-align:center;font-size:0.72rem;color:rgba(201,168,76,0.6);letter-spacing:4px;text-transform:uppercase;margin-bottom:0.5rem;}
+      .cert-heading{text-align:center;font-family:'Playfair Display',serif;font-size:1.3rem;color:#fff;font-weight:700;margin-bottom:1.25rem;}
+      .cert-body{text-align:center;margin-bottom:1.25rem;}
+      .cert-body p{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;line-height:1.7;}
+      .cert-name{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:#c9a84c;margin:0.4rem 0;letter-spacing:2px;text-shadow:0 0 40px rgba(201,168,76,0.25);line-height:1.1;}
+      .cert-role{font-size:0.88rem;color:rgba(255,255,255,0.65);margin-bottom:0.75rem;letter-spacing:1px;}
+      .cert-level{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:0.78rem;font-weight:700;padding:0.35rem 1.25rem;border-radius:50px;letter-spacing:1px;margin-bottom:1.25rem;}
+      .cert-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.15);}
+      .cert-field label{font-size:0.62rem;color:rgba(201,168,76,0.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:0.2rem;}
       .cert-field span{font-size:0.82rem;color:#fff;font-weight:600;}
       .cert-id{text-align:center;}
       .cert-id label{font-size:0.6rem;color:rgba(201,168,76,0.4);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:0.2rem;}
@@ -10144,8 +10144,9 @@ Priority Support</textarea></div>
       <div class="cert-corner tl"></div><div class="cert-corner tr"></div>
       <div class="cert-corner bl"></div><div class="cert-corner br"></div>
       <div class="logo">
-        <div class="logo-text">OG SHOOTS</div>
-        <div class="logo-sub">LUXE &nbsp;·&nbsp; Official Certificate</div>
+        <img src="https://ogshoots.in/srisanth.jpeg" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="OG Shoots"/>
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff;letter-spacing:3px;">OG<span style="color:#c9a84c;margin:0 0.15em;">&#9889;</span>SHOOTS</div>
+        <div class="logo-sub">Official Certificate</div>
       </div>
       <div class="divider"></div>
       <div class="cert-title">Certificate of Achievement</div>
