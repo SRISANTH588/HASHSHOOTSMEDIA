@@ -8849,6 +8849,74 @@ Priority Support</textarea></div>
     // ── PAYMENTS TAB ──────────────────────────────────────────────
     var _pmActiveTab = 'customer';
 
+    async function fetchAndRenderWithdraw(){
+      try{
+        var f = await _fbAdmin(); if(!f){ loadWithdrawTab(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'payout_requests'));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({}, d.data(), {id: d.data().id||d.id})); });
+        var seen = {};
+        list = list.filter(function(r){ var k=String(r.id||''); if(!k||seen[k]) return false; seen[k]=true; return true; });
+        localStorage.setItem('hs_payout_requests', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderWithdraw:', e); }
+      loadWithdrawTab();
+    }
+
+    async function fetchAndRenderDemos(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderDemoAdminList(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'demos'), f.s.orderBy('createdAt','desc')));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id}, d.data())); });
+        if(list.length) localStorage.setItem('hs_demos', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderDemos:', e); }
+      renderDemoAdminList();
+    }
+
+    async function fetchAndRenderFeedback(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderFeedbackAdmin(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'feedbacks'), f.s.orderBy('createdAt','desc')));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id}, d.data())); });
+        if(list.length) localStorage.setItem('hs_feedbacks', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderFeedback:', e); }
+      renderFeedbackAdmin();
+    }
+
+    async function fetchAndRenderCareers(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderCareerApps(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'career_applications'), f.s.orderBy('createdAt','desc')));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id}, d.data())); });
+        if(list.length) localStorage.setItem('hs_career_applications', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderCareers:', e); }
+      renderCareerApps();
+    }
+
+    async function fetchAndRenderAffiliates(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderAffiliateApps(); return; }
+        var snap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'affiliate_applications'), f.s.orderBy('createdAt','desc')));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id}, d.data())); });
+        if(list.length) localStorage.setItem('hs_affiliate_applications', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderAffiliates:', e); }
+      renderAffiliateApps();
+    }
+
+    async function fetchAndRenderAppFeedback(){
+      try{
+        var f = await _fbAdmin(); if(!f){ renderAppFeedback(); return; }
+        var snap = await f.s.getDocs(f.s.collection(f.db,'app_feedback'));
+        var list = [];
+        snap.forEach(function(d){ list.push(Object.assign({id:d.id}, d.data())); });
+        if(list.length && !window._appFeedbackCleared) localStorage.setItem('hs_app_feedback', JSON.stringify(list));
+      }catch(e){ console.warn('fetchAndRenderAppFeedback:', e); }
+      renderAppFeedback();
+    }
+
     async function loadPaymentsFromFirebase(){
       try {
         var f = await _fbAdmin(); if(!f){ renderPaymentsTab(); return; }
@@ -9887,8 +9955,8 @@ Priority Support</textarea></div>
     if(name==='demo') lastSubmittedCount = getDemos().filter(function(d){return d.status==='submitted';}).length;
     if(name==='feedback') lastFeedbackCount = getFeedbacks().length;
     if(name==='wedding-plans') loadWeddingPlans();
-    if(name==='app-feedback') renderAppFeedback();
-    if(name==='withdraw') loadWithdrawTab();
+    if(name==='app-feedback') fetchAndRenderAppFeedback();
+    if(name==='withdraw') fetchAndRenderWithdraw();
     if(name==='staffwallets') renderStaffWallets();
     if(name==='staffbank') renderStaffBankAccounts();
     if(name==='staffaddress') renderStaffAddresses();
@@ -9912,8 +9980,8 @@ Priority Support</textarea></div>
     if(name==='blog') renderBlogList();
     if(name==='feedback-writer') loadFeedbackWriter();
     if(name==='press'){renderPressList();loadPressStats();}
-    if(name==='careers') renderCareerApps();
-    if(name==='affiliates') renderAffiliateApps();
+    if(name==='careers') fetchAndRenderCareers();
+    if(name==='affiliates') fetchAndRenderAffiliates();
     if(name==='store-razorpay') loadStoreRazorpay();
     if(name==='mkt-enquiries') renderMktEnquiries();
     if(name==='invitations-admin') { loadAdminInvitations(); _setMinDates(['inv_datetime']); }
@@ -9926,8 +9994,8 @@ Priority Support</textarea></div>
     if(name==='hero-stats') loadHeroStatsTab();
     if(name==='txn-payments') loadPaymentsFromFirebase();
     if(name==='storeorders') renderStoreOrders();
-    if(name==='demo'){populateDemoStaffSelect();renderDemoAdminList();}
-    if(name==='feedback'){renderFeedbackAdmin();renderEventFeedbackAdmin();}
+    if(name==='demo'){populateDemoStaffSelect();fetchAndRenderDemos();}
+    if(name==='feedback'){fetchAndRenderFeedback();renderEventFeedbackAdmin();}
     if(name==='videos') renderStaffVideosAdmin();
     if(name==='shoot-reels') renderShootReelsAdmin();
     if(name==='homepage') loadHomePage();
