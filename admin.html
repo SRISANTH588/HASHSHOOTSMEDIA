@@ -10009,7 +10009,28 @@ Priority Support</textarea></div>
   async function initCertTab(){
     var sel = document.getElementById('cert_staff');
     if(!sel) return;
-    sel.innerHTML = '<option value="">-- Loading staff... --</option>';
+
+    function fillSelect(staffArr){
+      var prev = sel.value;
+      sel.innerHTML = '<option value="">-- Select Staff Member --</option>';
+      var valid = staffArr.filter(function(s){ return s && s.name && !s._deleted; });
+      valid.forEach(function(s){
+        var id = s.id || s._fbId || s.username || s.name;
+        var opt = document.createElement('option');
+        opt.value = id+'|'+s.name+'|'+(s.role||'Creator')+'|'+(s.city||'');
+        opt.textContent = s.name+' ('+(s.role||'Creator')+')';
+        sel.appendChild(opt);
+      });
+      if(prev) sel.value = prev;
+      return valid.length;
+    }
+
+    // Step 1: load from localStorage immediately so dropdown is never empty
+    var local = JSON.parse(localStorage.getItem('hs_staff')||'[]');
+    var localCount = fillSelect(local);
+    if(localCount === 0) sel.innerHTML = '<option value="">-- Loading... --</option>';
+
+    // Step 2: fetch fresh from Firestore and update
     try{
       var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
       var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -10017,23 +10038,24 @@ Priority Support</textarea></div>
       var app     = fbMod.getApps().find(function(a){return a.name==='admin-app';})||fbMod.initializeApp(fbCfg,'admin-app');
       var db      = fbStore.getFirestore(app);
       var snap    = await fbStore.getDocs(fbStore.collection(db,'staff'));
-      sel.innerHTML = '<option value="">-- Select Staff Member --</option>';
-      snap.forEach(function(d){
-        var s = d.data();
-        if(!s._deleted) sel.innerHTML += '<option value="'+d.id+'|'+s.name+'|'+(s.role||'Creator')+'|'+(s.city||'')+'">'+s.name+' ('+(s.role||'Creator')+')</option>';
-      });
-      if(sel.options.length===1) sel.innerHTML = '<option value="">No staff found</option>';
+      var fbStaff = [];
+      snap.forEach(function(d){ fbStaff.push(Object.assign({}, d.data(), {id: d.id})); });
+      if(fbStaff.length){
+        localStorage.setItem('hs_staff', JSON.stringify(fbStaff));
+        fillSelect(fbStaff);
+      } else if(localCount === 0){
+        sel.innerHTML = '<option value="">No staff found — add staff first</option>';
+      }
     }catch(e){
-      sel.innerHTML = '<option value="">Error loading staff</option>';
-      console.error('cert staff load:',e);
+      console.error('cert staff load:', e);
+      if(localCount === 0) sel.innerHTML = '<option value="">Error — check console</option>';
     }
+
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('cert_date').value = today;
     var exp = new Date(); exp.setFullYear(exp.getFullYear()+1);
     document.getElementById('cert_expiry').value = exp.toISOString().split('T')[0];
     loadCertList();
-  }
-
   }
 
   async function generateCertificate(){
