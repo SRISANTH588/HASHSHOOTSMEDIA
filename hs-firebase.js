@@ -10,16 +10,26 @@ const FB_CFG = {
   appId: '1:1093054616221:web:55bdebafc895acfd04fa74'
 };
 
-let _db = null, _fbMod = null, _fbStore = null;
+let _db = null, _fbMod = null, _fbStore = null, _fbAuth = null;
 
 async function getDB() {
   if (_db) return _db;
   _fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
   _fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-  const app = _fbMod.getApps().find(a => a.name === 'hs-main') || _fbMod.initializeApp(FB_CFG, 'hs-main');
+  const fbAuthMod = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+  // Use the admin-auth app if already signed in, otherwise fall back to hs-main
+  const adminApp = _fbMod.getApps().find(a => a.name === 'hs-admin-auth');
+  const app = adminApp || _fbMod.getApps().find(a => a.name === 'hs-main') || _fbMod.initializeApp(FB_CFG, 'hs-main');
+  _fbAuth = fbAuthMod.getAuth(app);
   _db = _fbStore.getFirestore(app);
   return _db;
 }
+
+// Returns true if an admin Firebase Auth session is active
+window.isAdminAuthed = async function() {
+  await getDB();
+  return !!(_fbAuth && _fbAuth.currentUser);
+};
 
 // ── CORE CRUD ─────────────────────────────────────────────────────────────────
 
