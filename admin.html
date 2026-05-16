@@ -3358,6 +3358,19 @@ Priority Support</textarea></div>
     var _role = localStorage.getItem('hs_role');
     if(_role !== 'admin' && _role !== 'staff') { window.location.href='login.html'; }
 
+    // Restore Firebase Auth session so Firestore rules (request.auth != null) pass
+    var _fbAuthApp = null;
+    (async function(){
+      try{
+        var am = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        var aa = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+        var cfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+        _fbAuthApp = am.getApps().find(a=>a.name==='hs-admin-auth')||am.initializeApp(cfg,'hs-admin-auth');
+        // Firebase automatically restores persisted session — just wait for it
+        await new Promise(function(res){ var u=aa.onAuthStateChanged(aa.getAuth(_fbAuthApp),function(){ u(); res(); }); });
+      }catch(e){ console.warn('Auth restore:',e); }
+    })();
+
     // One-time cleanup: remove test/fake videos injected by old fix scripts
     ;(function(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
@@ -3411,7 +3424,13 @@ Priority Support</textarea></div>
 
     function logout() {
       ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
-      window.location.href = 'login.html';
+      (async function(){
+        try{
+          var aa = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+          if(_fbAuthApp) await aa.signOut(aa.getAuth(_fbAuthApp));
+        }catch(e){}
+        window.location.href = 'login.html';
+      })();
     }
 
     let allBookings = [];
@@ -3672,7 +3691,8 @@ Priority Support</textarea></div>
       try{
         var m=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var s=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        var app=m.getApps().find(a=>a.name==='admin-app')||m.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'admin-app');
+        // Reuse the auth app so Firestore calls carry the Firebase Auth token
+        var app=_fbAuthApp||m.getApps().find(a=>a.name==='hs-admin-auth')||m.getApps().find(a=>a.name==='admin-app')||m.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'admin-app');
         return {db:s.getFirestore(app),s};
       }catch(e){return null;}
     }
