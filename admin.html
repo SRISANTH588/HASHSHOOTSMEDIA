@@ -3358,28 +3358,6 @@ Priority Support</textarea></div>
     var _role = localStorage.getItem('hs_role');
     if(_role !== 'admin' && _role !== 'staff') { window.location.href='login.html'; }
 
-    // Re-establish Firebase Auth session so Firestore security rules pass
-    // (rules require request.auth != null for admin collections)
-    if(_role === 'admin'){
-      (async function(){
-        try{
-          var fbMod2  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbAuth2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-          var fbCfg2  = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-          var adminApp2  = fbMod2.getApps().find(function(a){return a.name==='hs-admin-auth';})||fbMod2.initializeApp(fbCfg2,'hs-admin-auth');
-          var adminAuth2 = fbAuth2.getAuth(adminApp2);
-          // If already signed in, nothing to do
-          if(adminAuth2.currentUser) return;
-          // Try to restore session from persisted token (Firebase does this automatically)
-          await new Promise(function(resolve){
-            var unsub = fbAuth2.onAuthStateChanged(adminAuth2, function(user){
-              unsub(); resolve(user);
-            });
-          });
-        }catch(e){ console.warn('Admin auth restore:', e); }
-      })();
-    }
-
     // One-time cleanup: remove test/fake videos injected by old fix scripts
     ;(function(){
       var videos = JSON.parse(localStorage.getItem('hs_staff_videos')||'[]');
@@ -3433,16 +3411,7 @@ Priority Support</textarea></div>
 
     function logout() {
       ['hs_role','hs_admin_name','hs_staff_id','hs_staff_name','hs_staff_role','hs_staff_access'].forEach(k => localStorage.removeItem(k));
-      // Sign out of Firebase Auth so the Firestore token is revoked
-      (async function(){
-        try{
-          var fbMod3  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-          var fbAuth3 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-          var adminApp3 = fbMod3.getApps().find(function(a){return a.name==='hs-admin-auth';});
-          if(adminApp3) await fbAuth3.signOut(fbAuth3.getAuth(adminApp3));
-        }catch(e){}
-        window.location.href = 'login.html';
-      })();
+      window.location.href = 'login.html';
     }
 
     let allBookings = [];

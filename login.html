@@ -435,39 +435,26 @@
       document.getElementById('loginSpinner').style.display='block';
       document.getElementById('loginArrow').style.display='none';
 
-      // 1. Admin check — sign in with Firebase Auth so Firestore rules pass
-      const ADMIN_ACCOUNTS = [
-        { username: 'SRISANTH', passKey: 'hs_admin_password', defaultPass: 'SASI@2007',  name: 'SRISANTH', email: 'admin.srisanth@hash-shoots.firebaseapp.com' },
-        { username: 'SUMANTH',  passKey: null,                defaultPass: 'SUMANTH@2007', name: 'SUMANTH', email: 'admin.sumanth@hash-shoots.firebaseapp.com' }
-      ];
-      const adminMatch = ADMIN_ACCOUNTS.find(a => {
-        const correctPass = (a.passKey && localStorage.getItem(a.passKey)) || a.defaultPass;
-        return id.toUpperCase() === a.username && p === correctPass;
-      });
-      if(adminMatch){
-        (async()=>{
-          try{
-            const fbMod2  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-            const fbAuth2 = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-            const fbCfg2  = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
-            const adminApp  = fbMod2.getApps().find(a=>a.name==='hs-admin-auth')||fbMod2.initializeApp(fbCfg2,'hs-admin-auth');
-            const adminAuth = fbAuth2.getAuth(adminApp);
-            await fbAuth2.signInWithEmailAndPassword(adminAuth, adminMatch.email, p);
-          }catch(authErr){
-            // Auth sign-in failed (account may not exist yet) — continue anyway with localStorage session
-            console.warn('Admin Firebase Auth sign-in failed:', authErr.code);
-          }
-          localStorage.setItem('hs_role','admin');
-          localStorage.setItem('hs_admin_name', adminMatch.name);
-          window.location.href='admin.html';
-        })();
-        return;
+      // 1. Admin check (instant)
+      // Try to get latest password from Firebase first
+      const correctPass = localStorage.getItem('hs_admin_password') || 'SASI@2007';
+      if(id.toUpperCase()==='SRISANTH' && p===correctPass){
+        localStorage.setItem('hs_role','admin');
+        localStorage.setItem('hs_admin_name','SRISANTH');
+        window.location.href='admin.html'; return;
       }
       // Marketing team login
       if(id.toLowerCase()==='marketing' && p==='ogmarketing2025'){
         localStorage.setItem('hs_role','marketing');
         localStorage.setItem('hs_marketing_name','Marketing Team');
         window.location.href='marketing.html'; return;
+      }
+
+      // 2nd admin: SUMANTH
+      if(id.toUpperCase()==='SUMANTH' && p==='SUMANTH@2007'){
+        localStorage.setItem('hs_role','admin');
+        localStorage.setItem('hs_admin_name','SUMANTH');
+        window.location.href='admin.html'; return;
       }
 
       const fbCfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
