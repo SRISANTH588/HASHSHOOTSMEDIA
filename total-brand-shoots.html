@@ -490,28 +490,62 @@
       icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
     }
 
-    function submitTBS() {
-      var name    = document.getElementById('tbs_name').value.trim();
-      var phone   = document.getElementById('tbs_phone').value.trim();
-      var brand   = document.getElementById('tbs_brand').value.trim();
-      var insta   = document.getElementById('tbs_instagram').value.trim();
-      var msg     = document.getElementById('tbs_msg').value.trim();
+    async function submitTBS() {
+      var name  = document.getElementById('tbs_name').value.trim();
+      var phone = document.getElementById('tbs_phone').value.trim();
+      var brand = document.getElementById('tbs_brand').value.trim();
+      var insta = document.getElementById('tbs_instagram').value.trim();
+      var msg   = document.getElementById('tbs_msg').value.trim();
 
       if (!name || !phone || !brand) {
         alert('Please fill in your name, phone and brand name.');
         return;
       }
 
-      // Save to localStorage
-      var enquiries = JSON.parse(localStorage.getItem('tbs_enquiries') || '[]');
-      enquiries.push({
-        name: name, phone: phone, brand: brand,
-        instagram: insta, message: msg,
-        date: new Date().toISOString()
-      });
-      localStorage.setItem('tbs_enquiries', JSON.stringify(enquiries));
+      var btn = document.querySelector('.tbs-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> &nbsp;Sending...';
 
-      // Show success
+      try {
+        var res = await fetch(
+          'https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/marketing_enquiries?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fields: {
+                name:        { stringValue: name },
+                phone:       { stringValue: phone },
+                brand:       { stringValue: brand },
+                instagram:   { stringValue: insta },
+                message:     { stringValue: msg },
+                submittedAt: { stringValue: new Date().toLocaleString() }
+              }
+            })
+          }
+        );
+        if (!res.ok) { var e = await res.json(); throw new Error(e.error ? e.error.message : 'Save failed'); }
+
+        // Send email to marketing.ogshoots@gmail.com
+        fetch('https://formsubmit.co/ajax/marketing.ogshoots@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: 'New Total Brand Shoots Enquiry — ' + name + ' | ' + brand,
+            name: name,
+            phone: phone,
+            brand: brand,
+            instagram: insta || 'N/A',
+            message: msg || 'N/A'
+          })
+        }).catch(function(){});
+      } catch(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> &nbsp;Send Enquiry';
+        alert('Failed to send enquiry: ' + err.message);
+        return;
+      }
+
       document.getElementById('tbsFormWrap').style.display = 'none';
       document.getElementById('tbsSuccess').style.display = 'block';
     }

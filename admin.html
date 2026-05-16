@@ -5306,7 +5306,14 @@ Priority Support</textarea></div>
         w.transactions.push({ type: type||'credit', amount: Math.abs(amount), label: label||'Admin Adjustment', date: new Date().toLocaleString() });
       }
       localStorage.setItem('hs_wallet_' + staffId, JSON.stringify(w));
-      if(window.fbUpdate) fbUpdate('wallets', String(staffId), { balance: w.balance, totalEarned: w.totalEarned, pending: w.pending, withdrawn: w.withdrawn||0, lastUpdated: new Date().toLocaleString() });
+      if(window.fbUpdate) fbUpdate('wallets', String(staffId), {
+        balance: w.balance,
+        totalEarned: w.totalEarned,
+        pending: w.pending,
+        withdrawn: w.withdrawn||0,
+        transactions: w.transactions,
+        lastUpdated: new Date().toLocaleString()
+      });
       renderStaffWallets();
       var msg = document.getElementById('sw_msg');
       if(msg){ msg.style.cssText='display:block;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#4caf50;border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:600;'; msg.innerHTML='<i class="fas fa-check-circle"></i> Wallet updated for ' + (getStaff().find(function(s){return String(s.id)===String(staffId);})||{name:'Staff'}).name; setTimeout(function(){ msg.style.display='none'; }, 3000); }

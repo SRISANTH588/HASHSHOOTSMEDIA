@@ -1172,23 +1172,22 @@
     document.getElementById('da-id').textContent = '#' + staffId;
     document.getElementById('da-access').textContent = staffAccess.length ? staffAccess.join(', ') : 'Standard';
 
-    // Stats
-    var bookings = JSON.parse(localStorage.getItem('hs_bookings') || '[]');
-    document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId); }).length;
-    document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]').filter(function(v){ return String(v.assignId) && true; }).length;
-    document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return String(d.staffId) === String(staffId); }).length;
-    var dashShootCount = document.getElementById('dashShootCount');
-    if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId) && a.status === 'assigned'; }).length;
-    // update payments badge
-    (function(){
+    // Stats — called on load and after every Firebase sync
+    function updateDashboardStats(){
+      var staffId = localStorage.getItem('hs_staff_id') || '—';
+      document.getElementById('statShoots').textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId); }).length;
+      document.getElementById('statVideos').textContent = JSON.parse(localStorage.getItem('hs_shoot_ss')||'[]').filter(function(v){ return String(v.assignId) && true; }).length;
+      document.getElementById('statDemos').textContent = JSON.parse(localStorage.getItem('hs_demos')||'[]').filter(function(d){ return String(d.staffId) === String(staffId); }).length;
+      var dashShootCount = document.getElementById('dashShootCount');
+      if(dashShootCount) dashShootCount.textContent = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId) === String(staffId) && a.status === 'assigned'; }).length;
       var done = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]').filter(function(a){ return String(a.staffId)===String(staffId) && a.status==='done'; }).length;
       var badge = document.getElementById('paymentsDoneBadge');
       if(badge){ badge.textContent=done; badge.style.display=done>0?'inline':'none'; }
-    })();
-    // update dashboard wallet balance
-    var w = JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0}');
-    var dashBal = document.getElementById('dashWalletBal');
-    if(dashBal) dashBal.textContent = (w.balance||0).toLocaleString("en-IN");
+      var w = JSON.parse(localStorage.getItem('hs_wallet_' + staffId) || '{"balance":0}');
+      var dashBal = document.getElementById('dashWalletBal');
+      if(dashBal) dashBal.textContent = (w.balance||0).toLocaleString('en-IN');
+    }
+    updateDashboardStats();
 
     // ── IndexedDB for staff videos ──────────────────────────────
     var staffDB = null;
@@ -3708,6 +3707,7 @@
           if (data.totalEarned !== undefined) local.totalEarned = data.totalEarned;
           if (data.pending !== undefined) local.pending = data.pending;
           if (data.withdrawn !== undefined) local.withdrawn = data.withdrawn;
+          if (Array.isArray(data.transactions)) local.transactions = data.transactions;
           localStorage.setItem(key, JSON.stringify(local));
           renderWallet();
           renderPayout();
