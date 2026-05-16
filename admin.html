@@ -3384,7 +3384,7 @@ Priority Support</textarea></div>
 
         // 1. Bookings
         var bSnap = await s.getDocs(s.query(s.collection(db,'bookings'), s.orderBy('createdAt','desc')));
-        var bList = []; bSnap.forEach(function(d){ bList.push(Object.assign({id:d.id},d.data())); });
+        var bList = []; bSnap.forEach(function(d){ var data=d.data(); if(!data.adminDeleted) bList.push(Object.assign({id:d.id},data)); });
         if(bList.length) localStorage.setItem('hs_bookings', JSON.stringify(bList));
 
         // 2. Staff
@@ -3477,7 +3477,7 @@ Priority Support</textarea></div>
         }
         // Sync bookings
         var bSnap = await f.s.getDocs(f.s.query(f.s.collection(f.db,'bookings'),f.s.orderBy('createdAt','desc')));
-        var bList=[]; bSnap.forEach(function(d){bList.push(Object.assign({id:d.id},d.data()));});
+        var bList=[]; bSnap.forEach(function(d){ var data=d.data(); if(!data.adminDeleted) bList.push(Object.assign({id:d.id},data)); });
         if(bList.length) localStorage.setItem('hs_bookings',JSON.stringify(bList));
         // Sync staff
         var stSnap = await f.s.getDocs(f.s.collection(f.db,'staff'));
@@ -3514,7 +3514,7 @@ Priority Support</textarea></div>
           }catch(e2){}
         }
         var bSnap=await f.s.getDocs(f.s.query(f.s.collection(f.db,'bookings'),f.s.orderBy('createdAt','desc')));
-        var bList=[];bSnap.forEach(function(d){bList.push(Object.assign({id:d.id},d.data()));});
+        var bList=[];bSnap.forEach(function(d){ var data=d.data(); if(!data.adminDeleted) bList.push(Object.assign({id:d.id},data)); });
         if(bList.length) localStorage.setItem('hs_bookings',JSON.stringify(bList));
         var stSnap=await f.s.getDocs(f.s.collection(f.db,'staff'));
         var stList=[];stSnap.forEach(function(d){stList.push(d.data());});
@@ -3686,8 +3686,8 @@ Priority Support</textarea></div>
       if(!confirm('Delete this booking?')) return;
       const bookings = JSON.parse(localStorage.getItem('hs_bookings')||'[]').filter(b=>String(b.id)!==String(id));
       localStorage.setItem('hs_bookings',JSON.stringify(bookings));
-      // Sync to Firebase
-      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.deleteDoc(f.s.doc(f.db,'bookings',String(id))); }catch(e){} })();
+      // Mark as admin-deleted in Firestore (do NOT hard-delete — customer orders must remain visible)
+      (async()=>{ var f=await _fbAdmin(); if(!f) return; try{ await f.s.setDoc(f.s.doc(f.db,'bookings',String(id)),{adminDeleted:true},{merge:true}); }catch(e){} })();
       loadAll();
     }
 
