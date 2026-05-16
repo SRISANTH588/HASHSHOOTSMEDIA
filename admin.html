@@ -7792,14 +7792,20 @@ Priority Support</textarea></div>
     }
 
     async function markServiceEnquiryDone(id){
+      // Update localStorage immediately
       var enquiries = getEnquiries();
-      enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{status:'done'}) : e; });
+      enquiries = enquiries.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{status:'done',doneAt:new Date().toLocaleString()}) : e; });
       localStorage.setItem('hs_enquiries', JSON.stringify(enquiries));
       renderEnquiries();
       try{
         var f = await _fbAdmin(); if(!f) return;
         await f.s.setDoc(f.s.doc(f.db,'enquiries',String(id)),{status:'done',doneAt:new Date().toLocaleString()},{merge:true});
         showAssignToast('Enquiry marked as done!', true);
+        // Re-read from localStorage (onSnapshot may have fired) and ensure status stays done
+        var latest = getEnquiries();
+        latest = latest.map(function(e){ return String(e.id)===String(id) ? Object.assign({},e,{status:'done'}) : e; });
+        localStorage.setItem('hs_enquiries', JSON.stringify(latest));
+        renderEnquiries();
       }catch(e){ console.warn('markServiceEnquiryDone:', e); }
     }
     function clearAllEnquiries(){
@@ -9859,6 +9865,14 @@ Priority Support</textarea></div>
             var serviceOnly = fbEnquiries.filter(function(e){
               var t = (e.type||'general').toLowerCase();
               return t === 'general' || t === 'business';
+            });
+            // Preserve locally-set done/accepted status not yet confirmed by Firestore
+            var localEnq = JSON.parse(localStorage.getItem('hs_enquiries')||'[]');
+            serviceOnly = serviceOnly.map(function(fb){
+              var loc = localEnq.find(function(l){ return String(l.id)===String(fb.id); });
+              if(loc && loc.status==='done') fb.status = 'done';
+              if(loc && loc.accepted) fb.accepted = true;
+              return fb;
             });
             localStorage.setItem('hs_enquiries', JSON.stringify(serviceOnly));
             if(currentTab==='enquiries') renderEnquiries();
