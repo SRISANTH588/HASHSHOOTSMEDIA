@@ -3303,16 +3303,34 @@
     function loadStaffAddress(){
       var sId = localStorage.getItem('hs_staff_id');
       var data = JSON.parse(localStorage.getItem('hs_address_' + sId) || 'null');
-      if(!data) return;
-      // Only load if form is currently empty (don't overwrite user input)
-      var line1El = document.getElementById('addr_line1');
-      if(line1El && line1El.value.trim()) return;
-      var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
-      set('addr_name', data.name); set('addr_phone', data.phone);
-      set('addr_line1', data.line1); set('addr_line2', data.line2);
-      set('addr_city', data.city); set('addr_state', data.state);
-      set('addr_pin', data.pin); set('addr_landmark', data.landmark);
-      showSavedAddress(data);
+      function populate(data){
+        if(!data) return;
+        var line1El = document.getElementById('addr_line1');
+        if(line1El && line1El.value.trim()) return;
+        var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
+        set('addr_name', data.name); set('addr_phone', data.phone);
+        set('addr_line1', data.line1); set('addr_line2', data.line2);
+        set('addr_city', data.city); set('addr_state', data.state);
+        set('addr_pin', data.pin); set('addr_landmark', data.landmark);
+        showSavedAddress(data);
+      }
+      if(data){ populate(data); return; }
+      // Fetch from Firebase if not in localStorage
+      (async function(){
+        try{
+          var fbMod   = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+          var fbStore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          var fbCfg   = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
+          var app     = fbMod.getApps().find(function(a){return a.name==='addr-load';})||fbMod.initializeApp(fbCfg,'addr-load');
+          var db      = fbStore.getFirestore(app);
+          var snap    = await fbStore.getDoc(fbStore.doc(db,'staff_address',String(sId)));
+          if(snap.exists()){
+            var fbData = snap.data();
+            localStorage.setItem('hs_address_' + sId, JSON.stringify(fbData));
+            populate(fbData);
+          }
+        }catch(e){ console.warn('loadStaffAddress Firebase:', e); }
+      })();
     }
 
     function showSavedAddress(data){
