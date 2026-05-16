@@ -3360,15 +3360,16 @@ Priority Support</textarea></div>
 
     // Restore Firebase Auth session so Firestore rules (request.auth != null) pass
     var _fbAuthApp = null;
-    (async function(){
+    var _fbAuthReady = false;
+    var _fbAuthReadyPromise = (async function(){
       try{
         var am = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var aa = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
         var cfg = {apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'};
         _fbAuthApp = am.getApps().find(a=>a.name==='hs-admin-auth')||am.initializeApp(cfg,'hs-admin-auth');
-        // Firebase automatically restores persisted session — just wait for it
         await new Promise(function(res){ var u=aa.onAuthStateChanged(aa.getAuth(_fbAuthApp),function(){ u(); res(); }); });
       }catch(e){ console.warn('Auth restore:',e); }
+      _fbAuthReady = true;
     })();
 
     // One-time cleanup: remove test/fake videos injected by old fix scripts
@@ -3689,9 +3690,10 @@ Priority Support</textarea></div>
 
     async function _fbAdmin(){
       try{
+        // Wait for Firebase Auth session to be restored before making Firestore calls
+        if(!_fbAuthReady) await _fbAuthReadyPromise;
         var m=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
         var s=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        // Reuse the auth app so Firestore calls carry the Firebase Auth token
         var app=_fbAuthApp||m.getApps().find(a=>a.name==='hs-admin-auth')||m.getApps().find(a=>a.name==='admin-app')||m.initializeApp({apiKey:'AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',authDomain:'hash-shoots.firebaseapp.com',projectId:'hash-shoots',storageBucket:'hash-shoots.firebasestorage.app',messagingSenderId:'1093054616221',appId:'1:1093054616221:web:55bdebafc895acfd04fa74'},'admin-app');
         return {db:s.getFirestore(app),s};
       }catch(e){return null;}
