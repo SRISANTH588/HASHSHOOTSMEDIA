@@ -4469,23 +4469,38 @@ Priority Support</textarea></div>
       });
     }
 
-    function deleteTestiVideo(id){
+    async function deleteTestiVideo(id){
       if(!confirm('Delete this testimonial video?')) return;
       var meta = getTestiVideosMeta();
       var item = meta.find(function(v){ return String(v.id)===String(id); });
       // Remove from localStorage immediately
       saveTestiVideosMeta(meta.filter(function(v){ return String(v.id)!==String(id); }));
       renderTestiVideos();
-      // Delete from IndexedDB (local blob)
+      // Delete from IndexedDB
       openTestiVideoDB(function(db){
         if(db) db.transaction('videos','readwrite').objectStore('videos').delete(Number(id)||id);
       });
-      // Delete from Firestore via REST API (works without auth token)
-      var fbDocId = (item && item._fbId) ? item._fbId : String(id);
-      fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/testimonial_videos/'+fbDocId+'?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',{method:'DELETE'})
-        .catch(function(e){ console.warn('deleteTestiVideo REST:', e); });
-      // Also try SDK delete as fallback
-      if(window.fbDelete) fbDelete('testimonial_videos', fbDocId);
+      // Find the correct Firestore doc ID by listing all docs and matching cloudUrl or clientName
+      try{
+        var listRes = await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/testimonial_videos?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE');
+        var listData = await listRes.json();
+        var docs = listData.documents || [];
+        var matchDoc = null;
+        // Try to match by _fbId first, then cloudUrl, then clientName
+        for(var i=0;i<docs.length;i++){
+          var d = docs[i];
+          var docId = d.name.split('/').pop();
+          var f = d.fields || {};
+          var dCloudUrl = (f.cloudUrl||{}).stringValue||'';
+          var dClientName = (f.clientName||{}).stringValue||'';
+          if(item && item._fbId && docId === item._fbId){ matchDoc = docId; break; }
+          if(item && item.cloudUrl && dCloudUrl === item.cloudUrl){ matchDoc = docId; break; }
+          if(item && item.clientName && dClientName === item.clientName){ matchDoc = docId; }
+        }
+        var fbDocId = matchDoc || (item && item._fbId) || String(id);
+        await fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/testimonial_videos/'+fbDocId+'?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',{method:'DELETE'});
+        console.log('Deleted testimonial from Firestore:', fbDocId);
+      }catch(e){ console.warn('deleteTestiVideo Firestore:', e); }
     }
 
     // SHOOT REELS & FEEDBACK ADMIN
