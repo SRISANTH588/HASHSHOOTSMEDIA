@@ -583,22 +583,6 @@
     <div class="section" id="sec-payments">
       <div class="sec-title"><i class="fas fa-rupee-sign"></i> Payments</div>
 
-      <!-- Stats -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 0.75rem;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:900;color:#4caf50;" id="po_total">&#8377;0</div>
-          <div style="font-size:0.65rem;color:#9a9080;margin-top:0.2rem;">Total Earned</div>
-        </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 0.75rem;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:900;color:#2196f3;" id="po_paid">&#8377;0</div>
-          <div style="font-size:0.65rem;color:#9a9080;margin-top:0.2rem;">Paid Out</div>
-        </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1rem 0.75rem;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:900;color:#ff9800;" id="po_pending">&#8377;0</div>
-          <div style="font-size:0.65rem;color:#9a9080;margin-top:0.2rem;">Pending</div>
-        </div>
-      </div>
-
       <!-- Completed Shoots -->
       <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
         <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-bottom:1rem;"><i class="fas fa-camera" style="color:#c9a84c;margin-right:0.5rem;"></i> Completed Shoots</div>
@@ -2686,20 +2670,70 @@
     function renderPayout(){
       var staffId = localStorage.getItem('hs_staff_id');
       var w = getWallet();
-      var totalEl = document.getElementById('po_total');
-      var pendingEl = document.getElementById('po_pending');
-      var paidEl = document.getElementById('po_paid');
-      if(totalEl) totalEl.textContent = '\u20b9' + (w.totalEarned||0).toLocaleString('en-IN');
-      if(pendingEl) pendingEl.textContent = '\u20b9' + (w.pending||0).toLocaleString('en-IN');
-      if(paidEl) paidEl.textContent = '\u20b9' + (w.withdrawn||0).toLocaleString('en-IN');
 
       var assigns = JSON.parse(localStorage.getItem('hs_assigned_shoots')||'[]')
         .filter(function(a){ return String(a.staffId) === String(staffId); })
         .slice().reverse();
 
-      // Shoots list — only show service/client/date, NOT the payout amount
+      // Completed Shoots list
       var shootsEl = document.getElementById('po_shootsList');
       var eligible = assigns.filter(function(a){ return a.status === 'done' || a.status === 'completed' || a.status === 'paid'; });
+      if(!eligible.length){
+        shootsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
+      } else {
+        shootsEl.innerHTML = eligible.map(function(a){
+          if(a.status === 'paid'){
+            return '<div style="background:linear-gradient(135deg,rgba(33,150,243,0.12),rgba(33,150,243,0.04));border:1px solid rgba(33,150,243,0.3);border-left:4px solid #2196f3;border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;">'
+              +'<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">'
+                +'<div style="width:44px;height:44px;background:linear-gradient(135deg,rgba(33,150,243,0.2),rgba(33,150,243,0.05));border:2px solid rgba(33,150,243,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check-double" style="color:#2196f3;"></i></div>'
+                +'<div><div style="font-size:0.95rem;font-weight:900;color:#fff;">🎉 Payment Received!</div>'
+                +'<div style="font-size:0.7rem;color:#2196f3;font-weight:700;">Paid on: '+(a.paidAt||'—')+'</div></div>'
+              +'</div>'
+              +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;background:rgba(0,0,0,0.3);border-radius:10px;padding:0.85rem;margin-bottom:0.75rem;">'
+                +'<div><div style="font-size:0.6rem;color:#6a6050;font-weight:700;">Service</div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+a.service+'</div></div>'
+                +'<div><div style="font-size:0.6rem;color:#6a6050;font-weight:700;">Client</div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+a.clientName+'</div></div>'
+                +'<div><div style="font-size:0.6rem;color:#6a6050;font-weight:700;">Shoot Date</div><div style="font-size:0.78rem;color:#d4c9a8;">'+a.date+'</div></div>'
+                +'<div><div style="font-size:0.6rem;color:#6a6050;font-weight:700;">Amount Paid</div><div style="font-size:0.88rem;font-weight:900;color:#2196f3;">₹'+(Number(a.credit)||0).toLocaleString('en-IN')+'</div></div>'
+              +'</div>'
+            +'</div>';
+          }
+          return '<div style="background:linear-gradient(135deg,rgba(156,39,176,0.1),rgba(156,39,176,0.03));border:1px solid rgba(156,39,176,0.3);border-left:4px solid #9c27b0;border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:0.85rem;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">'
+              +'<div style="display:flex;align-items:center;gap:0.65rem;">'
+                +'<div style="width:38px;height:38px;background:rgba(156,39,176,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-flag-checkered" style="color:#9c27b0;"></i></div>'
+                +'<div><div style="font-size:0.92rem;font-weight:900;color:#fff;">Shoot Completed</div><div style="font-size:0.68rem;color:#9c27b0;font-weight:700;">Awaiting Payment</div></div>'
+              +'</div>'
+              +'<span style="font-size:0.62rem;font-weight:800;color:#9c27b0;background:rgba(156,39,176,0.12);border:1px solid rgba(156,39,176,0.3);padding:0.2rem 0.6rem;border-radius:50px;">DONE</span>'
+            +'</div>'
+            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">'
+              +'<div style="background:rgba(0,0,0,0.3);border-radius:9px;padding:0.6rem 0.75rem;"><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Service</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+a.service+'</div></div>'
+              +'<div style="background:rgba(0,0,0,0.3);border-radius:9px;padding:0.6rem 0.75rem;"><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Client</div><div style="font-size:0.82rem;font-weight:700;color:#fff;">'+a.clientName+'</div></div>'
+              +'<div style="background:rgba(0,0,0,0.3);border-radius:9px;padding:0.6rem 0.75rem;"><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Shoot Date</div><div style="font-size:0.78rem;color:#d4c9a8;">'+a.date+' '+a.time+'</div></div>'
+              +'<div style="background:rgba(0,0,0,0.3);border-radius:9px;padding:0.6rem 0.75rem;"><div style="font-size:0.62rem;color:#6a6050;font-weight:700;">Location</div><div style="font-size:0.78rem;color:#d4c9a8;">'+(a.location||a.city||'—')+'</div></div>'
+            +'</div>'
+          +'</div>';
+        }).join('');
+      }
+
+      // Payment History — only paid shoots
+      var histEl = document.getElementById('po_history');
+      var paid = assigns.filter(function(a){ return a.status === 'paid'; });
+      if(!paid.length){
+        histEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payments received yet.</div>';
+      } else {
+        histEl.innerHTML = paid.map(function(a){
+          return '<div style="background:#111;border:1px solid rgba(33,150,243,0.2);border-left:3px solid #2196f3;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
+            +'<div>'
+            +'<div style="font-size:0.88rem;font-weight:700;color:#fff;">'+(a.service||'Shoot')+' — '+(a.clientName||'')+'</div>'
+            +'<div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;">'+a.date+(a.paidAt?' &nbsp;·&nbsp; Paid: '+a.paidAt:'')+'</div>'
+            +'</div>'
+            +'<div style="font-size:1.1rem;font-weight:900;color:#2196f3;">₹'+(Number(a.credit)||0).toLocaleString('en-IN')+'</div>'
+            +'</div>';
+        }).join('');
+      }
+
+      // Update notif badge
+      var needsAction = assigns.filter(function(a){ return a.status==='done'; }).length;
       if(!eligible.length){
         shootsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-camera" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No completed shoots yet.</div>';
       } else {
@@ -2767,64 +2801,6 @@
           +'</div>';
         }).join('');
       }
-
-      // Payout request section
-      var histEl = document.getElementById('po_history');
-      var myReqs = JSON.parse(localStorage.getItem('hs_payout_requests') || '[]')
-        .filter(function(r){ return String(r.staffId) === String(staffId); })
-        .slice().reverse();
-
-      var bankData = JSON.parse(localStorage.getItem('hs_bank_' + staffId) || 'null');
-      var canRequest = (w.balance || 0) > 0 && bankData && bankData.accNo;
-      var pendingReq = myReqs.find(function(r){ return r.status === 'pending'; });
-
-      var requestSection = '';
-      if(!bankData || !bankData.accNo){
-        requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
-          + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;margin-bottom:0.25rem;"><i class="fas fa-exclamation-triangle"></i> Bank Details Required</div>'
-          + '<div style="font-size:0.75rem;color:#9a9080;">Please add your bank account details in the <strong style="color:#fff;">Bank</strong> tab before requesting a payout.</div>'
-          + '</div>';
-      } else if(pendingReq){
-        requestSection = '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1rem;">'
-          + '<div style="font-size:0.82rem;font-weight:700;color:#ff9800;"><i class="fas fa-clock"></i> Payout Request Pending</div>'
-          + '<div style="font-size:0.75rem;color:#9a9080;margin-top:0.2rem;">Your payout request of <strong style="color:#fff;">₹' + pendingReq.amount.toLocaleString('en-IN') + '</strong> is under review. Admin will process it shortly.</div>'
-          + '</div>';
-      } else if(canRequest){
-        requestSection = '<div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;">'
-          + '<div style="font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:0.75rem;"><i class="fas fa-hand-holding-usd" style="color:#4caf50;"></i> Request Payout</div>'
-          + '<div style="font-size:0.78rem;color:#9a9080;margin-bottom:0.75rem;">Available balance: <strong style="color:#4caf50;font-size:1rem;">₹' + (w.balance||0).toLocaleString('en-IN') + '</strong></div>'
-          + '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">'
-          + '<div style="flex:1;min-width:120px;"><label style="font-size:0.72rem;color:#9a9080;font-weight:600;display:block;margin-bottom:0.3rem;">Amount (₹) * [Min: ₹500, Max: ₹10,000]</label>'
-          + '<input type="number" id="po_req_amount" placeholder="e.g. 1500" min="500" max="10000" style="width:100%;background:#0f0f0f;border:1px solid rgba(201,168,76,0.15);border-radius:9px;padding:0.6rem 0.85rem;color:#fff;font-family:inherit;font-size:0.85rem;outline:none;"/></div>'
-          + '<button onclick="submitPayoutRequestOld()" style="background:#4caf50;color:#fff;border:none;border-radius:9px;padding:0.65rem 1.5rem;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="fas fa-paper-plane"></i> Request Payout</button>'
-          + '</div>'
-          + '<div style="font-size:0.72rem;color:#9a9080;margin-top:0.5rem;">Payout will be sent to: <strong style="color:#fff;">' + bankData.bankName + '</strong> &nbsp;·&nbsp; A/C: <strong style="color:#fff;">' + bankData.accNo.replace(/.(?=.{4})/g,'*') + '</strong>' + (bankData.upi ? ' &nbsp;·&nbsp; UPI: <strong style="color:#fff;">' + bankData.upi + '</strong>' : '') + '</div>'
-          + '<div id="po_req_msg" style="display:none;margin-top:0.5rem;"></div>'
-          + '</div>';
-      }
-
-      // History
-      var histHTML = '';
-      if(!myReqs.length){
-        histHTML = '<div style="text-align:center;padding:2rem;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-history" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No payout requests yet.</div>';
-      } else {
-        var statusColors2 = { pending:'#ff9800', approved:'#4caf50', rejected:'#f44336' };
-        histHTML = myReqs.map(function(r){
-          var sc = statusColors2[r.status] || '#ff9800';
-          return '<div style="background:#111;border:1px solid rgba(201,168,76,0.12);border-left:3px solid '+sc+';border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.65rem;">'
-            + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">'
-            + '<div>'
-            + '<div style="font-size:0.88rem;font-weight:700;color:#fff;">Payout Request — ₹' + r.amount.toLocaleString('en-IN') + '</div>'
-            + '<div style="font-size:0.7rem;color:#9a9080;margin-top:0.15rem;">' + r.requestedAt + '</div>'
-            + (r.rejectReason ? '<div style="font-size:0.72rem;color:#f44336;margin-top:0.2rem;"><i class="fas fa-times-circle"></i> ' + r.rejectReason + '</div>' : '')
-            + (r.processedAt && r.status !== 'pending' ? '<div style="font-size:0.68rem;color:#777;margin-top:0.1rem;">' + (r.status === 'approved' ? 'Approved' : 'Rejected') + ': ' + r.processedAt + '</div>' : '')
-            + '</div>'
-            + '<span style="background:'+sc+'22;border:1px solid '+sc+'44;color:'+sc+';font-size:0.68rem;font-weight:700;padding:0.2rem 0.65rem;border-radius:50px;">' + r.status.charAt(0).toUpperCase()+r.status.slice(1) + '</span>'
-            + '</div></div>';
-        }).join('');
-      }
-
-      histEl.innerHTML = requestSection + histHTML;
 
       // Update notif badge
       var needsAction = assigns.filter(function(a){ return a.status==='done'; }).length;
