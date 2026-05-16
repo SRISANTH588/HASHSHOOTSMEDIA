@@ -314,8 +314,7 @@
     <button class="tab-btn" onclick="switchTab('feedback',this)" id="feedbackTabBtn"><i class="fas fa-star"></i> Shoot Feedback <span class="notif" id="feedbackNotifBadge" style="display:none;">!</span></button>
     <button class="tab-btn" onclick="switchTab('support',this)" id="supportTabBtn"><i class="fas fa-headset"></i> Support</button>
     <button class="tab-btn" onclick="switchTab('store',this)"><i class="fas fa-store"></i> Store</button>
-    <button class="tab-btn" onclick="switchTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
-    <button class="tab-btn" onclick="switchTab('payout',this)" id="payoutTabBtn"><i class="fas fa-rupee-sign"></i> Payments <span class="notif" id="payoutNotifBadge" style="display:none;">!</span></button>
+
     <button class="tab-btn" onclick="switchTab('invitations',this)" id="invitationsTabBtn"><i class="fas fa-envelope-open-text"></i> Invitations <span class="notif" id="invitationsNotifBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('meetings',this)" id="meetingsTabBtn"><i class="fas fa-users"></i> Meetings <span class="notif" id="meetingsNotifBadge" style="display:none;">0</span></button>
     <button class="tab-btn" onclick="switchTab('bank',this)" id="bankTabBtn"><i class="fas fa-university"></i> Bank</button>
@@ -364,11 +363,7 @@
           <i class="fas fa-robot" style="font-size:1.6rem;color:#c9a84c;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">AI Classes</div>
         </div>
-        <div onclick="switchTab('wallet',document.querySelector('[onclick*=wallet]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
-          <i class="fas fa-wallet" style="font-size:1.6rem;color:#4caf50;margin-bottom:0.6rem;display:block;"></i>
-          <div style="font-size:0.82rem;font-weight:700;">Wallet</div>
-          <div style="font-size:0.72rem;color:#9a9080;margin-top:0.2rem;">₹<span id="dashWalletBal">0</span></div>
-        </div>
+
         <div onclick="switchTab('feedback',document.querySelector('[onclick*=feedback]'))" style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.08)'">
           <i class="fas fa-star" style="font-size:1.6rem;color:#f5a623;margin-bottom:0.6rem;display:block;"></i>
           <div style="font-size:0.82rem;font-weight:700;">Feedback</div>
@@ -583,49 +578,7 @@
       <div id="storeIdCard"></div>
     </div>
 
-    <!-- WALLET -->
-    <div class="section" id="sec-wallet">
-      <div class="sec-title"><i class="fas fa-wallet"></i> My Wallet</div>
-
-      <!-- Balance card -->
-      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(100,0,0,0.3));border:1px solid rgba(201,168,76,0.3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div>
-          <div style="font-size:0.75rem;color:#9a9080;font-weight:600;letter-spacing:1px;margin-bottom:0.4rem;">AVAILABLE BALANCE</div>
-          <div style="font-size:2.8rem;font-weight:900;color:#fff;line-height:1;">₹<span id="walletBalance">0</span></div>
-          <div style="font-size:0.78rem;color:#9a9080;margin-top:0.4rem;">Ready for withdrawal</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:0.72rem;color:#ff9800;font-weight:700;margin-bottom:0.2rem;">PENDING PAYMENT</div>
-          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;">₹<span id="walletPendingTop">0</span></div>
-          <div style="font-size:0.68rem;color:#777;margin-top:0.15rem;">Awaiting admin release</div>
-          <div style="margin-top:0.5rem;font-size:0.72rem;color:#9a9080;">Credits per Shoot</div>
-          <div style="font-size:1.1rem;font-weight:900;color:#c9a84c;">₹<span id="walletPerShoot">0</span></div>
-        </div>
-      </div>
-
-      <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
-          <div style="font-size:1.6rem;font-weight:900;color:#4caf50;" id="walletTotalEarned">₹0</div>
-          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Total Earned</div>
-        </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
-          <div style="font-size:1.6rem;font-weight:900;color:#2196f3;" id="walletWithdrawn">₹0</div>
-          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Withdrawn</div>
-        </div>
-        <div style="background:#1a1a1a;border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:1.1rem;text-align:center;">
-          <div style="font-size:1.6rem;font-weight:900;color:#ff9800;" id="walletPending">₹0</div>
-          <div style="font-size:0.7rem;color:#9a9080;margin-top:0.2rem;">Pending</div>
-        </div>
-      </div>
-
-      <!-- Transactions -->
-      <div class="sec-title" style="font-size:0.95rem;"><i class="fas fa-list"></i> Transaction History</div>
-      <div id="walletTxnList"><div style="text-align:center;padding:2rem;background:#1a1a1a;border-radius:14px;color:#6a5a40;font-size:0.85rem;"><i class="fas fa-receipt" style="display:block;font-size:1.8rem;opacity:0.2;margin-bottom:0.5rem;"></i>No transactions yet.</div></div>
-    </div>
-
-    <!-- PAYOUT -->
-    <div class="section" id="sec-payout">
+    <!-- AI VIDEO EDITOR -->
       <div class="sec-title"><i class="fas fa-rupee-sign"></i> Payments</div>
 
       <!-- Quick Payout Request Card -->
@@ -1080,8 +1033,7 @@
         try { if(name === 'videos') renderMyVideos(); } catch(e){}
         try { if(name === 'feedback') { renderCreatorShootFeedback(); renderCreatorFeedback(); renderEventFeedbackCollected(); } } catch(e){}
         try { if(name === 'store') renderStore(); } catch(e){}
-        try { if(name === 'wallet') renderWallet(); } catch(e){}
-        try { if(name === 'payout') renderPayout(); } catch(e){}
+
         try { if(name === 'support') renderSupportTickets(); } catch(e){}
         try { if(name === 'testimonials') renderStvGrid(); } catch(e){}
         try { if(name === 'bank') loadBankDetails(); } catch(e){}

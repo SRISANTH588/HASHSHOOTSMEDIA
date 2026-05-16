@@ -412,7 +412,7 @@
         <button class="sidebar-item" onclick="switchTab('assign',this)" id="assignTabBtn" data-title="Assign Shoots"><i class="fas fa-tasks"></i> Assign Shoots</button>
         <button class="sidebar-item" onclick="switchTab('order-edits',this)" id="orderEditsTabBtn" data-title="Order Edits"><i class="fas fa-edit"></i> Order Edits <span class="sidebar-badge" id="orderEditsBadge" style="display:none;">0</span></button>
         <button class="sidebar-item" onclick="switchTab('payments',this)" id="paymentsAdminTabBtn" data-title="Staff Payouts"><i class="fas fa-rupee-sign"></i> Staff Payouts <span class="sidebar-badge" id="paymentsAdminBadge" style="display:none;">0</span></button>
-        <button class="sidebar-item" onclick="switchTab('withdraw',this)" id="withdrawTabBtn" data-title="Staff Withdraw"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span class="sidebar-badge green" id="withdrawNotifBadge" style="display:none;">0</span></button>
+
       </div>
     </div>
 
@@ -543,7 +543,7 @@
       <button class="tab-btn" onclick="switchTab('app-feedback',this)" id="appFeedbackTabBtn"><i class="fas fa-comment-dots"></i> App Feedback <span id="appFeedbackBadge" style="display:none;background:#c9a84c;color:#000;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
       <button class="tab-btn" onclick="switchTab('store',this)" id="storeTabBtn"><i class="fas fa-store"></i> Store</button>
       <button class="tab-btn" onclick="switchTab('store-razorpay',this)" id="storeRazorpayTabBtn"><i class="fas fa-credit-card"></i> Store Payment</button>
-      <button class="tab-btn" onclick="switchTab('withdraw',this)" id="withdrawTabBtn"><i class="fas fa-money-bill-wave"></i> Staff Withdraw <span id="withdrawNotifBadge" style="display:none;background:#4caf50;color:#fff;font-size:0.6rem;font-weight:900;padding:0.15rem 0.45rem;border-radius:50px;margin-left:0.3rem;">0</span></button>
+
       <button class="tab-btn" onclick="switchTab('certificates',this)"><i class="fas fa-certificate"></i> Certificates</button>
 
       <button class="tab-btn" onclick="switchTab('staffbank',this)" id="staffBankTabBtn"><i class="fas fa-university"></i> Staff Bank Accounts</button>
@@ -2218,34 +2218,7 @@ Priority Support</textarea></div>
     </div><!-- end tab-store-razorpay -->
 
     <!-- STAFF WITHDRAW TAB -->
-    <div class="tab-panel" id="tab-withdraw">
 
-      <!-- STATS -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div class="stat-card"><div class="num" id="wd_pendingCount" style="color:#ff9800;">0</div><div class="lbl">Pending Requests</div></div>
-        <div class="stat-card"><div class="num" id="wd_approvedCount" style="color:#4caf50;">0</div><div class="lbl">Approved</div></div>
-        <div class="stat-card"><div class="num" id="wd_totalAmt" style="color:#2196f3;">&#8377;0</div><div class="lbl">Total Paid Out</div></div>
-      </div>
-
-      <!-- FILTER -->
-      <div class="filters" style="margin-bottom:1.25rem;">
-        <button class="filter-btn active" onclick="filterWithdraw('all',this)">All</button>
-        <button class="filter-btn" onclick="filterWithdraw('pending',this)">Pending</button>
-        <button class="filter-btn" onclick="filterWithdraw('approved',this)">Approved</button>
-        <button class="filter-btn" onclick="filterWithdraw('rejected',this)">Rejected</button>
-      </div>
-
-      <div class="about-form">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-          <h2 style="font-size:1rem;font-weight:800;color:#fff;"><i class="fas fa-money-bill-wave" style="color:#4caf50;margin-right:0.5rem;"></i> Staff Withdrawal Requests</h2>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <span style="font-size:0.8rem;color:#9a9080;" id="wdCount"></span>
-            <button onclick="clearAllWithdrawals()" style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:0.35rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;"><i class="fas fa-trash"></i> Clear All</button>
-          </div>
-        </div>
-        <div id="withdrawList"></div>
-      </div>
-    </div><!-- end tab-withdraw -->
 
     <!-- CERTIFICATES TAB -->
     <div class="tab-panel" id="tab-certificates">
@@ -10127,7 +10100,7 @@ Priority Support</textarea></div>
     if(name==='feedback') lastFeedbackCount = getFeedbacks().length;
     if(name==='wedding-plans') fetchAndLoadWeddingPlans();
     if(name==='app-feedback') fetchAndRenderAppFeedback();
-    if(name==='withdraw') fetchAndRenderWithdraw();
+
 
     if(name==='staffbank') renderStaffBankAccounts();
     if(name==='staffaddress') renderStaffAddresses();
