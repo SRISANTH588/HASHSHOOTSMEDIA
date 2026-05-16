@@ -513,7 +513,7 @@ body {
   /* Hero */
   .hero { padding: 5.5rem 1.25rem 2rem; }
   .hero-big { font-size: clamp(4rem, 14vw, 6rem) !important; letter-spacing: -2px; white-space: nowrap; }
-  .hero-sub { font-size: clamp(0.65rem, 3.5vw, 0.85rem); white-space: normal; letter-spacing: -0.3px; max-width: 100%; text-align: center; line-height: 1.5; }
+  .hero-sub { font-size: clamp(0.5rem, 2.8vw, 0.85rem); white-space: nowrap; letter-spacing: -0.5px; max-width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; }
   .phone-frame { width: 220px; }
   .phone-screen { min-height: 460px; }
   .float-badge { font-size: 0.65rem; padding: 0.35rem 0.7rem; }
@@ -561,7 +561,7 @@ body {
   /* Hero */
   .hero { padding: 5rem 1rem 2rem; }
   .hero-big { font-size: clamp(3.2rem, 16vw, 5.5rem) !important; letter-spacing: -2px; white-space: nowrap; }
-  .hero-sub { font-size: clamp(0.7rem, 4vw, 0.85rem); white-space: normal; letter-spacing: -0.3px; max-width: 100%; text-align: center; line-height: 1.5; }
+  .hero-sub { font-size: clamp(0.48rem, 3.2vw, 0.8rem); white-space: nowrap; letter-spacing: -0.5px; max-width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; }
   .hero-tag { font-size: 0.7rem; }
   .phone-mockup { transform: scale(0.88); transform-origin: top center; }
   .badge-top, .badge-bottom, .badge-left { display: none; }
@@ -610,7 +610,7 @@ body {
 /* Small mobile — up to 360px */
 @media (max-width: 360px) {
   .hero-big { font-size: clamp(2.8rem, 15vw, 4.5rem) !important; letter-spacing: -2px; white-space: nowrap; }
-  .hero-sub { font-size: clamp(0.65rem, 4vw, 0.78rem); white-space: normal; letter-spacing: -0.3px; max-width: 100%; text-align: center; line-height: 1.5; }
+  .hero-sub { font-size: clamp(0.42rem, 3.2vw, 0.7rem); white-space: nowrap; letter-spacing: -0.6px; max-width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; }
   .phone-mockup { transform: scale(0.78); transform-origin: top center; }
   #ogLogoWrap { font-size: 2rem !important; letter-spacing: 3px !important; }
   #ogLaunchBtn { padding: 0.8rem 1.8rem !important; }
