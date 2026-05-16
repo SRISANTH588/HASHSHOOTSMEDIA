@@ -8704,15 +8704,21 @@ Priority Support</textarea></div>
     }
 
     async function resolveTicket(id){
+      // Update localStorage immediately
       var tickets = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
-      tickets = tickets.map(function(t){ return String(t.id||t._id)===String(id) ? Object.assign({},t,{status:'resolved'}) : t; });
+      tickets = tickets.map(function(t){ return String(t.id||t._id)===String(id) ? Object.assign({},t,{status:'resolved',resolvedAt:new Date().toLocaleString()}) : t; });
       localStorage.setItem('hs_support_tickets', JSON.stringify(tickets));
       renderSupportTickets();
+      // Update Firestore — try both the local id and Firestore doc id
       try{
         var f = await _fbAdmin(); if(!f) return;
-        await f.s.setDoc(f.s.doc(f.db,'support_tickets',String(id)),{status:'resolved',resolvedAt:new Date().toLocaleString()},{merge:true});
+        // Find the actual Firestore doc ID
+        var ticket = tickets.find(function(t){ return String(t.id||t._id)===String(id); });
+        var fbDocId = (ticket && ticket.id) ? String(ticket.id) : String(id);
+        await f.s.setDoc(f.s.doc(f.db,'support_tickets',fbDocId),{status:'resolved',resolvedAt:new Date().toLocaleString()},{merge:true});
         showAssignToast('Ticket marked as resolved!', true);
-      }catch(e){ console.warn('resolveTicket:', e); }
+        renderSupportTickets();
+      }catch(e){ console.warn('resolveTicket:', e); showAssignToast('Saved locally. Will sync when online.', true); }
     }
 
     // ── BUSINESS ENQUIRIES ──────────────────────────────────────────
@@ -9566,7 +9572,12 @@ Priority Support</textarea></div>
           var local = JSON.parse(localStorage.getItem('hs_support_tickets')||'[]');
           fbDocs.forEach(function(fb){
             var idx = local.findIndex(function(l){ return String(l.id)===String(fb.id) || String(l._id)===String(fb.id); });
-            if(idx > -1){ Object.assign(local[idx], fb); }
+            if(idx > -1){
+              // Don't overwrite resolved status with older Firebase data
+              var localResolved = local[idx].status === 'resolved';
+              Object.assign(local[idx], fb);
+              if(localResolved) local[idx].status = 'resolved';
+            }
             else { local.push(fb); }
           });
           var seen = {};
