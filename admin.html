@@ -6062,15 +6062,7 @@ Priority Support</textarea></div>
     }
 
     // Define Firebase sync for customer wallets
-    window.setCustWalletFirebase = async function(email, balance){
-      try{
-        var f = await _fbAdmin(); if(!f) return;
-        var key = email.replace(/[.#$\[\]]/g,'_');
-        await f.s.setDoc(f.s.doc(f.db,'customer_wallets',key),{email:email, balance:balance, updatedAt:f.s.serverTimestamp()},{merge:true});
-        // Also notify customer via a wallet_updates doc they can listen to
-        await f.s.setDoc(f.s.doc(f.db,'wallet_updates',key),{email:email, balance:balance, updatedAt:f.s.serverTimestamp()},{merge:true});
-      }catch(e){ console.error('setCustWalletFirebase:',e); }
-    };
+    // setCustWalletFirebase is defined in hs-firebase.js — do not redefine here
 
     async function renderCustWallets(){
       var list = document.getElementById('cwList');
