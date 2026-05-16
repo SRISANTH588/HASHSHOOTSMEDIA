@@ -6172,7 +6172,7 @@ Priority Support</textarea></div>
         var fbDb = fbStore.getFirestore(fbApp);
         var bSnap = await fbStore.getDocs(fbStore.query(fbStore.collection(fbDb,'bookings'), fbStore.orderBy('createdAt','desc')));
         var fbBookings = [];
-        bSnap.forEach(function(d){ var data=d.data(); fbBookings.push(Object.assign({id:d.id},data)); });
+        bSnap.forEach(function(d){ var data=d.data(); if(!data.adminDeleted) fbBookings.push(Object.assign({id:d.id},data)); });
         if(fbBookings.length){
           localStorage.setItem('hs_bookings', JSON.stringify(fbBookings));
           bookings = fbBookings.filter(function(b){ return b.status==='pending'||b.status==='confirmed'||b.status==='enquiry'||!b.status; });
@@ -9463,6 +9463,7 @@ Priority Support</textarea></div>
           var fbBookings = [];
           snap.forEach(function(d){
             var data = d.data();
+            if(data.adminDeleted) return;
             fbBookings.push({
               id: d.id,
               name: data.name||'',
@@ -10206,7 +10207,7 @@ Priority Support</textarea></div>
       var f = await _fbAdmin(); if(!f) return;
       // Bookings
       var bSnap = await f.s.getDocs(f.s.collection(f.db,'bookings'));
-      var bookings=[]; bSnap.forEach(function(d){bookings.push(Object.assign({id:d.id},d.data()));});
+      var bookings=[]; bSnap.forEach(function(d){ var data=d.data(); if(!data.adminDeleted) bookings.push(Object.assign({id:d.id},data)); });
       document.getElementById('db_totalBookings').textContent = bookings.length;
       document.getElementById('db_pendingBookings').textContent = bookings.filter(function(b){return b.status==='pending';}).length;
       // Recent bookings
