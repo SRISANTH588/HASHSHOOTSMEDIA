@@ -4480,8 +4480,11 @@ Priority Support</textarea></div>
       openTestiVideoDB(function(db){
         if(db) db.transaction('videos','readwrite').objectStore('videos').delete(Number(id)||id);
       });
-      // Delete from Firestore using _fbId (Firestore auto-ID) if available, else fallback to id
+      // Delete from Firestore via REST API (works without auth token)
       var fbDocId = (item && item._fbId) ? item._fbId : String(id);
+      fetch('https://firestore.googleapis.com/v1/projects/hash-shoots/databases/(default)/documents/testimonial_videos/'+fbDocId+'?key=AIzaSyAtkcHfgNx9xEcyMC50eRX5VPv1r7O5XyE',{method:'DELETE'})
+        .catch(function(e){ console.warn('deleteTestiVideo REST:', e); });
+      // Also try SDK delete as fallback
       if(window.fbDelete) fbDelete('testimonial_videos', fbDocId);
     }
 
