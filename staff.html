@@ -3019,15 +3019,18 @@
     // STORE
     async function renderStore(){
       if(window.loadRazorpayFromFirebase) await loadRazorpayFromFirebase();
-      // Fetch latest store data from Firebase if not in localStorage
-      if(!localStorage.getItem('hs_idcard') || localStorage.getItem('hs_idcard') === '{}') {
-        try {
-          if(window.fbGet) {
-            var idc = await fbGet('settings', 'idcard');
-            if(idc) localStorage.setItem('hs_idcard', JSON.stringify(idc));
+      // Always fetch latest store data from Firebase
+      try {
+        if(window.fbGet) {
+          var idc = await fbGet('settings', 'idcard');
+          if(idc && Object.keys(idc).length) localStorage.setItem('hs_idcard', JSON.stringify(idc));
+          var tshirtData = await fbGet('settings', 'tshirts');
+          if(tshirtData && Array.isArray(tshirtData.items)) {
+            localStorage.setItem('hs_products', JSON.stringify(tshirtData.items));
+            localStorage.setItem('hs_tshirts', JSON.stringify(tshirtData.items));
           }
-        } catch(e){}
-      }
+        }
+      } catch(e){}
       var tshirts = JSON.parse(localStorage.getItem('hs_products') || localStorage.getItem('hs_tshirts') || '[]');
       var idcard  = JSON.parse(localStorage.getItem('hs_idcard')  || '{}');
       var storeCfg = JSON.parse(localStorage.getItem('hs_store_settings') || '{}');
